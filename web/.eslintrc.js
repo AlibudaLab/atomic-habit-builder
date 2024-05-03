@@ -46,7 +46,7 @@ module.exports = {
       { namedComponents: 'function-declaration', unnamedComponents: 'function-expression' },
     ],
 
-    'eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
 
     // We prefer on/handle named events
     'react/jsx-handler-names': 'error',
