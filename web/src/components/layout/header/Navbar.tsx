@@ -40,7 +40,7 @@ export function NavbarTitle() {
         className="font-robotoMono text-center text-xl font-medium text-white no-underline"
         aria-label="build-onchain-apps Github repository"
       >
-        BUILD ONCHAIN APPS
+        Go Healthy
       </NextLink>
     </div>
   );

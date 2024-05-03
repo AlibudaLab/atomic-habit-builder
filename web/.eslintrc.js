@@ -7,7 +7,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: './tsconfig.json',
   },
-  plugins: ['react-perf', 'relay', '@typescript-eslint', 'import'],
+  plugins: ['react-perf', 'relay', '@typescript-eslint'],
   extends: [
     'airbnb-typescript/base',
     'airbnb/rules/react',
@@ -45,6 +45,8 @@ module.exports = {
       'error',
       { namedComponents: 'function-declaration', unnamedComponents: 'function-expression' },
     ],
+
+    'eslint/no-unused-vars': 'off',
 
     // We prefer on/handle named events
     'react/jsx-handler-names': 'error',
@@ -131,40 +133,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'import/extensions': 'off',
 
-    // We prefer sorting imports by groups
-    'import/order': [
-      'error',
-      {
-        "alphabetize": {
-          "order": "asc",
-          "caseInsensitive": true
-        },
-        'groups': [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-          'object',
-          'type'
-        ],
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "external",
-            "position": "before"
-          },
-          {
-            "pattern": "@/**",
-            "group": "external",
-            "position": "after"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["react"]
-      }
-    ],
-
+    
     // We prefer labels to be associated with inputs
     'jsx-a11y/label-has-associated-control': ['error', {
       'required': {
