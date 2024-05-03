@@ -4,24 +4,23 @@ import Image from 'next/image';
 import { SetStateAction,  } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
+const img = require('../../../src/imgs/step1.png') as string;
+
 export default function Step1Join({setSteps}: {setSteps: React.Dispatch<SetStateAction<number>>}) {
 
   const { address } = useAccount();
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
 
-  // console.log('account', account.address)
-
   return (
     <div className='flex flex-col items-center justify-center'>
       {/* Img and Description */}
       <div className="col-span-3 flex justify-start w-full items-center gap-6">
         <Image
-          src="/../../src/imgs/step2.png"
-          width={25}
-          height={25}
+          src={img}
+          width='50'
           alt="Step 2 Image"
-          className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
+          className="mb-3 object-cover"
         />
         <p className="text-lg text-gray-700 mr-auto">
         Join up with World ID or Base Smart Wallet

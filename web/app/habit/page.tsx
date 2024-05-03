@@ -10,8 +10,6 @@ export default function HabitPage() {
 
   const [steps, setSteps] = useState(1)
 
-  console.log('steps', steps)
-
   return (
     <main className="container mx-auto flex flex-col px-8 py-16">
       <div className="container mb-10 w-full text-center text-4xl font-title"> Alibuda Habit Builder </div>
