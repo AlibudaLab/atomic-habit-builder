@@ -9,13 +9,15 @@
   --developer-experience-code-window-background: var(--slate-12);
 
   /* Palette */
-  --palette-bg-black: #0a0b0d;
+  --palette-bg: #f9f4e6;
   --palette-bg-soft-black: #141519;
   --palette-bg-white: #fff;
+  --palette-text-dark: #7E7956;
+
 
   /* Build Onchain Apps shared variables */
-  --boat-color-background: var(--palette-bg-black);
-  --boat-color-text: var(--palette-bg-white);
+  --boat-color-background: var(--palette-bg);
+  --boat-color-text: var(--palette-text-dark);
 
   /* Indicates that the element can be rendered using 
    * the operating system dark color scheme. 
@@ -47,7 +49,7 @@ body {
   margin: 0;
   background-color: var(--boat-color-background);
   color: var(--boat-color-text);
-  font-family: Inter, sans-serif;
+  font-family: Nunito, sans-serif;
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;

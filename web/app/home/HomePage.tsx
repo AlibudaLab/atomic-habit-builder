@@ -10,13 +10,13 @@ import Footer from '@/components/layout/footer/Footer';
 export default function HomePage() {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <main className="container mx-auto flex flex-col px-8 py-16">
-        <div className='container text-2xl'>
+        <div className='container w-full text-2xl text-center'>
           Alibuda Habit Builder
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }
