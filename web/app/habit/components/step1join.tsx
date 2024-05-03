@@ -30,12 +30,12 @@ export default function Step1Join({setSteps}: {setSteps: React.Dispatch<SetState
       {address ?
       <button
       type="button"
-      className="rounded-lg bg-yellow-500 mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+      className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
       onClick={() => setSteps(2)}
     > Next </button> 
     : <button
         type="button"
-        className="rounded-lg bg-yellow-500 mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
         onClick={() => connect({ connector })}
       >
         Connect

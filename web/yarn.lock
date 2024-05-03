@@ -2202,6 +2202,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gatefi/js-sdk@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "@gatefi/js-sdk@npm:0.18.0"
+  checksum: 10c0/647d138a17dea252f0cb0a0f6de3111645a011f7f2627d7996ba6a16780b1b009d8e5afaa0979ac7059774b5e4bc6bb3ab74d7cb6f2ceda0c38422a1f8d2d790
+  languageName: node
+  linkType: hard
+
 "@graphql-typed-document-node/core@npm:^3.2.0":
   version: 3.2.0
   resolution: "@graphql-typed-document-node/core@npm:3.2.0"
@@ -14891,6 +14898,7 @@ __metadata:
     "@coinbase/onchainkit": "npm:0.13.4"
     "@coinbase/wallet-sdk": "npm:4.0.0-beta.12"
     "@farcaster/hub-nodejs": "npm:^0.11.9"
+    "@gatefi/js-sdk": "npm:^0.18.0"
     "@jest/globals": "npm:^29.7.0"
     "@privy-io/react-auth": "npm:^1.56.2"
     "@radix-ui/react-dropdown-menu": "npm:^2.0.6"
