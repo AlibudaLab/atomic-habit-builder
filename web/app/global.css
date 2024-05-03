@@ -1,4 +1,6 @@
 /* stylelint-disable custom-property-pattern -- RainbowKit does not use kebab-case */
+@import url('https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@100;300;400;900&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -36,12 +38,12 @@ html {
   scroll-behavior: smooth;
 }
 
-html .font-robotoMono {
-  font-family: var(--font-roboto-mono);
+html .font-title {
+  font-family: var(--font-title);
 }
 
-html .font-inter {
-  font-family: var(--font-inter);
+html .font-normal {
+  font-family: var(--font-normal);
 }
 
 body {

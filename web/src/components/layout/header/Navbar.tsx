@@ -19,7 +19,7 @@ export function NavbarLink({
   return (
     <NextLink
       href={href}
-      className="font-robotoMono px-0 text-center text-base font-normal text-white no-underline"
+      className="font-title px-0 text-center text-base font-normal text-white no-underline"
       target={target}
       aria-label={ariaLabel}
     >
@@ -37,7 +37,7 @@ export function NavbarTitle() {
       <NextLink
         href="/"
         passHref
-        className="font-robotoMono text-center text-xl font-medium text-white no-underline"
+        className="font-title text-center text-xl font-medium text-white no-underline"
         aria-label="build-onchain-apps Github repository"
       >
         Go Healthy
@@ -75,7 +75,7 @@ function Navbar() {
                 <NavigationMenu.List className={clsx('flex flex-row space-x-2')}>
                   <NavigationMenu.Item>
                     <NavigationMenu.Trigger className="group flex h-16 items-center justify-start gap-1">
-                      <span className="font-robotoMono text-center text-base font-normal text-white">
+                      <span className="font-title text-center text-base font-normal text-white">
                         Experiences
                       </span>
                       <ChevronDownIcon

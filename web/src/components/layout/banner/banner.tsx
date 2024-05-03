@@ -29,16 +29,16 @@ export default function Banner({ pageName, pageUrl, wip }: BannerProps) {
           />
         </div>
         <div className="inline-flex flex-col items-start justify-start gap-2">
-          <h1 className="font-inter text-base font-semibold leading-normal ">
+          <h1 className="font-normal text-base font-semibold leading-normal ">
             Step into the {pageName} experience.
           </h1>
           {wip ? (
-            <div className="font-inter text-base font-normal leading-normal ">
+            <div className="font-normal text-base font-normal leading-normal ">
               Just a quick heads up: this experience is a work in progress, keep an eye out for
               updates as we work on making it even better!
             </div>
           ) : (
-            <div className="font-inter text-base font-normal leading-normal">
+            <div className="font-normal text-base font-normal leading-normal">
               Take a dive into our fully functional demo page. Explore how the Smart Contract works,
               connect with it using Wagmi, and master a seamless user experience with React and
               Tailwind.
@@ -50,7 +50,7 @@ export default function Banner({ pageName, pageUrl, wip }: BannerProps) {
         <NextLink
           href={`/${pageUrl}#guide`}
           className={clsx(
-            'font-inter w-full rounded-3xl bg-white px-4 py-2',
+            'font-normal w-full rounded-3xl bg-white px-4 py-2',
             'text-center text-sm font-medium leading-normal text-black no-underline',
           )}
         >

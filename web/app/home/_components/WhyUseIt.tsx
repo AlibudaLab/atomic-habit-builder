@@ -5,7 +5,7 @@ function ListItem({ children }: { children: React.ReactNode }) {
   return (
     <li className="inline-flex items-center justify-start gap-4">
       <CheckIcon width="24" height="24" />
-      <span className="font-inter text-xl font-normal leading-7 text-white">{children}</span>
+      <span className="font-normal text-xl font-normal leading-7 text-white">{children}</span>
     </li>
   );
 }

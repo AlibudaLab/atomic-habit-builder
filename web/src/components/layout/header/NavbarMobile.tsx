@@ -51,7 +51,7 @@ export default function NavbarMobile() {
                 <NavigationMenu.List className={clsx('flex flex-row space-x-2')}>
                   <NavigationMenu.Item>
                     <NavigationMenu.Trigger className="group flex items-center justify-start gap-1">
-                      <span className="font-robotoMono text-center text-base font-normal text-white">
+                      <span className="font-title text-center text-base font-normal text-white">
                         Experiences
                       </span>
                       <ChevronDownIcon

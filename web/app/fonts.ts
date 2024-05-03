@@ -1,13 +1,14 @@
-import { Roboto_Mono, Nunito } from 'next/font/google';
+import { Londrina_Solid, Nunito } from 'next/font/google';
 
-export const roboto = Roboto_Mono({
+export const londrina = Londrina_Solid({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-roboto-mono',
+  weight: ["300", "400", "900"],
+  variable: '--font-title',
 });
 
-export const inter = Nunito({
+export const nunito = Nunito({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-normal',
 });
