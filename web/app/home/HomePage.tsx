@@ -2,6 +2,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 const nouns = require('../../src/imgs/nouns.png') as string;
 const step1 = require('../../src/imgs/step1.png') as string;
@@ -15,7 +16,7 @@ export default function HomePage() {
 
       <Image src={nouns} width='100' height='100' alt="Nouns Logo" className="mb-10" />
 
-      <div className="container mb-10 w-full text-center text-4xl font-title">Alibuda Habit Builder</div>
+      <div className="container mb-4 w-full text-center text-4xl font-title">Alibuda Habit Builder</div>
 
       <div className='text-xl px-6 pb-10 font-title'>
       Hi mate! Let’s build a habit and support public goods together! 
@@ -71,12 +72,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      <button
+      
+        <Link href="/habit"><button
         type="button"
         className="rounded-lg bg-yellow-500 px-8 mt-10 py-3 font-bold text-white hover:bg-yellow-600 border-solid border-2 border-black"
       >
-        Start Building!
-      </button>
+        Start Building
+        </button>
+      </Link>
+      
     </main>
   );
 }
