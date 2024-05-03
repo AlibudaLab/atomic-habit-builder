@@ -8,6 +8,8 @@ import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from "@gatefi/js-sdk
 
 import { redirect } from "next/navigation";
 
+const img = require('../../../src/imgs/step2.png') as string;
+
 export default function Step2DepositAndStake({setSteps}: {setSteps: React.Dispatch<SetStateAction<number>>}) {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
@@ -64,11 +66,10 @@ export default function Step2DepositAndStake({setSteps}: {setSteps: React.Dispat
       {/* Img and Description */}
       <div className="col-span-3 flex justify-start w-full items-center gap-6">
         <Image
-          src="/../../src/imgs/step2.png"
-          width={25}
-          height={25}
+          src={img}
+          width='50'
           alt="Step 2 Image"
-          className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
+          className="mb-3 rounded-full object-cover"
         />
         <p className="text-lg text-gray-700 mr-auto">
         Stake and join habit challenge
@@ -78,20 +79,28 @@ export default function Step2DepositAndStake({setSteps}: {setSteps: React.Dispat
       {hasEnoughBalance ?
       <button
       type="button"
-      className="rounded-lg bg-yellow-500 mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+      className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
       onClick={() => {
         console.log('Ryan please do stake')
       }}
     > Stake </button> 
     : <button
         type="button"
-        className="rounded-lg bg-yellow-500 mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
         onClick={(handleOnClick)}
       >
         Onramp
       </button>
       }
       <div id="overlay-button"> </div>
+
+      <button
+        type="button"
+        className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        onClick={() => setSteps(3)}
+      >
+        Next
+      </button>
     </div>
   );
 }
