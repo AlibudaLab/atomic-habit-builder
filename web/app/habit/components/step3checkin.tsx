@@ -3,15 +3,41 @@
 import Image from 'next/image';
 import { SetStateAction,  } from 'react';
 import { useAccount, useConnect } from 'wagmi';
+import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
+import toast from 'react-hot-toast';
 
 const img = require('../../../src/imgs/step3.png') as string;
 const map = require('../../../src/imgs/map.png') as string;
 
 export default function Step3CheckIn({setSteps}: {setSteps: React.Dispatch<SetStateAction<number>>}) {
 
-  const account = useAccount();
+  const {address} = useAccount();
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
+
+  const onCheckInButtonClick = async () =>{
+    let nfcPendingToastId = null;
+    try{
+      if(!address){
+        toast.error('Please connect your wallet first')
+        return
+      }
+      
+      nfcPendingToastId = toast.loading('Sensing NFC...')
+      const checkInMessage = getCheckinMessage(address);
+      const arxSignature = await arxSignMessage(checkInMessage)
+      toast.dismiss()
+      toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction')
+      // todo: send transaction
+    }catch(err){
+      console.error(err)
+      toast.error('Please try to tap the NFC again')
+    }finally{
+      if(nfcPendingToastId){
+        toast.dismiss(nfcPendingToastId)
+      }
+    }
+  }
 
   return (
     <div className='flex flex-col items-center justify-center'>
@@ -42,9 +68,7 @@ export default function Step3CheckIn({setSteps}: {setSteps: React.Dispatch<SetSt
       <button
       type="button"
       className="rounded-lg bg-yellow-500 mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
-      onClick={() => {
-        console.log("Juno please do NFC")
-      }}
+      onClick={onCheckInButtonClick}
     > Tap Here and Tap NFC </button> 
     
     </div>

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import Step1Join from './components/step1join';
 import Step2DepositAndStake from './components/step2stake';
 import Step3CheckIn from './components/step3checkin';
+import { Toaster } from 'react-hot-toast';
 
 export default function HabitPage() {
 
@@ -13,6 +14,7 @@ export default function HabitPage() {
 
   return (
     <main className="container mx-auto flex flex-col px-8 py-16">
+      <Toaster/>
       <div className="container mb-10 w-full text-center text-4xl font-title"> Alibuda Habit Builder </div>
 
       <div className='text-xl px-6 pb-10 font-title text-center'>
