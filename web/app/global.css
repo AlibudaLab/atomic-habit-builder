@@ -40,12 +40,14 @@ html {
 }
 
 html .font-title {
-  font-family: 'Londrina Solid';
+  /* font-family: 'Londrina Solid'; */
+  font-family: var(--font-title);
   font-weight: 400;
 }
 
 html .font-slogan {
-  font-family: 'Londrina Solid';
+  /* font-family: 'Londrina Solid'; */
+  font-family: var(--font-title);
   font-weight: 100;
 }
 
