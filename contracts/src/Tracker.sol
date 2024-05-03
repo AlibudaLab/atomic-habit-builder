@@ -91,13 +91,15 @@ contract Tracker {
         if (succeedParticipants[arxAddress].length == 0 || challenges[arxAddress].totalStake == 0) return;
 
         uint256 halfStakeBalance = challenges[arxAddress].totalStake / 2;
-        balances[challenges[arxAddress].donateDestination] += halfStakeBalance;
         uint256 bonus = halfStakeBalance / succeedParticipants[arxAddress].length;
 
         for (uint256 i = 0; i < succeedParticipants[arxAddress].length; i++) {
             address participant = participants[arxAddress][i];
             balances[participant] += bonus;
         }
+
+        (bool sent,) = payable(challenges[arxAddress].donateDestination).call{value: halfStakeBalance}("");
+        require(sent, "Failed to send Ether");
     }
 
     function fund() public payable {
@@ -108,7 +110,7 @@ contract Tracker {
         uint256 balance = balances[msg.sender];
         require(balance > 0, "Insufficient balance");
         balances[msg.sender] = 0;
-        (bool sent,) = msg.sender.call{value: balance}("");
+        (bool sent,) = payable(msg.sender).call{value: balance}("");
         require(sent, "Failed to send Ether");
     }
 }
