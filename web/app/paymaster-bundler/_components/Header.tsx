@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import clsx from 'clsx';
 import NextImage from '@/components/NextImage/NextImage';
-import { roboto } from 'app/fonts';
+import { nunito } from 'app/fonts';
 
 const LIGHTNINGS = [1, 2, 3];
 
@@ -25,7 +25,7 @@ export default function Header() {
             className="block h-[30px] w-[25px]"
           />
         </div>
-        <h1 className={clsx('text-2xl text-boat-color-orange', roboto.className)}>
+        <h1 className={clsx('text-2xl text-boat-color-orange', nunito.className)}>
           KNIGHT WARRIORS
         </h1>
       </div>
