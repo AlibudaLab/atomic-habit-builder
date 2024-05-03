@@ -15,7 +15,7 @@
   --palette-bg-soft-black: #141519;
   --palette-bg-white: #fff;
   --palette-text-dark: #7E7956;
-
+  --palette-dark-yellow: #EDB830;
 
   /* Build Onchain Apps shared variables */
   --boat-color-background: var(--palette-bg);
@@ -36,10 +36,25 @@
 html {
   height: 100%;
   scroll-behavior: smooth;
+  color: var(--palette-text-dark);
 }
 
 html .font-title {
-  font-family: var(--font-title);
+  font-family: 'Londrina Solid';
+  font-weight: 400;
+}
+
+html .font-slogan {
+  font-family: 'Londrina Solid';
+  font-weight: 100;
+}
+
+html .text-yellow {
+  color: var(--palette-dark-yellow);
+}
+
+html .bg-yellow {
+  background-color: var(--palette-dark-yellow);
 }
 
 html .font-normal {
@@ -51,7 +66,7 @@ body {
   margin: 0;
   background-color: var(--boat-color-background);
   color: var(--boat-color-text);
-  font-family: Nunito, sans-serif;
+  /* font-family: Nunito, sans-serif; */
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;

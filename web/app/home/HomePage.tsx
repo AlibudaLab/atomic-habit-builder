@@ -18,11 +18,11 @@ export default function HomePage() {
 
       <div className="container mb-4 w-full text-center text-4xl font-title">Alibuda Habit Builder</div>
 
-      <div className='text-xl px-6 pb-10 font-title'>
-      Hi mate! Let’s build a habit and support public goods together! 
+      <div className='text-2xl px-6 pb-10 font-slogan'>
+        Hi mate! Let’s build a habit and support public goods together! 
       </div>
 
-      <div className="flex flex-col items-center gap-6 w-full">
+      <div className="flex flex-col items-center gap-6 w-full ">
         {/* Step 1 */}
         <div className="col-span-3 flex justify-start w-full items-center gap-6">
           <Image
@@ -31,51 +31,51 @@ export default function HomePage() {
             alt="Step 1 Image"
             className="mb-3 object-cover"
           />
-          <p className="text-lg text-gray-700 mr-auto">
+          <p className="text-lg  mr-auto font-bold">
             Join with World ID or Base Smart Wallet
           </p>
         </div>
 
         {/* Step 2 */}
-        <div className="col-span-3 flex justify-start w-full items-center gap-6">
+        <div className="col-span-3 flex justify-start w-full items-center gap-6 font-bold">
         <Image
             src={step2}
             width='60'
             alt="Step 2 Image"
             className="mb-3 object-cover"
           />
-          <p className="text-lg text-gray-700">Stake and join habit challenge</p>
+          <p className="text-lg ">Stake and join habit challenge</p>
         </div>
 
         {/* Step 3 */}
-        <div className="col-span-3 flex justify-start w-full items-center gap-6">
+        <div className="col-span-3 flex justify-start w-full items-center gap-6 font-bold">
         <Image
             src={step3}
             width='60'
             alt="Step 3 Image"
             className="mb-3 object-cover"
           />
-          <p className="text-lg text-gray-700">
+          <p className="text-lg ">
           Check in every day
           </p>
         </div>
 
         {/* Step 4 */}
-        <div className="col-span-3 flex justify-start w-full items-center gap-6">
+        <div className="col-span-3 flex justify-start w-full items-center gap-6 font-bold">
           <Image
             src={step4}
             width='60'
             alt="Step 2 Image"
             className="mb-3 object-cover"
           />
-          <p className="text-lg text-gray-700">Earn stake back and rewards</p>
+          <p className="text-lg ">Earn stake back and rewards</p>
         </div>
       </div>
 
       
         <Link href="/habit"><button
         type="button"
-        className="rounded-lg bg-yellow-500 px-8 mt-10 py-3 font-bold text-white hover:bg-yellow-600 border-solid border-2 border-black"
+        className="rounded-lg bg-yellow px-8 mt-10 py-3 font-bold text-xl text-white hover:bg-yellow-600 border-solid border-2 border-black"
       >
         Start Building
         </button>
