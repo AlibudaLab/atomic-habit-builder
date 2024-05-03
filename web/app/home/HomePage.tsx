@@ -1,6 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import Image from 'next/image';
+
+const step1 = require('../../src/imgs/step1.png') as string;
 
 export default function HomePage() {
   return (
@@ -15,9 +18,8 @@ export default function HomePage() {
         {/* Step 1 */}
         <div className="col-span-3 flex justify-start w-full items-center gap-6">
           <Image
-            src="/path-to-your-image1.jpg"
-            width={25}
-            height={25}
+            src={step1}
+            sizes='25'
             alt="Step 1 Image"
             className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
           />
