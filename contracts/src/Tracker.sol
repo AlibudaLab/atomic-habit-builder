@@ -4,22 +4,20 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 struct Challenge {
-    address arxAddress;
-    string description;
     uint256 minimunCheckIns;
     uint256 startTimestamp;
     uint256 endTimestamp;
     address donateDestination;
-    uint256 stake;
-    uint256 poolBalance;
+    uint256 perUserStake;
+    uint256 totalStake;
     bool settled;
 }
 
 contract Tracker {
     using ECDSA for bytes32;
 
-    mapping(address => Challenge) public challenges;
-    mapping(address => uint256) public balances;
+    mapping(address arxAddress => Challenge) public challenges;
+    mapping(address userAddress => uint256) public balances;
     mapping(address arxAddress => mapping(address userAddress => uint256[])) public checkIns;
     mapping(address arxAddress => mapping(address userAddress => bool)) public hasJoined;
     mapping(address arxAddress => address[]) public participants;
@@ -36,7 +34,7 @@ contract Tracker {
     event Join(address indexed userAddress, address indexed arxAddress);
     event Settle(address indexed arxAddress);
 
-    // register a new habbit challenge
+    // register a new habit challenge
     function register(
         address arxAddress,
         string memory description,
@@ -49,19 +47,19 @@ contract Tracker {
         require(challenges[arxAddress].startTimestamp == 0, "Challenge already exists");
         require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
         challenges[arxAddress] = Challenge(
-            arxAddress, description, minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false
+            minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false
         );
         emit Register(arxAddress, description, startTimestamp, endTimestamp, minimunCheckIns);
     }
 
-    // user join a habbit challenge
+    // user join a habit challenge
     function join(address arxAddress) public payable {
         require(challenges[arxAddress].startTimestamp != 0, "Challenge does not exist");
         require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
-        require(msg.value >= challenges[arxAddress].stake, "Insufficient stake");
+        require(msg.value == challenges[arxAddress].perUserStake, "Insufficient stake");
         hasJoined[arxAddress][msg.sender] = true;
         participants[arxAddress].push(msg.sender);
-        challenges[arxAddress].poolBalance += challenges[arxAddress].stake;
+        challenges[arxAddress].totalStake += challenges[arxAddress].perUserStake;
         emit Join(msg.sender, arxAddress);
     }
 
@@ -77,8 +75,8 @@ contract Tracker {
         require(recoveredAddr == arxAddress, "Invalid signature");
         checkIns[arxAddress][msg.sender].push(timestamp);
         if (checkIns[arxAddress][msg.sender].length == challenges[arxAddress].minimunCheckIns) {
-            challenges[arxAddress].poolBalance -= challenges[arxAddress].stake;
-            balances[msg.sender] += challenges[arxAddress].stake;
+            challenges[arxAddress].totalStake -= challenges[arxAddress].perUserStake;
+            balances[msg.sender] += challenges[arxAddress].perUserStake;
             succeedParticipants[arxAddress].push(msg.sender);
         }
         emit CheckIn(msg.sender, arxAddress, timestamp);
@@ -90,10 +88,11 @@ contract Tracker {
         emit Settle(arxAddress);
         challenges[arxAddress].settled = true;
 
-        if (succeedParticipants[arxAddress].length == 0 || challenges[arxAddress].poolBalance == 0) return;
+        if (succeedParticipants[arxAddress].length == 0 || challenges[arxAddress].totalStake == 0) return;
 
-        balances[challenges[arxAddress].donateDestination] += (challenges[arxAddress].poolBalance) / 2;
-        uint256 bonus = challenges[arxAddress].poolBalance / 2 / succeedParticipants[arxAddress].length;
+        uint256 halfStakeBalance = challenges[arxAddress].totalStake / 2;
+        balances[challenges[arxAddress].donateDestination] += halfStakeBalance;
+        uint256 bonus = halfStakeBalance / succeedParticipants[arxAddress].length;
 
         for (uint256 i = 0; i < succeedParticipants[arxAddress].length; i++) {
             address participant = participants[arxAddress][i];

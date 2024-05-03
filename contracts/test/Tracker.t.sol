@@ -21,7 +21,7 @@ contract TrackerTest is Test {
     }
 
     function test_register() public view {
-        (,,, uint256 startTimestamp,,,,,) = tracker.challenges(arxAddress);
+        (, uint256 startTimestamp,,,,,) = tracker.challenges(arxAddress);
         require(startTimestamp != 0, "Register failed");
     }
 
@@ -50,7 +50,7 @@ contract TrackerTest is Test {
 
         vm.warp(block.timestamp + 1001);
         tracker.settle(arxAddress);
-        (,,,,,,,, bool settled) = tracker.challenges(arxAddress);
+        (,,,,,, bool settled) = tracker.challenges(arxAddress);
         require(settled, "Settle failed");
         require(tracker.balances(address(this)) == 0.0001 ether, "Settle failed");
     }
