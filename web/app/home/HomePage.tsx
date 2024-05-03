@@ -3,11 +3,18 @@
 
 import Image from 'next/image';
 
+const nouns = require('../../src/imgs/nouns.png') as string;
 const step1 = require('../../src/imgs/step1.png') as string;
+const step2 = require('../../src/imgs/step2.png') as string;
+const step3 = require('../../src/imgs/step3.png') as string;
+const step4 = require('../../src/imgs/step4.png') as string;
 
 export default function HomePage() {
   return (
-    <main className="container mx-auto flex flex-col px-8 py-16">
+    <main className="container mx-auto flex flex-col px-8 py-16 items-center">
+
+      <Image src={nouns} width='100' height='100' alt="Nouns Logo" className="mb-10" />
+
       <div className="container mb-10 w-full text-center text-4xl font-title">Alibuda Habit Builder</div>
 
       <div className='text-xl px-6 pb-10 font-title'>
@@ -19,9 +26,9 @@ export default function HomePage() {
         <div className="col-span-3 flex justify-start w-full items-center gap-6">
           <Image
             src={step1}
-            sizes='25'
+            width='60'
             alt="Step 1 Image"
-            className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
+            className="mb-3 object-cover"
           />
           <p className="text-lg text-gray-700 mr-auto">
             Join with World ID or Base Smart Wallet
@@ -30,24 +37,22 @@ export default function HomePage() {
 
         {/* Step 2 */}
         <div className="col-span-3 flex justify-start w-full items-center gap-6">
-          <Image
-            src="/path-to-your-image2.jpg"
-            width={25}
-            height={25}
+        <Image
+            src={step2}
+            width='60'
             alt="Step 2 Image"
-            className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
+            className="mb-3 object-cover"
           />
           <p className="text-lg text-gray-700">Stake and join habit challenge</p>
         </div>
 
         {/* Step 3 */}
         <div className="col-span-3 flex justify-start w-full items-center gap-6">
-          <Image
-            src="/path-to-your-image3.jpg"
-            width={25}
-            height={25}
+        <Image
+            src={step3}
+            width='60'
             alt="Step 3 Image"
-            className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
+            className="mb-3 object-cover"
           />
           <p className="text-lg text-gray-700">
           Check in every day
@@ -57,11 +62,10 @@ export default function HomePage() {
         {/* Step 4 */}
         <div className="col-span-3 flex justify-start w-full items-center gap-6">
           <Image
-            src="/path-to-your-image4.jpg"
-            width={25}
-            height={25}
-            alt="Step 4 Image"
-            className="mb-3 h-32 w-32 rounded-full object-cover shadow-lg"
+            src={step4}
+            width='60'
+            alt="Step 2 Image"
+            className="mb-3 object-cover"
           />
           <p className="text-lg text-gray-700">Earn stake back and rewards</p>
         </div>
@@ -69,7 +73,7 @@ export default function HomePage() {
 
       <button
         type="button"
-        className="rounded-lg bg-yellow-500 px-6 pt-10 py-3 font-bold text-white hover:bg-yellow-600"
+        className="rounded-lg bg-yellow-500 px-8 mt-10 py-3 font-bold text-white hover:bg-yellow-600 border-solid border-2 border-black"
       >
         Start Building!
       </button>
