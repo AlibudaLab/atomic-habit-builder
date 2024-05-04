@@ -37,7 +37,7 @@ export default function HabitPage() {
         selectedChallenge={selectedChallenge}  
         setSelectedChallenge={setSelectedChallenge}
       />}
-      {steps === 3 && <Step3CheckIn setSteps={setSteps} />}
+      {steps === 3 && <Step3CheckIn setSteps={setSteps} selectedChallenge={selectedChallenge}/>}
 
       {/* just for previewing */}
       {steps === 10 && <LoadingCard text="Message signed! The transaction is processing..." />}

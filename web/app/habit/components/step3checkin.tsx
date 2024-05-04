@@ -9,18 +9,23 @@ import { useSimulateContract, useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import { TESTING_CHALLENGE_ADDRESS } from '@/constants';
 import { parseEther } from 'viem';
+import { Challenge } from '@/hooks/useUserChallenges';
 
 const img = require('../../../src/imgs/step3.png') as string;
 const map = require('../../../src/imgs/map.png') as string;
 
 export default function Step3CheckIn({
   setSteps,
+  selectedChallenge,
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
+  selectedChallenge: Challenge
 }) {
   const { address } = useAccount();
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
+
+  console.log('this challenge', selectedChallenge)
 
   const { data: checkInContractRequest } = useSimulateContract({
     address: trackerContract.address as `0x${string}`,
