@@ -11,20 +11,23 @@ export const challenges: Challenge[] = [
     duration: 'May 1-27',
     arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
     stake: 0.001,
-    icon: '🏃🏻‍♂️' 
+    icon: '🏃🏻‍♂️',
+    donationOrg: 'Gitcoin'
   },
   {
     name: 'Run 30 mins 10 times',
     duration: 'May 6-26',
     arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
     stake: 0.001,
-    icon: '🏃🏻‍♂️'
+    icon: '🏃🏻‍♂️',
+    donationOrg: 'Gitcoin'
   },
   {
     name: 'Meet 5 new Nouns Frens',
     duration: 'May 9-15',
     arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
     stake: 0.002,
-    icon: '🤝🏻'
+    icon: '🤝🏻',
+    donationOrg: 'Gitcoin'
   },
 ];

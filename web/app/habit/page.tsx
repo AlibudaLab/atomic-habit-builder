@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Step1 from './components/step1';
 import Step2DepositAndStake from './components/step2stake';
 import Step3CheckIn from './components/step3checkin';
+import Step4 from './components/step4';
 import { Toaster } from 'react-hot-toast';
 import LoadingCard from './components/LoadingCard';
 import Image from 'next/image';
@@ -15,7 +16,7 @@ const nouns = require('../../src/imgs/nouns.png') as string;
 import { challenges } from '@/constants';
 
 export default function HabitPage() {
-  const [steps, setSteps] = useState(1);
+  const [steps, setSteps] = useState(4);
 
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge>(challenges[0]);
 
@@ -38,6 +39,7 @@ export default function HabitPage() {
         setSelectedChallenge={setSelectedChallenge}
       />}
       {steps === 3 && <Step3CheckIn setSteps={setSteps} selectedChallenge={selectedChallenge}/>}
+      {steps === 4 && <Step4 setSteps={setSteps} challenge={selectedChallenge} />}
 
       {/* just for previewing */}
       {steps === 10 && <LoadingCard text="Message signed! The transaction is processing..." />}
