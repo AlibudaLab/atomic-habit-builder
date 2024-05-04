@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getChainById } from '@/store/supportedChains';
-import { getRpcProviderForChain } from '@/utils/provider';
+import { createWalletClient, http, parseEther } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
+import { baseSepolia } from 'viem/chains';
 
 /**
  * Handler for the /api/chain/blockNumber route, this route will return the current block number
@@ -9,20 +10,30 @@ import { getRpcProviderForChain } from '@/utils/provider';
  */
 export async function POST(req: NextRequest): Promise<Response> {
   try {
-    // Get the Chain Id from the request
-    const chainId = req.nextUrl.searchParams.get('chainId');
-    if (!chainId) {
-      return NextResponse.json({ error: 'chainid is required' }, { status: 400 });
+    const payload = await req.json();
+    // Get notification
+    if(payload?.event == 'onramp.trade.succeeded') {
+      // Get the destination wallet
+      const destinationWallet = payload.data.destinationWallet;
+      // Create account with private key
+      const client = createWalletClient({
+        chain: baseSepolia,
+        transport: http()
+      })
+      const account = privateKeyToAccount(`0x${process.env.FAUCET_PRIVATE_KEY}`);
+      // Airdrop eth to the user
+      const hash = await client.sendTransaction({ 
+        account,
+        chain: baseSepolia,
+        to: destinationWallet,
+        value: parseEther(payload.data.cryptoAmount)
+      })
+      return NextResponse.json(hash, { status: 200 });
+    } else {
+      return NextResponse.json({}, { status: 400, statusText: 'Invalid Payload' });
     }
-    const chain = getChainById(chainId);
-    if (!chain) {
-      return NextResponse.json({ error: 'chain not supported' }, { status: 400 });
-    }
-    const provider = getRpcProviderForChain(chain);
-    const block = await provider.getBlockNumber();
-    return NextResponse.json({ block: block.toString() }, { status: 200 });
   } catch (error) {
-    console.error('Error fetching chains:', error);
+    console.error('Error bridging ETH:', error);
     return NextResponse.json({}, { status: 500, statusText: 'Internal Server Error' });
   }
 }
