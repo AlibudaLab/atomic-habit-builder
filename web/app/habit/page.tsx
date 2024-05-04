@@ -14,11 +14,19 @@ import { Challenge } from '@/hooks/useUserChallenges';
 const nouns = require('../../src/imgs/nouns.png') as string;
 
 import { challenges } from '@/constants';
+import { useSearchParams } from 'next/navigation';
 
 export default function HabitPage() {
-  const [steps, setSteps] = useState(1);
+  const searchParams = useSearchParams();
+  const state = searchParams.get('state') ?? '1_0';
 
-  const [selectedChallenge, setSelectedChallenge] = useState<Challenge>(challenges[0]);
+  const currentStep = parseInt(state.split('_')[0]);
+  const currentChallengeId = parseInt(state.split('_')[1]);
+
+  const [steps, setSteps] = useState(currentStep);
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge>(
+    challenges[currentChallengeId],
+  );
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 py-16">
