@@ -7,12 +7,14 @@ import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useSimulateContract, useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
-import { TESTING_CHALLENGE_ADDRESS } from '@/constants';
+import { ActivityTypes, TESTING_CHALLENGE_ADDRESS, VerificationType } from '@/constants';
 import { parseEther } from 'viem';
 import { Challenge } from '@/hooks/useUserChallenges';
 
 const img = require('../../../src/imgs/step3.png') as string;
-const map = require('../../../src/imgs/map.png') as string;
+
+const mental = require('../../../src/imgs/mental.png') as string
+const physical = require('../../../src/imgs/physical.png') as string
 
 export default function Step3CheckIn({
   setSteps,
@@ -44,6 +46,10 @@ export default function Step3CheckIn({
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
+
+  const onClickStrava = async() => {
+
+  }
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -94,28 +100,60 @@ export default function Step3CheckIn({
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      <div className="col-span-3 flex w-full items-center justify-start gap-6">
-        <Image
-          src={img}
-          width="50"
-          alt="Step 2 Image"
-          className="mb-3 rounded-full object-cover "
-        />
-        <p className="mr-auto text-lg text-gray-700">Check in every day</p>
+      <div className='flex items-center gap-6'>
+          <Image
+            src={img}
+            width="50"
+            alt="Step 2 Image"
+            className="mb-3 rounded-full object-cover "
+          />
+          <p className="mr-auto text-lg ">Check in every day</p>
+        </div>
+
+      <Image
+        src={selectedChallenge.type === ActivityTypes.Mental ? mental : physical}
+        width="250"
+        alt="Health"
+        className="mb-3 rounded-full object-cover "
+      />
+
+      {/* overview   */}
+      <div className='py-2'>
+        <p className='font-bold px-2'>{selectedChallenge.type === ActivityTypes.Mental ? 'Mental' : 'Physical'} Health Habit Building </p>
+        <p className='px-2 text-sm'> Duration: {selectedChallenge.duration} </p>
+        <p className='px-2 text-sm'> Challenge: {selectedChallenge.name} </p>
       </div>
 
-      <div className="font-xs pt-4 text-center">Scan the NFC at the pinged spot!</div>
-      <Image src={map} width="300" alt="Map" className="mb-3 object-cover " />
+      {selectedChallenge.verificationType === VerificationType.NFC && selectedChallenge.mapKey && 
+      <>
+        <iframe 
+          src={selectedChallenge.mapKey}
+          title='target location'
+          width="400" 
+          height="300" 
+          // allowFullScreen="" 
+          loading="lazy" 
+          referrerPolicy="no-referrer-when-downgrade"> cool 
+        </iframe>
+        <div className="text-xs p-2 text-center">Scan the NFC at the pinged spot!</div>  
+      </>}
 
-      <button
+
+      { selectedChallenge.verificationType === VerificationType.NFC ? <button
         type="button"
-        className="mt-4 rounded-lg bg-yellow-500 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
         onClick={onCheckInButtonClick}
         disabled={joinPending || isLoading}
       >
         {' '}
         {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
-      </button>
+      </button> : <button
+        type="button"
+        className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+        onClick={onClickStrava}
+      >
+        Connect Strava
+      </button>}
     </div>
   );
 }
