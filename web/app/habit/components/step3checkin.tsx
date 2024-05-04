@@ -90,7 +90,7 @@ export default function Step3CheckIn({
 
   useEffect(() => {
     if (checkInError) {
-      toast.error("Error checking in.");
+      toast.error('Error checking in.');
     }
   }, [checkInError]);
 

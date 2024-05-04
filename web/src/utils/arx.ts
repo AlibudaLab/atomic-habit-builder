@@ -19,7 +19,7 @@ type ArxSignature = {
   };
   publicKey: string;
   etherAddress: `0x${string}`;
-}
+};
 
 const getCheckinMessage = (address: `0x${string}`, timestamp: number): string => {
   return `checking in! user: ${address}, time: ${timestamp}`;

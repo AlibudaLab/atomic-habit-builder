@@ -109,7 +109,7 @@ export default function Step2DepositAndStake({
       abi: trackerContract.abi,
       functionName: 'join',
       args: [selectedChallenge.arxAddress],
-      value: parseEther('0.001').toBigInt(), // joining stake fee 0.001 ether
+      value: parseEther(selectedChallenge.stake.toString()).toBigInt(),
     });
   };
 
@@ -119,7 +119,10 @@ export default function Step2DepositAndStake({
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('Joined!!');
+      toast.success('Joined!! Directing to next step!');
+      setTimeout(() => {
+        setSteps(3);
+      }, 2000);
     }
   }, [isSuccess]);
 
@@ -162,6 +165,7 @@ export default function Step2DepositAndStake({
         className="bg-yellow bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
         style={{ width: '250px', height: '45px', color: 'white' }}
         onClick={onJoinButtonClick}
+        disabled={!hasEnoughBalance || joinPending || isLoading}
       >
         Stake {selectedChallenge.stake} ETH
       </button>
