@@ -1,0 +1,411 @@
+{
+  "address": "0xb1b887a3eadb25a753520aa686fcdd9645223c0d",
+  "abi": [
+    {
+      "type": "function",
+      "name": "balances",
+      "inputs": [
+        {
+          "name": "userAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "challenges",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "minimunCheckIns",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "startTimestamp",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "endTimestamp",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "donateDestination",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "perUserStake",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "totalStake",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "settled",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "checkIn",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "msgHash",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "v",
+          "type": "uint8",
+          "internalType": "uint8"
+        },
+        {
+          "name": "r",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        },
+        {
+          "name": "s",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "checkIns",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "userAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "fund",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "hasJoined",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "userAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool",
+          "internalType": "bool"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "join",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "participants",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "register",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "internalType": "string"
+        },
+        {
+          "name": "minimunCheckIns",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "startTimestamp",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "endTimestamp",
+          "type": "uint256",
+          "internalType": "uint256"
+        },
+        {
+          "name": "donateDestination",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "stake",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "settle",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
+      "name": "succeedParticipants",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "withdraw",
+      "inputs": [],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "event",
+      "name": "CheckIn",
+      "inputs": [
+        {
+          "name": "userAddress",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "timestamp",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Join",
+      "inputs": [
+        {
+          "name": "userAddress",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Register",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        },
+        {
+          "name": "startTimestamp",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "endTimestamp",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        },
+        {
+          "name": "minimumCheckIns",
+          "type": "uint256",
+          "indexed": false,
+          "internalType": "uint256"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "Settle",
+      "inputs": [
+        {
+          "name": "arxAddress",
+          "type": "address",
+          "indexed": true,
+          "internalType": "address"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "error",
+      "name": "ECDSAInvalidSignature",
+      "inputs": []
+    },
+    {
+      "type": "error",
+      "name": "ECDSAInvalidSignatureLength",
+      "inputs": [
+        {
+          "name": "length",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ]
+    },
+    {
+      "type": "error",
+      "name": "ECDSAInvalidSignatureS",
+      "inputs": [
+        {
+          "name": "s",
+          "type": "bytes32",
+          "internalType": "bytes32"
+        }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Step1 from './components/step1';
 import Step2DepositAndStake from './components/step2stake';
 import Step3CheckIn from './components/step3checkin';
+import { Toaster } from 'react-hot-toast';
 import LoadingCard from './components/LoadingCard';
 import Image from 'next/image';
 
@@ -15,6 +16,7 @@ export default function HabitPage() {
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 py-16">
+      <Toaster />
       <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
 
       <div className="font-title container mb-10 w-full text-center text-4xl">

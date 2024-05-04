@@ -1,8 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { SetStateAction } from 'react';
-import { useAccount, useConnect } from 'wagmi';
+import { SetStateAction, useEffect } from 'react';
+import { useAccount, useConnect, useWaitForTransactionReceipt } from 'wagmi';
+import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
+import toast from 'react-hot-toast';
+import { useSimulateContract, useWriteContract } from 'wagmi';
+import trackerContract from '@/contracts/tracker.json';
+import { TESTING_CHALLENGE_ADDRESS } from '@/constants';
+import { parseEther } from 'viem';
 
 const img = require('../../../src/imgs/step3.png') as string;
 const map = require('../../../src/imgs/map.png') as string;
@@ -12,9 +18,73 @@ export default function Step3CheckIn({
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
 }) {
-  const account = useAccount();
+  const { address } = useAccount();
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
+
+  const { data: checkInContractRequest } = useSimulateContract({
+    address: trackerContract.address as `0x${string}`,
+    abi: trackerContract.abi,
+    functionName: 'checkIn',
+    args: [],
+  });
+
+  const {
+    writeContract,
+    data: dataHash,
+    error: joinError,
+    isPending: joinPending,
+  } = useWriteContract();
+
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+    hash: dataHash,
+  });
+
+  const onCheckInButtonClick = async () => {
+    let nfcPendingToastId = null;
+    let txPendingToastId = null;
+    try {
+      if (!address) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      nfcPendingToastId = toast.loading('Sensing NFC...');
+      const checkInMessage = getCheckinMessage(address);
+      const arxSignature = await arxSignMessage(checkInMessage);
+      toast.dismiss(nfcPendingToastId);
+      txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction');
+      writeContract({
+        address: trackerContract.address as `0x${string}`,
+        abi: trackerContract.abi,
+        functionName: 'join',
+        args: [TESTING_CHALLENGE_ADDRESS],
+        value: parseEther('0.001'), // joining stake fee 0.001 ether
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error('Please try to tap the NFC again');
+    } finally {
+      if (nfcPendingToastId) {
+        toast.dismiss(nfcPendingToastId);
+      }
+      if (txPendingToastId) {
+        toast.dismiss(txPendingToastId);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('Recorded on smart contract!! 🥳🥳🥳');
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (joinError) {
+      toast.error('Error in joining the challenge');
+    }
+  }, [joinError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -35,12 +105,11 @@ export default function Step3CheckIn({
       <button
         type="button"
         className="mt-4 rounded-lg bg-yellow-500 px-6 py-3 font-bold text-white hover:bg-yellow-600"
-        onClick={() => {
-          console.log('Juno please do NFC');
-        }}
+        onClick={onCheckInButtonClick}
+        disabled={joinPending || isLoading}
       >
         {' '}
-        Tap Here and Tap NFC{' '}
+        {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
       </button>
     </div>
   );

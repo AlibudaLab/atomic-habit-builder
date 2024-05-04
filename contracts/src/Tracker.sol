@@ -17,6 +17,7 @@ contract Tracker {
     using ECDSA for bytes32;
 
     mapping(address arxAddress => Challenge) public challenges;
+    mapping(address userAddress => address arxAddress) public userChallenges;
     mapping(address userAddress => uint256) public balances;
     mapping(address arxAddress => mapping(address userAddress => uint256[])) public checkIns;
     mapping(address arxAddress => mapping(address userAddress => bool)) public hasJoined;
@@ -58,6 +59,7 @@ contract Tracker {
         require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
         require(msg.value == challenges[arxAddress].perUserStake, "Insufficient stake");
         hasJoined[arxAddress][msg.sender] = true;
+        userChallenges[msg.sender] = arxAddress;
         participants[arxAddress].push(msg.sender);
         challenges[arxAddress].totalStake += challenges[arxAddress].perUserStake;
         emit Join(msg.sender, arxAddress);
