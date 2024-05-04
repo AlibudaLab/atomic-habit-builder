@@ -1,7 +1,10 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
+import { useState } from 'react';
+
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import { SetStateAction, useEffect } from 'react';
 import { useAccount, useConnect, useWaitForTransactionReceipt } from 'wagmi';
 import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
@@ -9,7 +12,7 @@ import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import { Challenge } from '@/hooks/useUserChallenges';
-import { ActivityTypes, VerificationType } from '@/constants';
+import { challenges, ActivityTypes, VerificationType } from '@/constants';
 import moment from 'moment';
 
 const img = require('../../../src/imgs/step3.png') as string;
@@ -28,6 +31,13 @@ export default function Step3CheckIn({
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
 
+  const [isPending, setIsPending] = useState(false);
+  const [error, setError] = useState(null);
+  const [refreshToken, setRefreshToken] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
+  const searchParams = useSearchParams();
+  const stravaAuthToken = searchParams.get('code');
+
   console.log('this challenge', selectedChallenge);
 
   // TODO: fetch actually done
@@ -44,7 +54,30 @@ export default function Step3CheckIn({
     hash: dataHash,
   });
 
-  const onClickStrava = async () => {};
+  const onClickStrava = async () => {
+    const currentChallengeId = challenges.findIndex(
+      (obj) => obj.arxAddress === selectedChallenge.arxAddress,
+    );
+
+    const fetchURL =
+      '/api/strava/auth?' +
+      new URLSearchParams({
+        redirectUri: window.location.href,
+        state: `3_${currentChallengeId}`,
+      }).toString();
+    console.log(fetchURL);
+    const response = await (
+      await fetch(fetchURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+    ).json();
+    const authUrl = response.authUrl;
+    console.log(authUrl);
+    window.location = authUrl;
+  };
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -87,6 +120,48 @@ export default function Step3CheckIn({
       }
     }
   };
+
+  useEffect(() => {
+    const handleStravaApiCall = async () => {
+      if (!stravaAuthToken) {
+        return; // No need to proceed if token is absent
+      }
+
+      if (refreshToken && accessToken) {
+        return; // No need to proceed if we already have tokens
+      }
+
+      try {
+        const fetchURL =
+          '/api/strava/auth?' +
+          new URLSearchParams({
+            authToken: stravaAuthToken,
+          }).toString();
+        console.log(fetchURL);
+
+        const response = await (
+          await fetch(fetchURL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        ).json();
+
+        setRefreshToken(response.refresh_token);
+        console.log('refresh token: ', response.refresh_token);
+        setAccessToken(response.access_token);
+        console.log('access token: ', response.access_token);
+      } finally {
+        setIsPending(false); // Always set loading state to false after the operation
+      }
+    };
+
+    // Call the API call on component mount and whenever stravaAuthToken changes
+    handleStravaApiCall().catch(console.error);
+  }, [stravaAuthToken]);
+
+  useEffect(() => {}, [refreshToken, accessToken]);
 
   useEffect(() => {
     if (isSuccess) {
