@@ -52,7 +52,7 @@ export default function Step3CheckIn({
     hash: dataHash,
   });
 
-  console.log('checkInError', checkInError)
+  console.log('checkInError', checkInError);
 
   const [stravaActivityIdx, setStravaActivityIdx] = useState(-1);
 
@@ -160,24 +160,23 @@ export default function Step3CheckIn({
       }
 
       const fetchURL =
-          '/api/sign?' +
-          new URLSearchParams({
-            address: address,
-            activityId: (stravaData[stravaActivityIdx].id).toString(),
-          }).toString();
-        console.log(fetchURL);
-        
-        const sig = await (
-          await fetch(fetchURL, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-        ).json() as {v: number, r: string, s: string}
+        '/api/sign?' +
+        new URLSearchParams({
+          address: address,
+          activityId: stravaData[stravaActivityIdx].id.toString(),
+        }).toString();
+      console.log(fetchURL);
 
-      console.log('sig', sig)
+      const sig = (await (
+        await fetch(fetchURL, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+      ).json()) as { v: number; r: string; s: string };
 
+      console.log('sig', sig);
 
       writeContract({
         address: trackerContract.address as `0x${string}`,
@@ -193,7 +192,6 @@ export default function Step3CheckIn({
       });
 
       txPendingToastId = toast.loading('Transaction sent...');
-
     } catch (err) {
       console.log(err);
       toast.error('Error checking in');
@@ -259,11 +257,11 @@ export default function Step3CheckIn({
   }, [checkInError]);
 
   const showStravaRecord =
-    (selectedChallenge.verificationType === VerificationType.Strava) && (accessToken !== null);
+    selectedChallenge.verificationType === VerificationType.Strava && accessToken !== null;
 
-    console.log('accessToken', accessToken)
+  console.log('accessToken', accessToken);
 
-  console.log('showStravaRecord', showStravaRecord)
+  console.log('showStravaRecord', showStravaRecord);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -313,7 +311,8 @@ export default function Step3CheckIn({
         </>
       )}
 
-      {showStravaRecord && stravaData.map((activity, idx) => (
+      {showStravaRecord &&
+        stravaData.map((activity, idx) => (
           <div
             key={`${activity.name}-${idx}`}
             style={{ borderColor: '#EDB830', width: '250px' }}
@@ -322,10 +321,10 @@ export default function Step3CheckIn({
             } items-center justify-center`}
           >
             <button type="button" onClick={() => setStravaActivityIdx(idx)}>
-              <div className="text-sm font-bold px-2"> {activity.name} </div>
+              <div className="px-2 text-sm font-bold"> {activity.name} </div>
               <div className="flex items-center px-2">
                 <div className="px-2 text-xs"> {(activity.distance / 1000).toPrecision(2)} KM </div>
-                <div className="px-2 text-grey text-xs">
+                <div className="text-grey px-2 text-xs">
                   {' '}
                   {timeDifference(Date.now(), Date.parse(activity.timestamp))}{' '}
                 </div>

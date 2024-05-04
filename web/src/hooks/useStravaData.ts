@@ -6,12 +6,12 @@ import { wagmiConfig as config } from '@/OnchainProviders';
 
 type StravaActiviry = {
   distance: number;
-  max_heartrate: number
-  moving_time: number
-  name: string
-  timestamp: string
-  id: number
-}
+  max_heartrate: number;
+  moving_time: number;
+  name: string;
+  timestamp: string;
+  id: number;
+};
 
 const useStravaData = (accessToken: string | null | undefined) => {
   const [loading, setLoading] = useState(true);
@@ -28,20 +28,20 @@ const useStravaData = (accessToken: string | null | undefined) => {
         const fetchURL =
           '/api/strava/activities?' +
           new URLSearchParams({
-            accessToken: accessToken
+            accessToken: accessToken,
           }).toString();
         console.log(fetchURL);
-        
-        const response = await (
+
+        const response = (await (
           await fetch(fetchURL, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
             },
           })
-        ).json() as {runData: StravaActiviry[]};
+        ).json()) as { runData: StravaActiviry[] };
 
-        setData(response.runData)
+        setData(response.runData);
 
         setLoading(false);
       } catch (_error) {

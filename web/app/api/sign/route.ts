@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { privateKeyToAccount } from 'viem/accounts';
-import { secp256k1 } from '@noble/curves/secp256k1'
+import { secp256k1 } from '@noble/curves/secp256k1';
 import { hexToNumber } from 'viem';
 
 /**
@@ -24,11 +24,10 @@ export async function GET(req: NextRequest): Promise<Response> {
       message: `checking in! user: ${address}, time: ${activityId}`,
     });
 
-    console.log('msg', msg)
+    console.log('msg', msg);
 
-    const { r, s } = secp256k1.Signature.fromCompact(msg.slice(2, 130))
-    const v = hexToNumber(`0x${msg.slice(130)}`)
-
+    const { r, s } = secp256k1.Signature.fromCompact(msg.slice(2, 130));
+    const v = hexToNumber(`0x${msg.slice(130)}`);
 
     return NextResponse.json({ v, r: r.toString(16), s: s.toString(16) }, { status: 200 });
   } catch (error) {

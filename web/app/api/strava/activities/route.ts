@@ -41,7 +41,7 @@ export async function GET(req: NextRequest): Promise<Response> {
         moving_time: run.moving_time,
         map: run.map,
         max_heartrate: run.max_heartrate,
-        timestamp: run.start_date
+        timestamp: run.start_date,
       };
     });
     console.log(runData);
