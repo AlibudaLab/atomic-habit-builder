@@ -193,13 +193,13 @@ export default function Step2DepositAndStake({
       <div id="overlay-button"> </div>
 
       {/* warn message */}
-      <div className="text-md px-10 pt-10">
+      <div className="text-md px-10">
         if you fail to maintain the habit, 50% of the stake will be donated to designated public
         goods orgs, and 50% be distributed to other habit building winners.
       </div>
 
       <div className="w-full justify-start">
-        <Image src={kangaroo} width="350" alt="Kangaroo" className="mb-3 object-cover" />
+        <Image src={kangaroo} width="350" alt="Kangaroo" className="mb object-cover" />
       </div>
 
       <button type="button" onClick={() => setSteps(3)}>
