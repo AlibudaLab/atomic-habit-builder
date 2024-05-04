@@ -201,6 +201,10 @@ export default function Step2DepositAndStake({
       <div className="w-full justify-start">
         <Image src={kangaroo} width="350" alt="Kangaroo" className="mb-3 object-cover" />
       </div>
+
+      <button type="button" onClick={() => setSteps(3)}>
+        Next
+      </button>
     </div>
   );
 }
