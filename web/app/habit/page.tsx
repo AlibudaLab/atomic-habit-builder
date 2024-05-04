@@ -12,30 +12,7 @@ import { Challenge } from '@/hooks/useUserChallenges';
 
 const nouns = require('../../src/imgs/nouns.png') as string;
 
-
-export const challenges: Challenge[] = [
-  {
-    name: 'Run at Sydney Park 10 times',
-    duration: 'May 1-27',
-    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    stake: 0.001,
-    icon: '🏃🏻‍♂️' 
-  },
-  {
-    name: 'Run 30 mins 10 times',
-    duration: 'May 6-26',
-    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    stake: 0.001,
-    icon: '🏃🏻‍♂️'
-  },
-  {
-    name: 'Meet 5 new Nouns Frens',
-    duration: 'May 9-15',
-    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    stake: 0.002,
-    icon: '🤝🏻'
-  },
-];
+import { challenges } from '@/constants';
 
 export default function HabitPage() {
   const [steps, setSteps] = useState(1);
