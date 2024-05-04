@@ -27,6 +27,18 @@ export default function Step3CheckIn({
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
 
+  console.log('this challenge', selectedChallenge)
+
+  // TODO: fetch actually done
+  const achieved = 3;
+
+  const { data: checkInContractRequest } = useSimulateContract({
+    address: trackerContract.address as `0x${string}`,
+    abi: trackerContract.abi,
+    functionName: 'checkIn',
+    args: [],
+  });
+
   const {
     writeContract,
     data: dataHash,
@@ -161,6 +173,36 @@ export default function Step3CheckIn({
           Connect Strava
         </button>
       )}
+
+        {/* put 10 circles indicating target number of achievements */}
+        <div className='flex flex-wrap p-16 gap-4'> 
+        {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
+          const done = idx < achieved;
+          const iconIdx = Number(selectedChallenge.arxAddress) * idx % 20
+          const icon = require(`../../../src/imgs/hats/${iconIdx + 1}.png`) as string;
+          return (
+            done 
+            ? (<div style={{ borderColor: '#EDB830', paddingTop: '4px' }}  key="{idx}" className="w-12 h-12 text-center rounded-full justify-center border border-solid" > <Image src={icon} alt="checkin" /> </div>)
+            : (<div style={{ borderColor: 'grey', paddingTop: '10px' }} key="{idx}" className="w-12 h-12 text-center rounded-full justify-center border border-solid " > {idx + 1} </div>))
+        })}
+        </div>
+      
+
+      { selectedChallenge.verificationType === VerificationType.NFC ? <button
+        type="button"
+        className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+        onClick={onCheckInButtonClick}
+        disabled={joinPending || isLoading}
+      >
+        {' '}
+        {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
+      </button> : <button
+        type="button"
+        className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+        onClick={onClickStrava}
+      >
+        Connect Strava
+      </button>}
     </div>
   );
 }
