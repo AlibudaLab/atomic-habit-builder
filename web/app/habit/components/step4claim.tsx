@@ -52,7 +52,7 @@ export default function Step4Claim({
         </p>
       </div>
 
-      {true ? (
+      {isSuccess ? (
         <button
           type="button"
           className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
