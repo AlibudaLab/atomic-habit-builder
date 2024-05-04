@@ -70,7 +70,7 @@ export default function Step4Claim({
         </button>
       )}
 
-      <div className="p-4 text-xs">Get back {challenge.stake} ETH and 1 NFT Badge</div>
+      <div className="p-4 text-xs">Get back {challenge.stake} ETH.</div>
 
       <Image src={img} width="440" height="440" alt="Step 4 Image" className="mb-3 object-cover" />
     </div>
