@@ -31,7 +31,9 @@ export default function HabitPage() {
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Toaster />
-      <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
+      <button type="button" onClick={() => setSteps(1)}>
+        <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
+      </button>
 
       <div className="font-title container mb-10 w-full text-center text-4xl">
         {' '}
