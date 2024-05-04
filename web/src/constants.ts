@@ -39,7 +39,7 @@ export const challenges: Challenge[] = [
     targetNum: 10,
   },
   {
-    name: 'Cowork with cool devs at ETHSydney',
+    name: 'Cowork with cool devs at SYD',
     duration: 'May 3 - 7',
     arxAddress: '0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07',
     stake: 0.003,
