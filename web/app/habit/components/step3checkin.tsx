@@ -58,7 +58,7 @@ export default function Step3CheckIn({
         address: trackerContract.address as `0x${string}`,
         functionName: 'getUserCheckInCounts',
         args: [selectedChallenge.arxAddress, address],
-      })) as BigInt;
+      })) as bigint;
       if (achieved) {
         const checked = Number(achieved.toString());
         setCheckedIn(checked);
