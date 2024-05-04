@@ -1,4 +1,5 @@
 # Alibuda Habit Builder - ETHGlobal Sydney 2024
+![Untitled-2023-11-15-2138](https://github.com/alibuda-lab/nouns-habit-builder/assets/48847495/19f48126-5577-4615-8953-7a897d831aa9)
 
 ## About
 
