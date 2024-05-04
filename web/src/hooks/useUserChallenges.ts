@@ -15,6 +15,7 @@ export type Challenge = {
   verificationType: VerificationType;
   mapKey?: string;
   targetNum: number;
+  checkedIn?: number;
 };
 
 const useUserChallenges = (address: string | undefined) => {
@@ -35,13 +36,29 @@ const useUserChallenges = (address: string | undefined) => {
           args: [address],
         });
 
-        // TODO: fetch user activities from rpc
+        // fetch user activities from rpc
         const userRegisteredAddresses = (userChallenges as string[]).map((a) => a.toLowerCase());
 
         // all challenges that user participants in
-        const knownChallenges = challenges.filter((c) =>
+        let knownChallenges = challenges.filter((c) =>
           userRegisteredAddresses.includes(c.arxAddress.toLowerCase()),
         );
+
+        await Promise.all(
+          knownChallenges.map(async (c) => {
+            const checkedIn = (await readContract(config, {
+              abi: trackerContract.abi,
+              address: trackerContract.address as `0x${string}`,
+              functionName: 'getUserCheckInCounts',
+              args: [c.arxAddress, address],
+            })) as number;
+            knownChallenges = knownChallenges.map((k) =>
+              k.arxAddress.toLowerCase() === c.arxAddress.toLowerCase() ? { ...k, checkedIn } : k,
+            );
+          }),
+        );
+
+        console.log(knownChallenges);
 
         setData(knownChallenges);
         setLoading(false);

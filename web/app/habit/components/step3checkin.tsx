@@ -2,7 +2,6 @@
 'use client';
 
 import { useState } from 'react';
-
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { SetStateAction, useEffect } from 'react';
@@ -14,6 +13,8 @@ import trackerContract from '@/contracts/tracker.json';
 import { Challenge } from '@/hooks/useUserChallenges';
 import { challenges, ActivityTypes, VerificationType } from '@/constants';
 import moment from 'moment';
+import { wagmiConfig as config } from '@/OnchainProviders';
+import { readContract } from '@wagmi/core';
 
 const img = require('../../../src/imgs/step3.png') as string;
 
@@ -37,11 +38,7 @@ export default function Step3CheckIn({
   const [accessToken, setAccessToken] = useState(null);
   const searchParams = useSearchParams();
   const stravaAuthToken = searchParams.get('code');
-
-  console.log('this challenge', selectedChallenge);
-
-  // TODO: fetch actually done
-  const achieved = 5;
+  const [checkedIn, setCheckedIn] = useState(0);
 
   const {
     writeContract,
@@ -53,6 +50,30 @@ export default function Step3CheckIn({
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
+
+  useEffect(() => {
+    const getCheckIns = async () => {
+      const achieved = (await readContract(config, {
+        abi: trackerContract.abi,
+        address: trackerContract.address as `0x${string}`,
+        functionName: 'getUserCheckInCounts',
+        args: [selectedChallenge.arxAddress, address],
+      })) as bigint;
+      if (achieved) {
+        const checked = Number(achieved.toString());
+        setCheckedIn(checked);
+
+        if (checked >= selectedChallenge.targetNum) {
+          setSteps(4);
+        }
+      }
+    };
+
+    getCheckIns().catch((err) => {
+      console.log(err);
+      toast.error('Error getting checkins');
+    });
+  }, [isSuccess]);
 
   const onClickStrava = async () => {
     const currentChallengeId = challenges.findIndex(
@@ -94,7 +115,7 @@ export default function Step3CheckIn({
       const arxSignature = await arxSignMessage(checkInMessage);
       const signature = arxSignature.signature;
       toast.dismiss(nfcPendingToastId);
-      txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction');
+      txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
 
       writeContract({
         address: trackerContract.address as `0x${string}`,
@@ -111,7 +132,6 @@ export default function Step3CheckIn({
     } catch (err) {
       console.error(err);
       toast.error('Please try to tap the NFC again');
-    } finally {
       if (nfcPendingToastId) {
         toast.dismiss(nfcPendingToastId);
       }
@@ -165,6 +185,7 @@ export default function Step3CheckIn({
 
   useEffect(() => {
     if (isSuccess) {
+      toast.dismiss();
       toast.success('Recorded on smart contract!! 🥳🥳🥳');
     }
   }, [isSuccess]);
@@ -223,30 +244,10 @@ export default function Step3CheckIn({
         </>
       )}
 
-      {selectedChallenge.verificationType === VerificationType.NFC ? (
-        <button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={onCheckInButtonClick}
-          disabled={checkInPending || isLoading}
-        >
-          {' '}
-          {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={onClickStrava}
-        >
-          Connect Strava
-        </button>
-      )}
-
       {/* put 10 circles indicating target number of achievements */}
-      <div className="flex flex-wrap gap-4 px-16 py-6">
+      <div className="flex flex-wrap gap-4 px-12 py-6">
         {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
-          const done = idx < achieved;
+          const done = idx < checkedIn;
           const iconIdx = (Number(selectedChallenge.arxAddress) % 20) + idx;
           const icon = require(`../../../src/imgs/hats/${iconIdx + 1}.png`) as string;
           return done ? (
@@ -273,7 +274,7 @@ export default function Step3CheckIn({
 
       <div>
         {' '}
-        {achieved} / {selectedChallenge.targetNum}{' '}
+        {checkedIn.toString()} / {selectedChallenge.targetNum}{' '}
       </div>
 
       {selectedChallenge.verificationType === VerificationType.NFC ? (
@@ -284,7 +285,7 @@ export default function Step3CheckIn({
           disabled={checkInPending || isLoading}
         >
           {' '}
-          {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
+          {isLoading ? 'Sending tx...' : 'Tap Here and Tap NFC'}{' '}
         </button>
       ) : (
         <button

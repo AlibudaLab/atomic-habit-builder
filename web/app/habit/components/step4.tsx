@@ -17,7 +17,7 @@ export default function Step4({
   const { address } = useAccount();
 
   // TODO: decide if user has completed or failed the message
-  const success = false;
+  const success = true;
 
   return (
     <div className="flex flex-col items-center justify-center">
