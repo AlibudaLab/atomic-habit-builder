@@ -22,7 +22,7 @@ export default function Step1Join({setSteps}: {setSteps: React.Dispatch<SetState
           alt="Step 2 Image"
           className="mb-3 object-cover"
         />
-        <p className="text-lg text-gray-700 mr-auto">
+        <p className="text-lg font-bold mr-auto">
         Join up with World ID or Base Smart Wallet
         </p>
       </div>
