@@ -12,7 +12,7 @@ If participants fail to maintain their habit, 50% of their stake is automaticall
 ### Links
 
 - [Presentation](https://pitch.com/v/alibuda-habit-builder-n7tzbm)
-- [Video (Presentation)](https://www.youtube.com/watch?v=MqjX1VSq-GY)
+- [Video (Presentation)](https://youtu.be/vjmPBddewoc)
 - [Video (Live Demo)](https://shorturl.at/jsG02)
 
 ## Tech Stack
