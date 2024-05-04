@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
@@ -15,6 +16,8 @@ import { challenges, ActivityTypes, VerificationType } from '@/constants';
 import moment from 'moment';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { readContract } from '@wagmi/core';
+import useStravaData from '@/hooks/useStravaData';
+import { timeDifference } from '@/utils/time';
 
 const img = require('../../../src/imgs/step3.png') as string;
 
@@ -30,12 +33,10 @@ export default function Step3CheckIn({
 }) {
   const { address } = useAccount();
   const { connectors, connect } = useConnect();
-  const connector = connectors[0];
 
   const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessToken] = useState<null | string | undefined>(null);
   const searchParams = useSearchParams();
   const stravaAuthToken = searchParams.get('code');
   const [checkedIn, setCheckedIn] = useState(0);
@@ -50,6 +51,10 @@ export default function Step3CheckIn({
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
+
+  console.log('checkInError', checkInError)
+
+  const [stravaActivityIdx, setStravaActivityIdx] = useState(-1);
 
   useEffect(() => {
     const getCheckIns = async () => {
@@ -96,6 +101,10 @@ export default function Step3CheckIn({
     window.location = authUrl;
   };
 
+  const { loading, data: stravaData } = useStravaData(accessToken);
+
+  console.log('data', stravaData);
+
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
     let txPendingToastId = null;
@@ -137,6 +146,63 @@ export default function Step3CheckIn({
     }
   };
 
+  const onClickCheckinStrava = async () => {
+    if (stravaActivityIdx === -1) {
+      toast.error('Please select an activity');
+      return;
+    }
+
+    let txPendingToastId = null;
+    try {
+      if (!address) {
+        toast.error('Please connect your wallet first');
+        return;
+      }
+
+      const fetchURL =
+          '/api/sign?' +
+          new URLSearchParams({
+            address: address,
+            activityId: (stravaData[stravaActivityIdx].id).toString(),
+          }).toString();
+        console.log(fetchURL);
+        
+        const sig = await (
+          await fetch(fetchURL, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+        ).json() as {v: number, r: string, s: string}
+
+      console.log('sig', sig)
+
+
+      writeContract({
+        address: trackerContract.address as `0x${string}`,
+        abi: trackerContract.abi,
+        functionName: 'checkIn',
+        args: [
+          selectedChallenge.arxAddress,
+          getEncodedCheckinMessage(address, stravaData[stravaActivityIdx].id),
+          sig.v,
+          '0x' + sig.r.padStart(64, '0'),
+          '0x' + sig.s.padStart(64, '0'),
+        ],
+      });
+
+      txPendingToastId = toast.loading('Transaction sent...');
+
+    } catch (err) {
+      console.log(err);
+      toast.error('Error checking in');
+      if (txPendingToastId) {
+        toast.dismiss(txPendingToastId);
+      }
+    }
+  };
+
   useEffect(() => {
     const handleStravaApiCall = async () => {
       if (!stravaAuthToken) {
@@ -166,7 +232,7 @@ export default function Step3CheckIn({
 
         setRefreshToken(response.refresh_token);
         console.log('refresh token: ', response.refresh_token);
-        setAccessToken(response.access_token);
+        if (response.access_token) setAccessToken(response.access_token);
         console.log('access token: ', response.access_token);
       } finally {
         setIsPending(false); // Always set loading state to false after the operation
@@ -191,6 +257,13 @@ export default function Step3CheckIn({
       toast.error('Error checking in.');
     }
   }, [checkInError]);
+
+  const showStravaRecord =
+    (selectedChallenge.verificationType === VerificationType.Strava) && (accessToken !== null);
+
+    console.log('accessToken', accessToken)
+
+  console.log('showStravaRecord', showStravaRecord)
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -240,6 +313,33 @@ export default function Step3CheckIn({
         </>
       )}
 
+      {showStravaRecord && stravaData.map((activity, idx) => (
+          <div
+            key={`${activity.name}-${idx}`}
+            style={{ borderColor: '#EDB830', width: '250px' }}
+            className={`m-2 rounded-md border border-solid p-2 ${
+              stravaActivityIdx === idx ? 'bg-yellow' : 'bg-normal'
+            } items-center justify-center`}
+          >
+            <button type="button" onClick={() => setStravaActivityIdx(idx)}>
+              <div className="text-sm font-bold px-2"> {activity.name} </div>
+              <div className="flex items-center px-2">
+                <div className="px-2 text-xs"> {(activity.distance / 1000).toPrecision(2)} KM </div>
+                <div className="px-2 text-grey text-xs">
+                  {' '}
+                  {timeDifference(Date.now(), Date.parse(activity.timestamp))}{' '}
+                </div>
+              </div>
+            </button>
+          </div>
+        ))}
+
+      {showStravaRecord && stravaData.length === 0 ? (
+        <div className="p-2 text-center text-xs"> No record found </div>
+      ) : (
+        <div className="p-2 text-center text-xs"> Choose an activity to checkin </div>
+      )}
+
       {/* put 10 circles indicating target number of achievements */}
       <div className="flex flex-wrap gap-4 px-12 py-6">
         {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
@@ -249,7 +349,7 @@ export default function Step3CheckIn({
           return done ? (
             <div
               style={{ borderColor: '#EDB830', paddingTop: '4px' }}
-              key="{idx}"
+              key={`done-${idx}`}
               className="h-12 w-12 justify-center rounded-full border border-solid text-center"
             >
               {' '}
@@ -258,7 +358,7 @@ export default function Step3CheckIn({
           ) : (
             <div
               style={{ borderColor: 'grey', paddingTop: '10px' }}
-              key="{idx}"
+              key={`ip-${idx}`}
               className="h-12 w-12 justify-center rounded-full border border-solid text-center "
             >
               {' '}
@@ -290,6 +390,16 @@ export default function Step3CheckIn({
         >
           {' '}
           {isLoading ? 'Sending tx...' : 'Tap Here and Tap NFC'}{' '}
+        </button>
+      ) : showStravaRecord ? (
+        <button
+          type="button"
+          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          onClick={onClickCheckinStrava}
+          disabled={checkInPending || isLoading || stravaActivityIdx === -1}
+        >
+          {' '}
+          {isLoading ? 'Sending tx...' : 'Check In'}{' '}
         </button>
       ) : (
         <button

@@ -35,11 +35,13 @@ export async function GET(req: NextRequest): Promise<Response> {
     console.log(runs);
     const runData = runs.map((run: any) => {
       return {
+        id: run.id,
         name: run.name,
         distance: run.distance,
         moving_time: run.moving_time,
         map: run.map,
         max_heartrate: run.max_heartrate,
+        timestamp: run.start_date
       };
     });
     console.log(runData);
