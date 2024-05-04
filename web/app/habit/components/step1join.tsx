@@ -14,6 +14,8 @@ export default function Step1Join({
 }) {
   const { address } = useAccount();
   const { connectors, connect } = useConnect();
+  console.log('connectors', connectors)
+
   const connector = connectors[0];
 
   const { data } = useUserChallenges(address);
