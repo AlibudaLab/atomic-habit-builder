@@ -55,7 +55,7 @@ export default function Step2DepositAndStake({
   const balance = useBalance({ address });
   const hasEnoughBalance = (balance.data ?? { value: 0 }).value > 0.01;
 
-  const handleOnClick = () => {
+  const handleOnClick = async () => {
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
         console.log('is visible');
@@ -92,7 +92,7 @@ export default function Step2DepositAndStake({
     const mockData = require('../mock/on-ramp.json');
     mockData.data.destinationWallet = address;
     // Call the bridge API with payload
-    fetch('/api/bridge', {
+    await fetch('/api/bridge', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
