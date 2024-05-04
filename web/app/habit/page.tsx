@@ -3,9 +3,10 @@
 
 import { useState } from 'react';
 
-import Step1Join from './components/step1join';
+import Step1 from './components/step1';
 import Step2DepositAndStake from './components/step2stake';
 import Step3CheckIn from './components/step3checkin';
+import LoadingCard from './components/LoadingCard';
 import Image from 'next/image';
 
 const nouns = require('../../src/imgs/nouns.png') as string;
@@ -24,9 +25,13 @@ export default function HabitPage() {
       Happy Builder; Habit Builder!
       </div>
       
-      {(steps === 1) && <Step1Join setSteps={setSteps} />}
+      {(steps === 1) && <Step1 setSteps={setSteps} />}
       {(steps === 2) && <Step2DepositAndStake setSteps={setSteps} />}
       {(steps === 3) && <Step3CheckIn setSteps={setSteps} />}
+
+
+      {/* just for previewing */}
+      {(steps === 10) && <LoadingCard text="Message signed! The transaction is processing..." />}
       
     </main>
   );

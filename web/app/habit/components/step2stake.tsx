@@ -7,10 +7,12 @@ import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
 
 import { redirect } from 'next/navigation';
+import { Challenge } from '@/hooks/useUserChallenges';
 
 const img = require('../../../src/imgs/step2.png') as string;
+const kangaroo = require('../../../src/imgs/kangaroo.png') as string;
 
-const challenges = [
+const challenges: Challenge[] = [
   {
     name: '🏃🏻‍♂️ challenge',
     duration: 'May 3-5',
@@ -111,17 +113,17 @@ export default function Step2DepositAndStake({
         <p className="mr-auto text-lg font-bold">Stake and join habit challenge</p>
       </div>
       <div>
-        <p className="text-sm p-4"> Choose Challenge </p>
+        <p className="p-4 text-sm"> Choose Challenge </p>
       </div>
 
       {/* drop down here */}
       <div>
         {/* ... existing JSX ... */}
-        <select 
-          style={{borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px'}} 
-          value={selectedChallenge.name} 
-          onChange={handleOnChange} 
-          className='bg-light p-2 rounded-md text-center'
+        <select
+          style={{ borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px' }}
+          value={selectedChallenge.name}
+          onChange={handleOnChange}
+          className="bg-light rounded-md p-2 text-center"
         >
           {challenges.map((challenge) => (
             <option key={challenge.name} value={challenge.name}>
@@ -134,8 +136,8 @@ export default function Step2DepositAndStake({
       {hasEnoughBalance ? (
         <button
           type="button"
-          className="mt-4 rounded-lg px-6 py-3 font-bold border-solid"
-          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px'}}
+          className="bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold"
+          style={{ width: '250px', height: '45px', color: 'white' }}
           onClick={() => {
             console.log('Ryan please do stake');
           }}
@@ -146,7 +148,7 @@ export default function Step2DepositAndStake({
         <button
           type="button"
           className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px'}}
+          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px' }}
           onClick={handleOnClick}
         >
           Onramp
@@ -155,8 +157,13 @@ export default function Step2DepositAndStake({
       <div id="overlay-button"> </div>
 
       {/* warn message */}
-      <div className='p-10 text-md'>
-      if you fail to maintain the habit, 50% of the stake will be donated to designated public goods orgs, and 50% be distributed to other habit building winners.
+      <div className="text-md pt-10 px-10">
+        if you fail to maintain the habit, 50% of the stake will be donated to designated public
+        goods orgs, and 50% be distributed to other habit building winners.
+      </div>
+
+      <div className="w-full justify-start">
+        <Image src={kangaroo} width="350" alt="Kangaroo" className="mb-3 object-cover" />
       </div>
 
       <button
@@ -166,7 +173,6 @@ export default function Step2DepositAndStake({
       >
         Next
       </button>
-      
     </div>
   );
 }
