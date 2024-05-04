@@ -63,6 +63,10 @@ html .font-normal {
   font-family: var(--font-normal);
 }
 
+html .bg-light {
+  background-color: var(--palette-bg);
+}
+
 body {
   height: 100%;
   margin: 0;
