@@ -30,7 +30,7 @@ export default function Step3CheckIn({
   console.log('this challenge', selectedChallenge)
 
   // TODO: fetch actually done
-  const achieved = 3;
+  const achieved = 9;
 
   const { data: checkInContractRequest } = useSimulateContract({
     address: trackerContract.address as `0x${string}`,
@@ -175,10 +175,10 @@ export default function Step3CheckIn({
       )}
 
         {/* put 10 circles indicating target number of achievements */}
-        <div className='flex flex-wrap p-16 gap-4'> 
+        <div className='flex flex-wrap py-6 px-16 gap-4'> 
         {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
           const done = idx < achieved;
-          const iconIdx = Number(selectedChallenge.arxAddress) * idx % 20
+          const iconIdx = Number(selectedChallenge.arxAddress) % 20 + idx
           const icon = require(`../../../src/imgs/hats/${iconIdx + 1}.png`) as string;
           return (
             done 
@@ -187,6 +187,7 @@ export default function Step3CheckIn({
         })}
         </div>
       
+      <div> {achieved} / {selectedChallenge.targetNum} </div>
 
       { selectedChallenge.verificationType === VerificationType.NFC ? <button
         type="button"
