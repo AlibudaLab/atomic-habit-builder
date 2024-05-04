@@ -157,7 +157,7 @@ export default function Step2DepositAndStake({
       <div id="overlay-button"> </div>
 
       {/* warn message */}
-      <div className="text-md pt-10 px-10">
+      <div className="text-md px-10 pt-10">
         if you fail to maintain the habit, 50% of the stake will be donated to designated public
         goods orgs, and 50% be distributed to other habit building winners.
       </div>

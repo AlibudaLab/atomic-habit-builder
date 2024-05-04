@@ -33,7 +33,7 @@ export default function Step3CheckIn({
     writeContract,
     data: dataHash,
     error: joinError,
-    isPending: joinPending
+    isPending: joinPending,
   } = useWriteContract();
 
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
@@ -59,7 +59,7 @@ export default function Step3CheckIn({
         abi: trackerContract.abi,
         functionName: 'join',
         args: [TESTING_CHALLENGE_ADDRESS],
-        value: parseEther("0.001"), // joining stake fee 0.001 ether
+        value: parseEther('0.001'), // joining stake fee 0.001 ether
       });
     } catch (err) {
       console.error(err);
@@ -75,18 +75,16 @@ export default function Step3CheckIn({
   };
 
   useEffect(() => {
-    if (isSuccess){
+    if (isSuccess) {
       toast.success('Recorded on smart contract!! 🥳🥳🥳');
     }
-  },[
-    isSuccess
-  ])
+  }, [isSuccess]);
 
-  useEffect(()=>{
-    if(joinError){
-      toast.error('Error in joining the challenge')
+  useEffect(() => {
+    if (joinError) {
+      toast.error('Error in joining the challenge');
     }
-  }, [joinError])
+  }, [joinError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -111,7 +109,7 @@ export default function Step3CheckIn({
         disabled={joinPending || isLoading}
       >
         {' '}
-        {isLoading?'Sending tx':'Tap Here and Tap NFC'}{' '}
+        {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
       </button>
     </div>
   );

@@ -15,23 +15,23 @@ export default function HabitPage() {
   const [steps, setSteps] = useState(1);
 
   return (
-    <main className="container mx-auto flex flex-col px-8 py-16 items-center">
-      <Toaster/>
-      <Image src={nouns} width='100' height='100' alt="Nouns Logo" className="mb-10" />
-      <div className="container mb-10 w-full text-center text-4xl font-title"> Alibuda Habit Builder </div>
+    <main className="container mx-auto flex flex-col items-center px-8 py-16">
+      <Toaster />
+      <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
 
-      <div className='text-xl px-6 pb-10 font-title text-center'>
-      Happy Builder; Habit Builder!
+      <div className="font-title container mb-10 w-full text-center text-4xl">
+        {' '}
+        Alibuda Habit Builder{' '}
       </div>
-      
-      {(steps === 1) && <Step1 setSteps={setSteps} />}
-      {(steps === 2) && <Step2DepositAndStake setSteps={setSteps} />}
-      {(steps === 3) && <Step3CheckIn setSteps={setSteps} />}
 
+      <div className="font-title px-6 pb-10 text-center text-xl">Happy Builder; Habit Builder!</div>
+
+      {steps === 1 && <Step1 setSteps={setSteps} />}
+      {steps === 2 && <Step2DepositAndStake setSteps={setSteps} />}
+      {steps === 3 && <Step3CheckIn setSteps={setSteps} />}
 
       {/* just for previewing */}
-      {(steps === 10) && <LoadingCard text="Message signed! The transaction is processing..." />}
-      
+      {steps === 10 && <LoadingCard text="Message signed! The transaction is processing..." />}
     </main>
   );
 }
