@@ -1,3 +1,4 @@
+/* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
 import Image from 'next/image';
@@ -26,6 +27,11 @@ export default function Step3CheckIn({
   const { address } = useAccount();
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
+
+  console.log('this challenge', selectedChallenge);
+
+  // TODO: fetch actually done
+  const achieved = 5;
 
   const {
     writeContract,
@@ -141,6 +147,59 @@ export default function Step3CheckIn({
           <div className="p-2 text-center text-xs">Scan the NFC at the pinged spot!</div>
         </>
       )}
+
+      {selectedChallenge.verificationType === VerificationType.NFC ? (
+        <button
+          type="button"
+          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          onClick={onCheckInButtonClick}
+          disabled={checkInPending || isLoading}
+        >
+          {' '}
+          {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          onClick={onClickStrava}
+        >
+          Connect Strava
+        </button>
+      )}
+
+      {/* put 10 circles indicating target number of achievements */}
+      <div className="flex flex-wrap gap-4 px-16 py-6">
+        {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
+          const done = idx < achieved;
+          const iconIdx = (Number(selectedChallenge.arxAddress) % 20) + idx;
+          const icon = require(`../../../src/imgs/hats/${iconIdx + 1}.png`) as string;
+          return done ? (
+            <div
+              style={{ borderColor: '#EDB830', paddingTop: '4px' }}
+              key="{idx}"
+              className="h-12 w-12 justify-center rounded-full border border-solid text-center"
+            >
+              {' '}
+              <Image src={icon} alt="checkin" />{' '}
+            </div>
+          ) : (
+            <div
+              style={{ borderColor: 'grey', paddingTop: '10px' }}
+              key="{idx}"
+              className="h-12 w-12 justify-center rounded-full border border-solid text-center "
+            >
+              {' '}
+              {idx + 1}{' '}
+            </div>
+          );
+        })}
+      </div>
+
+      <div>
+        {' '}
+        {achieved} / {selectedChallenge.targetNum}{' '}
+      </div>
 
       {selectedChallenge.verificationType === VerificationType.NFC ? (
         <button
