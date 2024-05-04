@@ -293,7 +293,13 @@ export default function Step3CheckIn({
         </button>
       )}
 
-      {/* {checkedIn > selectedChallenge.targetNum && (<div>)} */}
+      {checkedIn > selectedChallenge.targetNum && (<button
+          type="button"
+          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          onClick={() => setSteps(4)}
+        >
+          Finish
+        </button>)}
     </div>
   );
 }

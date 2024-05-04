@@ -29,7 +29,7 @@ export default function HabitPage() {
   );
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 py-16">
+    <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Toaster />
       <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
 
@@ -37,8 +37,6 @@ export default function HabitPage() {
         {' '}
         Alibuda Habit Builder{' '}
       </div>
-
-      <div className="font-title px-6 pb-10 text-center text-xl">Happy Builder; Habit Builder!</div>
 
       {steps === 1 && <Step1 setSteps={setSteps} setChallenge={setSelectedChallenge} />}
       {steps === 2 && (
