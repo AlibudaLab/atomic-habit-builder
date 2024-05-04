@@ -58,10 +58,14 @@ export default function Step3CheckIn({
         address: trackerContract.address as `0x${string}`,
         functionName: 'getUserCheckInCounts',
         args: [selectedChallenge.arxAddress, address],
-      })) as number;
-      console.log(achieved);
+      })) as BigInt;
       if (achieved) {
-        setCheckedIn(achieved);
+        const checked = Number(achieved.toString());
+        setCheckedIn(checked);
+
+        if (checked >= selectedChallenge.targetNum) {
+          setSteps(4);
+        }
       }
     };
 
@@ -240,28 +244,8 @@ export default function Step3CheckIn({
         </>
       )}
 
-      {selectedChallenge.verificationType === VerificationType.NFC ? (
-        <button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={onCheckInButtonClick}
-          disabled={checkInPending || isLoading}
-        >
-          {' '}
-          {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={onClickStrava}
-        >
-          Connect Strava
-        </button>
-      )}
-
       {/* put 10 circles indicating target number of achievements */}
-      <div className="flex flex-wrap gap-4 px-16 py-6">
+      <div className="flex flex-wrap gap-4 px-12 py-6">
         {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
           const done = idx < checkedIn;
           const iconIdx = (Number(selectedChallenge.arxAddress) % 20) + idx;
@@ -290,7 +274,7 @@ export default function Step3CheckIn({
 
       <div>
         {' '}
-        {checkedIn} / {selectedChallenge.targetNum}{' '}
+        {checkedIn.toString()} / {selectedChallenge.targetNum}{' '}
       </div>
 
       {selectedChallenge.verificationType === VerificationType.NFC ? (
@@ -301,7 +285,7 @@ export default function Step3CheckIn({
           disabled={checkInPending || isLoading}
         >
           {' '}
-          {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
+          {isLoading ? 'Sending tx...' : 'Tap Here and Tap NFC'}{' '}
         </button>
       ) : (
         <button
