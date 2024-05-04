@@ -12,21 +12,15 @@ export default function Step1Join({
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
 }) {
-  const { address } = useAccount();
-  console.log('address', address);
   const { connectors, connect } = useConnect();
-  console.log('connectors', connectors);
-
   const connector = connectors[0];
-
-  const { data } = useUserChallenges(address);
 
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
       <div className="col-span-3 flex w-full items-center justify-start gap-6">
         <Image src={img} width="50" alt="Step 2 Image" className="mb-3 object-cover" />
-        <p className="mr-auto text-lg font-bold">Join up with World ID or Base Smart Wallet</p>
+        <p className="mr-auto text-lg font-bold">Join with Base Smart Wallet</p>
       </div>
 
       <button

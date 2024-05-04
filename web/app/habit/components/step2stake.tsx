@@ -42,9 +42,8 @@ export default function Step2DepositAndStake({
     }
   };
 
-  const { address } = useAccount();
-  console.log('address step2', address);
-  const balance = useBalance({ address });
+  const { address: smartWallet } = useAccount();
+  const balance = useBalance({ address: smartWallet });
   const ethBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
   const hasEnoughBalance = ethBalance > selectedChallenge.stake;
 
@@ -68,7 +67,7 @@ export default function Step2DepositAndStake({
         lang: GateFiLangEnum.en_US,
         isSandbox: true,
         successUrl: window.location.href,
-        walletAddress: address,
+        walletAddress: smartWallet,
         externalId: randomString,
         defaultFiat: {
           currency: 'USD',
@@ -83,7 +82,7 @@ export default function Step2DepositAndStake({
     setIsOverlayVisible(true);
     // Get data from web/app/habit/mock/on-ramp.json
     const mockData = require('../mock/on-ramp.json');
-    mockData.data.destinationWallet = address;
+    mockData.data.destinationWallet = smartWallet;
     // Call the bridge API with payload
     await fetch('/api/bridge', {
       method: 'POST',
@@ -115,7 +114,7 @@ export default function Step2DepositAndStake({
     });
   };
 
-  if (!address) {
+  if (!smartWallet) {
     redirect('/');
   }
 
@@ -180,7 +179,7 @@ export default function Step2DepositAndStake({
 
       <div className="p-4 text-xs">
         {balance.data && hasEnoughBalance ? (
-          <p> 💰 Wallet Balance: {ethBalance.toString()} ETH </p>
+          <p> 💰 Smart Wallet Balance: {ethBalance.toString()} ETH </p>
         ) : (
           <p>
             {' '}
