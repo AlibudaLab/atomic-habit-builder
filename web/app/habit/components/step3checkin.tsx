@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { SetStateAction, useEffect } from 'react';
 import { useAccount, useConnect, useWaitForTransactionReceipt } from 'wagmi';
-import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
+import { ArxSignature, arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useSimulateContract, useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
@@ -51,16 +51,23 @@ export default function Step3CheckIn({
 
       nfcPendingToastId = toast.loading('Sensing NFC...');
       const checkInMessage = getCheckinMessage(address);
-      const arxSignature = await arxSignMessage(checkInMessage);
+      const {signature} = await arxSignMessage(checkInMessage);
       toast.dismiss(nfcPendingToastId);
       txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction');
-      writeContract({
+      /*writeContract({
         address: trackerContract.address as `0x${string}`,
         abi: trackerContract.abi,
         functionName: 'join',
         args: [TESTING_CHALLENGE_ADDRESS],
         value: parseEther('0.001'), // joining stake fee 0.001 ether
-      });
+      });*/
+      writeContract({
+        address: trackerContract.address as `0x${string}`,
+        abi: trackerContract.abi,
+        functionName: 'checkIn',
+        args: [TESTING_CHALLENGE_ADDRESS, signature.raw.v, '0x'+signature.raw.r, '0x'+signature.raw.s],
+        value: parseEther('0.001'), // joining stake fee 0.001 ether
+      })
     } catch (err) {
       console.error(err);
       toast.error('Please try to tap the NFC again');
