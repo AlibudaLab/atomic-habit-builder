@@ -18,6 +18,7 @@
     "test:coverage:open": "yarn test:coverage && open coverage/lcov-report/index.html"
   },
   "dependencies": {
+    "@arx-research/libhalo": "^1.2.30",
     "@coinbase/onchainkit": "0.13.4",
     "@coinbase/wallet-sdk": "4.0.0-beta.12",
     "@farcaster/hub-nodejs": "^0.11.9",
@@ -33,6 +34,7 @@
     "clsx": "^2.1.0",
     "graphql": "14",
     "graphql-request": "6",
+    "moment": "^2.30.1",
     "net": "^1.0.2",
     "next": "13.5.6",
     "next-pwa": "5.6.0",
@@ -42,6 +44,7 @@
     "prettier-plugin-solidity": "^1.3.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "react-remove-scroll": "^2.5.7",
     "rehype-pretty-code": "0.12.3",
     "rehype-stringify": "^10.0.0",

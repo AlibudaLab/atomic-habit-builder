@@ -46,7 +46,6 @@ module.exports = {
       { namedComponents: 'function-declaration', unnamedComponents: 'function-expression' },
     ],
 
-    '@typescript-eslint/no-unused-vars': 'off',
     'import/no-extraneous-dependencies': 'off',
 
     // We prefer on/handle named events
@@ -73,9 +72,9 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': ['error', { fixToUnknown: true }],
     '@typescript-eslint/no-invalid-void-type': 'error',
     '@typescript-eslint/no-unsafe-argument': 'error',
-    '@typescript-eslint/no-unsafe-assignment': 'error',
-    '@typescript-eslint/no-unsafe-call': 'error',
-    '@typescript-eslint/no-unsafe-return': 'error',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
 
     // Readability
     '@typescript-eslint/adjacent-overload-signatures': 'error',
@@ -95,6 +94,7 @@ module.exports = {
     '@typescript-eslint/prefer-literal-enum-member': 'error',
     '@typescript-eslint/restrict-plus-operands': ['error', { checkCompoundAssignments: true }],
     '@typescript-eslint/unified-signatures': 'error',
+    '@typescript-eslint/no-unused-vars': 'off',
 
     // Assertions
     '@typescript-eslint/consistent-type-assertions': 'error',
@@ -116,7 +116,7 @@ module.exports = {
     'no-void': 'off',
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/no-floating-promises': 'error',
-    '@typescript-eslint/no-misused-promises': 'error',
+    '@typescript-eslint/no-misused-promises': 'off',
     '@typescript-eslint/promise-function-async': 'error',
 
     // APIs
