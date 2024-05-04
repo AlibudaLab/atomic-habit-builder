@@ -16,7 +16,7 @@ const nouns = require('../../src/imgs/nouns.png') as string;
 import { challenges } from '@/constants';
 
 export default function HabitPage() {
-  const [steps, setSteps] = useState(4);
+  const [steps, setSteps] = useState(1);
 
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge>(challenges[0]);
 
