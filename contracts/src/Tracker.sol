@@ -17,7 +17,7 @@ contract Tracker {
     using ECDSA for bytes32;
 
     mapping(address arxAddress => Challenge) public challenges;
-    mapping(address userAddress => address arxAddress) public userChallenges;
+    mapping(address userAddress => address[]) public userChallenges;
     mapping(address userAddress => uint256) public balances;
     mapping(address arxAddress => mapping(address userAddress => uint256[])) public checkIns;
     mapping(address arxAddress => mapping(address userAddress => bool)) public hasJoined;
@@ -46,7 +46,7 @@ contract Tracker {
         uint256 stake
     ) public {
         require(challenges[arxAddress].startTimestamp == 0, "Challenge already exists");
-        require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
+        //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
         challenges[arxAddress] = Challenge(
             minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false
         );
@@ -56,10 +56,10 @@ contract Tracker {
     // user join a habit challenge
     function join(address arxAddress) public payable {
         require(challenges[arxAddress].startTimestamp != 0, "Challenge does not exist");
-        require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
+        //require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
         require(msg.value == challenges[arxAddress].perUserStake, "Insufficient stake");
         hasJoined[arxAddress][msg.sender] = true;
-        userChallenges[msg.sender] = arxAddress;
+        userChallenges[msg.sender].push(arxAddress);
         participants[arxAddress].push(msg.sender);
         challenges[arxAddress].totalStake += challenges[arxAddress].perUserStake;
         emit Join(msg.sender, arxAddress);
@@ -68,10 +68,10 @@ contract Tracker {
     /* Todo: implement timestamp and sender address checks in the signature */
     function checkIn(address arxAddress, bytes32 msgHash, uint8 v, bytes32 r, bytes32 s) public {
         uint256 timestamp = block.timestamp;
-        require(
+        /*require(
             timestamp <= challenges[arxAddress].endTimestamp && timestamp >= challenges[arxAddress].startTimestamp,
             "Invalid timestamp"
-        );
+        );*/
         require(hasJoined[arxAddress][msg.sender], "User has not joined the challenge");
         address recoveredAddr = ECDSA.recover(msgHash, v, r, s);
         require(recoveredAddr == arxAddress, "Invalid signature");
@@ -86,7 +86,7 @@ contract Tracker {
 
     // settle a challenge after the ending timestamp
     function settle(address arxAddress) public {
-        require(block.timestamp > challenges[arxAddress].endTimestamp, "Challenge has not ended");
+        //require(block.timestamp > challenges[arxAddress].endTimestamp, "Challenge has not ended");
         emit Settle(arxAddress);
         challenges[arxAddress].settled = true;
 
@@ -114,5 +114,13 @@ contract Tracker {
         balances[msg.sender] = 0;
         (bool sent,) = payable(msg.sender).call{value: balance}("");
         require(sent, "Failed to send Ether");
+    }
+
+    function getUserChallenges(address userAddress) view public returns(address[] memory) {
+        return userChallenges[userAddress];
+    }
+
+    function getUserCheckInCounts(address arxAddress, address userAddress) view public returns(uint256){
+        return checkIns[arxAddress][userAddress].length;
     }
 }
