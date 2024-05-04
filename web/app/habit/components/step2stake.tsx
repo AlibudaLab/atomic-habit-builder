@@ -52,19 +52,8 @@ export default function Step2DepositAndStake({
   };
 
   const { address } = useAccount();
-
   const balance = useBalance({ address });
-
   const hasEnoughBalance = (balance.data ?? { value: 0 }).value > 0.01;
-
-  console.log(
-    `address: `,
-    address,
-    `balance: `,
-    balance.data,
-    `hasEnoughBalance: `,
-    hasEnoughBalance,
-  );
 
   const handleOnClick = () => {
     if (overlayInstanceSDK.current) {
@@ -99,6 +88,17 @@ export default function Step2DepositAndStake({
     }
     overlayInstanceSDK.current?.show();
     setIsOverlayVisible(true);
+    // Get data from web/app/habit/mock/on-ramp.json
+    const mockData = require('../mock/on-ramp.json');
+    mockData.data.destinationWallet = address;
+    // Call the bridge API with payload
+    fetch('/api/bridge', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(mockData),
+    });
   };
 
   if (!address) {
