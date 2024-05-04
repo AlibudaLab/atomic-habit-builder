@@ -12,7 +12,7 @@ import { Challenge } from '@/hooks/useUserChallenges';
 const img = require('../../../src/imgs/step2.png') as string;
 const kangaroo = require('../../../src/imgs/kangaroo.png') as string;
 
-import { challenges } from '../page';
+import { challenges } from '@/constants';
 
 export default function Step2DepositAndStake({
   setSteps,
