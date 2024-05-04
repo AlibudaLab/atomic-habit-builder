@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
 
 import Image from 'next/image';
@@ -16,6 +18,8 @@ const img = require('../../../src/imgs/step2.png') as string;
 const kangaroo = require('../../../src/imgs/kangaroo.png') as string;
 
 import { challenges } from '@/constants';
+import { formatEther } from 'viem';
+import Link from 'next/link';
 
 export default function Step2DepositAndStake({
   setSteps,
@@ -39,9 +43,10 @@ export default function Step2DepositAndStake({
 
   const { address } = useAccount();
   const balance = useBalance({ address });
-  const hasEnoughBalance = (balance.data ?? { value: 0 }).value > 0.01;
+  const ethBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
+  const hasEnoughBalance = ethBalance > selectedChallenge.stake;
 
-  const handleOnClick = async () => {
+  const handleOnClickOnramp = async () => {
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
         console.log('is visible');
@@ -152,25 +157,29 @@ export default function Step2DepositAndStake({
         </select>
       </div>
 
-      {hasEnoughBalance ? (
-        <button
-          type="button"
-          className="bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold"
-          style={{ width: '250px', height: '45px', color: 'white' }}
-          onClick={onJoinButtonClick}
-        >
-          Stake {selectedChallenge.stake} ETH
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px' }}
-          onClick={handleOnClick}
-        >
-          Onramp
-        </button>
-      )}
+      <button
+        type="button"
+        className="bg-yellow bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
+        style={{ width: '250px', height: '45px', color: 'white' }}
+        onClick={onJoinButtonClick}
+      >
+        Stake {selectedChallenge.stake} ETH
+      </button>
+
+      <div className="p-4 text-xs">
+        {balance.data && hasEnoughBalance ? (
+          <p> 💰 Wallet Balance: {ethBalance.toString()} ETH </p>
+        ) : (
+          <p>
+            {' '}
+            🚨 Insufficient Balance: {ethBalance.toString()} ETH.{' '}
+            <span className="font-bold hover:underline" onClick={handleOnClickOnramp}>
+              {' '}
+              Onramp now{' '}
+            </span>{' '}
+          </p>
+        )}
+      </div>
       <div id="overlay-button"> </div>
 
       {/* warn message */}
