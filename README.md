@@ -35,4 +35,12 @@ Our whole project is inspired by the Nouns Running Club (https://twitter.com/Nou
 
 Here is the part where Nouns is [used](https://github.com/alibuda-lab/nouns-habit-builder/blob/bd3fe9695c947f25eaa90ef73b9f77667151b3bf/web/app/habit/components/step3checkin.tsx#L248)
 
+### Strava
+
+Strava is an exercise-tracking app. There are already 120 million users on Strava, and they can be easily onboard Web3 with good UX. We use Strava API to authenticate and retrieve users’ sports activities and sign the activity ID and verify the signature on the chain. Once the user has enough proof collected, they will be able to finish the challenge.
+
+### Arx NFC
+
+To enable our application to validate real-world interactions, whether it's proving that users have met people or have been physically present at a location, we utilize the ARX chip. The embedded ECDSA private-public key pair signs a challenge message once the user taps their phone on it. Then, the signature is sent for verification to the smart contract on-chain for check-in verification. We use the **`Halolib`** API's **`execHaloCmdWeb`** and call the **`sign`** command to sign over the user's wallet address and the current timestamp with the chip's private key.
+
 ## References
