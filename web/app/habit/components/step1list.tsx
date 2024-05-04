@@ -44,7 +44,7 @@ export default function Step1BList({
               <div className="flex text-sm">{challenge.duration} </div>
               <div className="flex text-sm">{challenge.name} </div>
             </div>
-            <div className="text-xl">
+            <div className="text-lg">
               {' '}
               {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
             </div>
