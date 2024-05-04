@@ -12,36 +12,20 @@ import { Challenge } from '@/hooks/useUserChallenges';
 const img = require('../../../src/imgs/step2.png') as string;
 const kangaroo = require('../../../src/imgs/kangaroo.png') as string;
 
-const challenges: Challenge[] = [
-  {
-    name: '🏃🏻‍♂️ challenge',
-    duration: 'May 3-5',
-    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    stake: 0.001,
-  },
-  {
-    name: '🧘🏻‍♂️ challenge',
-    duration: 'May 6-8',
-    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    stake: 0.001,
-  },
-  {
-    name: '🚴🏻‍♂️ challenge',
-    duration: 'May 9-15',
-    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
-    stake: 0.002,
-  },
-];
+import { challenges } from '@/constants';
 
 export default function Step2DepositAndStake({
   setSteps,
+  setSelectedChallenge,
+  selectedChallenge
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
+  setSelectedChallenge: React.Dispatch<SetStateAction<Challenge>>;
+  selectedChallenge: Challenge;
 }) {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
-  const [selectedChallenge, setSelectedChallenge] = useState(challenges[0]);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedChallengeName = event.target.value;
@@ -121,7 +105,7 @@ export default function Step2DepositAndStake({
         {/* ... existing JSX ... */}
         <select
           style={{ borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px' }}
-          value={selectedChallenge.name}
+          value={selectedChallenge.name ?? ''}
           onChange={handleOnChange}
           className="bg-light rounded-md p-2 text-center"
         >
