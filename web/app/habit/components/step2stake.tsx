@@ -20,7 +20,7 @@ import { challenges } from '@/constants';
 export default function Step2DepositAndStake({
   setSteps,
   setSelectedChallenge,
-  selectedChallenge
+  selectedChallenge,
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
   setSelectedChallenge: React.Dispatch<SetStateAction<Challenge>>;
@@ -28,7 +28,6 @@ export default function Step2DepositAndStake({
 }) {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-
 
   const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedChallengeName = event.target.value;
@@ -99,7 +98,7 @@ export default function Step2DepositAndStake({
     hash: dataHash,
   });
 
-  const onJoinButtonClick = async() =>{
+  const onJoinButtonClick = async () => {
     writeContract({
       address: trackerContract.address as `0x${string}`,
       abi: trackerContract.abi,
@@ -107,7 +106,7 @@ export default function Step2DepositAndStake({
       args: [selectedChallenge.arxAddress],
       value: parseEther('0.001').toBigInt(), // joining stake fee 0.001 ether
     });
-  }
+  };
 
   if (!address) {
     redirect('/');
@@ -121,7 +120,7 @@ export default function Step2DepositAndStake({
 
   useEffect(() => {
     if (joinError) {
-      toast.error("Error joining the challenge. Please try again");
+      toast.error('Error joining the challenge. Please try again');
     }
   }, [joinError]);
 

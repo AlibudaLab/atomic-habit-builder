@@ -3,13 +3,12 @@
 import Image from 'next/image';
 import { SetStateAction, useEffect } from 'react';
 import { useAccount, useConnect, useWaitForTransactionReceipt } from 'wagmi';
-import { ArxSignature, arxSignMessage, getCheckinMessage } from '@/utils/arx';
+import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
-import { useSimulateContract, useWriteContract } from 'wagmi';
+import { useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
-import { TESTING_CHALLENGE_ADDRESS } from '@/constants';
-import { parseEther } from 'viem';
 import { Challenge } from '@/hooks/useUserChallenges';
+import moment from 'moment';
 
 const img = require('../../../src/imgs/step3.png') as string;
 const map = require('../../../src/imgs/map.png') as string;
@@ -19,26 +18,17 @@ export default function Step3CheckIn({
   selectedChallenge,
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
-  selectedChallenge: Challenge
+  selectedChallenge: Challenge;
 }) {
   const { address } = useAccount();
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
 
-  console.log('this challenge', selectedChallenge)
-
-  const { data: checkInContractRequest } = useSimulateContract({
-    address: trackerContract.address as `0x${string}`,
-    abi: trackerContract.abi,
-    functionName: 'checkIn',
-    args: [],
-  });
-
   const {
     writeContract,
     data: dataHash,
-    error: joinError,
-    isPending: joinPending,
+    error: checkInError,
+    isPending: checkInPending,
   } = useWriteContract();
 
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
@@ -55,24 +45,25 @@ export default function Step3CheckIn({
       }
 
       nfcPendingToastId = toast.loading('Sensing NFC...');
-      const checkInMessage = getCheckinMessage(address);
-      const {signature} = await arxSignMessage(checkInMessage);
+      const timestamp = moment().unix();
+      const checkInMessage = getCheckinMessage(address, timestamp);
+      const arxSignature = await arxSignMessage(checkInMessage);
+      const signature = arxSignature.signature;
       toast.dismiss(nfcPendingToastId);
       txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction');
-      /*writeContract({
-        address: trackerContract.address as `0x${string}`,
-        abi: trackerContract.abi,
-        functionName: 'join',
-        args: [TESTING_CHALLENGE_ADDRESS],
-        value: parseEther('0.001'), // joining stake fee 0.001 ether
-      });*/
+
       writeContract({
         address: trackerContract.address as `0x${string}`,
         abi: trackerContract.abi,
-        functionName: 'checkIn',
-        args: [TESTING_CHALLENGE_ADDRESS, signature.raw.v, '0x'+signature.raw.r, '0x'+signature.raw.s],
-        value: parseEther('0.001'), // joining stake fee 0.001 ether
-      })
+        functionName: 'checkIn()',
+        args: [
+          selectedChallenge.arxAddress,
+          getEncodedCheckinMessage(address, timestamp),
+          signature.raw.v,
+          '0x' + signature.raw.r,
+          '0x' + signature.raw.s,
+        ],
+      });
     } catch (err) {
       console.error(err);
       toast.error('Please try to tap the NFC again');
@@ -93,14 +84,15 @@ export default function Step3CheckIn({
   }, [isSuccess]);
 
   useEffect(() => {
-    if (joinError) {
-      toast.error('Error in joining the challenge');
+    if (checkInError) {
+      toast.error('Error in checking in the challenge');
     }
-  }, [joinError]);
+  }, [checkInError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
+      {checkInError && <p style={{ width: '50%' }}>{JSON.stringify(checkInError)}</p>}
       <div className="col-span-3 flex w-full items-center justify-start gap-6">
         <Image
           src={img}
@@ -118,7 +110,7 @@ export default function Step3CheckIn({
         type="button"
         className="mt-4 rounded-lg bg-yellow-500 px-6 py-3 font-bold text-white hover:bg-yellow-600"
         onClick={onCheckInButtonClick}
-        disabled={joinPending || isLoading}
+        disabled={checkInPending || isLoading}
       >
         {' '}
         {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}

@@ -5,7 +5,7 @@ export type Challenge = {
   duration: string;
   arxAddress: string;
   stake: number;
-  icon: string
+  icon: string;
 };
 
 const useUserChallenges = (address: string | undefined) => {
@@ -28,7 +28,7 @@ const useUserChallenges = (address: string | undefined) => {
             duration: 'May 6-8',
             arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
             stake: 0.001,
-            icon: '🏃🏻‍♂️'
+            icon: '🏃🏻‍♂️',
           },
         ]);
 
