@@ -3,53 +3,95 @@
 import Image from 'next/image';
 import { useRef, useState, SetStateAction } from 'react';
 import { useAccount, useBalance } from 'wagmi';
-import crypto from "crypto";
-import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from "@gatefi/js-sdk";
+import crypto from 'crypto';
+import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
 
-import { redirect } from "next/navigation";
+import { redirect } from 'next/navigation';
 
 const img = require('../../../src/imgs/step2.png') as string;
 
-export default function Step2DepositAndStake({setSteps}: {setSteps: React.Dispatch<SetStateAction<number>>}) {
+const challenges = [
+  {
+    name: '🏃🏻‍♂️ challenge',
+    duration: 'May 3-5',
+    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
+    stake: 0.001,
+  },
+  {
+    name: '🧘🏻‍♂️ challenge',
+    duration: 'May 6-8',
+    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
+    stake: 0.001,
+  },
+  {
+    name: '🚴🏻‍♂️ challenge',
+    duration: 'May 9-15',
+    arxAddress: '0x1234567890abcdef1234567890abcdef12345678',
+    stake: 0.002,
+  },
+];
+
+export default function Step2DepositAndStake({
+  setSteps,
+}: {
+  setSteps: React.Dispatch<SetStateAction<number>>;
+}) {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
-  const { address } = useAccount()
+  const [selectedChallenge, setSelectedChallenge] = useState(challenges[0]);
 
-  const balance = useBalance({address})
+  const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedChallengeName = event.target.value;
+    const challenge = challenges.find((c) => c.name === selectedChallengeName);
+    if (challenge) {
+      setSelectedChallenge(challenge);
+    }
+  };
+
+  const { address } = useAccount();
+
+  const balance = useBalance({ address });
 
   const hasEnoughBalance = (balance.data ?? { value: 0 }).value > 0.01;
 
-  console.log(`address: `, address, `balance: `, balance.data, `hasEnoughBalance: `, hasEnoughBalance)
+  console.log(
+    `address: `,
+    address,
+    `balance: `,
+    balance.data,
+    `hasEnoughBalance: `,
+    hasEnoughBalance,
+  );
 
   const handleOnClick = () => {
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
-        console.log('is visible')
+        console.log('is visible');
         overlayInstanceSDK.current.hide();
         setIsOverlayVisible(false);
       } else {
-        console.log('is not visible')
+        console.log('is not visible');
         overlayInstanceSDK.current.show();
         setIsOverlayVisible(true);
       }
     } else {
-      const randomString = crypto.randomBytes(32).toString("hex");
+      const randomString = crypto.randomBytes(32).toString('hex');
       overlayInstanceSDK.current = new GateFiSDK({
         merchantId: `${process.env.NEXT_PUBLIC_UNLIMIT_MERCHANTID}`,
         displayMode: GateFiDisplayModeEnum.Overlay,
-        nodeSelector: "#overlay-button",
+        nodeSelector: '#overlay-button',
         lang: GateFiLangEnum.en_US,
         isSandbox: true,
-        successUrl:"https://www.crypto.unlimit.com/",
+        successUrl: 'https://www.crypto.unlimit.com/',
         walletAddress: address,
         externalId: randomString,
         defaultFiat: {
-          currency: "USD",
-          amount: "20",
+          currency: 'USD',
+          amount: '20',
         },
         defaultCrypto: {
-          currency: "ETH",
+          currency: 'ETH',
         },
       });
     }
@@ -58,45 +100,63 @@ export default function Step2DepositAndStake({setSteps}: {setSteps: React.Dispat
   };
 
   if (!address) {
-    redirect('/')
+    redirect('/');
   }
 
   return (
-    <div className='flex flex-col items-center justify-center'>
+    <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      <div className="col-span-3 flex justify-start w-full items-center gap-6">
-        <Image
-          src={img}
-          width='50'
-          alt="Step 2 Image"
-          className="mb-3 rounded-full object-cover"
-        />
-        <p className="text-lg text-gray-700 mr-auto">
-        Stake and join habit challenge
-        </p>
+      <div className="col-span-3 flex w-full items-center justify-start gap-6">
+        <Image src={img} width="50" alt="Step 2 Image" className="mb-3 rounded-full object-cover" />
+        <p className="mr-auto text-lg font-bold">Stake and join habit challenge</p>
+      </div>
+      <div>
+        <p className="text-sm p-4"> Choose Challenge </p>
       </div>
 
-      {hasEnoughBalance ?
-      <button
-      type="button"
-      className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
-      onClick={() => {
-        console.log('Ryan please do stake')
-      }}
-    > Stake </button> 
-    : <button
-        type="button"
-        className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
-        onClick={(handleOnClick)}
-      >
-        Onramp
-      </button>
-      }
+      {/* drop down here */}
+      <div>
+        {/* ... existing JSX ... */}
+        <select 
+          style={{borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px'}} 
+          value={selectedChallenge.name} 
+          onChange={handleOnChange} 
+          className='bg-light p-2 rounded-md text-center'
+        >
+          {challenges.map((challenge) => (
+            <option key={challenge.name} value={challenge.name}>
+              {challenge.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {hasEnoughBalance ? (
+        <button
+          type="button"
+          className="mt-4 rounded-lg px-6 py-3 font-bold border-solid"
+          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px'}}
+          onClick={() => {
+            console.log('Ryan please do stake');
+          }}
+        >
+          Stake {selectedChallenge.stake} ETH
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px'}}
+          onClick={handleOnClick}
+        >
+          Onramp
+        </button>
+      )}
       <div id="overlay-button"> </div>
 
       <button
         type="button"
-        className="rounded-lg bg-yellow mt-4 px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white"
         onClick={() => setSteps(3)}
       >
         Next
