@@ -10,7 +10,8 @@ export async function GET(req: NextRequest): Promise<Response> {
     const before =
       req.nextUrl.searchParams.get('before') ?? Math.floor(new Date().getTime() / 1000);
     const after =
-      req.nextUrl.searchParams.get('after') ?? Math.floor((new Date().getTime() - 86400000 * 20) / 1000);
+      req.nextUrl.searchParams.get('after') ??
+      Math.floor((new Date().getTime() - 86400000 * 20) / 1000);
     const page = req.nextUrl.searchParams.get('page') ?? 1;
     const perPage = req.nextUrl.searchParams.get('perPage') ?? 10;
     const accessToken = req.nextUrl.searchParams.get('accessToken');
@@ -28,11 +29,11 @@ export async function GET(req: NextRequest): Promise<Response> {
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
     const activities = await response.json();
     // console.log(activities);
-    // Go through the activities filter where type == "Run" 
+    // Go through the activities filter where type == "Run"
     // And get "name", "distance", "moving_time", "map", "max_heartrate"
-    const runs = activities.filter((activity) => activity.type === 'Run');
+    const runs = activities.filter((activity: any) => activity.type === 'Run');
     console.log(runs);
-    const runData = runs.map((run) => {
+    const runData = runs.map((run: any) => {
       return {
         name: run.name,
         distance: run.distance,
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     });
     console.log(runData);
 
-    return NextResponse.json({runData}, { status: 200 });
+    return NextResponse.json({ runData }, { status: 200 });
   } catch (error) {
     console.error('Error getting Strava AuthToken:', error);
     return NextResponse.json({}, { status: 500, statusText: 'Internal Server Error' });
