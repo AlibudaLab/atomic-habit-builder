@@ -18,7 +18,9 @@ export async function GET(req: NextRequest): Promise<Response> {
     }
 
     const account = privateKeyToAccount(`0x${process.env.FAUCET_PRIVATE_KEY}`);
-    const msg = await account.signMessage({message: `checking in! user: ${address}, time: ${activityId}`});
+    const msg = await account.signMessage({
+      message: `checking in! user: ${address}, time: ${activityId}`,
+    });
 
     return NextResponse.json({ msg }, { status: 200 });
   } catch (error) {
