@@ -62,10 +62,6 @@ export default function Step3CheckIn({
       if (achieved) {
         const checked = Number(achieved.toString());
         setCheckedIn(checked);
-
-        if (checked >= selectedChallenge.targetNum) {
-          setSteps(4);
-        }
       }
     };
 
@@ -296,6 +292,8 @@ export default function Step3CheckIn({
           Connect Strava
         </button>
       )}
+
+      {/* {checkedIn > selectedChallenge.targetNum && (<div>)} */}
     </div>
   );
 }
