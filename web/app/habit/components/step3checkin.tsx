@@ -7,7 +7,7 @@ import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useSimulateContract, useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
-import { ActivityTypes, TESTING_CHALLENGE_ADDRESS } from '@/constants';
+import { ActivityTypes, TESTING_CHALLENGE_ADDRESS, VerificationType } from '@/constants';
 import { parseEther } from 'viem';
 import { Challenge } from '@/hooks/useUserChallenges';
 
@@ -46,6 +46,10 @@ export default function Step3CheckIn({
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
+
+  const onClickStrava = async() => {
+
+  }
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -120,18 +124,22 @@ export default function Step3CheckIn({
         <p className='px-2 text-sm'> Challenge: {selectedChallenge.name} </p>
       </div>
 
-      {selectedChallenge.mapKey && <iframe 
-        src={selectedChallenge.mapKey}
-        title='target location'
-        width="420" 
-        height="300" 
-        // allowFullScreen="" 
-        loading="lazy" 
-        referrerPolicy="no-referrer-when-downgrade"> cool </iframe>}
+      {selectedChallenge.verificationType === VerificationType.NFC && selectedChallenge.mapKey && 
+      <>
+        <iframe 
+          src={selectedChallenge.mapKey}
+          title='target location'
+          width="400" 
+          height="300" 
+          // allowFullScreen="" 
+          loading="lazy" 
+          referrerPolicy="no-referrer-when-downgrade"> cool 
+        </iframe>
+        <div className="text-xs p-2 text-center">Scan the NFC at the pinged spot!</div>  
+      </>}
 
-      <div className="text-xs p-2 text-center">Scan the NFC at the pinged spot!</div>
 
-      <button
+      { selectedChallenge.verificationType === VerificationType.NFC ? <button
         type="button"
         className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
         onClick={onCheckInButtonClick}
@@ -139,7 +147,13 @@ export default function Step3CheckIn({
       >
         {' '}
         {isLoading ? 'Sending tx' : 'Tap Here and Tap NFC'}{' '}
-      </button>
+      </button> : <button
+        type="button"
+        className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+        onClick={onClickStrava}
+      >
+        Connect Strava
+      </button>}
     </div>
   );
 }
