@@ -49,8 +49,8 @@ export function ChallengesDropDown({
                   {' '}
                   {challenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
                 </div>
-                <div className='flex flex-col items-start p-2 justify-start'>
-                  <p className='opacity-80 text-sm'>{challenge.duration}</p>
+                <div className="flex flex-col items-start justify-start p-2">
+                  <p className="text-sm opacity-80">{challenge.duration}</p>
                   <p>{challenge.name}</p>
                 </div>
               </div>

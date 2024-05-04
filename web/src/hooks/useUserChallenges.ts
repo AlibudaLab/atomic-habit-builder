@@ -14,7 +14,7 @@ export type Challenge = {
   type: ActivityTypes;
   verificationType: VerificationType;
   mapKey?: string;
-  targetNum: number
+  targetNum: number;
 };
 
 const useUserChallenges = (address: string | undefined) => {

@@ -20,7 +20,7 @@ const kangaroo = require('../../../src/imgs/kangaroo.png') as string;
 import { challenges } from '@/constants';
 import { formatEther } from 'viem';
 
-import {ChallengesDropDown} from './dropdown';
+import { ChallengesDropDown } from './dropdown';
 
 export default function Step2DepositAndStake({
   setSteps,
@@ -146,8 +146,6 @@ export default function Step2DepositAndStake({
 
       {/* drop down here */}
       <div>
-
-
         {/* ... existing JSX ... */}
         <select
           style={{ borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px' }}
@@ -162,10 +160,10 @@ export default function Step2DepositAndStake({
           ))}
         </select>
 
-        <ChallengesDropDown 
+        {/* <ChallengesDropDown
           selectedChallenge={selectedChallenge}
           setSelectedChallenge={setSelectedChallenge}
-        />
+        /> */}
       </div>
 
       <button
