@@ -35,7 +35,7 @@ export default function Step1BList({
           key={challenge.arxAddress}
           type="button"
           className="mt-4 rounded-lg px-6 py-3 font-bold"
-          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px'}}
+          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '50px'}}
           onClick={() => setSteps(3)}
         >
           Check-in {challenge.name}{' '}
@@ -44,8 +44,8 @@ export default function Step1BList({
 
       <button
         type="button"
-        className="mt-4 rounded-lg border-solid px-6 py-3 bg-yellow"
-        style={{ color: 'white', border: 'solid', width: '250px', height: '45px' }}
+        className="mt-4 rounded-lg border-solid px-6 py-3 bg-yellow font-bold"
+        style={{ color: 'white', border: 'solid', width: '250px', height: '50px' }}
         onClick={() => setSteps(2)}
       >
         Join a New Challenge{' '}
