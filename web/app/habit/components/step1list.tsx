@@ -27,13 +27,16 @@ export default function Step1BList({
       </div>
 
       {/* map challenges to list of buttons */}
-      {challenges.map((challenge) => (
+      {challenges.map((challenge, idx) => (
         <button
           key={challenge.arxAddress}
           type="button"
           className="mt-4 w-full rounded-lg px-6 py-3"
           style={{ borderColor: '#EDB830', border: 'solid', width: '350px', height: '60px' }}
-          onClick={() => setSteps(3)}
+          onClick={() => {
+            setChallenge(challenges[idx]);
+            setSteps(3);
+          }}
         >
           <div className="flex w-full justify-between">
             <div className="mr-4 text-2xl">{challenge.icon}</div>
