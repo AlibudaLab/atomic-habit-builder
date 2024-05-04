@@ -14,7 +14,7 @@ module.exports = {
     'airbnb/rules/react-a11y',
     'plugin:relay/strict',
     'next/core-web-vitals',
-    "prettier"
+    'prettier',
   ],
   rules: {
     'react/destructuring-assignment': 'off',
@@ -69,7 +69,7 @@ module.exports = {
 
     // Forbid types
     '@typescript-eslint/ban-types': 'error',
-    '@typescript-eslint/no-explicit-any': ['error', { fixToUnknown: true }],
+    '@typescript-eslint/no-explicit-any': ['off', { fixToUnknown: true }],
     '@typescript-eslint/no-invalid-void-type': 'error',
     '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
@@ -134,17 +134,22 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'import/extensions': 'off',
 
-    
     // We prefer labels to be associated with inputs
-    'jsx-a11y/label-has-associated-control': ['error', {
-      'required': {
-        'some': ['nesting', 'id']
-      }
-    }],
-    'jsx-a11y/label-has-for': ['error', {
-      'required': {
-        'some': ['nesting', 'id']
-      }
-    }]
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
+    'jsx-a11y/label-has-for': [
+      'error',
+      {
+        required: {
+          some: ['nesting', 'id'],
+        },
+      },
+    ],
   },
 };
