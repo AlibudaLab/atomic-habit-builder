@@ -2,9 +2,9 @@ import { execHaloCmdWeb } from '@arx-research/libhalo/api/web';
 import moment from 'moment';
 import { hashMessage } from 'viem';
 
-interface ArxSignature {
+type ArxSignature = {
   input: {
-    keyNo: Number;
+    keyNo: number;
     digest: string;
     message: string;
   };
@@ -12,7 +12,7 @@ interface ArxSignature {
     raw: {
       r: string;
       s: string;
-      v: Number;
+      v: number;
     };
     der: string;
     ether: `0x${string}`;

@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import { Challenge } from '@/hooks/useUserChallenges';
+import { ActivityTypes, VerificationType } from '@/constants';
 import moment from 'moment';
 
 const img = require('../../../src/imgs/step3.png') as string;
@@ -59,7 +60,7 @@ export default function Step3CheckIn({
       writeContract({
         address: trackerContract.address as `0x${string}`,
         abi: trackerContract.abi,
-        functionName: 'checkIn()',
+        functionName: 'checkIn',
         args: [
           selectedChallenge.arxAddress,
           getEncodedCheckinMessage(address, timestamp),
@@ -89,7 +90,7 @@ export default function Step3CheckIn({
 
   useEffect(() => {
     if (checkInError) {
-      toast.error('Error in checking in the challenge');
+      toast.error("Error checking in.");
     }
   }, [checkInError]);
 

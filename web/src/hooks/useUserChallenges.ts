@@ -27,7 +27,7 @@ const useUserChallenges = (address: string | undefined) => {
         setLoading(true);
 
         // TODO: fetch user activities from rpc
-        const userRegisteredAddresses = ['0x1234567890abcdef1234567890abcdef12345678'].map((a) =>
+        const userRegisteredAddresses = ['0x883167E6b5d489B82cB97bEf9C7967afe3A3D299'].map((a) =>
           a.toLowerCase(),
         );
 
