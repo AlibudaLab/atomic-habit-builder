@@ -13,6 +13,7 @@ export default function Step1Join({
   setSteps: React.Dispatch<SetStateAction<number>>;
 }) {
   const { address } = useAccount();
+  console.log('address', address);
   const { connectors, connect } = useConnect();
   console.log('connectors', connectors);
 

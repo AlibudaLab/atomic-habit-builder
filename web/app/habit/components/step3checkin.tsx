@@ -52,12 +52,12 @@ export default function Step3CheckIn({
     hash: dataHash,
   });
 
-  console.log('checkInError', checkInError);
-
   const [stravaActivityIdx, setStravaActivityIdx] = useState(-1);
 
   useEffect(() => {
+    console.log('selected challenge', selectedChallenge);
     const getCheckIns = async () => {
+      console.log({ arxAddress: selectedChallenge.arxAddress, userAddress: address });
       const achieved = (await readContract(config, {
         abi: trackerContract.abi,
         address: trackerContract.address as `0x${string}`,
@@ -72,7 +72,6 @@ export default function Step3CheckIn({
 
     getCheckIns().catch((err) => {
       console.log(err);
-      toast.error('Error getting checkins');
     });
   }, [isSuccess]);
 
@@ -102,8 +101,6 @@ export default function Step3CheckIn({
   };
 
   const { loading, data: stravaData } = useStravaData(accessToken);
-
-  console.log('data', stravaData);
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -258,10 +255,6 @@ export default function Step3CheckIn({
 
   const showStravaRecord =
     selectedChallenge.verificationType === VerificationType.Strava && accessToken !== null;
-
-  console.log('accessToken', accessToken);
-
-  console.log('showStravaRecord', showStravaRecord);
 
   return (
     <div className="flex flex-col items-center justify-center">

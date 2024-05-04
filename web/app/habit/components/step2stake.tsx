@@ -43,6 +43,7 @@ export default function Step2DepositAndStake({
   };
 
   const { address } = useAccount();
+  console.log('address step2', address);
   const balance = useBalance({ address });
   const ethBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
   const hasEnoughBalance = ethBalance > selectedChallenge.stake;
