@@ -18,7 +18,7 @@ export const challenges: Challenge[] = [
     name: 'Run at Sydney Park 10 times',
     duration: 'May 1-27',
     arxAddress: '0x883167E6b5d489B82cB97bEf9C7967afe3A3D299',
-    stake: 0.001,
+    stake: 0.0001,
     icon: '🏃🏻‍♂️',
     donationOrg: 'Gitcoin',
     type: ActivityTypes.Physical,

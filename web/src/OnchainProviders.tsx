@@ -34,3 +34,4 @@ function OnchainProviders({ children }: Props) {
 }
 
 export default OnchainProviders;
+export { wagmiConfig };

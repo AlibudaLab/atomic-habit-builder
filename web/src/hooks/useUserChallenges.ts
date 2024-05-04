@@ -1,5 +1,8 @@
 import { ActivityTypes, VerificationType, challenges } from '@/constants';
+import { readContract } from '@wagmi/core';
+import trackerContract from '@/contracts/tracker.json';
 import { useState, useEffect } from 'react';
+import { wagmiConfig as config } from '@/OnchainProviders';
 
 export type Challenge = {
   name: string;
@@ -18,18 +21,21 @@ const useUserChallenges = (address: string | undefined) => {
   const [data, setData] = useState<Challenge[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
 
-  console.log('error', error);
-
   useEffect(() => {
     if (!address) return;
     const fetchData = async () => {
       try {
         setLoading(true);
 
+        const userChallenges = await readContract(config, {
+          abi: trackerContract.abi,
+          address: trackerContract.address as `0x${string}`,
+          functionName: 'getUserChallenges',
+          args: [address],
+        });
+
         // TODO: fetch user activities from rpc
-        const userRegisteredAddresses = ['0x883167E6b5d489B82cB97bEf9C7967afe3A3D299'].map((a) =>
-          a.toLowerCase(),
-        );
+        const userRegisteredAddresses = (userChallenges as string[]).map((a) => a.toLowerCase());
 
         // all challenges that user participants in
         const knownChallenges = challenges.filter((c) =>
@@ -37,9 +43,9 @@ const useUserChallenges = (address: string | undefined) => {
         );
 
         setData(knownChallenges);
-
         setLoading(false);
       } catch (_error) {
+        console.log('error', _error);
         setError(_error);
         setLoading(false);
       }
