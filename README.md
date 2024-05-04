@@ -44,3 +44,14 @@ Strava is an exercise-tracking app. There are already 120 million users on Strav
 To enable our application to validate real-world interactions, whether it's proving that users have met people or have been physically present at a location, we utilize the ARX chip. The embedded ECDSA private-public key pair signs a challenge message once the user taps their phone on it. Then, the signature is sent for verification to the smart contract on-chain for check-in verification. We use the **`Halolib`** API's **`execHaloCmdWeb`** and call the **`sign`** command to sign over the user's wallet address and the current timestamp with the chip's private key.
 
 ## References
+
+### Strava
+- [Add Strava OAuth2 Login to Your React App In 15 Minutes](https://levelup.gitconnected.com/add-strava-oauth2-login-to-your-react-app-in-15-minutes-6c92e845919e)
+- [Nouns Running Club](https://www.strava.com/clubs/1125128)
+- [Strava API](https://developers.strava.com/docs/getting-started/)
+
+### Unlimit
+- [Unlimit Doc](https://docs.gatefi.com/docs/gatefi-docs/dh55mkgdkx2r5-cryptocurrency-assets)
+
+### Nouns
+- [Nouns Notion Cheatsheet](https://nouns-fair.notion.site/Resources-ab2df96606554ee78ccde0b032d3a056)
