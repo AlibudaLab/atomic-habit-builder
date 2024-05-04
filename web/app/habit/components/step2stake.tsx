@@ -3,10 +3,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState, SetStateAction } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { useRef, useState, SetStateAction, useEffect } from 'react';
+import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
+import { parseEther } from 'ethers/lib/utils';
+import trackerContract from '@/contracts/tracker.json';
+import toast from 'react-hot-toast';
 
 import { redirect } from 'next/navigation';
 import { Challenge } from '@/hooks/useUserChallenges';
@@ -21,7 +24,7 @@ import Link from 'next/link';
 export default function Step2DepositAndStake({
   setSteps,
   setSelectedChallenge,
-  selectedChallenge
+  selectedChallenge,
 }: {
   setSteps: React.Dispatch<SetStateAction<number>>;
   setSelectedChallenge: React.Dispatch<SetStateAction<Challenge>>;
@@ -29,7 +32,6 @@ export default function Step2DepositAndStake({
 }) {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-
 
   const handleOnChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedChallengeName = event.target.value;
@@ -90,9 +92,45 @@ export default function Step2DepositAndStake({
     });
   };
 
+  const {
+    writeContract,
+    data: dataHash,
+    error: joinError,
+    isPending: joinPending,
+  } = useWriteContract();
+
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+    hash: dataHash,
+  });
+
+  const onJoinButtonClick = async () => {
+    writeContract({
+      address: trackerContract.address as `0x${string}`,
+      abi: trackerContract.abi,
+      functionName: 'join',
+      args: [selectedChallenge.arxAddress],
+      value: parseEther(selectedChallenge.stake.toString()).toBigInt(),
+    });
+  };
+
   if (!address) {
     redirect('/');
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('Joined!! Directing to next step!');
+      setTimeout(() => {
+        setSteps(3);
+      }, 2000);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (joinError) {
+      toast.error('Error joining the challenge. Please try again');
+    }
+  }, [joinError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -122,33 +160,29 @@ export default function Step2DepositAndStake({
         </select>
       </div>
 
-      
-        <button
-          type="button"
-          className="mt-4 rounded-lg border-solid px-6 py-3 font-bold bg-yellow bg-yellow disabled:bg-gray-400 disabled:cursor-not-allowed"
-          style={{ width: '250px', height: '45px', color: 'white' }}
-          onClick={() => {
-            console.log('Ryan please do stake');
-          }}
-          disabled={!hasEnoughBalance}
-        >
-          Stake {selectedChallenge.stake} ETH
-        </button>
-      
-        {/* <button
-          type="button"
-          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '45px' }}
-          onClick={handleOnClickOnramp}
-        >
-          Onramp
-        </button> */}
-      
-      <div className='text-xs p-4'>
-        {(balance.data && hasEnoughBalance) 
-          ? <p> 💰 Wallet Balance: {ethBalance.toString()} ETH </p>
-          : <p> 🚨 Insufficient Balance: {ethBalance.toString()} ETH. <span className='hover:underline font-bold' onClick={handleOnClickOnramp}> Onramp now </span> </p>
-        }
+      <button
+        type="button"
+        className="bg-yellow bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
+        style={{ width: '250px', height: '45px', color: 'white' }}
+        onClick={onJoinButtonClick}
+        disabled={!hasEnoughBalance || joinPending || isLoading}
+      >
+        Stake {selectedChallenge.stake} ETH
+      </button>
+
+      <div className="p-4 text-xs">
+        {balance.data && hasEnoughBalance ? (
+          <p> 💰 Wallet Balance: {ethBalance.toString()} ETH </p>
+        ) : (
+          <p>
+            {' '}
+            🚨 Insufficient Balance: {ethBalance.toString()} ETH.{' '}
+            <span className="font-bold hover:underline" onClick={handleOnClickOnramp}>
+              {' '}
+              Onramp now{' '}
+            </span>{' '}
+          </p>
+        )}
       </div>
       <div id="overlay-button"> </div>
 

@@ -33,12 +33,14 @@ export default function HabitPage() {
       <div className="font-title px-6 pb-10 text-center text-xl">Happy Builder; Habit Builder!</div>
 
       {steps === 1 && <Step1 setSteps={setSteps} setChallenge={setSelectedChallenge} />}
-      {steps === 2 && <Step2DepositAndStake 
-        setSteps={setSteps} 
-        selectedChallenge={selectedChallenge}  
-        setSelectedChallenge={setSelectedChallenge}
-      />}
-      {steps === 3 && <Step3CheckIn setSteps={setSteps} selectedChallenge={selectedChallenge}/>}
+      {steps === 2 && (
+        <Step2DepositAndStake
+          setSteps={setSteps}
+          selectedChallenge={selectedChallenge}
+          setSelectedChallenge={setSelectedChallenge}
+        />
+      )}
+      {steps === 3 && <Step3CheckIn setSteps={setSteps} selectedChallenge={selectedChallenge} />}
       {steps === 4 && <Step4 setSteps={setSteps} challenge={selectedChallenge} />}
 
       {/* just for previewing */}

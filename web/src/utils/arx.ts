@@ -1,11 +1,35 @@
 import { execHaloCmdWeb } from '@arx-research/libhalo/api/web';
 import moment from 'moment';
+import { hashMessage } from 'viem';
 
-const getCheckinMessage = (address: `0x${string}`): string => {
-  return `checking in! user: ${address}, time: ${moment().unix()}`;
+type ArxSignature = {
+  input: {
+    keyNo: number;
+    digest: string;
+    message: string;
+  };
+  signature: {
+    raw: {
+      r: string;
+      s: string;
+      v: number;
+    };
+    der: string;
+    ether: `0x${string}`;
+  };
+  publicKey: string;
+  etherAddress: `0x${string}`;
 };
 
-const arxSignMessage = async (message: string): Promise<unknown> => {
+const getCheckinMessage = (address: `0x${string}`, timestamp: number): string => {
+  return `checking in! user: ${address}, time: ${timestamp}`;
+};
+
+const getEncodedCheckinMessage = (address: `0x${string}`, timestamp: number): string => {
+  return hashMessage(getCheckinMessage(address, timestamp));
+};
+
+const arxSignMessage = async (message: string): Promise<ArxSignature> => {
   const command = {
     name: 'sign',
     message,
@@ -17,4 +41,4 @@ const arxSignMessage = async (message: string): Promise<unknown> => {
   return execHaloCmdWeb(command);
 };
 
-export { getCheckinMessage, arxSignMessage };
+export { getCheckinMessage, arxSignMessage, getEncodedCheckinMessage, type ArxSignature };

@@ -1,5 +1,8 @@
 import { ActivityTypes, VerificationType, challenges } from '@/constants';
+import { readContract } from '@wagmi/core';
+import trackerContract from '@/contracts/tracker.json';
 import { useState, useEffect } from 'react';
+import { wagmiConfig as config } from '@/OnchainProviders';
 
 export type Challenge = {
   name: string;
@@ -7,10 +10,10 @@ export type Challenge = {
   arxAddress: string;
   stake: number;
   icon: string;
-  donationOrg?: string,
-  type: ActivityTypes,
-  verificationType: VerificationType,
-  mapKey?:string
+  donationOrg?: string;
+  type: ActivityTypes;
+  verificationType: VerificationType;
+  mapKey?: string;
 };
 
 const useUserChallenges = (address: string | undefined) => {
@@ -18,27 +21,31 @@ const useUserChallenges = (address: string | undefined) => {
   const [data, setData] = useState<Challenge[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
 
-  console.log('error', error);
-
   useEffect(() => {
     if (!address) return;
     const fetchData = async () => {
       try {
-        
         setLoading(true);
 
+        const userChallenges = await readContract(config, {
+          abi: trackerContract.abi,
+          address: trackerContract.address as `0x${string}`,
+          functionName: 'getUserChallenges',
+          args: [address],
+        });
+
         // TODO: fetch user activities from rpc
-        const userRegisteredAddresses = [
-          '0x1234567890abcdef1234567890abcdef12345678'
-        ].map(a => a.toLowerCase())
+        const userRegisteredAddresses = (userChallenges as string[]).map((a) => a.toLowerCase());
 
         // all challenges that user participants in
-        const knownChallenges = challenges.filter(c => userRegisteredAddresses.includes(c.arxAddress.toLowerCase()))
+        const knownChallenges = challenges.filter((c) =>
+          userRegisteredAddresses.includes(c.arxAddress.toLowerCase()),
+        );
 
         setData(knownChallenges);
-
         setLoading(false);
       } catch (_error) {
+        console.log('error', _error);
         setError(_error);
         setLoading(false);
       }

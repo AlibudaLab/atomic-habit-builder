@@ -37,9 +37,9 @@ export default function Step1BList({
         >
           <div className="flex w-full justify-between">
             <div className="mr-4 text-2xl">{challenge.icon}</div>
-            <div className='justify-left items-start hover:text-black'>
-              <div className='text-sm flex'>{challenge.duration} </div>
-              <div className='text-sm flex'>{challenge.name} </div>
+            <div className="justify-left items-start hover:text-black">
+              <div className="flex text-sm">{challenge.duration} </div>
+              <div className="flex text-sm">{challenge.name} </div>
             </div>
             <div className="text-xl"> 1/ 10 </div>
           </div>
