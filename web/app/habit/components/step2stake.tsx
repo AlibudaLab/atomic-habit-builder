@@ -66,7 +66,7 @@ export default function Step2DepositAndStake({
         nodeSelector: '#overlay-button',
         lang: GateFiLangEnum.en_US,
         isSandbox: true,
-        successUrl: 'https://www.crypto.unlimit.com/',
+        successUrl: window.location.href,
         walletAddress: address,
         externalId: randomString,
         defaultFiat: {
