@@ -42,35 +42,34 @@ export function ChallengesDropDown({
             align="end"
             sideOffset={0}
             className={clsx(
-            'w-120 inline-flex flex-col items-start justify-start',
+              'w-120 inline-flex flex-col items-start justify-start',
               'bg-light rounded-lg border-solid shadow',
             )}
           >
             {challenges.map((challenge) => (
-                <button
-                  type="button"
-                  style={{ borderColor: 'grey', width: '320px' }}
-                  className="bg-light p-2 text-center hover:opacity-80"
-                  // label={challenge.name}
-                  key={challenge.arxAddress}
-                  onClick={() => {
-                    onChoose(challenge.arxAddress);
-                    setOpen(false);
-                  }}
-                >
-                  <div className="flex justify-start">
-                    <div className="p-2 text-2xl">
-                      {' '}
-                      {challenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
-                    </div>
-                    <div className="flex flex-col items-start justify-start p-2">
-                      <p className="text-xs opacity-80">{challenge.duration}</p>
-                      <p className="text-sm">{challenge.name}</p>
-                    </div>
+              <button
+                type="button"
+                style={{ borderColor: 'grey', width: '320px' }}
+                className="bg-light p-2 text-center hover:opacity-80"
+                // label={challenge.name}
+                key={challenge.arxAddress}
+                onClick={() => {
+                  onChoose(challenge.arxAddress);
+                  setOpen(false);
+                }}
+              >
+                <div className="flex justify-start">
+                  <div className="p-2 text-2xl">
+                    {' '}
+                    {challenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
                   </div>
-                </button>
-              ),
-            )}
+                  <div className="flex flex-col items-start justify-start p-2">
+                    <p className="text-xs opacity-80">{challenge.duration}</p>
+                    <p className="text-sm">{challenge.name}</p>
+                  </div>
+                </div>
+              </button>
+            ))}
           </DropdownMenu.Content>
         )}
       </DropdownMenu.Portal>

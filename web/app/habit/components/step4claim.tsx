@@ -52,19 +52,23 @@ export default function Step4Claim({
         </p>
       </div>
 
-      {true? <button
-        type="button"
-        className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-        onClick={() => setSteps(2)}
-      >
-        Start a new Challenge
-      </button>: <button
-        type="button"
-        className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-        onClick={onClaimClick}
-      >
-        Claim Rewards
-      </button>}
+      {true ? (
+        <button
+          type="button"
+          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+          onClick={() => setSteps(2)}
+        >
+          Start a new Challenge
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+          onClick={onClaimClick}
+        >
+          Claim Rewards
+        </button>
+      )}
 
       <div className="p-4 text-xs">Get back {challenge.stake} ETH and 1 NFT Badge</div>
 
