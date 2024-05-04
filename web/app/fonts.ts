@@ -3,7 +3,7 @@ import { Londrina_Solid, Nunito } from 'next/font/google';
 export const londrina = Londrina_Solid({
   subsets: ['latin'],
   display: 'swap',
-  weight: ["300", "400", "900"],
+  weight: ['300', '400', '900'],
   variable: '--font-title',
 });
 

@@ -14,8 +14,8 @@
   --palette-bg: #f9f4e6;
   --palette-bg-soft-black: #141519;
   --palette-bg-white: #fff;
-  --palette-text-dark: #7E7956;
-  --palette-dark-yellow: #EDB830;
+  --palette-text-dark: #7e7956;
+  --palette-dark-yellow: #edb830;
 
   /* Build Onchain Apps shared variables */
   --boat-color-background: var(--palette-bg);

@@ -19,13 +19,12 @@ export default function Step1BList({
   setSteps: React.Dispatch<SetStateAction<number>>;
   challenges: Challenge[];
 }) {
+  console.log('challenges here', challenges.length);
 
-  console.log('challenges here', challenges.length)
-  
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      <div className="flex w-full items-center text-center justify-center gap-6">
+      <div className="flex w-full items-center justify-center gap-6 text-center">
         <p className="text-lg"> Ongoing Challenges</p>
       </div>
 
@@ -35,7 +34,7 @@ export default function Step1BList({
           key={challenge.arxAddress}
           type="button"
           className="mt-4 rounded-lg px-6 py-3 font-bold"
-          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '50px'}}
+          style={{ borderColor: '#EDB830', border: 'solid', width: '250px', height: '50px' }}
           onClick={() => setSteps(3)}
         >
           Check-in {challenge.name}{' '}
@@ -44,7 +43,7 @@ export default function Step1BList({
 
       <button
         type="button"
-        className="mt-4 rounded-lg border-solid px-6 py-3 bg-yellow font-bold"
+        className="bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold"
         style={{ color: 'white', border: 'solid', width: '250px', height: '50px' }}
         onClick={() => setSteps(2)}
       >
