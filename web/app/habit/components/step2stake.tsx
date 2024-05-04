@@ -1,10 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState, SetStateAction } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { useRef, useState, SetStateAction, useEffect } from 'react';
+import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
+import { parseEther } from 'ethers/lib/utils';
+import trackerContract from '@/contracts/tracker.json';
+import toast from 'react-hot-toast';
 
 import { redirect } from 'next/navigation';
 import { Challenge } from '@/hooks/useUserChallenges';
@@ -85,9 +88,42 @@ export default function Step2DepositAndStake({
     });
   };
 
+  const {
+    writeContract,
+    data: dataHash,
+    error: joinError,
+    isPending: joinPending,
+  } = useWriteContract();
+
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+    hash: dataHash,
+  });
+
+  const onJoinButtonClick = async() =>{
+    writeContract({
+      address: trackerContract.address as `0x${string}`,
+      abi: trackerContract.abi,
+      functionName: 'join',
+      args: [selectedChallenge.arxAddress],
+      value: parseEther('0.001').toBigInt(), // joining stake fee 0.001 ether
+    });
+  }
+
   if (!address) {
     redirect('/');
   }
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('Joined!!');
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (joinError) {
+      toast.error("Error joining the challenge. Please try again");
+    }
+  }, [joinError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -122,9 +158,7 @@ export default function Step2DepositAndStake({
           type="button"
           className="bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold"
           style={{ width: '250px', height: '45px', color: 'white' }}
-          onClick={() => {
-            console.log('Ryan please do stake');
-          }}
+          onClick={onJoinButtonClick}
         >
           Stake {selectedChallenge.stake} ETH
         </button>
