@@ -18,7 +18,7 @@ export const challenges: Challenge[] = [
     name: 'Run at Sydney Park 10 times',
     duration: 'May 1 - 27',
     arxAddress: '0x883167E6b5d489B82cB97bEf9C7967afe3A3D299',
-    stake: 0.0001,
+    stake: 0.001,
     icon: '🏃🏻‍♂️',
     donationOrg: 'Gitcoin',
     type: ActivityTypes.Mental,
@@ -41,7 +41,7 @@ export const challenges: Challenge[] = [
   {
     name: 'Go coworking with cool devs at ETHSydney',
     duration: 'May 3 - 7',
-    arxAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+    arxAddress: '0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07',
     stake: 0.003,
     icon: '🤝🏻',
     donationOrg: 'Gitcoin',
