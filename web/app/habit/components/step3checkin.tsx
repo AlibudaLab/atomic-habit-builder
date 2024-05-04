@@ -30,7 +30,7 @@ export default function Step3CheckIn({
   console.log('this challenge', selectedChallenge)
 
   // TODO: fetch actually done
-  const achieved = 9;
+  const achieved = 5;
 
   const { data: checkInContractRequest } = useSimulateContract({
     address: trackerContract.address as `0x${string}`,
