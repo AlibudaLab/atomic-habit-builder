@@ -14,7 +14,7 @@ export const logPageview = (url: string) => {
   if (!isClient()) {
     return;
   }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
   window.gtag('config', GOOGLE_ANALYTICS_ID, {
     page_path: url,
   });
@@ -31,7 +31,6 @@ export const logEvent = ({
   label: string;
   value: number;
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   window.gtag('event', action, {
     event_category: category,
     event_label: label,

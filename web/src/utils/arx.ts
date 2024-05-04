@@ -5,7 +5,7 @@ const getCheckinMessage = (address: `0x${string}`): string => {
   return `checking in! user: ${address}, time: ${moment().unix()}`;
 };
 
-const arxSignMessage = async (message: string): Promise<any> => {
+const arxSignMessage = async (message: string): Promise<unknown> => {
   const command = {
     name: 'sign',
     message,
@@ -14,7 +14,7 @@ const arxSignMessage = async (message: string): Promise<any> => {
     format: 'text',
   };
 
-  return await execHaloCmdWeb(command);
+  return execHaloCmdWeb(command);
 };
 
 export { getCheckinMessage, arxSignMessage };
