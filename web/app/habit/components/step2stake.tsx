@@ -146,20 +146,6 @@ export default function Step2DepositAndStake({
 
       {/* drop down here */}
       <div>
-        {/* ... existing JSX ... */}
-        {/* <select
-          style={{ borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px' }}
-          value={selectedChallenge.name ?? ''}
-          onChange={handleOnChange}
-          className="bg-light rounded-md p-2 text-center"
-        >
-          {challenges.map((challenge) => (
-            <option key={challenge.name} value={challenge.name}>
-              {challenge.name}
-            </option>
-          ))}
-        </select> */}
-
         <ChallengesDropDown
           selectedChallenge={selectedChallenge}
           setSelectedChallenge={setSelectedChallenge}
@@ -194,7 +180,7 @@ export default function Step2DepositAndStake({
       <div id="overlay-button"> </div>
 
       {/* warn message */}
-      <div className="text-md px-10">
+      <div className="text-md px-10 pt-8">
         if you fail to maintain the habit, 50% of the stake will be donated to designated public
         goods orgs, and 50% be distributed to other habit building winners.
       </div>

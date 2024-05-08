@@ -11,7 +11,7 @@ const step4 = require('../../src/imgs/step4.png') as string;
 
 export default function HomePage() {
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 py-16">
+    <main className="container mx-auto flex flex-col items-center px-8 py-16 text-center ">
       <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
 
       <div className="font-title container mb-4 w-full text-center text-4xl">
