@@ -136,7 +136,7 @@ export default function Step2DepositAndStake({
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      <div className="col-span-3 flex w-full items-center justify-start gap-6">
+      <div className="flex items-center gap-6">
         <Image src={img} width="50" alt="Step 2 Image" className="mb-3 rounded-full object-cover" />
         <p className="mr-auto text-lg font-bold">Stake and join habit challenge</p>
       </div>
@@ -185,7 +185,7 @@ export default function Step2DepositAndStake({
         goods orgs, and 50% be distributed to other habit building winners.
       </div>
 
-      <div className="w-full justify-start">
+      <div className="w-full justify-start px-6">
         <button onClick={() => setSteps(3)} type="button">
           <Image src={kangaroo} width="350" alt="Kangaroo" className="mb object-cover" />
         </button>
