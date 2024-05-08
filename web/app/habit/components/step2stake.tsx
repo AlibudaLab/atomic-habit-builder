@@ -136,7 +136,7 @@ export default function Step2DepositAndStake({
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      <div className="col-span-3 flex w-full items-center justify-start gap-6">
+      <div className="flex items-center gap-6">
         <Image src={img} width="50" alt="Step 2 Image" className="mb-3 rounded-full object-cover" />
         <p className="mr-auto text-lg font-bold">Stake and join habit challenge</p>
       </div>
@@ -146,20 +146,6 @@ export default function Step2DepositAndStake({
 
       {/* drop down here */}
       <div>
-        {/* ... existing JSX ... */}
-        {/* <select
-          style={{ borderColor: '#7E7956', border: 'solid', width: '250px', height: '45px' }}
-          value={selectedChallenge.name ?? ''}
-          onChange={handleOnChange}
-          className="bg-light rounded-md p-2 text-center"
-        >
-          {challenges.map((challenge) => (
-            <option key={challenge.name} value={challenge.name}>
-              {challenge.name}
-            </option>
-          ))}
-        </select> */}
-
         <ChallengesDropDown
           selectedChallenge={selectedChallenge}
           setSelectedChallenge={setSelectedChallenge}
@@ -194,12 +180,12 @@ export default function Step2DepositAndStake({
       <div id="overlay-button"> </div>
 
       {/* warn message */}
-      <div className="text-md px-10">
+      <div className="text-md px-10 pt-8">
         if you fail to maintain the habit, 50% of the stake will be donated to designated public
         goods orgs, and 50% be distributed to other habit building winners.
       </div>
 
-      <div className="w-full justify-start">
+      <div className="w-full justify-start px-6">
         <button onClick={() => setSteps(3)} type="button">
           <Image src={kangaroo} width="350" alt="Kangaroo" className="mb object-cover" />
         </button>

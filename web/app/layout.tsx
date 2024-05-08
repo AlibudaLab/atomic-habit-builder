@@ -29,7 +29,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${nunito.className} ${londrina.className}`}>
       <body className="flex flex-1 flex-col">
-        <OnchainProviders>{children}</OnchainProviders>
+        <OnchainProviders>
+          <div className='lg:px-32 lg:max-w-3xl lg:mx-auto'>
+          {children}
+          </div>
+        </OnchainProviders>
       </body>
       <GoogleAnalytics />
     </html>

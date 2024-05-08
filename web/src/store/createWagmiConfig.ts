@@ -16,7 +16,7 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
     connectors: [
       coinbaseWallet({
         appChainIds: [baseSepolia.id],
-        appName: 'buildonchainapps',
+        appName: 'Alibuda',
       }),
     ],
     ssr: true,
