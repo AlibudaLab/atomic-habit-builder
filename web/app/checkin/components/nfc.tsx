@@ -2,9 +2,7 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
@@ -13,17 +11,14 @@ import { useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import { Challenge } from '@/hooks/useUserChallenges';
 import moment from 'moment';
-import { wagmiConfig as config } from '@/OnchainProviders';
-import { readContract } from '@wagmi/core';
 import Stamps from './stamps';
+import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 
 const mental = require('../../../src/imgs/mental.png') as string;
 
 export default function NFCCheckIn({challenge}: {challenge: Challenge}) {
   const { address } = useAccount();
   
-  const [checkedIn, setCheckedIn] = useState(0);
-
   const {
     writeContract,
     data: dataHash,
@@ -36,25 +31,7 @@ export default function NFCCheckIn({challenge}: {challenge: Challenge}) {
   });
 
   
-  useEffect(() => {
-    const getCheckIns = async () => {
-      console.log({ arxAddress: challenge.arxAddress, userAddress: address });
-      const achieved = (await readContract(config, {
-        abi: trackerContract.abi,
-        address: trackerContract.address as `0x${string}`,
-        functionName: 'getUserCheckInCounts',
-        args: [challenge.arxAddress, address],
-      })) as bigint;
-      if (achieved) {
-        const checked = Number(achieved.toString());
-        setCheckedIn(checked);
-      }
-    };
-
-    getCheckIns().catch((err) => {
-      console.log(err);
-    });
-  }, [challenge, address]);
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress)
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;

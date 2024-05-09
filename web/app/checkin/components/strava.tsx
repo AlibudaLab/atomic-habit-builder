@@ -18,6 +18,7 @@ import { readContract } from '@wagmi/core';
 import useStravaData from '@/hooks/useStravaData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
+import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 
 const physical = require('../../../src/imgs/physical.png') as string;
 
@@ -31,8 +32,7 @@ export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
   const [accessToken, setAccessToken] = useState<null | string | undefined>(null);
   const searchParams = useSearchParams();
   const stravaAuthToken = searchParams.get('code');
-  const [checkedIn, setCheckedIn] = useState(0);
-
+  
   const {
     writeContract,
     data: dataHash,
@@ -46,26 +46,7 @@ export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
 
   const [stravaActivityIdx, setStravaActivityIdx] = useState(-1);
 
-  useEffect(() => {
-    console.log('selected challenge', challenge);
-    const getCheckIns = async () => {
-      console.log({ arxAddress: challenge.arxAddress, userAddress: address });
-      const achieved = (await readContract(config, {
-        abi: trackerContract.abi,
-        address: trackerContract.address as `0x${string}`,
-        functionName: 'getUserCheckInCounts',
-        args: [challenge.arxAddress, address],
-      })) as bigint;
-      if (achieved) {
-        const checked = Number(achieved.toString());
-        setCheckedIn(checked);
-      }
-    };
-
-    getCheckIns().catch((err) => {
-      console.log(err);
-    });
-  }, [isSuccess]);
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress)
 
   const onClickStrava = async () => {
     
