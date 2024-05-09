@@ -1,3 +1,4 @@
+/* eslint-disable react-perf/jsx-no-new-function-as-prop */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
@@ -14,16 +15,15 @@ import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 import { Challenge } from '@/hooks/useUserChallenges';
 
-const img = require('../../../src/imgs/step2.png') as string;
-const kangaroo = require('../../../src/imgs/kangaroo.png') as string;
+const img = require('@/imgs/step2.png') as string;
+const kangaroo = require('@/imgs/kangaroo.png') as string;
 
 import { challenges } from '@/constants';
 import { formatEther } from 'viem';
 
 import { ChallengesDropDown } from './dropdown';
-import Link from 'next/link';
 
-export default function Step2DepositAndStake({
+export default function Join({
   setSteps,
   setSelectedChallenge,
   selectedChallenge,
@@ -122,7 +122,9 @@ export default function Step2DepositAndStake({
     if (isSuccess) {
       toast.success('Joined!! Directing to next step!');
       setTimeout(() => {
-        setSteps(3);
+        // setSteps(3);
+        // todo: go to checkin page, or dashboard
+
       }, 2000);
     }
   }, [isSuccess]);
@@ -186,9 +188,7 @@ export default function Step2DepositAndStake({
       </div>
 
       <div className="w-full justify-start px-6">
-        <button onClick={() => setSteps(3)} type="button">
-          <Image src={kangaroo} width="350" alt="Kangaroo" className="mb object-cover" />
-        </button>
+        <Image src={kangaroo} width="350" alt="Kangaroo" className="mb object-cover" />
       </div>
     </div>
   );

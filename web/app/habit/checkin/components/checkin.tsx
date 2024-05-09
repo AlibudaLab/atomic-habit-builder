@@ -2,20 +2,14 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
-import { useParams, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
-import toast from 'react-hot-toast';
-import { useWriteContract } from 'wagmi';
+import { useParams } from 'next/navigation';
 import { Challenge } from '@/hooks/useUserChallenges';
 import { challenges, VerificationType } from '@/constants';
-import { timeDifference } from '@/utils/time';
 import StravaCheckIn from './strava';
 import NFCCheckIn from './nfc';
 
-const img = require('../../../src/imgs/step3.png') as string;
+const img = require('@/imgs/step3.png') as string;
 
 
 export default function CheckIn() {

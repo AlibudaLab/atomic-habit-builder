@@ -3,11 +3,11 @@
 import { Challenge } from '@/hooks/useUserChallenges';
 import Image from 'next/image';
 import { SetStateAction, useEffect } from 'react';
-import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import toast from 'react-hot-toast';
 
-const img = require('../../../src/imgs/success.png') as string;
+const img = require('@/imgs/success.png') as string;
 
 export default function Step4Claim({
   challenge,

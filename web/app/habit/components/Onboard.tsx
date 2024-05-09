@@ -1,17 +1,11 @@
 'use client';
 
-import useUserChallenges from '@/hooks/useUserChallenges';
 import Image from 'next/image';
-import { SetStateAction } from 'react';
-import { useAccount, useConnect } from 'wagmi';
+import { useConnect } from 'wagmi';
 
-const img = require('../../../src/imgs/step1.png') as string;
+const img = require('@/imgs/step1.png') as string;
 
-export default function Step1Join({
-  setSteps,
-}: {
-  setSteps: React.Dispatch<SetStateAction<number>>;
-}) {
+export default function Onboard() {
   const { connectors, connect } = useConnect();
   const connector = connectors[0];
 

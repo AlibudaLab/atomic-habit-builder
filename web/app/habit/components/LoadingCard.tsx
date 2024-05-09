@@ -1,9 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { SetStateAction } from 'react';
 
-const img = require('../../../src/imgs/nouns-loading.png') as string;
+const img = require('@/imgs/nouns-loading.png') as string;
 
 export default function LoadingCard({ text }: { text: string }) {
   return (
