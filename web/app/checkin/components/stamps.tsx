@@ -9,7 +9,7 @@ type StampProps = {
 }
 
 export default function Stamps({ checkInNum, targetNum, id }: StampProps) {
-  return (<div className="flex flex-wrap gap-4 px-12 py-6">
+  return (<div className="flex flex-wrap gap-4 px-12 py-6 justify-center">
     {Array.from({ length: targetNum }).map((_, idx) => {
       const done = idx < checkInNum;
       const iconIdx = (Number(id) % 20) + idx;
