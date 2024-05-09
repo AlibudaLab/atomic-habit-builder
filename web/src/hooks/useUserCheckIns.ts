@@ -3,7 +3,6 @@ import trackerContract from '@/contracts/tracker.json';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 
-
 const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: string) => {
   const [loading, setLoading] = useState(true);
   const [checkedIn, setCheckedIn] = useState<number>(1);
@@ -21,7 +20,7 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
           functionName: 'getUserCheckInCounts',
           args: [challengesAddr, address],
         })) as bigint;
-        
+
         if (achieved) {
           const checked = Number(achieved.toString());
           setCheckedIn(checked);

@@ -7,12 +7,7 @@ import { Challenge } from '@/hooks/useUserChallenges';
  * @param param0
  * @returns
  */
-export default function UserChallenges({
-  challenges,
-  
-}: {
-  challenges: Challenge[];
-}) {
+export default function UserChallenges({ challenges }: { challenges: Challenge[] }) {
   console.log('challenges here', challenges.length);
 
   return (
@@ -53,7 +48,7 @@ export default function UserChallenges({
         style={{ width: '300px', height: '50px' }}
         onClick={() => {
           // todo
-          console.log('go to all challenges page')
+          console.log('go to all challenges page');
         }}
       >
         Join a New Challenge{' '}

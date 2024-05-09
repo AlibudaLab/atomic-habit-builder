@@ -30,8 +30,8 @@ export default function Join() {
   const [selectedChallenge, setSelectedChallenge] = useState<null | Challenge>(null);
 
   const handleOnChoose = (challengeArx: string) => {
-    const challenge = challenges.find(c => c.arxAddress === challengeArx)?? null
-    setSelectedChallenge(challenge)
+    const challenge = challenges.find((c) => c.arxAddress === challengeArx) ?? null;
+    setSelectedChallenge(challenge);
   };
 
   const { address: smartWallet } = useAccount();
@@ -129,7 +129,7 @@ export default function Join() {
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
-     <Header />
+      <Header />
 
       <div className="flex flex-col items-center justify-center">
         {/* Img and Description */}
@@ -142,9 +142,9 @@ export default function Join() {
           />
           <p className="mr-auto text-lg font-bold">Stake and Join a challenge</p>
         </div>
-        
+
         {/* drop down here */}
-        <div className='pt-4'>
+        <div className="pt-4">
           <ChallengesDropDown
             selectedChallenge={selectedChallenge}
             setSelectedChallenge={setSelectedChallenge}

@@ -16,9 +16,9 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 
 const mental = require('@/imgs/mental.png') as string;
 
-export default function NFCCheckIn({challenge}: {challenge: Challenge}) {
+export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
-  
+
   const {
     writeContract,
     data: dataHash,
@@ -30,8 +30,7 @@ export default function NFCCheckIn({challenge}: {challenge: Challenge}) {
     hash: dataHash,
   });
 
-  
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress)
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -89,28 +88,16 @@ export default function NFCCheckIn({challenge}: {challenge: Challenge}) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      
-      <Image
-        src={mental}
-        width="250"
-        alt="Health"
-        className="mb-3 rounded-full object-cover "
-      />
+      <Image src={mental} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
 
       {/* overview   */}
       <div className="py-2">
-        <p className="px-2 font-bold">
-          Mental Health Habit Building
-        </p>
+        <p className="px-2 font-bold">Mental Health Habit Building</p>
         <p className="px-2 text-sm"> Duration: {challenge.duration} </p>
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
-      
-      <Stamps 
-        targetNum={challenge.targetNum}
-        checkInNum={checkedIn}
-        id={challenge.arxAddress}
-      />
+
+      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
 
       <div>
         {' '}

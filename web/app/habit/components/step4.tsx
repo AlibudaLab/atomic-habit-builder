@@ -21,7 +21,7 @@ export default function Step4({
 
   return (
     <div className="flex flex-col items-center justify-center">
-        <Step4Failed setSteps={setSteps} challenge={challenge} />
+      <Step4Failed setSteps={setSteps} challenge={challenge} />
     </div>
   );
 }
