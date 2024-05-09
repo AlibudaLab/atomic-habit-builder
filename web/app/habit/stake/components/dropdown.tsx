@@ -12,8 +12,8 @@ export function ChallengesDropDown({
   selectedChallenge,
   onChoose,
 }: {
-  setSelectedChallenge: React.Dispatch<SetStateAction<Challenge>>;
-  selectedChallenge: Challenge;
+  setSelectedChallenge: React.Dispatch<SetStateAction<Challenge | null>>;
+  selectedChallenge: Challenge | null;
   onChoose: (challengeArx: string) => void;
 }) {
   const [open, setOpen] = useState(true);
@@ -23,16 +23,29 @@ export function ChallengesDropDown({
       <DropdownMenu.Trigger asChild>
         <div className=" flex w-full items-center justify-start gap-4">
           <div className="flex justify-start rounded-md border border-solid">
-            <div className="p-2 text-2xl">
-              {' '}
-              {selectedChallenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
-            </div>
-            <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
-              <div className="flex flex-col items-start justify-start p-2">
-                <p className="text-xs opacity-80">{selectedChallenge.duration}</p>
-                <p className="text-sm">{selectedChallenge.name}</p>
-              </div>
-            </button>
+            {selectedChallenge ? (
+              <>
+                <div className="p-2 text-2xl">
+                  {' '}
+                  {selectedChallenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
+                </div>
+                <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
+                  <div className="flex flex-col items-start justify-start p-2">
+                    <p className="text-xs opacity-80">{selectedChallenge.duration}</p>
+                    <p className="text-sm">{selectedChallenge.name}</p>
+                  </div>
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="p-2 text-2xl"> + </div>
+                <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
+                  <div className="flex flex-col items-start justify-start p-2">
+                    <p className="text-sm"> Select One </p>
+                  </div>
+                </button>
+              </>
+            )}
           </div>
         </div>
       </DropdownMenu.Trigger>

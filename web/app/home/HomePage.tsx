@@ -3,11 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const nouns = require('../../src/imgs/nouns.png') as string;
-const step1 = require('../../src/imgs/step1.png') as string;
-const step2 = require('../../src/imgs/step2.png') as string;
-const step3 = require('../../src/imgs/step3.png') as string;
-const step4 = require('../../src/imgs/step4.png') as string;
+const nouns = require('@/imgs/nouns.png') as string;
+const step1 = require('@/imgs/step1.png') as string;
+const step2 = require('@/imgs/step2.png') as string;
+const step3 = require('@/imgs/step3.png') as string;
+const step4 = require('@/imgs/step4.png') as string;
 
 export default function HomePage() {
   return (
