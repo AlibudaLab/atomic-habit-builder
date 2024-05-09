@@ -138,7 +138,7 @@ export default function Step2DepositAndStake({
       {/* Img and Description */}
       <div className="flex items-center gap-6">
         <Image src={img} width="50" alt="Step 2 Image" className="mb-3 rounded-full object-cover" />
-        <p className="mr-auto text-lg font-bold">Stake and join habit challenge</p>
+        <p className="mr-auto text-lg font-bold">Stake and join a challenge</p>
       </div>
       <div>
         <p className="p-4 text-sm"> Choose Challenge </p>
