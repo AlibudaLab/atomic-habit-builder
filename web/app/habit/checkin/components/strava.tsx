@@ -52,7 +52,6 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
       '/api/strava/auth?' +
       new URLSearchParams({
         redirectUri: window.location.href,
-        state: `3_${challengeId}`,
       }).toString();
     console.log(fetchURL);
     const response = await (
@@ -115,7 +114,7 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
         ],
       });
 
-      txPendingToastId = toast.loading('Transaction sending...');
+      txPendingToastId = toast.loading('Sending transaction...');
     } catch (err) {
       console.log(err);
       toast.error('Error checking in');
@@ -153,9 +152,9 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
         ).json();
 
         setRefreshToken(response.refresh_token);
-        console.log('refresh token: ', response.refresh_token);
+        
         if (response.access_token) setAccessToken(response.access_token);
-        console.log('access token: ', response.access_token);
+        
       } finally {
         setIsPending(false); // Always set loading state to false after the operation
       }
@@ -219,9 +218,9 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
 
       {stravaConnected && stravaData.length === 0 ? (
         <div className="p-2 text-center text-xs"> No record found </div>
-      ) : (
-        <div className="p-2 text-center text-xs"> Choose an activity to checkin </div>
-      )}
+      ) : stravaConnected ? (
+        <div className="p-2 text-center text-xs"> Choose an activity to check in </div>
+      ) : (<> </>)}
 
       <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
 
