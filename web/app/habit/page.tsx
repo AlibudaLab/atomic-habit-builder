@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import Step1 from './components/step1';
+import Step1 from './components/dashboard';
 import Step2DepositAndStake from './components/step2stake';
 import Step3CheckIn from './components/step3checkin';
 import Step4 from './components/step4';

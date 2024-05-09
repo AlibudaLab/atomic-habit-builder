@@ -7,7 +7,7 @@ import { useAccount, useConnect } from 'wagmi';
 import Step1Join from './step1join';
 import Step1List from './step1list';
 
-export default function Step1({
+export default function Dashboard({
   setSteps,
   setChallenge,
 }: {
