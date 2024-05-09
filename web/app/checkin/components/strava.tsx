@@ -5,33 +5,26 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useParams, useSearchParams } from 'next/navigation';
-import { SetStateAction, useEffect } from 'react';
-import { useAccount, useConnect, useWaitForTransactionReceipt } from 'wagmi';
-import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
+import { useEffect } from 'react';
+import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import { getEncodedCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import { Challenge } from '@/hooks/useUserChallenges';
-import { challenges, ActivityTypes, VerificationType } from '@/constants';
-import moment from 'moment';
+import { ActivityTypes } from '@/constants';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { readContract } from '@wagmi/core';
 import useStravaData from '@/hooks/useStravaData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 
-const img = require('../../../src/imgs/step3.png') as string;
-
 const physical = require('../../../src/imgs/physical.png') as string;
 
-export default function StravaCheckIn() {
+export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
   const { address } = useAccount();
   
   const { challengeId } = useParams<{ challengeId: string }>()
-
-  console.log('challengeId', challengeId)
-
-  const challenge = challenges.find((c) => c.arxAddress === challengeId) as Challenge;
 
   const [isPending, setIsPending] = useState(false);
   const [refreshToken, setRefreshToken] = useState(null);
@@ -96,48 +89,7 @@ export default function StravaCheckIn() {
     window.location = authUrl;
   };
 
-  const { loading, data: stravaData } = useStravaData(accessToken);
-
-  const onCheckInButtonClick = async () => {
-    let nfcPendingToastId = null;
-    let txPendingToastId = null;
-    try {
-      if (!address) {
-        toast.error('Please connect your wallet first');
-        return;
-      }
-
-      nfcPendingToastId = toast.loading('Sensing NFC...');
-      const timestamp = moment().unix();
-      const checkInMessage = getCheckinMessage(address, timestamp);
-      const arxSignature = await arxSignMessage(checkInMessage);
-      const signature = arxSignature.signature;
-      toast.dismiss(nfcPendingToastId);
-      txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
-
-      writeContract({
-        address: trackerContract.address as `0x${string}`,
-        abi: trackerContract.abi,
-        functionName: 'checkIn',
-        args: [
-          challenge.arxAddress,
-          getEncodedCheckinMessage(address, timestamp),
-          signature.raw.v,
-          '0x' + signature.raw.r,
-          '0x' + signature.raw.s,
-        ],
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error('Please try to tap the NFC again');
-      if (nfcPendingToastId) {
-        toast.dismiss(nfcPendingToastId);
-      }
-      if (txPendingToastId) {
-        toast.dismiss(txPendingToastId);
-      }
-    }
-  };
+  const { data: stravaData } = useStravaData(accessToken);
 
   const onClickCheckinStrava = async () => {
     if (stravaActivityIdx === -1) {
