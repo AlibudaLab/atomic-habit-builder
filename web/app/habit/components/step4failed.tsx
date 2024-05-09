@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
-const img = require('../../../src/imgs/failed.png') as string;
+const img = require('@/imgs/failed.png') as string;
 
 export default function Step4Failed({
   setSteps,

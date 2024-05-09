@@ -2,36 +2,32 @@
 
 import { useState } from 'react';
 
-import Step1 from './components/dashboard';
-import Step2DepositAndStake from './components/step2stake';
-import Step3CheckIn from './components/step3checkin';
-import Step4 from './components/step4';
 import { Toaster } from 'react-hot-toast';
-import LoadingCard from './components/LoadingCard';
 import Image from 'next/image';
-import { Challenge } from '@/hooks/useUserChallenges';
+import useUserChallenges from '@/hooks/useUserChallenges';
+import Onboard from './components/Onboard';
+import Dashboard from './components/Dashboard';
+
 
 const nouns = require('../../src/imgs/nouns.png') as string;
 
-import { challenges } from '@/constants';
-import { useSearchParams } from 'next/navigation';
+import { useAccount } from 'wagmi';
 
-export default function HabitPage() {
-  const searchParams = useSearchParams();
-  const state = searchParams.get('state') ?? '1_0';
+export default function DashboardPage() {
+  
+  // const { address } = useAccount();
 
-  const currentStep = parseInt(state.split('_')[0]);
-  const currentChallengeId = parseInt(state.split('_')[1]);
+  const address = '0xBAbe69e7F2C7A9f0369Ae934865d0097B73543Fc'
 
-  const [steps, setSteps] = useState(currentStep);
-  const [selectedChallenge, setSelectedChallenge] = useState<Challenge>(
-    challenges[currentChallengeId],
-  );
+  const { data: challenges } = useUserChallenges(address);
+
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Toaster />
-      <button type="button" onClick={() => setSteps(1)}>
+      <button type="button" onClick={() => {
+        // todo: go to home
+      }}>
         <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
       </button>
 
@@ -40,19 +36,15 @@ export default function HabitPage() {
         Alibuda Habit Builder{' '}
       </div>
 
-      {steps === 1 && <Step1 setSteps={setSteps} setChallenge={setSelectedChallenge} />}
-      {steps === 2 && (
-        <Step2DepositAndStake
-          setSteps={setSteps}
-          selectedChallenge={selectedChallenge}
-          setSelectedChallenge={setSelectedChallenge}
-        />
-      )}
-      {steps === 3 && <Step3CheckIn setSteps={setSteps} selectedChallenge={selectedChallenge} />}
-      {steps === 4 && <Step4 setSteps={setSteps} challenge={selectedChallenge} />}
-
-      {/* just for previewing */}
-      {steps === 10 && <LoadingCard text="Message signed! The transaction is processing..." />}
+      
+      <div className="flex flex-col items-center justify-center">
+        {!address ? (
+          <Onboard />
+        ) : (
+          <Dashboard challenges={challenges}/>
+        )}
+      </div>
+  
     </main>
   );
 }

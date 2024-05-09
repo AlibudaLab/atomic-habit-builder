@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
 import { Challenge } from '@/hooks/useUserChallenges';
 
-const nouns = require('../../../src/imgs/nouns.png') as string;
+const nouns = require('@/imgs/nouns.png') as string;
 
 import { challenges } from '@/constants';
 import { useSearchParams } from 'next/navigation';

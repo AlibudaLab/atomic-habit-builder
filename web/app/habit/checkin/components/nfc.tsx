@@ -14,7 +14,7 @@ import moment from 'moment';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 
-const mental = require('../../../src/imgs/mental.png') as string;
+const mental = require('@/imgs/mental.png') as string;
 
 export default function NFCCheckIn({challenge}: {challenge: Challenge}) {
   const { address } = useAccount();

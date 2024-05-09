@@ -13,14 +13,12 @@ import { useWriteContract } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import { Challenge } from '@/hooks/useUserChallenges';
 import { ActivityTypes } from '@/constants';
-import { wagmiConfig as config } from '@/OnchainProviders';
-import { readContract } from '@wagmi/core';
 import useStravaData from '@/hooks/useStravaData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 
-const physical = require('../../../src/imgs/physical.png') as string;
+const physical = require('@/imgs/physical.png') as string;
 
 export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
   const { address } = useAccount();

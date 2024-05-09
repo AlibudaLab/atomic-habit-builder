@@ -13,7 +13,7 @@ export default function Stamps({ checkInNum, targetNum, id }: StampProps) {
     {Array.from({ length: targetNum }).map((_, idx) => {
       const done = idx < checkInNum;
       const iconIdx = (Number(id) % 20) + idx;
-      const icon = require(`../../../src/imgs/hats/${iconIdx + 1}.png`) as string;
+      const icon = require(`@/imgs/hats/${iconIdx + 1}.png`) as string;
       return done ? (
         <div
           style={{ borderColor: '#EDB830', paddingTop: '4px' }}

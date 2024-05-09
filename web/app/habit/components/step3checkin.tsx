@@ -19,10 +19,10 @@ import { readContract } from '@wagmi/core';
 import useStravaData from '@/hooks/useStravaData';
 import { timeDifference } from '@/utils/time';
 
-const img = require('../../../src/imgs/step3.png') as string;
+const img = require('@/imgs/step3.png') as string;
 
-const mental = require('../../../src/imgs/mental.png') as string;
-const physical = require('../../../src/imgs/physical.png') as string;
+const mental = require('@/imgs/mental.png') as string;
+const physical = require('@/imgs/physical.png') as string;
 
 export default function Step3CheckIn({
   setSteps,
@@ -337,7 +337,7 @@ export default function Step3CheckIn({
         {Array.from({ length: selectedChallenge.targetNum }).map((_, idx) => {
           const done = idx < checkedIn;
           const iconIdx = (Number(selectedChallenge.arxAddress) % 20) + idx;
-          const icon = require(`../../../src/imgs/hats/${iconIdx + 1}.png`) as string;
+          const icon = require(`@/imgs/hats/${iconIdx + 1}.png`) as string;
           return done ? (
             <div
               style={{ borderColor: '#EDB830', paddingTop: '4px' }}
