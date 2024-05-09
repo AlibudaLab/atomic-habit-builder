@@ -11,9 +11,7 @@ export default function Header() {
     <main className="container mx-auto flex flex-col items-center px-8 pt-8">
       <Toaster />
       <Link href="/habit">
-        <button
-          type="button"
-        >
+        <button type="button">
           <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
         </button>
       </Link>

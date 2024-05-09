@@ -10,7 +10,7 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
 
   useEffect(() => {
     if (!address) return;
-    
+
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -22,10 +22,9 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
           args: [challengesAddr, address],
         })) as bigint;
 
-        
         const checked = Number(achieved.toString());
         setCheckedIn(checked);
-        
+
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -35,10 +34,8 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
     };
 
     fetchData().catch(console.error);
-    
-    setInterval(fetchData, 5000)
 
-
+    setInterval(fetchData, 5000);
   }, [address, challengesAddr]);
 
   return { loading, checkedIn, error };

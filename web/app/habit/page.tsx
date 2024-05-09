@@ -7,7 +7,7 @@ import Header from './components/Header';
 import { useAccount } from 'wagmi';
 
 export default function DashboardPage() {
-  const { address } = useAccount()
+  const { address } = useAccount();
 
   const { data: challenges } = useUserChallenges(address);
 
