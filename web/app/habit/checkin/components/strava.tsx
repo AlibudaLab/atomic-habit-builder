@@ -115,7 +115,7 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
         ],
       });
 
-      txPendingToastId = toast.loading('Transaction sent...');
+      txPendingToastId = toast.loading('Transaction sending...');
     } catch (err) {
       console.log(err);
       toast.error('Error checking in');
@@ -231,7 +231,7 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link key={`link-${idx}`} href={`/habit/claim/${challenge.arxAddress}`}><button
+        <Link href={`/habit/claim/${challenge.arxAddress}`}><button
           type="button"
           className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
         >

@@ -11,11 +11,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     if (!redirectUri) {
       return NextResponse.json({ error: 'redirectUri is required' }, { status: 400 });
     }
-    const state = req.nextUrl.searchParams.get('state');
-    if (!state) {
-      return NextResponse.json({ error: 'state is required' }, { status: 400 });
-    }
-
+    
     // For example, you can redirect the user to the Strava authentication page
     const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
     const clientId = process.env.STRAVA_CLIENT_ID;
@@ -23,7 +19,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     const approvalPrompt = 'force';
     const scope = 'activity:read_all';
 
-    const authUrl = `${stravaAuthUrl}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&approval_prompt=${approvalPrompt}&scope=${scope}&state=${state}`;
+    const authUrl = `${stravaAuthUrl}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&approval_prompt=${approvalPrompt}&scope=${scope}`;
     console.log(authUrl);
 
     return NextResponse.json({ authUrl }, { status: 200 });

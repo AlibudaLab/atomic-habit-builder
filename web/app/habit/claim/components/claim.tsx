@@ -1,6 +1,5 @@
 'use client';
 
-import { Challenge } from '@/hooks/useUserChallenges';
 import Image from 'next/image';
 import { useEffect } from 'react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
@@ -22,11 +21,13 @@ export default function Claim() {
   const {
     writeContract,
     data: dataHash,
-    error: joinError,
+    error: claimError,
     isPending: joinPending,
   } = useWriteContract();
 
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+  console.log('claimError', typeof claimError, claimError)
+
+  const { isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
 
@@ -43,7 +44,12 @@ export default function Claim() {
     if (isSuccess) {
       toast.success('Successfully Claimed!');
     }
-  }, [isSuccess]);
+    if (claimError) {
+      toast.error(claimError.name)
+    }
+  }, [isSuccess, claimError]);
+
+  
 
   return (
     <div className="flex flex-col items-center justify-center">
