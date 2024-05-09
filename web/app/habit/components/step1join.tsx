@@ -20,7 +20,7 @@ export default function Step1Join({
       {/* Img and Description */}
       <div className="col-span-3 flex w-full items-center justify-start gap-6">
         <Image src={img} width="50" alt="Step 2 Image" className="mb-3 object-cover" />
-        <p className="mr-auto text-lg font-bold">Join with Base Smart Wallet</p>
+        <p className="mr-auto text-lg font-bold"> Join with Base Smart Wallet </p>
       </div>
 
       <button
