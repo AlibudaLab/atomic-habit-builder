@@ -2,20 +2,22 @@
 
 import { Challenge } from '@/hooks/useUserChallenges';
 import Image from 'next/image';
-import { SetStateAction, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import trackerContract from '@/contracts/tracker.json';
 import toast from 'react-hot-toast';
+import { useParams } from 'next/navigation';
+import { challenges } from '@/constants';
 
 const img = require('@/imgs/success.png') as string;
 
-export default function Step4Claim({
-  challenge,
-  setSteps,
-}: {
-  challenge: Challenge;
-  setSteps: React.Dispatch<SetStateAction<number>>;
-}) {
+export default function Claim() {
+
+
+  const { challengeId } = useParams<{ challengeId: string }>()
+
+  const challenge = challenges.find(c => c.arxAddress === challengeId)
+
   const {
     writeContract,
     data: dataHash,
@@ -40,13 +42,16 @@ export default function Step4Claim({
     if (isSuccess) {
       toast.success('Successfully Claimed!');
     }
-  }, [isSuccess, setSteps]);
+  }, [isSuccess]);
 
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      <div className="col-span-3 flex w-full items-center justify-center">
-        <p className="p-6 pt-2 text-xl font-bold">
+      {
+        challenge ? (
+        <> 
+          <div className="col-span-3 flex w-full items-center justify-center">
+        <p className="p-8 pt-2 text-lg font-bold">
           {' '}
           Congratulations on Winning the Habit Building Challenge!{' '}
         </p>
@@ -56,7 +61,9 @@ export default function Step4Claim({
         <button
           type="button"
           className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-          onClick={() => setSteps(2)}
+          onClick={() => {
+            // todo: go to join page
+          }}
         >
           Start a new Challenge
         </button>
@@ -73,6 +80,12 @@ export default function Step4Claim({
       <div className="p-4 text-xs">Get back {challenge.stake} ETH.</div>
 
       <Image src={img} width="440" height="440" alt="Step 4 Image" className="mb-3 object-cover" />
+      </> ) : <div> 
+
+        Invalid Challenge Id
+
+      </div> }
     </div>
+    
   );
 }
