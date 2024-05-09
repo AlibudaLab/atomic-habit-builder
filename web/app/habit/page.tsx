@@ -2,7 +2,7 @@
 
 import useUserChallenges from '@/hooks/useUserChallenges';
 import Onboard from './components/Onboard';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/UserDashboard';
 import Header from './components/Header';
 import { useAccount } from 'wagmi';
 
