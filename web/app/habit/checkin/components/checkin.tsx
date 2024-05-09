@@ -11,12 +11,10 @@ import NFCCheckIn from './nfc';
 
 const img = require('@/imgs/step3.png') as string;
 
-
 export default function CheckIn() {
-  
-  const { challengeId } = useParams<{ challengeId: string }>()
+  const { challengeId } = useParams<{ challengeId: string }>();
   const challenge = challenges.find((c) => c.arxAddress === challengeId) as Challenge;
-  
+
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
@@ -30,12 +28,11 @@ export default function CheckIn() {
         <p className="mr-auto text-lg ">Check in every day</p>
       </div>
 
-      { challenge.verificationType === VerificationType.Strava &&
-       <StravaCheckIn challenge={challenge} />
-      }
+      {challenge.verificationType === VerificationType.Strava && (
+        <StravaCheckIn challenge={challenge} />
+      )}
 
-      { challenge.verificationType === VerificationType.NFC && 
-      <NFCCheckIn challenge={challenge} /> }
+      {challenge.verificationType === VerificationType.NFC && <NFCCheckIn challenge={challenge} />}
     </div>
   );
 }

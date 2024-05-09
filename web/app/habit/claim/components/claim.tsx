@@ -12,11 +12,9 @@ import { challenges } from '@/constants';
 const img = require('@/imgs/success.png') as string;
 
 export default function Claim() {
+  const { challengeId } = useParams<{ challengeId: string }>();
 
-
-  const { challengeId } = useParams<{ challengeId: string }>()
-
-  const challenge = challenges.find(c => c.arxAddress === challengeId)
+  const challenge = challenges.find((c) => c.arxAddress === challengeId);
 
   const {
     writeContract,
@@ -47,45 +45,48 @@ export default function Claim() {
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      {
-        challenge ? (
-        <> 
+      {challenge ? (
+        <>
           <div className="col-span-3 flex w-full items-center justify-center">
-        <p className="p-8 pt-2 text-lg font-bold">
-          {' '}
-          Congratulations on Winning the Habit Building Challenge!{' '}
-        </p>
-      </div>
+            <p className="p-8 pt-2 text-center text-lg font-bold">
+              {' '}
+              You have successfully finish the challenge!{' '}
+            </p>
+          </div>
 
-      {isSuccess ? (
-        <button
-          type="button"
-          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-          onClick={() => {
-            // todo: go to join page
-          }}
-        >
-          Start a new Challenge
-        </button>
+          {isSuccess ? (
+            <button
+              type="button"
+              className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+              onClick={() => {
+                // todo: go to join page
+              }}
+            >
+              Start a new Challenge
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+              onClick={onClaimClick}
+            >
+              Claim Rewards
+            </button>
+          )}
+
+          <div className="p-4 text-xs">Get back {challenge.stake} ETH.</div>
+
+          <Image
+            src={img}
+            width="440"
+            height="440"
+            alt="Step 4 Image"
+            className="mb-3 object-cover"
+          />
+        </>
       ) : (
-        <button
-          type="button"
-          className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
-          onClick={onClaimClick}
-        >
-          Claim Rewards
-        </button>
+        <div>Invalid Challenge Id</div>
       )}
-
-      <div className="p-4 text-xs">Get back {challenge.stake} ETH.</div>
-
-      <Image src={img} width="440" height="440" alt="Step 4 Image" className="mb-3 object-cover" />
-      </> ) : <div> 
-
-        Invalid Challenge Id
-
-      </div> }
     </div>
-    
   );
 }

@@ -20,17 +20,17 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 
 const physical = require('@/imgs/physical.png') as string;
 
-export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
+export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
-  
-  const { challengeId } = useParams<{ challengeId: string }>()
+
+  const { challengeId } = useParams<{ challengeId: string }>();
 
   const [isPending, setIsPending] = useState(false);
   const [refreshToken, setRefreshToken] = useState(null);
   const [accessToken, setAccessToken] = useState<null | string | undefined>(null);
   const searchParams = useSearchParams();
   const stravaAuthToken = searchParams.get('code');
-  
+
   const {
     writeContract,
     data: dataHash,
@@ -44,10 +44,9 @@ export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
 
   const [stravaActivityIdx, setStravaActivityIdx] = useState(-1);
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress)
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
 
   const onClickStrava = async () => {
-    
     const fetchURL =
       '/api/strava/auth?' +
       new URLSearchParams({
@@ -184,19 +183,12 @@ export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      
-      <Image
-        src={physical}
-        width="250"
-        alt="Health"
-        className="mb-3 rounded-full object-cover "
-      />
+      <Image src={physical} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
 
       {/* overview   */}
       <div className="py-2">
         <p className="px-2 font-bold">
-          {challenge.type === ActivityTypes.Mental ? 'Mental' : 'Physical'} Health Habit
-          Building{' '}
+          {challenge.type === ActivityTypes.Mental ? 'Mental' : 'Physical'} Health Habit Building{' '}
         </p>
         <p className="px-2 text-sm"> Duration: {challenge.duration} </p>
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
@@ -230,11 +222,7 @@ export default function StravaCheckIn({challenge}: {challenge: Challenge}) {
         <div className="p-2 text-center text-xs"> Choose an activity to checkin </div>
       )}
 
-      <Stamps 
-        targetNum={challenge.targetNum}
-        checkInNum={checkedIn}
-        id={challenge.arxAddress}
-      />
+      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
 
       <div>
         {' '}
