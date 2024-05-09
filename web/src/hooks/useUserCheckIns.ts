@@ -12,7 +12,6 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
     if (!address) return;
     
     const fetchData = async () => {
-      console.log('fetch data user checkins')
       try {
         setLoading(true);
 
@@ -22,8 +21,6 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
           functionName: 'getUserCheckInCounts',
           args: [challengesAddr, address],
         })) as bigint;
-
-        console.log('new', achieved)
 
         
         const checked = Number(achieved.toString());
