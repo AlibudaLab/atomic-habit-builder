@@ -152,9 +152,8 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
         ).json();
 
         setRefreshToken(response.refresh_token);
-        
+
         if (response.access_token) setAccessToken(response.access_token);
-        
       } finally {
         setIsPending(false); // Always set loading state to false after the operation
       }
@@ -220,7 +219,9 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
         <div className="p-2 text-center text-xs"> No record found </div>
       ) : stravaConnected ? (
         <div className="p-2 text-center text-xs"> Choose an activity to check in </div>
-      ) : (<> </>)}
+      ) : (
+        <> </>
+      )}
 
       <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
 
@@ -230,12 +231,14 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.arxAddress}`}><button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-        >
-          Finish
-        </button></Link>
+        <Link href={`/habit/claim/${challenge.arxAddress}`}>
+          <button
+            type="button"
+            className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          >
+            Finish
+          </button>
+        </Link>
       ) : stravaConnected ? (
         <button
           type="button"

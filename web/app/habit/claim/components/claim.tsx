@@ -7,7 +7,7 @@ import trackerContract from '@/contracts/tracker.json';
 import toast from 'react-hot-toast';
 import { useParams } from 'next/navigation';
 import { challenges } from '@/constants';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
 const img = require('@/imgs/success.png') as string;
 
@@ -16,7 +16,7 @@ export default function Claim() {
 
   const challenge = challenges.find((c) => c.arxAddress === challengeId);
 
-  const { push } = useRouter()
+  const { push } = useRouter();
 
   const {
     writeContract,
@@ -25,7 +25,7 @@ export default function Claim() {
     isPending: joinPending,
   } = useWriteContract();
 
-  console.log('claimError', typeof claimError, claimError)
+  console.log('claimError', typeof claimError, claimError);
 
   const { isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
@@ -45,11 +45,9 @@ export default function Claim() {
       toast.success('Successfully Claimed!');
     }
     if (claimError) {
-      toast.error(claimError.name)
+      toast.error(claimError.name);
     }
   }, [isSuccess, claimError]);
-
-  
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -68,7 +66,7 @@ export default function Claim() {
               type="button"
               className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
               onClick={() => {
-                push('/habit/')
+                push('/habit/');
               }}
             >
               Start a new Challenge

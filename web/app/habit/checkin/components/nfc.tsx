@@ -106,14 +106,13 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link
-          href={`/habit/claim/${challenge.arxAddress}`}
-        ><button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-        >
-          Finish
-        </button>
+        <Link href={`/habit/claim/${challenge.arxAddress}`}>
+          <button
+            type="button"
+            className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          >
+            Finish
+          </button>
         </Link>
       ) : (
         <button

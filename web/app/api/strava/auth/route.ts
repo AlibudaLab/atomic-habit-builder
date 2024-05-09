@@ -11,7 +11,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     if (!redirectUri) {
       return NextResponse.json({ error: 'redirectUri is required' }, { status: 400 });
     }
-    
+
     // For example, you can redirect the user to the Strava authentication page
     const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
     const clientId = process.env.STRAVA_CLIENT_ID;

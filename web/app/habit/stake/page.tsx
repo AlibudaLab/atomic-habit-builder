@@ -23,7 +23,7 @@ import { ChallengesDropDown } from './components/dropdown';
 import { challenges } from '@/constants';
 import Header from '../components/Header';
 
-import {useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function Join() {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
@@ -36,7 +36,7 @@ export default function Join() {
     setSelectedChallenge(challenge);
   };
 
-  const { push } = useRouter()
+  const { push } = useRouter();
 
   const { address: smartWallet } = useAccount();
   const balance = useBalance({ address: smartWallet });
@@ -44,7 +44,6 @@ export default function Join() {
   const hasEnoughBalance = selectedChallenge && ethBalance > selectedChallenge.stake;
 
   const handleOnClickOnramp = async () => {
-    
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
         console.log('is visible');
@@ -122,7 +121,7 @@ export default function Join() {
 
       // go to checkin page after 2 secs
       setTimeout(() => {
-        push(`/habit/checkin/${selectedChallenge?.arxAddress}`)
+        push(`/habit/checkin/${selectedChallenge?.arxAddress}`);
       }, 2000);
     }
   }, [isSuccess, selectedChallenge?.arxAddress, push]);
