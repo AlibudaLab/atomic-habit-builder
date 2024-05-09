@@ -4,7 +4,7 @@ import useUserChallenges, { Challenge } from '@/hooks/useUserChallenges';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
-import Step4Claim from './step4claim';
+import Step4Claim from '../claim/components/claim';
 import Step4Failed from './step4failed';
 
 export default function Step4({
@@ -21,11 +21,7 @@ export default function Step4({
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {success ? (
-        <Step4Claim setSteps={setSteps} challenge={challenge} />
-      ) : (
         <Step4Failed setSteps={setSteps} challenge={challenge} />
-      )}
     </div>
   );
 }
