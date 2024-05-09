@@ -17,6 +17,7 @@ import useStravaData from '@/hooks/useStravaData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
+import Link from 'next/link';
 
 const physical = require('@/imgs/physical.png') as string;
 
@@ -230,13 +231,12 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <button
+        <Link key={`link-${idx}`} href={`/habit/claim/${challenge.arxAddress}`}><button
           type="button"
           className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          // onClick={() => setSteps(4)}
         >
           Finish
-        </button>
+        </button></Link>
       ) : stravaConnected ? (
         <button
           type="button"

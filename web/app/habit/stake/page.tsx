@@ -23,6 +23,8 @@ import { ChallengesDropDown } from './components/dropdown';
 import { challenges } from '@/constants';
 import Header from '../components/Header';
 
+import {useRouter } from 'next/navigation';
+
 export default function Join() {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
@@ -34,12 +36,15 @@ export default function Join() {
     setSelectedChallenge(challenge);
   };
 
+  const { push } = useRouter()
+
   const { address: smartWallet } = useAccount();
   const balance = useBalance({ address: smartWallet });
   const ethBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
   const hasEnoughBalance = selectedChallenge && ethBalance > selectedChallenge.stake;
 
   const handleOnClickOnramp = async () => {
+    
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
         console.log('is visible');
@@ -113,13 +118,14 @@ export default function Join() {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('Joined!! Directing to next step!');
+      toast.success('Joined! Directing to checkIn!');
+
+      // go to checkin page after 2 secs
       setTimeout(() => {
-        // setSteps(3);
-        // todo: go to checkin page, or dashboard
+        push(`/habit/checkin/${selectedChallenge?.arxAddress}`)
       }, 2000);
     }
-  }, [isSuccess]);
+  }, [isSuccess, selectedChallenge?.arxAddress, push]);
 
   useEffect(() => {
     if (joinError) {

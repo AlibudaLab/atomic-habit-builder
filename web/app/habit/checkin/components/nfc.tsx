@@ -13,6 +13,7 @@ import { Challenge } from '@/hooks/useUserChallenges';
 import moment from 'moment';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
+import Link from 'next/link';
 
 const mental = require('@/imgs/mental.png') as string;
 
@@ -105,13 +106,15 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <button
+        <Link
+          href={`/habit/claim/${challenge.arxAddress}`}
+        ><button
           type="button"
           className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          // onClick={() => setSteps(4)}
         >
           Finish
         </button>
+        </Link>
       ) : (
         <button
           type="button"
