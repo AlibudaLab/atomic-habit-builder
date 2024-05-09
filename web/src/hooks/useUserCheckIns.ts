@@ -5,7 +5,7 @@ import { wagmiConfig as config } from '@/OnchainProviders';
 
 const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: string) => {
   const [loading, setLoading] = useState(true);
-  const [checkedIn, setCheckedIn] = useState<number>(1);
+  const [checkedIn, setCheckedIn] = useState<number>(0);
   const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
