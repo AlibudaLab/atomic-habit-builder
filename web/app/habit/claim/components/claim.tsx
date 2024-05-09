@@ -8,6 +8,7 @@ import trackerContract from '@/contracts/tracker.json';
 import toast from 'react-hot-toast';
 import { useParams } from 'next/navigation';
 import { challenges } from '@/constants';
+import { useRouter } from 'next/navigation'
 
 const img = require('@/imgs/success.png') as string;
 
@@ -15,6 +16,8 @@ export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();
 
   const challenge = challenges.find((c) => c.arxAddress === challengeId);
+
+  const { push } = useRouter()
 
   const {
     writeContract,
@@ -59,7 +62,7 @@ export default function Claim() {
               type="button"
               className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
               onClick={() => {
-                // todo: go to join page
+                push('/habit/')
               }}
             >
               Start a new Challenge
