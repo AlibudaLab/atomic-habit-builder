@@ -10,7 +10,7 @@ import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
 import { parseEther } from 'ethers/lib/utils';
 import trackerContract from '@/contracts/tracker.json';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import { Challenge } from '@/hooks/useUserChallenges';
 
@@ -21,8 +21,7 @@ import { formatEther } from 'viem';
 
 import { ChallengesDropDown } from './components/dropdown';
 import { challenges } from '@/constants';
-
-const nouns = require('@/imgs/nouns.png') as string;
+import Header from '../components/Header';
 
 export default function Join() {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
@@ -130,12 +129,7 @@ export default function Join() {
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
-      <Toaster />
-      <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
-      <div className="font-title container mb-10 w-full text-center text-4xl">
-        {' '}
-        Alibuda Habit Builder{' '}
-      </div>
+     <Header />
 
       <div className="flex flex-col items-center justify-center">
         {/* Img and Description */}

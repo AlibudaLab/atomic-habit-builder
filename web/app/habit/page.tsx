@@ -1,15 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-
-import { Toaster } from 'react-hot-toast';
-import Image from 'next/image';
 import useUserChallenges from '@/hooks/useUserChallenges';
 import Onboard from './components/Onboard';
 import Dashboard from './components/Dashboard';
-
-
-const nouns = require('@/imgs/nouns.png') as string;
+import Header from './components/Header';
 
 export default function DashboardPage() {
 
@@ -20,17 +14,7 @@ export default function DashboardPage() {
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
-      <Toaster />
-      <button type="button" onClick={() => {
-        // todo: go to home
-      }}>
-        <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
-      </button>
-
-      <div className="font-title container mb-10 w-full text-center text-4xl">
-        {' '}
-        Alibuda Habit Builder{' '}
-      </div>
+      <Header />
 
       
       <div className="flex flex-col items-center justify-center">
