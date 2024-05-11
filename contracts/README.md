@@ -141,7 +141,8 @@ Open `.env` file.
 ```bash
 source .env
 
-forge script script/Tracker.s.sol:TrackerScript --broadcast --verify --rpc-url base_sepolia
+forge script script/D00DeployToken.s.sol --private-key $PRIVATE_KEY --broadcast --verify --rpc-url base_sepolia
+forge script script/D01DeployTracker.s.sol --private-key $PRIVATE_KEY --broadcast --verify --rpc-url base_sepolia
 ```
 
 <b>Note: The above command will print the address of your contract and a link to the block explorer. Click on the block explorer link to verify whether your contract has been deployed or not </b>
