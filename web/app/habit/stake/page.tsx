@@ -76,6 +76,7 @@ export default function Join() {
     }
     overlayInstanceSDK.current?.show();
     setIsOverlayVisible(true);
+    /*
     // Get data from web/app/habit/mock/on-ramp.json
     const mockData = require('../mock/on-ramp.json');
     mockData.data.destinationWallet = smartWallet;
@@ -87,6 +88,7 @@ export default function Join() {
       },
       body: JSON.stringify(mockData),
     });
+    */
   };
 
   const {
