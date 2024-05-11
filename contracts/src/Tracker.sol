@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.25;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 //FIXME: There should be challenge id
@@ -16,10 +17,11 @@ struct Challenge {
 }
 
 contract Tracker {
+    using SafeERC20 for IERC20;
     using ECDSA for bytes32;
 
     //FIXME: This should be included in struct Challenge
-    ERC20 public underlyingToken;
+    address public underlyingToken;
 
     mapping(address arxAddress => Challenge) public challenges;
     mapping(address userAddress => address[]) public userChallenges;
@@ -42,7 +44,7 @@ contract Tracker {
 
     constructor(address _underlyingToken) {
         //FIXME: This should be moved to register
-        underlyingToken = ERC20(_underlyingToken);
+        underlyingToken = _underlyingToken;
     }
 
     //FIXME: This should be created with token specify
@@ -67,7 +69,7 @@ contract Tracker {
     function join(address arxAddress) public payable {
         require(challenges[arxAddress].startTimestamp != 0, "Challenge does not exist");
         //require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
-        underlyingToken.transferFrom(msg.sender, address(this), challenges[arxAddress].perUserStake);
+        IERC20(underlyingToken).safeTransferFrom(msg.sender, address(this), challenges[arxAddress].perUserStake);
         hasJoined[arxAddress][msg.sender] = true;
         userChallenges[msg.sender].push(arxAddress);
         participants[arxAddress].push(msg.sender);
@@ -110,8 +112,7 @@ contract Tracker {
             balances[participant] += bonus;
         }
 
-        bool sent = underlyingToken.transfer(challenges[arxAddress].donateDestination, halfStakeBalance);
-        require(sent, "Failed to send Ether");
+        IERC20(underlyingToken).safeTransfer(challenges[arxAddress].donateDestination, halfStakeBalance);
     }
 
     //FIXME: This should be withdraw by challenge id
@@ -119,8 +120,7 @@ contract Tracker {
         uint256 balance = balances[msg.sender];
         require(balance > 0, "Insufficient balance");
         balances[msg.sender] = 0;
-        bool sent = underlyingToken.transfer(msg.sender, balance);
-        require(sent, "Failed to send Ether");
+        IERC20(underlyingToken).safeTransfer(msg.sender, balance);
     }
 
     function getUserChallenges(address userAddress) public view returns (address[] memory) {
