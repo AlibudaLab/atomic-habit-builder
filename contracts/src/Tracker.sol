@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
+//FIXME: There should be challenge id
 struct Challenge {
     uint256 minimunCheckIns;
     uint256 startTimestamp;
@@ -15,6 +17,9 @@ struct Challenge {
 
 contract Tracker {
     using ECDSA for bytes32;
+
+    //FIXME: This should be included in struct Challenge
+    ERC20 public underlyingToken;
 
     mapping(address arxAddress => Challenge) public challenges;
     mapping(address userAddress => address[]) public userChallenges;
@@ -35,6 +40,12 @@ contract Tracker {
     event Join(address indexed userAddress, address indexed arxAddress);
     event Settle(address indexed arxAddress);
 
+    constructor(address _underlyingToken) {
+        //FIXME: This should be moved to register
+        underlyingToken = ERC20(_underlyingToken);
+    }
+
+    //FIXME: This should be created with token specify
     // register a new habit challenge
     function register(
         address arxAddress,
@@ -47,9 +58,8 @@ contract Tracker {
     ) public {
         require(challenges[arxAddress].startTimestamp == 0, "Challenge already exists");
         //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
-        challenges[arxAddress] = Challenge(
-            minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false
-        );
+        challenges[arxAddress] =
+            Challenge(minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
         emit Register(arxAddress, description, startTimestamp, endTimestamp, minimunCheckIns);
     }
 
@@ -57,7 +67,7 @@ contract Tracker {
     function join(address arxAddress) public payable {
         require(challenges[arxAddress].startTimestamp != 0, "Challenge does not exist");
         //require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
-        require(msg.value == challenges[arxAddress].perUserStake, "Insufficient stake");
+        underlyingToken.transferFrom(msg.sender, address(this), challenges[arxAddress].perUserStake);
         hasJoined[arxAddress][msg.sender] = true;
         userChallenges[msg.sender].push(arxAddress);
         participants[arxAddress].push(msg.sender);
@@ -100,27 +110,24 @@ contract Tracker {
             balances[participant] += bonus;
         }
 
-        (bool sent,) = payable(challenges[arxAddress].donateDestination).call{value: halfStakeBalance}("");
+        bool sent = underlyingToken.transfer(challenges[arxAddress].donateDestination, halfStakeBalance);
         require(sent, "Failed to send Ether");
     }
 
-    function fund() public payable {
-        require(msg.value > 0, "Funding amount must be greater than zero");
-    }
-
+    //FIXME: This should be withdraw by challenge id
     function withdraw() public {
         uint256 balance = balances[msg.sender];
         require(balance > 0, "Insufficient balance");
         balances[msg.sender] = 0;
-        (bool sent,) = payable(msg.sender).call{value: balance}("");
+        bool sent = underlyingToken.transfer(msg.sender, balance);
         require(sent, "Failed to send Ether");
     }
 
-    function getUserChallenges(address userAddress) view public returns(address[] memory) {
+    function getUserChallenges(address userAddress) public view returns (address[] memory) {
         return userChallenges[userAddress];
     }
 
-    function getUserCheckInCounts(address arxAddress, address userAddress) view public returns(uint256){
+    function getUserCheckInCounts(address arxAddress, address userAddress) public view returns (uint256) {
         return checkIns[arxAddress][userAddress].length;
     }
 }
