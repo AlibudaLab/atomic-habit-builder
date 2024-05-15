@@ -27,36 +27,36 @@ contract TrackerTest is Test {
     }
 
     function test_register() public view {
-        (, uint256 startTimestamp,,,,,) = tracker.challenges(arxAddress);
+        (,,uint256 startTimestamp,,,,,) = tracker.challenges(0);
         require(startTimestamp != 0, "Register failed");
     }
 
     function test_join() public {
-        tracker.join(arxAddress);
-        require(tracker.hasJoined(arxAddress, address(this)), "Join failed");
+        tracker.join(0);
+        require(tracker.hasJoined(0, address(this)), "Join failed");
     }
 
     function test_checkIn() public {
-        tracker.join(arxAddress);
+        tracker.join(0);
         bytes memory encoded = abi.encodePacked("\x19Ethereum Signed Message:\n21test check in message");
         bytes32 msgHash = keccak256(encoded);
 
         vm.warp(block.timestamp + 11);
-        tracker.checkIn(arxAddress, msgHash, v, r, s);
-        require(tracker.checkIns(arxAddress, address(this), 0) != 0, "Check in failed");
+        tracker.checkIn(0, msgHash, v, r, s);
+        require(tracker.checkIns(0, address(this), 0) != 0, "Check in failed");
     }
 
     function test_settle() public {
-        tracker.join(arxAddress);
+        tracker.join(0);
         bytes memory encoded = abi.encodePacked("\x19Ethereum Signed Message:\n21test check in message");
         bytes32 msgHash = keccak256(encoded);
 
         vm.warp(block.timestamp + 11);
-        tracker.checkIn(arxAddress, msgHash, v, r, s);
+        tracker.checkIn(0, msgHash, v, r, s);
 
         vm.warp(block.timestamp + 1001);
-        tracker.settle(arxAddress);
-        (,,,,,, bool settled) = tracker.challenges(arxAddress);
+        tracker.settle(0);
+        (,,,,,,, bool settled) = tracker.challenges(0);
         require(settled, "Settle failed");
         require(tracker.balances(address(this)) == 0.0001 ether, "Settle failed");
     }
