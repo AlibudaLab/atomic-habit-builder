@@ -10,7 +10,7 @@ import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { getEncodedCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
-import trackerContract from '@/contracts/tracker.json';
+import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/hooks/useUserChallenges';
 import { ActivityTypes } from '@/constants';
 import useStravaData from '@/hooks/useStravaData';
@@ -106,11 +106,11 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.arxAddress,
-          getEncodedCheckinMessage(address, stravaData[stravaActivityIdx].id),
+          challenge.arxAddress as `0x${string}`,
+          getEncodedCheckinMessage(address, stravaData[stravaActivityIdx].id) as `0x${string}`,
           sig.v,
-          '0x' + sig.r.padStart(64, '0'),
-          '0x' + sig.s.padStart(64, '0'),
+          ('0x' + sig.r.padStart(64, '0')) as `0x${string}`,
+          ('0x' + sig.s.padStart(64, '0')) as `0x${string}`,
         ],
       });
 

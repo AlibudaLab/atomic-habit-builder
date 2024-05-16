@@ -1,6 +1,6 @@
 import { ActivityTypes, VerificationType, challenges } from '@/constants';
 import { readContract } from '@wagmi/core';
-import trackerContract from '@/contracts/tracker.json';
+import * as trackerContract from '@/contracts/tracker';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 
