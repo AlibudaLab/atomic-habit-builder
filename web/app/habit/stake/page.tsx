@@ -4,23 +4,25 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, use } from 'react';
 import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useWriteContracts, useCapabilities } from 'wagmi/experimental';
 import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
-import { parseEther } from 'ethers/lib/utils';
-import trackerContract from '@/contracts/tracker.json';
+import * as testTokenContract from '@/contracts/testToken';
+import * as trackerContract from '@/contracts/tracker';
 import toast from 'react-hot-toast';
 
+import useERC20Allowance from '@/hooks/useERC20Allowance';
 import { Challenge } from '@/hooks/useUserChallenges';
 
 const img = require('@/imgs/step2.png') as string;
 const kangaroo = require('@/imgs/kangaroo.png') as string;
 
-import { formatEther } from 'viem';
+import { formatEther, parseEther } from 'viem';
 
 import { ChallengesDropDown } from './components/dropdown';
-import { challenges } from '@/constants';
+import { challenges, EXPECTED_CHAIN } from '@/constants';
 import Header from '../components/Header';
 
 import { useRouter } from 'next/navigation';
@@ -28,7 +30,6 @@ import { useRouter } from 'next/navigation';
 export default function Join() {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-
   const [selectedChallenge, setSelectedChallenge] = useState<null | Challenge>(null);
 
   const handleOnChoose = (challengeArx: string) => {
@@ -37,13 +38,60 @@ export default function Join() {
   };
 
   const { push } = useRouter();
-
   const { address: smartWallet } = useAccount();
-  const balance = useBalance({ address: smartWallet });
-  const ethBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
-  const hasEnoughBalance = selectedChallenge && ethBalance > selectedChallenge.stake;
+  const { data: capabilities } = useCapabilities();
+  const currentChainSupportBatchTx =
+    capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
+      ?.atomicBatch.supported;
+  const balance = useBalance({ address: smartWallet, token: testTokenContract.address });
+  const testTokenBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
+  const hasEnoughBalance = selectedChallenge && testTokenBalance >= selectedChallenge.stake;
+  const { data: allowance } = useERC20Allowance(
+    smartWallet,
+    trackerContract.address,
+    testTokenContract.address,
+  );
+  const hasEnoughAllowance =
+    selectedChallenge && allowance ? allowance >= selectedChallenge.stake : false;
 
-  const handleOnClickOnramp = async () => {
+  const {
+    writeContract: mintWriteContract,
+    data: mintDataHash,
+    error: mintError,
+    isPending: mintPending,
+  } = useWriteContract();
+
+  const onMintTestTokenClick = async () => {
+    if (!selectedChallenge) return;
+    mintWriteContract({
+      address: testTokenContract.address as `0x${string}`,
+      abi: testTokenContract.abi,
+      functionName: 'mint',
+      args: [smartWallet as `0x${string}`, parseEther(selectedChallenge.stake.toString())],
+    });
+  };
+
+  const {
+    writeContract: approveWriteContract,
+    data: approveDataHash,
+    error: approveError,
+    isPending: approvePending,
+  } = useWriteContract();
+
+  const onApproveTestTokenClick = async () => {
+    if (!selectedChallenge) return;
+    approveWriteContract({
+      address: testTokenContract.address as `0x${string}`,
+      abi: testTokenContract.abi,
+      functionName: 'approve',
+      args: [
+        trackerContract.address as `0x${string}`,
+        parseEther(selectedChallenge.stake.toString()),
+      ],
+    });
+  };
+
+  const onOnrampClick = async () => {
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
         console.log('is visible');
@@ -76,46 +124,64 @@ export default function Join() {
     }
     overlayInstanceSDK.current?.show();
     setIsOverlayVisible(true);
-    /*
-    // Get data from web/app/habit/mock/on-ramp.json
-    const mockData = require('../mock/on-ramp.json');
-    mockData.data.destinationWallet = smartWallet;
-    // Call the bridge API with payload
-    await fetch('/api/bridge', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(mockData),
-    });
-    */
   };
 
   const {
-    writeContract,
-    data: dataHash,
+    writeContract: joinWriteContract,
+    data: joinDataHash,
     error: joinError,
     isPending: joinPending,
   } = useWriteContract();
 
+  const {
+    writeContracts: joinWriteContracts,
+    data: joinDataHashInBatchTx,
+    error: joinErrorInBatchTx,
+    isPending: joinPendingInBatchTx,
+  } = useWriteContracts();
+
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: dataHash,
+    hash: joinDataHash ?? (joinDataHashInBatchTx as `0x${string}`),
   });
 
   const onJoinButtonClick = async () => {
     if (!selectedChallenge) return;
-    writeContract({
-      address: trackerContract.address as `0x${string}`,
-      abi: trackerContract.abi,
-      functionName: 'join',
-      args: [selectedChallenge.arxAddress],
-      value: parseEther(selectedChallenge.stake.toString()).toBigInt(),
-    });
-  };
 
-  // if (!smartWallet) {
-  //   redirect('/');
-  // }
+    if (currentChainSupportBatchTx) {
+      joinWriteContracts({
+        contracts: [
+          {
+            address: testTokenContract.address as `0x${string}`,
+            abi: testTokenContract.abi,
+            functionName: 'mint',
+            args: [smartWallet, parseEther(selectedChallenge.stake.toString())],
+          },
+          {
+            address: testTokenContract.address as `0x${string}`,
+            abi: testTokenContract.abi,
+            functionName: 'approve',
+            args: [
+              trackerContract.address as `0x${string}`,
+              parseEther(selectedChallenge.stake.toString()),
+            ],
+          },
+          {
+            address: trackerContract.address as `0x${string}`,
+            abi: trackerContract.abi,
+            functionName: 'join',
+            args: [selectedChallenge.arxAddress],
+          },
+        ],
+      });
+    } else {
+      joinWriteContract({
+        address: trackerContract.address as `0x${string}`,
+        abi: trackerContract.abi,
+        functionName: 'join',
+        args: [selectedChallenge.arxAddress as `0x${string}`],
+      });
+    }
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -129,10 +195,16 @@ export default function Join() {
   }, [isSuccess, selectedChallenge?.arxAddress, push]);
 
   useEffect(() => {
-    if (joinError) {
+    if (mintError) {
+      toast.error('Error minting test token. Please try again');
+    }
+    if (approveError) {
+      toast.error('Error approving test token. Please try again');
+    }
+    if (joinError || joinErrorInBatchTx) {
       toast.error('Error joining the challenge. Please try again');
     }
-  }, [joinError]);
+  }, [mintError, approveError, joinError, joinErrorInBatchTx]);
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
@@ -159,28 +231,55 @@ export default function Join() {
           />
         </div>
 
+        {/**
+         * Enable only when challenge is selected
+         * If doesn't support batch tx and doesn't have enough balance -> Disable Button
+         * If doesn't support batch tx and has enough balance and no allowance -> Display approve && Approve Tx
+         * If doesn't support batch tx and has enough balance and has allowance -> Display stake && Stake Tx
+         * If support batch tx -> Display stake && Join with Batch Tx
+         */}
         <button
           type="button"
           className="bg-yellow bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
           style={{ width: '250px', height: '45px', color: 'white' }}
-          onClick={onJoinButtonClick}
-          disabled={!hasEnoughBalance || joinPending || isLoading}
+          onClick={hasEnoughAllowance ? onJoinButtonClick : onApproveTestTokenClick}
+          disabled={
+            !selectedChallenge ||
+            (!hasEnoughBalance && !currentChainSupportBatchTx) ||
+            mintPending ||
+            approvePending ||
+            joinPending ||
+            joinPendingInBatchTx ||
+            isLoading
+          }
         >
-          {selectedChallenge ? `Stake ${selectedChallenge.stake} ETH` : 'Stake'}
+          {selectedChallenge === null
+            ? 'Choose a Challenge'
+            : hasEnoughAllowance
+            ? `Stake ${selectedChallenge.stake} ALI`
+            : 'Approve'}
         </button>
 
+        {/**
+         * Display only when challenge is selected
+         * If doesn't support batch tx and doesn't have enough balance -> Mint first
+         * If doesn't support batch tx and has enough balance -> Show balance
+         * If support batch tx -> Show balance
+         */}
         <div className="p-4 text-xs">
-          {balance.data && hasEnoughBalance ? (
-            <p> 💰 Smart Wallet Balance: {ethBalance.toString()} ETH </p>
-          ) : (
+          {!selectedChallenge ? (
+            <p> </p>
+          ) : balance.data && !currentChainSupportBatchTx && !hasEnoughBalance ? (
             <p>
               {' '}
-              🚨 Insufficient Balance: {ethBalance.toString()} ETH.{' '}
-              <span className="font-bold hover:underline" onClick={handleOnClickOnramp}>
+              🚨 Insufficient Balance: {testTokenBalance.toString()} Alibuda Token.{' '}
+              <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
                 {' '}
-                Onramp now{' '}
+                Mint Test Token now{' '}
               </span>{' '}
             </p>
+          ) : (
+            <p> 💰 Smart Wallet Balance: {testTokenBalance.toString()} Alibuda Token </p>
           )}
         </div>
         <div id="overlay-button"> </div>
