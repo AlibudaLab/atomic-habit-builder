@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
@@ -8,7 +7,7 @@ import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
-import trackerContract from '@/contracts/tracker.json';
+import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/hooks/useUserChallenges';
 import moment from 'moment';
 import Stamps from './stamps';
@@ -55,11 +54,11 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.arxAddress,
-          getEncodedCheckinMessage(address, timestamp),
+          challenge.arxAddress as `0x${string}`,
+          getEncodedCheckinMessage(address, timestamp) as `0x${string}`,
           signature.raw.v,
-          '0x' + signature.raw.r,
-          '0x' + signature.raw.s,
+          ('0x' + signature.raw.r) as `0x${string}`,
+          ('0x' + signature.raw.s) as `0x${string}`,
         ],
       });
     } catch (err) {

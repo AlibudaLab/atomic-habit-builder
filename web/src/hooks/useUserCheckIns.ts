@@ -1,5 +1,5 @@
 import { readContract } from '@wagmi/core';
-import trackerContract from '@/contracts/tracker.json';
+import * as trackerContract from '@/contracts/tracker';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 
@@ -19,8 +19,8 @@ const useUserChallengeCheckIns = (address: string | undefined, challengesAddr: s
           abi: trackerContract.abi,
           address: trackerContract.address as `0x${string}`,
           functionName: 'getUserCheckInCounts',
-          args: [challengesAddr, address],
-        })) as bigint;
+          args: [challengesAddr as `0x${string}`, address as `0x${string}`],
+        })) as unknown as bigint;
 
         const checked = Number(achieved.toString());
         setCheckedIn(checked);

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useEffect } from 'react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import trackerContract from '@/contracts/tracker.json';
+import * as trackerContract from '@/contracts/tracker';
 import toast from 'react-hot-toast';
 import { useParams } from 'next/navigation';
 import { challenges } from '@/constants';
@@ -22,7 +22,7 @@ export default function Claim() {
     writeContract,
     data: dataHash,
     error: claimError,
-    isPending: joinPending,
+    isPending: claimPending,
   } = useWriteContract();
 
   console.log('claimError', typeof claimError, claimError);
