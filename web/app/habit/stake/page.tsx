@@ -68,7 +68,7 @@ export default function Join() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'mint',
-      args: [smartWallet as `0x${string}`, parseEther(selectedChallenge.stake.toString())],
+      args: [smartWallet as `0x${string}`, parseEther(selectedChallenge.stake.toString()) * BigInt(10)],
     });
   };
 
