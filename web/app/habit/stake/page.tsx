@@ -6,14 +6,14 @@
 import Image from 'next/image';
 import { useRef, useState, useEffect, use } from 'react';
 import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { useWriteContracts, useCapabilities } from 'wagmi/experimental';
+import { useWriteContracts, useCapabilities, useCallsStatus } from 'wagmi/experimental';
 import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
 import * as testTokenContract from '@/contracts/testToken';
 import * as trackerContract from '@/contracts/tracker';
 import toast from 'react-hot-toast';
 
-import useERC20Allowance from '@/hooks/useERC20Allowance';
+import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { Challenge } from '@/hooks/useUserChallenges';
 
 const img = require('@/imgs/step2.png') as string;
@@ -40,19 +40,20 @@ export default function Join() {
   const { push } = useRouter();
   const { address: smartWallet } = useAccount();
   const { data: capabilities } = useCapabilities();
-  const currentChainSupportBatchTx =
-    capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
-      ?.atomicBatch.supported;
+  const [currentChainSupportBatchTx, setCurrentChainSupportBatchTx] = useState(false);
   const balance = useBalance({ address: smartWallet, token: testTokenContract.address });
   const testTokenBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
   const hasEnoughBalance = selectedChallenge && testTokenBalance >= selectedChallenge.stake;
-  const { data: allowance } = useERC20Allowance(
-    smartWallet,
-    trackerContract.address,
-    testTokenContract.address,
-  );
+  const { data: allowance } = useReadErc20Allowance({
+    address: testTokenContract.address,
+    args: [smartWallet as `0x${string}`, trackerContract.address],
+  });
   const hasEnoughAllowance =
-    selectedChallenge && allowance ? allowance >= selectedChallenge.stake : false;
+    selectedChallenge && Number(formatEther(allowance as bigint)) >= selectedChallenge.stake;
+
+  const onSwitchBatchTxMode = () => {
+    setCurrentChainSupportBatchTx(!currentChainSupportBatchTx);
+  }
 
   const {
     writeContract: mintWriteContract,
@@ -135,13 +136,30 @@ export default function Join() {
 
   const {
     writeContracts: joinWriteContracts,
-    data: joinDataHashInBatchTx,
+    data: joinIdInBatchTx,
     error: joinErrorInBatchTx,
     isPending: joinPendingInBatchTx,
   } = useWriteContracts();
 
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: joinDataHash ?? (joinDataHashInBatchTx as `0x${string}`),
+  const { data: callsStatus } = useCallsStatus({
+    id: joinIdInBatchTx as string,
+    query: {
+      enabled: !!joinIdInBatchTx,
+      // Poll every second until the calls are confirmed
+      refetchInterval: (data) => (data.state.data?.status === 'CONFIRMED' ? false : 1000),
+    },
+  });
+
+  const { isLoading: isJoinLoading, isSuccess: isJoinSuccess } = useWaitForTransactionReceipt({
+    hash: joinDataHash ?? (callsStatus?.receipts?.[0]?.transactionHash as `0x${string}`),
+  });
+
+  const { isLoading: isMintLoading } = useWaitForTransactionReceipt({
+    hash: mintDataHash,
+  });
+
+  const { isLoading: isApproveLoading } = useWaitForTransactionReceipt({
+    hash: approveDataHash,
   });
 
   const onJoinButtonClick = async () => {
@@ -184,7 +202,15 @@ export default function Join() {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (capabilities) {
+      const support = capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
+        ?.atomicBatch?.supported;
+      setCurrentChainSupportBatchTx(support);
+    }
+  }, [capabilities]);
+
+  useEffect(() => {
+    if (isJoinSuccess) {
       toast.success('Joined! Directing to checkIn!');
 
       // go to checkin page after 2 secs
@@ -192,7 +218,7 @@ export default function Join() {
         push(`/habit/checkin/${selectedChallenge?.arxAddress}`);
       }, 2000);
     }
-  }, [isSuccess, selectedChallenge?.arxAddress, push]);
+  }, [isJoinSuccess, selectedChallenge?.arxAddress, push]);
 
   useEffect(() => {
     if (mintError) {
@@ -232,17 +258,20 @@ export default function Join() {
         </div>
 
         {/**
-         * Enable only when challenge is selected
-         * If doesn't support batch tx and doesn't have enough balance -> Disable Button
-         * If doesn't support batch tx and has enough balance and no allowance -> Display approve && Approve Tx
-         * If doesn't support batch tx and has enough balance and has allowance -> Display stake && Stake Tx
-         * If support batch tx -> Display stake && Join with Batch Tx
+         * Disable button when challenge hasn't selected or when not enough balance and doesn't support batch tx
+         * If support batch tx -> Join with Batch Tx (Mint -> Approve -> Join)
+         * If doesn't support batch tx, has enough balance, has enough allowance -> Stake Tx
+         * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
         <button
           type="button"
           className="bg-yellow bg-yellow mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
           style={{ width: '250px', height: '45px', color: 'white' }}
-          onClick={hasEnoughAllowance ? onJoinButtonClick : onApproveTestTokenClick}
+          onClick={
+            currentChainSupportBatchTx || hasEnoughAllowance
+              ? onJoinButtonClick
+              : onApproveTestTokenClick
+          }
           disabled={
             !selectedChallenge ||
             (!hasEnoughBalance && !currentChainSupportBatchTx) ||
@@ -250,12 +279,17 @@ export default function Join() {
             approvePending ||
             joinPending ||
             joinPendingInBatchTx ||
-            isLoading
+            isJoinLoading ||
+            isMintLoading ||
+            isApproveLoading
           }
         >
+          {/**
+           * If support batch tx or has enough allowance -> Display stake
+           */}
           {selectedChallenge === null
             ? 'Choose a Challenge'
-            : hasEnoughAllowance
+            : currentChainSupportBatchTx || hasEnoughAllowance
             ? `Stake ${selectedChallenge.stake} ALI`
             : 'Approve'}
         </button>
@@ -263,13 +297,13 @@ export default function Join() {
         {/**
          * Display only when challenge is selected
          * If doesn't support batch tx and doesn't have enough balance -> Mint first
-         * If doesn't support batch tx and has enough balance -> Show balance
-         * If support batch tx -> Show balance
+         * If doesn't support batch tx and has enough balance -> Show balance only
+         * If support batch tx -> Show balance only
          */}
         <div className="p-4 text-xs">
-          {!selectedChallenge ? (
+          {!selectedChallenge || currentChainSupportBatchTx ? (
             <p> </p>
-          ) : balance.data && !currentChainSupportBatchTx && !hasEnoughBalance ? (
+          ) : balance.data && !hasEnoughBalance ? (
             <p>
               {' '}
               🚨 Insufficient Balance: {testTokenBalance.toString()} Alibuda Token.{' '}
@@ -282,7 +316,13 @@ export default function Join() {
             <p> 💰 Smart Wallet Balance: {testTokenBalance.toString()} Alibuda Token </p>
           )}
         </div>
-        <div id="overlay-button"> </div>
+        <div id="overlay-button">
+          {' '}
+          <span className="font-bold hover:underline" onClick={onSwitchBatchTxMode}>
+            {' '}
+            Switch to none BatchTx mode{' '}
+          </span>{' '}
+        </div>
 
         {/* warn message */}
         <div className="text-md px-10 pt-8">
