@@ -4,6 +4,7 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
 struct Challenge {
     address verifierAddress;
@@ -16,7 +17,7 @@ struct Challenge {
     bool settled;
 }
 
-contract Tracker {
+contract Tracker is EIP712 {
     using SafeERC20 for IERC20;
     using ECDSA for bytes32;
 
@@ -31,6 +32,7 @@ contract Tracker {
     mapping(uint256 challengeId => mapping(address userAddress => bool)) public hasJoined;
     mapping(uint256 challengeId => address[]) public participants;
     mapping(uint256 challengeId => address[]) public succeedParticipants;
+    mapping(bytes32 digest => bool) public digestUsed;
 
     event CheckIn(address indexed userAddress, uint256 indexed challengeId, uint256 timestamp);
     event Register(
@@ -44,7 +46,7 @@ contract Tracker {
     event Join(address indexed userAddress, uint256 indexed challengeId);
     event Settle(uint256 indexed challengeId);
 
-    constructor(address _underlyingToken) {
+    constructor(address _underlyingToken, string memory name, string memory version) EIP712(name, version) {
         //FIXME: This should be moved to register
         underlyingToken = _underlyingToken;
     }
@@ -61,8 +63,9 @@ contract Tracker {
         uint256 stake
     ) public {
         //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
-        challenges[challengeCounter] =
-            Challenge(verifierAddress, minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
+        challenges[challengeCounter] = Challenge(
+            verifierAddress, minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false
+        );
         emit Register(challengeCounter, verifierAddress, description, startTimestamp, endTimestamp, minimunCheckIns);
 
         challengeCounter++;
@@ -80,16 +83,17 @@ contract Tracker {
         emit Join(msg.sender, challengeId);
     }
 
-    /* Todo: implement timestamp and sender address checks in the signature */
-    function checkIn(uint256 challengeId, bytes32 msgHash, uint8 v, bytes32 r, bytes32 s) public {
-        uint256 timestamp = block.timestamp;
+    function checkIn(uint256 challengeId, uint256 timestamp, uint8 v, bytes32 r, bytes32 s) public {
         /*require(
             timestamp <= challenges[challengeId].endTimestamp && timestamp >= challenges[challengeId].startTimestamp,
             "Invalid timestamp"
         );*/
         require(hasJoined[challengeId][msg.sender], "User has not joined the challenge");
-        address recoveredAddr = ECDSA.recover(msgHash, v, r, s);
-        require(recoveredAddr == challenges[challengeId].verifierAddress, "Invalid signature");
+        bytes32 digest = getCheckInDigest(challengeId, timestamp, msg.sender);
+        require(!digestUsed[digest], "digest has been used");
+        require(challenges[challengeId].verifierAddress == ECDSA.recover(digest, v, r, s), "invalid signature");
+
+        digestUsed[digest] = true;
         checkIns[challengeId][msg.sender].push(timestamp);
         if (checkIns[challengeId][msg.sender].length == challenges[challengeId].minimunCheckIns) {
             challenges[challengeId].totalStake -= challenges[challengeId].perUserStake;
@@ -124,6 +128,23 @@ contract Tracker {
         require(balance > 0, "Insufficient balance");
         balances[msg.sender] = 0;
         IERC20(underlyingToken).safeTransfer(msg.sender, balance);
+    }
+
+    function getCheckInDigest(uint256 challengeId, uint256 timestamp, address participant)
+        public
+        view
+        returns (bytes32)
+    {
+        return _hashTypedDataV4(
+            keccak256(
+                abi.encode(
+                    keccak256("checkInSigningMessage(uint256 challengeId, uint256 timestamp, address participant)"),
+                    challengeId,
+                    timestamp,
+                    participant
+                )
+            )
+        );
     }
 
     function getUserChallenges(address userAddress) public view returns (uint256[] memory) {

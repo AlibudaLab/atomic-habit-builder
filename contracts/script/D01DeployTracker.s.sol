@@ -19,7 +19,7 @@ contract Deploy is Script {
 
     function deploy() public {
         address _underlyingToken = vm.envAddress("ALIBUDA_TOKEN");
-        Tracker tracker = new Tracker(_underlyingToken);
+        Tracker tracker = new Tracker(_underlyingToken, "Alibuda Habbit Builder", "1.0");
         tracker.register(
             address(0x883167E6b5d489B82cB97bEf9C7967afe3A3D299),
             "Run at Sydney Park 10 times",
