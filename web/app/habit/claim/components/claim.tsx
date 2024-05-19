@@ -25,8 +25,6 @@ export default function Claim() {
     isPending: claimPending,
   } = useWriteContract();
 
-  console.log('claimError', typeof claimError, claimError);
-
   const { isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
