@@ -14,15 +14,17 @@ contract TrackerTest is Test {
     address verifier;
     uint256 key;
 
+    uint256 constant PER_USER_STAKE = 0.0001 ether;
+
     function setUp() public {
         underlying = new Alibuda();
         tracker = new Tracker(address(underlying), "Alibuda Habbit Builder", "1.0");
 
         (verifier, key) = makeAddrAndKey("test_verifier");
         tracker.register(
-            verifier, "test challenge", 1, block.timestamp + 10, block.timestamp + 1000, address(this), 0.0001 ether
+            verifier, "test challenge", 1, block.timestamp + 10, block.timestamp + 1000, address(this), PER_USER_STAKE
         );
-        underlying.approve(address(tracker), 0.0001 ether);
+        underlying.approve(address(tracker), PER_USER_STAKE);
     }
 
     function commonJoinAndCheckIn(uint256 timestamp) internal {
@@ -58,6 +60,18 @@ contract TrackerTest is Test {
         tracker.settle(0);
         (,,,,,,, bool settled) = tracker.challenges(0);
         require(settled, "Settle failed");
-        require(tracker.balances(address(this)) == 0.0001 ether, "Settle failed");
+        require(tracker.getClaimableAmount(0, address(this)) == 0.0001 ether, "Settle failed");
+    }
+
+    function test_withdraw(uint256 timestamp) public {
+        vm.assume(timestamp > 0 && timestamp < 1e20);
+        commonJoinAndCheckIn(timestamp);
+
+        vm.warp(block.timestamp + 1001);
+        tracker.settle(0);
+        uint256 beforeBalance = underlying.balanceOf(address(this));
+        tracker.withdraw(0);
+        uint256 afterBalance = underlying.balanceOf(address(this));
+        require(afterBalance - beforeBalance == PER_USER_STAKE, "withdraw failed");
     }
 }
