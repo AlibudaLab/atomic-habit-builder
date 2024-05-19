@@ -26,7 +26,7 @@ contract Deploy is Script {
             10,
             block.timestamp + 10,
             block.timestamp + 1000,
-            address(0xc108B7256052137a1b785192E172670f3BC8dCD6),
+            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
             0.001 ether
         );
         tracker.register(
@@ -35,8 +35,17 @@ contract Deploy is Script {
             5,
             block.timestamp + 10,
             block.timestamp + 1000,
-            address(0xc108B7256052137a1b785192E172670f3BC8dCD6),
+            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
             0.003 ether
+        );
+        tracker.register(
+            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
+            "Run 30 mins 10 times",
+            5,
+            block.timestamp + 10,
+            block.timestamp + 1000,
+            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
+            0.001 ether
         );
     }
 
