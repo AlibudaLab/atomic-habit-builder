@@ -26,7 +26,7 @@ export default function HomePage() {
         {/* Step 1 */}
         <div className="col-span-3 flex w-full items-center justify-start gap-6">
           <Image src={step1} width="60" alt="Step 1 Image" className="mb-3 object-cover" />
-          <p className="mr-auto  text-lg font-bold">Join with World ID or Base Smart Wallet</p>
+          <p className="mr-auto  text-lg font-bold">Join with Base Smart Wallet</p>
         </div>
 
         {/* Step 2 */}
@@ -44,14 +44,14 @@ export default function HomePage() {
         {/* Step 4 */}
         <div className="col-span-3 flex w-full items-center justify-start gap-6 font-bold">
           <Image src={step4} width="60" alt="Step 2 Image" className="mb-3 object-cover" />
-          <p className="text-lg ">Earn stake back and rewards</p>
+          <p className="text-lg ">Earn stake back + rewards!</p>
         </div>
       </div>
 
       <Link href="/habit">
         <button
           type="button"
-          className="bg-yellow mt-10 rounded-lg border-2 border-solid border-black px-8 py-3 text-xl font-bold text-white hover:bg-yellow-600"
+          className="bg-yellow mt-10 rounded-lg border-2 border-solid border-white px-8 py-3 text-xl font-bold text-white hover:bg-yellow-600"
         >
           Start Building
         </button>

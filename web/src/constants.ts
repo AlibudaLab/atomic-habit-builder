@@ -29,14 +29,14 @@ export const challenges: Challenge[] = [
   },
   {
     name: 'Run 30 mins 10 times',
-    duration: 'May 6 - 26',
+    duration: 'May 19 - June 19',
     arxAddress: '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897',
-    stake: 0.001,
+    stake: 0.025,
     icon: '🏃🏻‍♂️',
     donationOrg: 'Gitcoin',
     type: ActivityTypes.Physical,
     verificationType: VerificationType.Strava,
-    targetNum: 5,
+    targetNum: 10,
   },
   {
     name: 'Cowork with cool devs at SYD',
