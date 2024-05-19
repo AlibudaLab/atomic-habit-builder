@@ -40,13 +40,10 @@ export default function Join() {
   const { push } = useRouter();
   const { address: smartWallet } = useAccount();
   const { data: capabilities } = useCapabilities();
-  //FIXME: This should be removed before merge
-  const [currentChainSupportBatchTx, setCurrentChainSupportBatchTx] = useState(false);
-  /* 
+
   const currentChainSupportBatchTx =
     capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
       ?.atomicBatch.supported;
-  */
   const balance = useBalance({ address: smartWallet, token: testTokenContract.address });
   const testTokenBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
   const hasEnoughBalance = selectedChallenge && testTokenBalance >= selectedChallenge.stake;
@@ -56,11 +53,6 @@ export default function Join() {
   });
   const hasEnoughAllowance =
     selectedChallenge && Number(formatEther(allowance as bigint)) >= selectedChallenge.stake;
-
-  //FIXME: This should be removed before merge
-  const onSwitchBatchTxMode = () => {
-    setCurrentChainSupportBatchTx(!currentChainSupportBatchTx);
-  }
 
   const {
     writeContract: mintWriteContract,
@@ -75,7 +67,10 @@ export default function Join() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'mint',
-      args: [smartWallet as `0x${string}`, parseEther(selectedChallenge.stake.toString()) * BigInt(10)],
+      args: [
+        smartWallet as `0x${string}`,
+        parseEther(selectedChallenge.stake.toString()) * BigInt(10),
+      ],
     });
   };
 
@@ -203,14 +198,6 @@ export default function Join() {
   };
 
   useEffect(() => {
-    if (capabilities) {
-      const support = capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
-        ?.atomicBatch?.supported;
-      setCurrentChainSupportBatchTx(support);
-    }
-  }, [capabilities]);
-
-  useEffect(() => {
     if (isJoinSuccess) {
       toast.success('Joined! Directing to checkIn!');
 
@@ -317,17 +304,6 @@ export default function Join() {
           ) : (
             <p> 💰 Smart Wallet Balance: {testTokenBalance.toString()} Test Token </p>
           )}
-        </div>
-          
-          {/**
-           //FIXME: This should be removed before merge
-          */}
-        <div id="overlay-button">
-          {' '}
-          <span className="font-bold hover:underline" onClick={onSwitchBatchTxMode}>
-            {' '}
-            Switch to none BatchTx mode{' '}
-          </span>{' '}
         </div>
 
         {/* warn message */}
