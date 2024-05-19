@@ -4,45 +4,49 @@ pragma solidity 0.8.25;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
-//FIXME: There should be challenge id
 struct Challenge {
+    address verifier;
     uint256 minimunCheckIns;
     uint256 startTimestamp;
     uint256 endTimestamp;
     address donateDestination;
-    uint256 perUserStake;
+    uint256 stakePerUser;
     uint256 totalStake;
     bool settled;
 }
 
-contract Tracker {
+contract Tracker is EIP712 {
     using SafeERC20 for IERC20;
     using ECDSA for bytes32;
 
     //FIXME: This should be included in struct Challenge
     address public underlyingToken;
+    uint256 public challengeCounter;
 
-    mapping(address arxAddress => Challenge) public challenges;
-    mapping(address userAddress => address[]) public userChallenges;
-    mapping(address userAddress => uint256) public balances;
-    mapping(address arxAddress => mapping(address userAddress => uint256[])) public checkIns;
-    mapping(address arxAddress => mapping(address userAddress => bool)) public hasJoined;
-    mapping(address arxAddress => address[]) public participants;
-    mapping(address arxAddress => address[]) public succeedParticipants;
+    mapping(uint256 challengeId => Challenge) public challenges;
+    mapping(address user => uint256[]) public userChallenges;
+    mapping(address user => uint256) public balances;
+    mapping(uint256 challengeId => mapping(address user => uint256[])) public checkIns;
+    mapping(uint256 challengeId => mapping(address user => bool)) public hasJoined;
+    mapping(uint256 challengeId => address[]) public users;
+    mapping(uint256 challengeId => address[]) public succeedUsers;
+    mapping(bytes32 digest => bool) public digestUsed;
 
-    event CheckIn(address indexed userAddress, address indexed arxAddress, uint256 timestamp);
+    event CheckIn(address indexed user, uint256 indexed challengeId, uint256 timestamp);
     event Register(
-        address indexed arxAddress,
+        uint256 indexed challengeId,
+        address verifier,
         string description,
         uint256 startTimestamp,
         uint256 endTimestamp,
         uint256 minimumCheckIns
     );
-    event Join(address indexed userAddress, address indexed arxAddress);
-    event Settle(address indexed arxAddress);
+    event Join(address indexed user, uint256 indexed challengeId);
+    event Settle(uint256 indexed challengeId);
 
-    constructor(address _underlyingToken) {
+    constructor(address _underlyingToken, string memory name, string memory version) EIP712(name, version) {
         //FIXME: This should be moved to register
         underlyingToken = _underlyingToken;
     }
@@ -50,7 +54,7 @@ contract Tracker {
     //FIXME: This should be created with token specify
     // register a new habit challenge
     function register(
-        address arxAddress,
+        address verifier,
         string memory description,
         uint256 minimunCheckIns,
         uint256 startTimestamp,
@@ -58,61 +62,62 @@ contract Tracker {
         address donateDestination,
         uint256 stake
     ) public {
-        require(challenges[arxAddress].startTimestamp == 0, "Challenge already exists");
         //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
-        challenges[arxAddress] =
-            Challenge(minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
-        emit Register(arxAddress, description, startTimestamp, endTimestamp, minimunCheckIns);
+        challenges[challengeCounter++] =
+            Challenge(verifier, minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
+        emit Register(challengeCounter, verifier, description, startTimestamp, endTimestamp, minimunCheckIns);
     }
 
     // user join a habit challenge
-    function join(address arxAddress) public payable {
-        require(challenges[arxAddress].startTimestamp != 0, "Challenge does not exist");
-        //require(block.timestamp < challenges[arxAddress].startTimestamp, "Challenge has started");
-        IERC20(underlyingToken).safeTransferFrom(msg.sender, address(this), challenges[arxAddress].perUserStake);
-        hasJoined[arxAddress][msg.sender] = true;
-        userChallenges[msg.sender].push(arxAddress);
-        participants[arxAddress].push(msg.sender);
-        challenges[arxAddress].totalStake += challenges[arxAddress].perUserStake;
-        emit Join(msg.sender, arxAddress);
+    function join(uint256 challengeId) public payable {
+        require(challenges[challengeId].startTimestamp != 0, "challenge does not exist");
+        require(!hasJoined[challengeId][msg.sender], "user already joined the challenge");
+        //require(block.timestamp < challenges[challengeId].startTimestamp, "Challenge has started");
+        IERC20(underlyingToken).safeTransferFrom(msg.sender, address(this), challenges[challengeId].stakePerUser);
+        hasJoined[challengeId][msg.sender] = true;
+        userChallenges[msg.sender].push(challengeId);
+        users[challengeId].push(msg.sender);
+        challenges[challengeId].totalStake += challenges[challengeId].stakePerUser;
+        emit Join(msg.sender, challengeId);
     }
 
-    /* Todo: implement timestamp and sender address checks in the signature */
-    function checkIn(address arxAddress, bytes32 msgHash, uint8 v, bytes32 r, bytes32 s) public {
-        uint256 timestamp = block.timestamp;
+    function checkIn(uint256 challengeId, uint256 timestamp, uint8 v, bytes32 r, bytes32 s) public {
         /*require(
-            timestamp <= challenges[arxAddress].endTimestamp && timestamp >= challenges[arxAddress].startTimestamp,
+            timestamp <= challenges[challengeId].endTimestamp && timestamp >= challenges[challengeId].startTimestamp,
             "Invalid timestamp"
         );*/
-        require(hasJoined[arxAddress][msg.sender], "User has not joined the challenge");
-        address recoveredAddr = ECDSA.recover(msgHash, v, r, s);
-        require(recoveredAddr == arxAddress, "Invalid signature");
-        checkIns[arxAddress][msg.sender].push(timestamp);
-        if (checkIns[arxAddress][msg.sender].length == challenges[arxAddress].minimunCheckIns) {
-            challenges[arxAddress].totalStake -= challenges[arxAddress].perUserStake;
-            balances[msg.sender] += challenges[arxAddress].perUserStake;
-            succeedParticipants[arxAddress].push(msg.sender);
+        require(hasJoined[challengeId][msg.sender], "user has not joined the challenge");
+        bytes32 digest = getCheckInDigest(challengeId, timestamp, msg.sender);
+        require(!digestUsed[digest], "digest has been used");
+        require(challenges[challengeId].verifier == ECDSA.recover(digest, v, r, s), "invalid signature");
+
+        digestUsed[digest] = true;
+        checkIns[challengeId][msg.sender].push(timestamp);
+        if (checkIns[challengeId][msg.sender].length == challenges[challengeId].minimunCheckIns) {
+            challenges[challengeId].totalStake -= challenges[challengeId].stakePerUser;
+            balances[msg.sender] += challenges[challengeId].stakePerUser;
+            succeedUsers[challengeId].push(msg.sender);
         }
-        emit CheckIn(msg.sender, arxAddress, timestamp);
+        emit CheckIn(msg.sender, challengeId, timestamp);
     }
 
     // settle a challenge after the ending timestamp
-    function settle(address arxAddress) public {
-        //require(block.timestamp > challenges[arxAddress].endTimestamp, "Challenge has not ended");
-        emit Settle(arxAddress);
-        challenges[arxAddress].settled = true;
+    function settle(uint256 challengeId) public {
+        //require(block.timestamp > challenges[challengeId].endTimestamp, "Challenge has not ended");
+        emit Settle(challengeId);
+        challenges[challengeId].settled = true;
 
-        if (succeedParticipants[arxAddress].length == 0 || challenges[arxAddress].totalStake == 0) return;
+        if (succeedUsers[challengeId].length == 0 || challenges[challengeId].totalStake == 0) return;
 
-        uint256 halfStakeBalance = challenges[arxAddress].totalStake / 2;
-        uint256 bonus = halfStakeBalance / succeedParticipants[arxAddress].length;
+        uint256 halfStakeBalance = challenges[challengeId].totalStake / 2;
+        uint256 bonus = halfStakeBalance / succeedUsers[challengeId].length;
 
-        for (uint256 i = 0; i < succeedParticipants[arxAddress].length; i++) {
-            address participant = participants[arxAddress][i];
-            balances[participant] += bonus;
+        for (uint256 i = 0; i < succeedUsers[challengeId].length; i++) {
+            address user = users[challengeId][i];
+            balances[user] += bonus;
         }
 
-        IERC20(underlyingToken).safeTransfer(challenges[arxAddress].donateDestination, halfStakeBalance);
+        IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, halfStakeBalance);
     }
 
     //FIXME: This should be withdraw by challenge id
@@ -123,11 +128,24 @@ contract Tracker {
         IERC20(underlyingToken).safeTransfer(msg.sender, balance);
     }
 
-    function getUserChallenges(address userAddress) public view returns (address[] memory) {
-        return userChallenges[userAddress];
+    function getCheckInDigest(uint256 challengeId, uint256 timestamp, address user) public view returns (bytes32) {
+        return _hashTypedDataV4(
+            keccak256(
+                abi.encode(
+                    keccak256("checkInSigningMessage(uint256 challengeId, uint256 timestamp, address user)"),
+                    challengeId,
+                    timestamp,
+                    user
+                )
+            )
+        );
     }
 
-    function getUserCheckInCounts(address arxAddress, address userAddress) public view returns (uint256) {
-        return checkIns[arxAddress][userAddress].length;
+    function getUserChallenges(address user) public view returns (uint256[] memory) {
+        return userChallenges[user];
+    }
+
+    function getUserCheckInCounts(uint256 challengeId, address user) public view returns (uint256) {
+        return checkIns[challengeId][user].length;
     }
 }
