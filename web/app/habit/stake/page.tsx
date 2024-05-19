@@ -4,7 +4,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useRef, useState, useEffect, use } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { useWriteContracts, useCapabilities, useCallsStatus } from 'wagmi/experimental';
 import crypto from 'crypto';
@@ -40,7 +40,13 @@ export default function Join() {
   const { push } = useRouter();
   const { address: smartWallet } = useAccount();
   const { data: capabilities } = useCapabilities();
+  //FIXME: This should be removed before merge
   const [currentChainSupportBatchTx, setCurrentChainSupportBatchTx] = useState(false);
+  /* 
+  const currentChainSupportBatchTx =
+    capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
+      ?.atomicBatch.supported;
+  */
   const balance = useBalance({ address: smartWallet, token: testTokenContract.address });
   const testTokenBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
   const hasEnoughBalance = selectedChallenge && testTokenBalance >= selectedChallenge.stake;
@@ -51,6 +57,7 @@ export default function Join() {
   const hasEnoughAllowance =
     selectedChallenge && Number(formatEther(allowance as bigint)) >= selectedChallenge.stake;
 
+  //FIXME: This should be removed before merge
   const onSwitchBatchTxMode = () => {
     setCurrentChainSupportBatchTx(!currentChainSupportBatchTx);
   }
@@ -171,12 +178,6 @@ export default function Join() {
           {
             address: testTokenContract.address as `0x${string}`,
             abi: testTokenContract.abi,
-            functionName: 'mint',
-            args: [smartWallet, parseEther(selectedChallenge.stake.toString())],
-          },
-          {
-            address: testTokenContract.address as `0x${string}`,
-            abi: testTokenContract.abi,
             functionName: 'approve',
             args: [
               trackerContract.address as `0x${string}`,
@@ -258,8 +259,8 @@ export default function Join() {
         </div>
 
         {/**
-         * Disable button when challenge hasn't selected or when not enough balance and doesn't support batch tx
-         * If support batch tx -> Join with Batch Tx (Mint -> Approve -> Join)
+         * Disable button when challenge hasn't selected or when not enough balance
+         * If support batch tx -> Join with Batch Tx (Approve -> Join)
          * If doesn't support batch tx, has enough balance, has enough allowance -> Stake Tx
          * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
@@ -274,7 +275,7 @@ export default function Join() {
           }
           disabled={
             !selectedChallenge ||
-            (!hasEnoughBalance && !currentChainSupportBatchTx) ||
+            !hasEnoughBalance ||
             mintPending ||
             approvePending ||
             joinPending ||
@@ -285,37 +286,42 @@ export default function Join() {
           }
         >
           {/**
-           * If support batch tx or has enough allowance -> Display stake
+           * Display only when challenge is selected
+           * If doesn't have enough balance -> Display Approve
+           * If has enough allowance -> Display Stake
            */}
           {selectedChallenge === null
             ? 'Choose a Challenge'
-            : currentChainSupportBatchTx || hasEnoughAllowance
+            : hasEnoughAllowance || currentChainSupportBatchTx
             ? `Stake ${selectedChallenge.stake} ALI`
             : 'Approve'}
         </button>
 
         {/**
          * Display only when challenge is selected
-         * If doesn't support batch tx and doesn't have enough balance -> Mint first
-         * If doesn't support batch tx and has enough balance -> Show balance only
-         * If support batch tx -> Show balance only
+         * If doesn't have enough balance -> Mint first
+         * If has enough balance -> Show balance
          */}
         <div className="p-4 text-xs">
-          {!selectedChallenge || currentChainSupportBatchTx ? (
+          {!selectedChallenge ? (
             <p> </p>
           ) : balance.data && !hasEnoughBalance ? (
             <p>
               {' '}
-              🚨 Insufficient Balance: {testTokenBalance.toString()} Alibuda Token.{' '}
+              🚨 Insufficient Balance: {testTokenBalance.toString()} Test Token.{' '}
               <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
                 {' '}
                 Mint Test Token now{' '}
               </span>{' '}
             </p>
           ) : (
-            <p> 💰 Smart Wallet Balance: {testTokenBalance.toString()} Alibuda Token </p>
+            <p> 💰 Smart Wallet Balance: {testTokenBalance.toString()} Test Token </p>
           )}
         </div>
+          
+          {/**
+           //FIXME: This should be removed before merge
+          */}
         <div id="overlay-button">
           {' '}
           <span className="font-bold hover:underline" onClick={onSwitchBatchTxMode}>
