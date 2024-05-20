@@ -13,15 +13,21 @@ import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/hooks/useUserChallenges';
 import { ActivityTypes } from '@/constants';
-import useStravaData from '@/hooks/useStravaData';
+import useRunData from '@/hooks/useRunData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
+import { useRunVerifier } from '@/hooks/useStoredRunVerifier';
 
 const physical = require('@/imgs/physical.png') as string;
 
-export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
+/**
+ * Running activity checkin page.
+ * @param param0 
+ * @returns 
+ */
+export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
 
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -47,27 +53,9 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
 
-  const onClickStrava = async () => {
-    const fetchURL =
-      '/api/strava/auth?' +
-      new URLSearchParams({
-        redirectUri: window.location.href,
-      }).toString();
-    console.log(fetchURL);
-    const response = await (
-      await fetch(fetchURL, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-    ).json();
-    const authUrl = response.authUrl;
-    console.log(authUrl);
-    window.location = authUrl;
-  };
+  
 
-  const { data: stravaData } = useStravaData(accessToken);
+  const { data: stravaData } = useRunData();
 
   const onClickCheckinStrava = async () => {
     if (stravaActivityIdx === -1) {
@@ -163,7 +151,6 @@ export default function StravaCheckIn({ challenge }: { challenge: Challenge }) {
     handleStravaApiCall().catch(console.error);
   }, [stravaAuthToken]);
 
-  useEffect(() => {}, [refreshToken, accessToken]);
 
   useEffect(() => {
     if (isSuccess) {

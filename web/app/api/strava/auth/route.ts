@@ -14,13 +14,13 @@ export async function GET(req: NextRequest): Promise<Response> {
 
     // For example, you can redirect the user to the Strava authentication page
     const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
-    const clientId = process.env.STRAVA_CLIENT_ID;
+    const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
     const responseType = 'code';
     const approvalPrompt = 'force';
     const scope = 'activity:read_all';
 
     const authUrl = `${stravaAuthUrl}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectUri}&approval_prompt=${approvalPrompt}&scope=${scope}`;
-    console.log(authUrl);
+    console.log('authURL', authUrl);
 
     return NextResponse.json({ authUrl }, { status: 200 });
   } catch (error) {
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       return NextResponse.json({ error: 'authToken is required' }, { status: 400 });
     }
 
-    const url = `https://www.strava.com/api/v3/oauth/token?client_id=${process.env.STRAVA_CLIENT_ID}&client_secret=${process.env.STRAVA_CLIENT_SECRET}&code=${authToken}&grant_type=authorization_code`;
+    const url = `https://www.strava.com/api/v3/oauth/token?client_id=${process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID}&client_secret=${process.env.STRAVA_CLIENT_SECRET}&code=${authToken}&grant_type=authorization_code`;
     const response = await fetch(url, { method: 'POST' });
 
     console.log(url);

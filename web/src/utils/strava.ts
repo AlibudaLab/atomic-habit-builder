@@ -1,0 +1,65 @@
+export const SEPERATOR = 'STRAVA_SECRET_SEPARATOR';
+
+
+export type StravaActivity = {
+  id: number;
+  name: string;
+  timestamp: string;
+  distance: number;
+  max_heartrate: number;
+  moving_time: number;
+};
+
+
+export function getAuthURL (redirectURL: string, original_uri?: string | null){
+  const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
+  const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
+  const responseType = 'code';
+  const approvalPrompt = 'force';
+  const scope = 'activity:read_all';
+
+  let authUrl = `${stravaAuthUrl}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectURL}&approval_prompt=${approvalPrompt}&scope=${scope}`;
+  if (original_uri) authUrl += `&state=${original_uri}`;
+
+  return authUrl;
+}
+
+export async function getAccessAndRefreshToken (authToken: string){
+  const fetchURL = `/api/strava/auth?authToken=${authToken}`;
+
+  const response = await (
+    await fetch(fetchURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  ).json();
+
+  return { accessToken: response.access_token as string, refreshToken: response.refresh_token as string}
+}
+
+export function splitSecret(secret: string) {
+  const [accessToken, refreshToken] = secret.split(SEPERATOR);
+  return {accessToken, refreshToken};
+}
+
+export function joinSecret(accessToken: string, refreshToken: string) {
+  return `${accessToken}${SEPERATOR}${refreshToken}`;
+}
+
+export async function fetchActivitis(accessToken: string) {
+  const fetchURL = `/api/strava/activities?accessToken=${accessToken}`;
+
+  const response = (await (
+    await fetch(fetchURL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  ).json()) as { runData: StravaActivity[] };
+
+  return response.runData
+  
+}
