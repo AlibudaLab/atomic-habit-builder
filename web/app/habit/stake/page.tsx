@@ -295,14 +295,14 @@ export default function Join() {
           ) : balance.data && !hasEnoughBalance ? (
             <p>
               {' '}
-              🚨 Insufficient Balance: {testTokenBalance.toString()} Test Token.{' '}
+              🚨 Insufficient Balance: {testTokenBalance?.toString() || 0} Test Token.{' '}
               <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
                 {' '}
                 Mint Test Token now{' '}
               </span>{' '}
             </p>
           ) : (
-            <p> 💰 Smart Wallet Balance: {testTokenBalance.toString()} Test Token </p>
+            <p> 💰 Smart Wallet Balance: {testTokenBalance?.toString() || 0} Test Token </p>
           )}
         </div>
 
