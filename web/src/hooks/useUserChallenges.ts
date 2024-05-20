@@ -1,4 +1,4 @@
-import { ActivityTypes, VerificationType, challenges } from '@/constants';
+import { ChallengeTypes, challenges } from '@/constants';
 import { readContract } from '@wagmi/core';
 import * as trackerContract from '@/contracts/tracker';
 import { useState, useEffect } from 'react';
@@ -9,10 +9,8 @@ export type Challenge = {
   duration: string;
   arxAddress: string;
   stake: number;
-  icon: string;
   donationOrg?: string;
-  type: ActivityTypes;
-  verificationType: VerificationType;
+  type: ChallengeTypes;
   mapKey?: string;
   targetNum: number;
   checkedIn?: number;

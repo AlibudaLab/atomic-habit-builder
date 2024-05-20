@@ -2,6 +2,7 @@
 'use client';
 
 import { Challenge } from '@/hooks/useUserChallenges';
+import { challengeToEmoji } from '@/utils/challenges';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -29,7 +30,7 @@ export default function Dashboard({ challenges }: DashboardProps) {
             style={{ borderColor: '#EDB830', width: '350px', height: '60px' }}
           >
             <div className="flex w-full justify-between">
-              <div className="mr-4 text-2xl">{challenge.icon}</div>
+              <div className="mr-4 text-2xl">{ challengeToEmoji(challenge.type)}</div>
               <div className="justify-left items-start hover:text-black">
                 <div className="flex text-sm">{challenge.duration} </div>
                 <div className="flex text-sm">{challenge.name} </div>
@@ -39,14 +40,13 @@ export default function Dashboard({ challenges }: DashboardProps) {
                 {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
               </div>
             </div>
-          </button>
-
-          {/* Space Divier */}
-          <div className='py-12'></div>
-
-          
+          </button>          
         </Link>
       ))}
+
+      {/* Space Divier */}
+      <div className='py-12'></div>
+
 
       <Link href="/habit/stake">
         <button

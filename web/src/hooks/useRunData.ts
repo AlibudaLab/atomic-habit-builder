@@ -20,10 +20,9 @@ const useRunData = () => {
     if (verifier !== RunVerifier.Strava) {
       return;
     }
-    console.log('secret', secret);
     if (!secret) return;
 
-    // not expired, do nothing
+    // access token not expired, do nothing
     if (expiry > Date.now() / 1000) return;
 
     const updateAccessToken = async () => {
@@ -34,8 +33,6 @@ const useRunData = () => {
       const { accessToken: newAccessToken, expiry: newExpiry } =
         await stravaUtils.refreshAccessToken(refreshToken);
 
-      console.log('newAccessToken', newAccessToken)
-
       const newSecret = stravaUtils.joinSecret(newAccessToken, refreshToken);
       // update secret
       updateVerifierAndSecret(RunVerifier.Strava, newSecret, newExpiry);
@@ -43,8 +40,6 @@ const useRunData = () => {
 
     updateAccessToken().catch(console.error);
   }, [expiry, secret, updateVerifierAndSecret, verifier]);
-
-  console.log('expiry', expiry);
 
   // fetch data when access token are updated and not expired!
   useEffect(() => {
@@ -56,6 +51,8 @@ const useRunData = () => {
     if (expiry < Date.now() / 1000) {
       console.log('waiting for refresh');
       return;
+    } else {
+      console.log('fetching user run data');
     }
 
     const fetchData = async () => {
@@ -64,6 +61,10 @@ const useRunData = () => {
 
       try {
         const newData = await stravaUtils.fetchActivities(accessToken);
+        if (!newData) {
+          throw new Error('No data found');
+        }
+
         setData(newData);
         setLoading(false);
       } catch (_error) {

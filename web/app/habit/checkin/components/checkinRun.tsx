@@ -13,7 +13,7 @@ import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/hooks/useUserChallenges';
-import { ActivityTypes } from '@/constants';
+import { ChallengeTypes } from '@/constants';
 import useRunData from '@/hooks/useRunData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
@@ -23,7 +23,7 @@ import Link from 'next/link';
 const physical = require('@/imgs/physical.png') as string;
 
 /**
- * Running activity checkin page.
+ * Running activity check-in page.
  * @param param0 
  * @returns 
  */
@@ -33,7 +33,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { challengeId } = useParams<{ challengeId: string }>();
   
   const pathName = usePathname();
-
 
   const router = useRouter();
 
@@ -130,9 +129,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* overview   */}
       <div className="py-2">
-        <p className="px-2 font-bold">
-          {challenge.type === ActivityTypes.Mental ? 'Mental' : 'Physical'} Health Habit Building{' '}
-        </p>
         <p className="px-2 text-sm"> Duration: {challenge.duration} </p>
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
