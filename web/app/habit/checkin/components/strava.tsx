@@ -4,7 +4,8 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { getEncodedCheckinMessage } from '@/utils/arx';
@@ -18,7 +19,6 @@ import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
-import { useRunVerifier } from '@/hooks/useStoredRunVerifier';
 
 const physical = require('@/imgs/physical.png') as string;
 
@@ -31,12 +31,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
 
   const { challengeId } = useParams<{ challengeId: string }>();
+  
+  const pathName = usePathname();
 
-  const [isPending, setIsPending] = useState(false);
-  const [refreshToken, setRefreshToken] = useState(null);
-  const [accessToken, setAccessToken] = useState<null | string | undefined>(null);
-  const searchParams = useSearchParams();
-  const stravaAuthToken = searchParams.get('code');
+
+  const router = useRouter();
 
   const {
     writeContract,
@@ -49,16 +48,15 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     hash: dataHash,
   });
 
-  const [stravaActivityIdx, setStravaActivityIdx] = useState(-1);
+  const [activityIdx, setActivityIdx] = useState(-1);
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
 
-  
 
-  const { data: stravaData } = useRunData();
+  const { connected, data: runData } = useRunData();
 
-  const onClickCheckinStrava = async () => {
-    if (stravaActivityIdx === -1) {
+  const onClickCheckIn = async () => {
+    if (activityIdx === -1) {
       toast.error('Please select an activity');
       return;
     }
@@ -74,7 +72,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         '/api/sign?' +
         new URLSearchParams({
           address: address,
-          activityId: stravaData[stravaActivityIdx].id.toString(),
+          activityId: runData[activityIdx].id.toString(),
         }).toString();
       console.log(fetchURL);
 
@@ -95,7 +93,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         functionName: 'checkIn',
         args: [
           challenge.arxAddress as `0x${string}`,
-          getEncodedCheckinMessage(address, stravaData[stravaActivityIdx].id) as `0x${string}`,
+          getEncodedCheckinMessage(address, runData[activityIdx].id) as `0x${string}`,
           sig.v,
           ('0x' + sig.r.padStart(64, '0')) as `0x${string}`,
           ('0x' + sig.s.padStart(64, '0')) as `0x${string}`,
@@ -113,46 +111,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   };
 
   useEffect(() => {
-    const handleStravaApiCall = async () => {
-      if (!stravaAuthToken) {
-        return; // No need to proceed if token is absent
-      }
-
-      if (refreshToken && accessToken) {
-        return; // No need to proceed if we already have tokens
-      }
-
-      try {
-        const fetchURL =
-          '/api/strava/auth?' +
-          new URLSearchParams({
-            authToken: stravaAuthToken,
-          }).toString();
-        console.log(fetchURL);
-
-        const response = await (
-          await fetch(fetchURL, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-        ).json();
-
-        setRefreshToken(response.refresh_token);
-
-        if (response.access_token) setAccessToken(response.access_token);
-      } finally {
-        setIsPending(false); // Always set loading state to false after the operation
-      }
-    };
-
-    // Call the API call on component mount and whenever stravaAuthToken changes
-    handleStravaApiCall().catch(console.error);
-  }, [stravaAuthToken]);
-
-
-  useEffect(() => {
     if (isSuccess) {
       toast.dismiss();
       toast.success('Recorded on smart contract!! 🥳🥳🥳');
@@ -165,8 +123,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     }
   }, [checkInError]);
 
-  const stravaConnected = accessToken !== null;
-
+  
   return (
     <div className="flex flex-col items-center justify-center">
       <Image src={physical} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
@@ -180,16 +137,16 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
 
-      {stravaConnected &&
-        stravaData.map((activity, idx) => (
+      {connected &&
+        runData.map((activity, idx) => (
           <div
             key={`${activity.name}-${idx}`}
             style={{ borderColor: '#EDB830', width: '250px' }}
             className={`m-2 rounded-md border border-solid p-2 ${
-              stravaActivityIdx === idx ? 'bg-yellow' : 'bg-normal'
+              activityIdx === idx ? 'bg-yellow' : 'bg-normal'
             } items-center justify-center`}
           >
-            <button type="button" onClick={() => setStravaActivityIdx(idx)}>
+            <button type="button" onClick={() => setActivityIdx(idx)}>
               <div className="px-2 text-sm font-bold"> {activity.name} </div>
               <div className="flex items-center px-2">
                 <div className="px-2 text-xs"> {(activity.distance / 1000).toPrecision(2)} KM </div>
@@ -202,9 +159,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           </div>
         ))}
 
-      {stravaConnected && stravaData.length === 0 ? (
+      {connected && runData.length === 0 ? (
         <div className="p-2 text-center text-xs"> No record found </div>
-      ) : stravaConnected ? (
+      ) : connected ? (
         <div className="p-2 text-center text-xs"> Choose an activity to check in </div>
       ) : (
         <> </>
@@ -226,24 +183,26 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             Finish
           </button>
         </Link>
-      ) : stravaConnected ? (
+      ) : connected ? (
         <button
           type="button"
           className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={onClickCheckinStrava}
-          disabled={checkInPending || isLoading || stravaActivityIdx === -1}
+          onClick={onClickCheckIn}
+          disabled={checkInPending || isLoading || activityIdx === -1}
         >
           {' '}
           {isLoading ? 'Sending tx...' : 'Check In'}{' '}
         </button>
       ) : (
-        <button
-          type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={onClickStrava}
-        >
-          Connect Strava
-        </button>
+        
+          <button
+            type="button"
+            className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+            onClick={() => router.push(`/connect-run`)}
+          >
+            Connect Running App
+          </button>
+        
       )}
     </div>
   );

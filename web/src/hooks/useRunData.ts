@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
+import { StravaActivity } from '@/utils/strava';
 
 const useRunData = () => {
   const { verifier, secret } = useRunVerifier()
@@ -9,10 +10,10 @@ const useRunData = () => {
   const [loading, setLoading] = useState(true);
 
   // TODO: change to more generic type
-  const [data, setData] = useState<StravaActiviry[]>([]);
+  const [data, setData] = useState<StravaActivity[]>([]);
   const [error, setError] = useState<unknown | null>(null);
 
-  
+  const connected = verifier !== RunVerifier.None
 
   useEffect(() => {
 
@@ -24,6 +25,7 @@ const useRunData = () => {
 
     
     const fetchData = async () => {
+      setLoading(true)
       const { accessToken } = stravaUtils.splitSecret(secret)
   
       try {
@@ -40,7 +42,7 @@ const useRunData = () => {
     fetchData().catch(console.error);
   }, [secret, verifier]);
 
-  return { loading, data, error };
+  return { loading, data, error, connected };
 };
 
 export default useRunData;
