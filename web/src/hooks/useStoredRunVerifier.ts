@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useEffect, useState } from 'react';
 
 import { RunVerifier } from '@/types';
@@ -6,17 +8,26 @@ const STORAGE_KEY_VERIFIER = 'run-verifier';
 const STORAGE_KEY_SECRET = 'run-verifier-secret';
 const STORAGE_KEY_EXPIRY = 'run-verifier-expiry';
 
-const storedVerifier = localStorage.getItem(STORAGE_KEY_VERIFIER) ?? RunVerifier.None;
-const storedSecret = localStorage.getItem(STORAGE_KEY_SECRET) ?? null;
-const storedExpiry = Number(localStorage.getItem(STORAGE_KEY_EXPIRY)) ?? 0;
-
 export const useRunVerifier = () => {
-  const [verifier, setVerifier] = useState(storedVerifier); // default theme
-
+  // whether it's Strava, Nike Run Club or Apple
+  const [verifier, setVerifier] = useState(RunVerifier.None);
   // custom secret used by each verifier
-  const [secret, setSecret] = useState<string | null>(storedSecret);
+  const [secret, setSecret] = useState<string | null>(null);
+  const [expiry, setExpiry] = useState<number>(0);
 
-  const [expiry, setExpiry] = useState<number>(storedExpiry);
+  // when first loaded, try getting from local storage
+  useEffect(() => {
+    if (!window) return;
+
+    const storedVerifier =
+      (window.localStorage.getItem(STORAGE_KEY_VERIFIER) as RunVerifier) ?? RunVerifier.None;
+    const storedSecret = window.localStorage.getItem(STORAGE_KEY_SECRET) ?? null;
+    const storedExpiry = Number(window.localStorage.getItem(STORAGE_KEY_EXPIRY)) ?? 0;
+
+    setVerifier(storedVerifier);
+    setSecret(storedSecret);
+    setExpiry(storedExpiry);
+  }, []);
 
   const updateVerifierAndSecret = useCallback(
     (newVerifier: RunVerifier, newSecret: string, newExpiry?: number) => {

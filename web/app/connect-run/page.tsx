@@ -1,21 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 'use client';
 
-import { useRunVerifier } from '@/hooks/useStoredRunVerifier';
 import Header from '../habit/components/Header';
-import { RunVerifier } from '@/types';
 import Image from 'next/image';
 
 import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
 
-const StravaImg = require('@/imgs/apps/strava.png') as string;
-const NRCImg = require('@/imgs/apps/nrc.png') as string;
+const StravaImg = require('../../src/imgs/apps/strava.png') as string;
+const NRCImg = require('../../src/imgs/apps/nrc.png') as string;
 
 export default function ConnectRunDataSource() {
-  const { verifier, updateVerifierAndSecret } = useRunVerifier();
-
   // if url contains 'original_uri', then pass this info to the strava callback page, so after connecting we can go back
   const searchParams = useSearchParams();
   const originalUri = searchParams.get('original_uri');
@@ -47,7 +44,7 @@ export default function ConnectRunDataSource() {
           <button
             type="button"
             className="flex items-center justify-center rounded-md bg-white transition-transform hover:scale-105"
-            onClick={() => updateVerifierAndSecret(RunVerifier.Strava, '')}
+            onClick={() => toast('Coming soon', { icon: '🚧' })}
           >
             <div className="rounded-md bg-white p-4">Connect NRC</div>
             <Image src={NRCImg} height={55} width={55} alt="NRC" />

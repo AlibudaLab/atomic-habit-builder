@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { RunVerifier } from '@/types';

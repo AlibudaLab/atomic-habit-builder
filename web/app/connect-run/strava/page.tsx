@@ -12,7 +12,6 @@ import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
-const NRCImg = require('@/imgs/apps/nrc.png') as string;
 
 /**
  * This page is only used to receive the strava login callback
