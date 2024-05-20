@@ -36,7 +36,11 @@ export async function getAccessAndRefreshToken (authToken: string){
     })
   ).json();
 
-  return { accessToken: response.access_token as string, refreshToken: response.refresh_token as string}
+  return { 
+    accessToken: response.access_token as string, 
+    refreshToken: response.refresh_token as string,
+    expiry:  response.expiry as number
+  }
 }
 
 export function splitSecret(secret: string) {
@@ -48,7 +52,7 @@ export function joinSecret(accessToken: string, refreshToken: string) {
   return `${accessToken}${SEPERATOR}${refreshToken}`;
 }
 
-export async function fetchActivitis(accessToken: string) {
+export async function fetchActivities(accessToken: string) {
   const fetchURL = `/api/strava/activities?accessToken=${accessToken}`;
 
   const response = (await (
@@ -62,4 +66,22 @@ export async function fetchActivitis(accessToken: string) {
 
   return response.runData
   
+}
+
+export async function refreshAccessToken(refreshToken: string) {
+  const fetchURL = `/api/strava/refresh?refreshToken=${refreshToken}`;
+
+  const response = await (
+    await fetch(fetchURL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  ).json();
+
+  return {
+    accessToken: response.access_token as string, 
+    expiry:  response.expiry as number
+  };
 }

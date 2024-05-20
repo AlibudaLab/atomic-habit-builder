@@ -27,7 +27,7 @@ export default function CallbackStrava() {
 
   console.log('originPage', originalUri)
 
-  const { updateVerifierAndSecret, secret, lastUpdated } = useRunVerifier();
+  const { updateVerifierAndSecret, secret } = useRunVerifier();
 
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -41,18 +41,13 @@ export default function CallbackStrava() {
         return; // No need to proceed if token is absent
       }
 
-      if ((Date.now() / 1000) - lastUpdated < 3600 * 5) {
-        console.log('No need to refetch')
-        return 
-      } 
-
       // use our backend to use authToken to get access token and refresh token
       // need to proxy through our backend because it requires a App secret
       try {
-        const { refreshToken, accessToken } = await stravaUtils.getAccessAndRefreshToken(stravaAuthToken);     
+        const { refreshToken, accessToken, expiry } = await stravaUtils.getAccessAndRefreshToken(stravaAuthToken);     
         const newSecret = stravaUtils.joinSecret(accessToken, refreshToken);
 
-        updateVerifierAndSecret(RunVerifier.Strava, newSecret);
+        updateVerifierAndSecret(RunVerifier.Strava, newSecret, expiry);
 
         toast('Successfully connected with Strava', { icon: '🚀' });
 
@@ -64,7 +59,7 @@ export default function CallbackStrava() {
     };
 
     updateAccessTokenAndRefreshToken().catch(console.log);
-  }, [stravaAuthToken, updateVerifierAndSecret, originalUri, lastUpdated]);
+  }, [stravaAuthToken, updateVerifierAndSecret, originalUri]);
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">

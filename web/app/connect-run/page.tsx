@@ -38,7 +38,6 @@ export default function ConnectRunDataSource() {
               <div className='p-4 bg-white rounded-md'>
                 Connect Strava
               </div>
-              {/* <button type="button" onClick={() => updateVerifierAndSecret(RunVerifier.Garmin, "")}> Link Garmin </button> */}
               <Image src={StravaImg} height={55} width={55} alt="Strava" />
             </button>
 
@@ -47,7 +46,6 @@ export default function ConnectRunDataSource() {
               <div className='p-4 bg-white rounded-md'>
                 Connect NRC
               </div>
-              {/* <button type="button" onClick={() => updateVerifierAndSecret(RunVerifier.Garmin, "")}> Link Garmin </button> */}
               <Image src={NRCImg} height={55} width={55} alt="NRC" />
             </button>
           </div>
