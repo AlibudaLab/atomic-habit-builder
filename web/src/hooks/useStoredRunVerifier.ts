@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { RunVerifier } from '@/types';
-import storage from 'local-storage-fallback'
+import storage from 'local-storage-fallback';
 
 const STORAGE_KEY_VERIFIER = 'run-verifier';
 const STORAGE_KEY_SECRET = 'run-verifier-secret';
