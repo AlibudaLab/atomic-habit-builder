@@ -15,9 +15,7 @@ export default function Dashboard({ challenges }: DashboardProps) {
     <div className="flex flex-col items-center justify-center">
       {/* Only show challenges */}
       <div className="flex w-full items-center justify-center gap-6 text-center">
-        { challenges.length > 0 
-          && (<p className="text-lg"> My Ongoing Challenges </p>)
-        }
+        {challenges.length > 0 && <p className="text-lg"> My Ongoing Challenges </p>}
       </div>
 
       {/* map challenges to list of buttons */}
@@ -26,11 +24,11 @@ export default function Dashboard({ challenges }: DashboardProps) {
           <button
             key={challenge.arxAddress}
             type="button"
-            className="mt-4 w-full rounded-lg px-6 py-3 outline-2 outline"
+            className="mt-4 w-full rounded-lg px-6 py-3 outline outline-2"
             style={{ borderColor: '#EDB830', width: '350px', height: '60px' }}
           >
             <div className="flex w-full justify-between">
-              <div className="mr-4 text-2xl">{ challengeToEmoji(challenge.type)}</div>
+              <div className="mr-4 text-2xl">{challengeToEmoji(challenge.type)}</div>
               <div className="justify-left items-start hover:text-black">
                 <div className="flex text-sm">{challenge.duration} </div>
                 <div className="flex text-sm">{challenge.name} </div>
@@ -40,33 +38,32 @@ export default function Dashboard({ challenges }: DashboardProps) {
                 {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
               </div>
             </div>
-          </button>          
+          </button>
         </Link>
       ))}
 
       {/* Space Divier */}
-      <div className='py-12'></div>
-
+      <div className="py-12"></div>
 
       <Link href="/habit/stake">
         <button
           type="button"
-          className="mt-4 rounded-lg outline-dotted outline-2	px-6 py-3"
+          className="mt-4 rounded-lg px-6 py-3	outline-dotted outline-2"
           style={{ width: '350px', height: '80px' }}
         >
-          <p className='font-bold text-md'> Join a Challenge </p>
-          <p className='text-sm'> Join on-going challenges </p>
+          <p className="text-md font-bold"> Join a Challenge </p>
+          <p className="text-sm"> Join on-going challenges </p>
         </button>
       </Link>
 
       <Link href={''} onClick={() => toast('Coming soon')}>
         <button
           type="button"
-          className="mt-4 rounded-lg outline-dotted outline-2 px-6 py-3 "
+          className="mt-4 rounded-lg px-6 py-3 outline-dotted outline-2 "
           style={{ width: '350px', height: '80px' }}
         >
-          <p className='font-bold text-md'> Create a New Challenge{' '} </p>
-          <p className='text-sm'> Create a new challenge and share! </p>
+          <p className="text-md font-bold"> Create a New Challenge </p>
+          <p className="text-sm"> Create a new challenge and share! </p>
         </button>
       </Link>
     </div>

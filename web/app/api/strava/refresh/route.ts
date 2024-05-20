@@ -15,7 +15,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     const response = await fetch(url, { method: 'POST' });
 
     const res = await response.json();
-    
+
     if (response.status == 200) {
       return NextResponse.json(
         { access_token: res.access_token, expiry: res.expires_at },

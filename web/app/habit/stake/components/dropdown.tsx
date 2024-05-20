@@ -26,10 +26,7 @@ export function ChallengesDropDown({
           <div className="flex justify-start rounded-md border border-solid">
             {selectedChallenge ? (
               <>
-                <div className="p-2 text-2xl">
-                  {' '}
-                  {challengeToEmoji(selectedChallenge.type)}{' '}
-                </div>
+                <div className="p-2 text-2xl"> {challengeToEmoji(selectedChallenge.type)} </div>
                 <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
                   <div className="flex flex-col items-start justify-start p-2">
                     <p className="text-xs opacity-80">{selectedChallenge.duration}</p>
@@ -73,10 +70,7 @@ export function ChallengesDropDown({
                 }}
               >
                 <div className="flex justify-start">
-                  <div className="p-2 text-2xl">
-                    {' '}
-                    {challengeToEmoji(challenge.type)}{' '}
-                  </div>
+                  <div className="p-2 text-2xl"> {challengeToEmoji(challenge.type)} </div>
                   <div className="flex flex-col items-start justify-start p-2">
                     <p className="text-xs opacity-80">{challenge.duration}</p>
                     <p className="text-sm">{challenge.name}</p>

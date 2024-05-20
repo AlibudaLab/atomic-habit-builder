@@ -1,6 +1,5 @@
 export const SEPERATOR = 'STRAVA_SECRET_SEPARATOR';
 
-
 export type StravaActivity = {
   id: number;
   name: string;
@@ -10,8 +9,7 @@ export type StravaActivity = {
   moving_time: number;
 };
 
-
-export function getAuthURL (redirectURL: string, original_uri?: string | null){
+export function getAuthURL(redirectURL: string, original_uri?: string | null) {
   const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
   const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
   const responseType = 'code';
@@ -24,7 +22,7 @@ export function getAuthURL (redirectURL: string, original_uri?: string | null){
   return authUrl;
 }
 
-export async function getAccessAndRefreshToken (authToken: string){
+export async function getAccessAndRefreshToken(authToken: string) {
   const fetchURL = `/api/strava/auth?authToken=${authToken}`;
 
   const response = await (
@@ -36,16 +34,16 @@ export async function getAccessAndRefreshToken (authToken: string){
     })
   ).json();
 
-  return { 
-    accessToken: response.access_token as string, 
+  return {
+    accessToken: response.access_token as string,
     refreshToken: response.refresh_token as string,
-    expiry:  response.expiry as number
-  }
+    expiry: response.expiry as number,
+  };
 }
 
 export function splitSecret(secret: string) {
   const [accessToken, refreshToken] = secret.split(SEPERATOR);
-  return {accessToken, refreshToken};
+  return { accessToken, refreshToken };
 }
 
 export function joinSecret(accessToken: string, refreshToken: string) {
@@ -64,8 +62,7 @@ export async function fetchActivities(accessToken: string) {
     })
   ).json()) as { runData: StravaActivity[] };
 
-  return response.runData
-  
+  return response.runData;
 }
 
 export async function refreshAccessToken(refreshToken: string) {
@@ -81,7 +78,7 @@ export async function refreshAccessToken(refreshToken: string) {
   ).json();
 
   return {
-    accessToken: response.access_token as string, 
-    expiry:  response.expiry as number
+    accessToken: response.access_token as string,
+    expiry: response.expiry as number,
   };
 }

@@ -1,9 +1,9 @@
 export enum RunVerifier {
   None = 'None',
-  Strava = 'Strava'
-} 
+  Strava = 'Strava',
+}
 
 export enum WorkoutVerifier {
   None = 'None',
-  Strava = 'Strava'
+  Strava = 'Strava',
 }

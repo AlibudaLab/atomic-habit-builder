@@ -21,7 +21,7 @@ export default function ConnectRunDataSource() {
   const originalUri = searchParams.get('original_uri');
 
   const onClickStrava = useCallback(() => {
-    const authUrl = stravaUtils.getAuthURL(window.location.href + '/strava', originalUri)
+    const authUrl = stravaUtils.getAuthURL(window.location.href + '/strava', originalUri);
     window.location = authUrl as any;
   }, []);
 
@@ -29,26 +29,30 @@ export default function ConnectRunDataSource() {
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />
 
-      <div className="font-bold text-lg py-4">Link Run Data Source</div>
+      <div className="py-4 text-lg font-bold">Link Run Data Source</div>
       <div>
         {/* {verifier === RunVerifier.None && ( */}
-          <div className="flex gap-4">
-            {/* connect with strava */}
-            <button type='button' className='flex bg-white rounded-md hover:scale-105 transition-transform justify-center items-center' onClick={onClickStrava}>
-              <div className='p-4 bg-white rounded-md'>
-                Connect Strava
-              </div>
-              <Image src={StravaImg} height={55} width={55} alt="Strava" />
-            </button>
+        <div className="flex gap-4">
+          {/* connect with strava */}
+          <button
+            type="button"
+            className="flex items-center justify-center rounded-md bg-white transition-transform hover:scale-105"
+            onClick={onClickStrava}
+          >
+            <div className="rounded-md bg-white p-4">Connect Strava</div>
+            <Image src={StravaImg} height={55} width={55} alt="Strava" />
+          </button>
 
-            {/* connect with NRC */}
-            <button type='button' className='flex bg-white rounded-md hover:scale-105 transition-transform justify-center items-center' onClick={() => updateVerifierAndSecret(RunVerifier.Strava, '')}>
-              <div className='p-4 bg-white rounded-md'>
-                Connect NRC
-              </div>
-              <Image src={NRCImg} height={55} width={55} alt="NRC" />
-            </button>
-          </div>
+          {/* connect with NRC */}
+          <button
+            type="button"
+            className="flex items-center justify-center rounded-md bg-white transition-transform hover:scale-105"
+            onClick={() => updateVerifierAndSecret(RunVerifier.Strava, '')}
+          >
+            <div className="rounded-md bg-white p-4">Connect NRC</div>
+            <Image src={NRCImg} height={55} width={55} alt="NRC" />
+          </button>
+        </div>
         {/* )} */}
       </div>
     </main>

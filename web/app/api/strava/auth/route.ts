@@ -21,8 +21,8 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     if (response.status == 200) {
       return NextResponse.json(
-        { 
-          refresh_token: userProfile.refresh_token, 
+        {
+          refresh_token: userProfile.refresh_token,
           access_token: userProfile.access_token,
           expiry: userProfile.expires_at,
         },

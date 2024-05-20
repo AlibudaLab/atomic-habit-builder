@@ -28,9 +28,7 @@ export default function CheckIn() {
         <p className="mr-auto text-lg ">Check in every day</p>
       </div>
 
-      {challenge.type === ChallengeTypes.Run && (
-        <RunCheckIn challenge={challenge} />
-      )}
+      {challenge.type === ChallengeTypes.Run && <RunCheckIn challenge={challenge} />}
 
       {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
     </div>

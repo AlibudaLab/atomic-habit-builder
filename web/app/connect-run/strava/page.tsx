@@ -25,7 +25,7 @@ export default function CallbackStrava() {
 
   const originalUri = searchParams.get('state');
 
-  console.log('originPage', originalUri)
+  console.log('originPage', originalUri);
 
   const { updateVerifierAndSecret, secret } = useRunVerifier();
 
@@ -34,8 +34,7 @@ export default function CallbackStrava() {
   // Upon receiving the token,
   useEffect(() => {
     const updateAccessTokenAndRefreshToken = async () => {
-
-      console.log('update access token and refresh token')
+      console.log('update access token and refresh token');
 
       if (!stravaAuthToken) {
         return; // No need to proceed if token is absent
@@ -44,7 +43,8 @@ export default function CallbackStrava() {
       // use our backend to use authToken to get access token and refresh token
       // need to proxy through our backend because it requires a App secret
       try {
-        const { refreshToken, accessToken, expiry } = await stravaUtils.getAccessAndRefreshToken(stravaAuthToken);     
+        const { refreshToken, accessToken, expiry } =
+          await stravaUtils.getAccessAndRefreshToken(stravaAuthToken);
         const newSecret = stravaUtils.joinSecret(accessToken, refreshToken);
 
         updateVerifierAndSecret(RunVerifier.Strava, newSecret, expiry);
@@ -52,7 +52,7 @@ export default function CallbackStrava() {
         toast('Successfully connected with Strava', { icon: '🚀' });
 
         // Redirect to the original page
-        if (originalUri) window.location.href = originalUri
+        if (originalUri) window.location.href = originalUri;
       } finally {
         setIsPending(false); // Always set loading state to false after the operation
       }
@@ -71,10 +71,8 @@ export default function CallbackStrava() {
           <Image src={StravaImg} height={55} width={55} alt="Strava" />
         </>
       )}
-      
-      <div>
-        Secret: {secret}
-      </div>
+
+      <div>Secret: {secret}</div>
     </main>
   );
 }

@@ -1,4 +1,4 @@
-import { ChallengeTypes } from "@/constants";
+import { ChallengeTypes } from '@/constants';
 
 export function challengeToEmoji(type: ChallengeTypes) {
   switch (type) {

@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import { useParams, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
@@ -24,14 +24,14 @@ const physical = require('@/imgs/physical.png') as string;
 
 /**
  * Running activity check-in page.
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
 
   const { challengeId } = useParams<{ challengeId: string }>();
-  
+
   const pathName = usePathname();
 
   const router = useRouter();
@@ -50,7 +50,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const [activityIdx, setActivityIdx] = useState(-1);
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
-
 
   const { connected, data: runData } = useRunData();
 
@@ -122,7 +121,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     }
   }, [checkInError]);
 
-  
   return (
     <div className="flex flex-col items-center justify-center">
       <Image src={physical} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
@@ -190,15 +188,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           {isLoading ? 'Sending tx...' : 'Check In'}{' '}
         </button>
       ) : (
-        
-          <button
-            type="button"
-            className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-            onClick={() => router.push(`/connect-run`)}
-          >
-            Connect Running App
-          </button>
-        
+        <button
+          type="button"
+          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          onClick={() => router.push(`/connect-run`)}
+        >
+          Connect Running App
+        </button>
       )}
     </div>
   );
