@@ -19,7 +19,7 @@ export default function ConnectRunDataSource() {
 
   const pathName = usePathname();
 
-  console.log('originalUri', originalPath)
+  console.log('originalUri', originalPath);
 
   const onClickStrava = useCallback(() => {
     const redirectUri = window.origin + pathName + '/strava';
