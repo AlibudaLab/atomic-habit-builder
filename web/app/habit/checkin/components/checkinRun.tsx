@@ -191,7 +191,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <button
           type="button"
           className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
-          onClick={() => router.push(`/connect-run`)}
+          onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
         >
           Connect Running App
         </button>

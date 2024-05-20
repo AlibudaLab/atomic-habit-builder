@@ -9,7 +9,7 @@ export type StravaActivity = {
   moving_time: number;
 };
 
-export function getAuthURL(redirectURL: string, original_uri?: string | null) {
+export function getAuthURL(redirectURL: string, original_path?: string | null) {
   const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
   const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;
   const responseType = 'code';
@@ -17,7 +17,7 @@ export function getAuthURL(redirectURL: string, original_uri?: string | null) {
   const scope = 'activity:read_all';
 
   let authUrl = `${stravaAuthUrl}?client_id=${clientId}&response_type=${responseType}&redirect_uri=${redirectURL}&approval_prompt=${approvalPrompt}&scope=${scope}`;
-  if (original_uri) authUrl += `&state=${original_uri}`;
+  if (original_path) authUrl += `&state=${original_path}`;
 
   return authUrl;
 }
