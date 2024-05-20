@@ -24,9 +24,7 @@ export default function CallbackStrava() {
 
   const originalUri = searchParams.get('state');
 
-  console.log('originPage', originalUri);
-
-  const { updateVerifierAndSecret, secret } = useRunVerifier();
+  const { updateVerifierAndSecret } = useRunVerifier();
 
   const [isPending, setIsPending] = useState<boolean>(false);
 
@@ -70,8 +68,6 @@ export default function CallbackStrava() {
           <Image src={StravaImg} height={55} width={55} alt="Strava" />
         </>
       )}
-
-      <div>Secret: {secret}</div>
     </main>
   );
 }
