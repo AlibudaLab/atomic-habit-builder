@@ -34,24 +34,24 @@ export default function ConnectRunDataSource() {
       <div className="py-4 text-lg font-bold">Link Run Data Source</div>
       <div>
         {/* {verifier === RunVerifier.None && ( */}
-        <div className="flex gap-4">
+        <div className="gap-2 sm:flex">
           {/* connect with strava */}
           <button
             type="button"
-            className="flex items-center justify-center rounded-md bg-white transition-transform hover:scale-105"
+            className="my-2 flex min-w-[250px] items-center justify-center rounded-md bg-white p-2 transition-transform hover:scale-105"
             onClick={onClickStrava}
           >
-            <div className="rounded-md bg-white p-4">Connect Strava</div>
+            <div className="rounded-md bg-white p-4">Strava</div>
             <Image src={StravaImg} height={55} width={55} alt="Strava" />
           </button>
 
           {/* connect with NRC */}
           <button
             type="button"
-            className="flex items-center justify-center rounded-md bg-white transition-transform hover:scale-105"
+            className="my-2 flex min-w-[250px] items-center justify-center rounded-md bg-white p-2 transition-transform hover:scale-105"
             onClick={() => toast('Coming soon', { icon: '🚧' })}
           >
-            <div className="rounded-md bg-white p-4">Connect NRC</div>
+            <div className="rounded-md bg-white p-4">Nike Run Club</div>
             <Image src={NRCImg} height={55} width={55} alt="NRC" />
           </button>
         </div>

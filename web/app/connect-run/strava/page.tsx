@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 
 import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
 
@@ -28,9 +29,10 @@ export default function CallbackStrava() {
 
   const [isPending, setIsPending] = useState<boolean>(false);
 
-  // Upon receiving the token,
+  // Upon receiving the ath token, try get the access token!
   useEffect(() => {
     const updateAccessTokenAndRefreshToken = async () => {
+      setIsPending(true);
       console.log('update access token and refresh token');
 
       if (!stravaAuthToken) {
@@ -42,6 +44,11 @@ export default function CallbackStrava() {
       try {
         const { refreshToken, accessToken, expiry } =
           await stravaUtils.getAccessAndRefreshToken(stravaAuthToken);
+
+        if (!accessToken || !refreshToken) {
+          toast.error('Failed to connect with Strava');
+        }
+
         const newSecret = stravaUtils.joinSecret(accessToken, refreshToken);
 
         updateVerifierAndSecret(RunVerifier.Strava, newSecret, expiry);
@@ -64,8 +71,21 @@ export default function CallbackStrava() {
 
       {stravaAuthToken !== undefined && (
         <>
-          <div className="py-4 text-lg font-bold"> Connecting Strava with Alibuda ... </div>
+          {isPending ? (
+            <div className="py-4 text-lg font-bold"> Connecting Strava with Alibuda ... </div>
+          ) : (
+            <div className="py-4 text-lg font-bold"> Connected with Strava! </div>
+          )}
           <Image src={StravaImg} height={55} width={55} alt="Strava" />
+
+          {!isPending && (
+            <Link
+              href="/habit"
+              className="bg-yellow m-4 rounded-md p-4 font-bold text-white no-underline"
+            >
+              See Challenges
+            </Link>
+          )}
         </>
       )}
     </main>

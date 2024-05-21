@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
@@ -17,54 +17,67 @@ const useRunData = () => {
 
   const connected = verifier !== RunVerifier.None;
 
+  const expired = useMemo(() => Date.now() / 1000 > expiry, [expiry]);
+
+  // update access token when expired
   useEffect(() => {
-    // TODO: add others verifiers
+    // access token not expired, do nothing
+    if (!expired) return;
+
     if (verifier !== RunVerifier.Strava) {
       return;
     }
-    if (!secret) return;
-
-    // access token not expired, do nothing
-    if (expiry > Date.now() / 1000) return;
 
     const updateAccessToken = async () => {
       console.log('Updating access token!');
+      // error: cannot update access token without refresh token
+      if (!secret) {
+        setError('No secret');
+        return;
+      }
       // expired, wait for refresh and expiry to update
       const { refreshToken } = stravaUtils.splitSecret(secret);
 
       const { accessToken: newAccessToken, expiry: newExpiry } =
         await stravaUtils.refreshAccessToken(refreshToken);
 
+      if (!newAccessToken) {
+        setError('Failed to refresh access token');
+        return;
+      }
+
       const newSecret = stravaUtils.joinSecret(newAccessToken, refreshToken);
+
       // update secret
       updateVerifierAndSecret(RunVerifier.Strava, newSecret, newExpiry);
     };
 
     updateAccessToken().catch(console.error);
-  }, [expiry, secret, updateVerifierAndSecret, verifier]);
+  }, [secret, updateVerifierAndSecret, verifier, expired]);
 
-  // fetch data when access token are updated and not expired!
+  // fetch data when access token are updated and not expired
   useEffect(() => {
     // TODO: add others verifiers
     if (verifier !== RunVerifier.Strava) {
       return;
     }
-    if (!secret) return;
-    if (expiry < Date.now() / 1000) {
-      console.log('waiting for refresh');
-      return;
-    } else {
-      console.log('fetching user run data');
-    }
+    if (expired) return;
 
     const fetchData = async () => {
+      console.log('fetching strava run data');
+      if (!secret) {
+        setError('No secret');
+        return;
+      }
+
       setLoading(true);
       const { accessToken } = stravaUtils.splitSecret(secret);
-
+      console.log('using accessToken', accessToken);
       try {
         const newData = await stravaUtils.fetchActivities(accessToken);
         if (!newData) {
-          throw new Error('No data found');
+          setError('No data found');
+          return;
         }
 
         setData(newData);
@@ -76,8 +89,8 @@ const useRunData = () => {
       }
     };
 
-    fetchData().catch(console.error);
-  }, [secret, verifier, updateVerifierAndSecret, expiry]);
+    fetchData().catch(setError);
+  }, [secret, verifier, updateVerifierAndSecret, expired]);
 
   return { loading, data, error, connected };
 };

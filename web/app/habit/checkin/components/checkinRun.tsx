@@ -13,7 +13,6 @@ import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/hooks/useUserChallenges';
-import { ChallengeTypes } from '@/constants';
 import useRunData from '@/hooks/useRunData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
@@ -29,8 +28,6 @@ const physical = require('@/imgs/physical.png') as string;
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
-
-  const { challengeId } = useParams<{ challengeId: string }>();
 
   const pathName = usePathname();
 
@@ -51,7 +48,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
 
-  const { connected, data: runData } = useRunData();
+  const { connected, data: runData, error: runDataError } = useRunData();
 
   const onClickCheckIn = async () => {
     if (activityIdx === -1) {
@@ -177,7 +174,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             Finish
           </button>
         </Link>
-      ) : connected ? (
+      ) : connected && !runDataError ? (
         <button
           type="button"
           className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
@@ -186,6 +183,14 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         >
           {' '}
           {isLoading ? 'Sending tx...' : 'Check In'}{' '}
+        </button>
+      ) : runDataError ? (
+        <button
+          type="button"
+          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
+        >
+          Re-Connect Running App
         </button>
       ) : (
         <button
