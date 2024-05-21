@@ -5,8 +5,8 @@
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { Challenge } from '@/hooks/useUserChallenges';
-import { challenges, VerificationType } from '@/constants';
-import StravaCheckIn from './strava';
+import { challenges, ChallengeTypes } from '@/constants';
+import RunCheckIn from './checkinRun';
 import NFCCheckIn from './nfc';
 
 const img = require('@/imgs/step3.png') as string;
@@ -28,11 +28,9 @@ export default function CheckIn() {
         <p className="mr-auto text-lg ">Check in every day</p>
       </div>
 
-      {challenge.verificationType === VerificationType.Strava && (
-        <StravaCheckIn challenge={challenge} />
-      )}
+      {challenge.type === ChallengeTypes.Run && <RunCheckIn challenge={challenge} />}
 
-      {challenge.verificationType === VerificationType.NFC && <NFCCheckIn challenge={challenge} />}
+      {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { generateMetadata } from '@/utils/generateMetadata';
 import HomePage from './home/HomePage';
 
 export const metadata = generateMetadata({
-  title: 'Nouns Habit Builder',
+  title: 'Alibuda Habit Builder',
   description: 'Habit Builder for Happy Builders',
   images: 'themes.png',
   pathname: '',

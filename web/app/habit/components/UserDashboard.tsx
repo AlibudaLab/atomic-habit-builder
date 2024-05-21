@@ -2,7 +2,9 @@
 'use client';
 
 import { Challenge } from '@/hooks/useUserChallenges';
+import { challengeToEmoji } from '@/utils/challenges';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 type DashboardProps = {
   challenges: Challenge[];
@@ -11,9 +13,9 @@ type DashboardProps = {
 export default function Dashboard({ challenges }: DashboardProps) {
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* Img and Description */}
+      {/* Only show challenges */}
       <div className="flex w-full items-center justify-center gap-6 text-center">
-        <p className="text-lg"> Ongoing Challenges</p>
+        {challenges.length > 0 && <p className="text-lg"> My Ongoing Challenges </p>}
       </div>
 
       {/* map challenges to list of buttons */}
@@ -22,11 +24,11 @@ export default function Dashboard({ challenges }: DashboardProps) {
           <button
             key={challenge.arxAddress}
             type="button"
-            className="mt-4 w-full rounded-lg px-6 py-3"
-            style={{ borderColor: '#EDB830', border: 'solid', width: '350px', height: '60px' }}
+            className="mt-4 w-full rounded-lg px-6 py-3 outline outline-2"
+            style={{ borderColor: '#EDB830', width: '350px', height: '60px' }}
           >
             <div className="flex w-full justify-between">
-              <div className="mr-4 text-2xl">{challenge.icon}</div>
+              <div className="mr-4 text-2xl">{challengeToEmoji(challenge.type)}</div>
               <div className="justify-left items-start hover:text-black">
                 <div className="flex text-sm">{challenge.duration} </div>
                 <div className="flex text-sm">{challenge.name} </div>
@@ -40,13 +42,28 @@ export default function Dashboard({ challenges }: DashboardProps) {
         </Link>
       ))}
 
+      {/* Space Divier */}
+      <div className="py-12"></div>
+
       <Link href="/habit/stake">
         <button
           type="button"
-          className="mt-4 rounded-lg border-solid px-6 py-3 text-sm font-bold"
-          style={{ width: '300px', height: '50px' }}
+          className="mt-4 rounded-lg px-6 py-3	outline-dotted outline-2"
+          style={{ width: '350px', height: '80px' }}
         >
-          Join a New Challenge{' '}
+          <p className="text-md font-bold"> Join a Challenge </p>
+          <p className="text-sm"> Join on-going challenges </p>
+        </button>
+      </Link>
+
+      <Link href={''} onClick={() => toast('Coming soon')}>
+        <button
+          type="button"
+          className="mt-4 rounded-lg px-6 py-3 outline-dotted outline-2 "
+          style={{ width: '350px', height: '80px' }}
+        >
+          <p className="text-md font-bold"> Create a New Challenge </p>
+          <p className="text-sm"> Create a new challenge and share! </p>
         </button>
       </Link>
     </div>

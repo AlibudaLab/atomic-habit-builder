@@ -13,7 +13,7 @@ export default function Stamps({ checkInNum, targetNum, id }: StampProps) {
     <div className="flex flex-wrap justify-center gap-4 px-12 py-6">
       {Array.from({ length: targetNum }).map((_, idx) => {
         const done = idx < checkInNum;
-        const iconIdx = (Number(id) % 20) + idx;
+        const iconIdx = ((Number(id) % 20) + idx) % 20;
         const icon = require(`@/imgs/hats/${iconIdx + 1}.png`) as string;
         return done ? (
           <div

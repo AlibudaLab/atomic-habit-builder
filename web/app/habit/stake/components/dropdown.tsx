@@ -5,7 +5,8 @@ import { clsx } from 'clsx';
 import { Challenge } from '@/hooks/useUserChallenges';
 import { SetStateAction, useState } from 'react';
 
-import { ActivityTypes, challenges } from '@/constants';
+import { ChallengeTypes, challenges } from '@/constants';
+import { challengeToEmoji } from '@/utils/challenges';
 
 export function ChallengesDropDown({
   setSelectedChallenge,
@@ -25,10 +26,7 @@ export function ChallengesDropDown({
           <div className="flex justify-start rounded-md border border-solid">
             {selectedChallenge ? (
               <>
-                <div className="p-2 text-2xl">
-                  {' '}
-                  {selectedChallenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
-                </div>
+                <div className="p-2 text-2xl"> {challengeToEmoji(selectedChallenge.type)} </div>
                 <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
                   <div className="flex flex-col items-start justify-start p-2">
                     <p className="text-xs opacity-80">{selectedChallenge.duration}</p>
@@ -72,10 +70,7 @@ export function ChallengesDropDown({
                 }}
               >
                 <div className="flex justify-start">
-                  <div className="p-2 text-2xl">
-                    {' '}
-                    {challenge.type === ActivityTypes.Mental ? '💚' : '💪🏻'}{' '}
-                  </div>
+                  <div className="p-2 text-2xl"> {challengeToEmoji(challenge.type)} </div>
                   <div className="flex flex-col items-start justify-start p-2">
                     <p className="text-xs opacity-80">{challenge.duration}</p>
                     <p className="text-sm">{challenge.name}</p>
