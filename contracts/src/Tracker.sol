@@ -81,6 +81,7 @@ contract Tracker is EIP712 {
         emit Join(msg.sender, challengeId);
     }
 
+    // todo: change signature to bytes, so we can support contract checkins
     function checkIn(uint256 challengeId, uint256 timestamp, uint8 v, bytes32 r, bytes32 s) public {
         /*require(
             timestamp <= challenges[challengeId].endTimestamp && timestamp >= challenges[challengeId].startTimestamp,
@@ -132,7 +133,7 @@ contract Tracker is EIP712 {
         return _hashTypedDataV4(
             keccak256(
                 abi.encode(
-                    keccak256("checkInSigningMessage(uint256 challengeId, uint256 timestamp, address user)"),
+                    keccak256("checkInSigningMessage(uint256 challengeId,uint256 timestamp,address user)"),
                     challengeId,
                     timestamp,
                     user

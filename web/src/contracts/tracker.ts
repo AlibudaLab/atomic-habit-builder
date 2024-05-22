@@ -1,536 +1,269 @@
-export const address = '0x75062fAB27490219E43D94017327593DbE4B81C6';
+export const address = '0x2B1d06d53C8597d586690A49776E5B3b4bf2eC61';
+
 export const abi = [
   {
-    type: 'constructor',
     inputs: [
-      {
-        name: '_underlyingToken',
-        type: 'address',
-        internalType: 'address',
-      },
+      { internalType: 'address', name: '_underlyingToken', type: 'address' },
+      { internalType: 'string', name: 'name', type: 'string' },
+      { internalType: 'string', name: 'version', type: 'string' },
     ],
     stateMutability: 'nonpayable',
+    type: 'constructor',
   },
   {
-    type: 'function',
+    inputs: [{ internalType: 'address', name: 'target', type: 'address' }],
+    name: 'AddressEmptyCode',
+    type: 'error',
+  },
+  { inputs: [], name: 'ECDSAInvalidSignature', type: 'error' },
+  {
+    inputs: [{ internalType: 'uint256', name: 'length', type: 'uint256' }],
+    name: 'ECDSAInvalidSignatureLength',
+    type: 'error',
+  },
+  {
+    inputs: [{ internalType: 'bytes32', name: 's', type: 'bytes32' }],
+    name: 'ECDSAInvalidSignatureS',
+    type: 'error',
+  },
+  { inputs: [], name: 'FailedCall', type: 'error' },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'balance', type: 'uint256' },
+      { internalType: 'uint256', name: 'needed', type: 'uint256' },
+    ],
+    name: 'InsufficientBalance',
+    type: 'error',
+  },
+  { inputs: [], name: 'InvalidShortString', type: 'error' },
+  {
+    inputs: [{ internalType: 'address', name: 'token', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+    type: 'error',
+  },
+  {
+    inputs: [{ internalType: 'string', name: 'str', type: 'string' }],
+    name: 'StringTooLong',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: 'address', name: 'user', type: 'address' },
+      { indexed: true, internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'timestamp', type: 'uint256' },
+    ],
+    name: 'CheckIn',
+    type: 'event',
+  },
+  { anonymous: false, inputs: [], name: 'EIP712DomainChanged', type: 'event' },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: 'address', name: 'user', type: 'address' },
+      { indexed: true, internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+    ],
+    name: 'Join',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { indexed: false, internalType: 'address', name: 'verifier', type: 'address' },
+      { indexed: false, internalType: 'string', name: 'description', type: 'string' },
+      { indexed: false, internalType: 'uint256', name: 'startTimestamp', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'endTimestamp', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'minimumCheckIns', type: 'uint256' },
+    ],
+    name: 'Register',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [{ indexed: true, internalType: 'uint256', name: 'challengeId', type: 'uint256' }],
+    name: 'Settle',
+    type: 'event',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
     name: 'balances',
-    inputs: [
-      {
-        name: 'userAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
+    inputs: [],
+    name: 'challengeCounter',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
     type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'uint256', name: 'challengeId', type: 'uint256' }],
     name: 'challenges',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
     outputs: [
-      {
-        name: 'minimunCheckIns',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'startTimestamp',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'endTimestamp',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'donateDestination',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'perUserStake',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'totalStake',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'settled',
-        type: 'bool',
-        internalType: 'bool',
-      },
+      { internalType: 'address', name: 'verifier', type: 'address' },
+      { internalType: 'uint256', name: 'minimumCheckIns', type: 'uint256' },
+      { internalType: 'uint256', name: 'startTimestamp', type: 'uint256' },
+      { internalType: 'uint256', name: 'endTimestamp', type: 'uint256' },
+      { internalType: 'address', name: 'donateDestination', type: 'address' },
+      { internalType: 'uint256', name: 'stakePerUser', type: 'uint256' },
+      { internalType: 'uint256', name: 'totalStake', type: 'uint256' },
+      { internalType: 'bool', name: 'settled', type: 'bool' },
     ],
     stateMutability: 'view',
+    type: 'function',
   },
   {
-    type: 'function',
-    name: 'checkIn',
     inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'msgHash',
-        type: 'bytes32',
-        internalType: 'bytes32',
-      },
-      {
-        name: 'v',
-        type: 'uint8',
-        internalType: 'uint8',
-      },
-      {
-        name: 'r',
-        type: 'bytes32',
-        internalType: 'bytes32',
-      },
-      {
-        name: 's',
-        type: 'bytes32',
-        internalType: 'bytes32',
-      },
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'uint256', name: 'timestamp', type: 'uint256' },
+      { internalType: 'uint8', name: 'v', type: 'uint8' },
+      { internalType: 'bytes32', name: 'r', type: 'bytes32' },
+      { internalType: 'bytes32', name: 's', type: 'bytes32' },
     ],
+    name: 'checkIn',
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
+    ],
     name: 'checkIns',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'userAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
+    inputs: [{ internalType: 'bytes32', name: 'digest', type: 'bytes32' }],
+    name: 'digestUsed',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
     type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'eip712Domain',
+    outputs: [
+      { internalType: 'bytes1', name: 'fields', type: 'bytes1' },
+      { internalType: 'string', name: 'name', type: 'string' },
+      { internalType: 'string', name: 'version', type: 'string' },
+      { internalType: 'uint256', name: 'chainId', type: 'uint256' },
+      { internalType: 'address', name: 'verifyingContract', type: 'address' },
+      { internalType: 'bytes32', name: 'salt', type: 'bytes32' },
+      { internalType: 'uint256[]', name: 'extensions', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'uint256', name: 'timestamp', type: 'uint256' },
+      { internalType: 'address', name: 'user', type: 'address' },
+    ],
+    name: 'getCheckInDigest',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
     name: 'getUserChallenges',
-    inputs: [
-      {
-        name: 'userAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'address[]',
-        internalType: 'address[]',
-      },
-    ],
+    outputs: [{ internalType: 'uint256[]', name: '', type: 'uint256[]' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'address', name: 'user', type: 'address' },
+    ],
     name: 'getUserCheckInCounts',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'userAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'address', name: 'user', type: 'address' },
+    ],
     name: 'hasJoined',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'userAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'bool',
-        internalType: 'bool',
-      },
-    ],
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [{ internalType: 'uint256', name: 'challengeId', type: 'uint256' }],
     name: 'join',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
     outputs: [],
     stateMutability: 'payable',
+    type: 'function',
   },
   {
-    type: 'function',
-    name: 'participants',
     inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
+      { internalType: 'address', name: 'verifier', type: 'address' },
+      { internalType: 'string', name: 'description', type: 'string' },
+      { internalType: 'uint256', name: 'minimumCheckIns', type: 'uint256' },
+      { internalType: 'uint256', name: 'startTimestamp', type: 'uint256' },
+      { internalType: 'uint256', name: 'endTimestamp', type: 'uint256' },
+      { internalType: 'address', name: 'donateDestination', type: 'address' },
+      { internalType: 'uint256', name: 'stake', type: 'uint256' },
     ],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-    stateMutability: 'view',
-  },
-  {
-    type: 'function',
     name: 'register',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'description',
-        type: 'string',
-        internalType: 'string',
-      },
-      {
-        name: 'minimunCheckIns',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'startTimestamp',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'endTimestamp',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'donateDestination',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: 'stake',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [{ internalType: 'uint256', name: 'challengeId', type: 'uint256' }],
     name: 'settle',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
     outputs: [],
     stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
-    type: 'function',
-    name: 'succeedParticipants',
     inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
     ],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
+    name: 'succeedUsers',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [],
     name: 'underlyingToken',
-    inputs: [],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
     stateMutability: 'view',
+    type: 'function',
   },
   {
-    type: 'function',
+    inputs: [
+      { internalType: 'address', name: 'user', type: 'address' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
+    ],
     name: 'userChallenges',
-    inputs: [
-      {
-        name: 'userAddress',
-        type: 'address',
-        internalType: 'address',
-      },
-      {
-        name: '',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
-  },
-  {
     type: 'function',
-    name: 'withdraw',
-    inputs: [],
-    outputs: [],
-    stateMutability: 'nonpayable',
   },
   {
-    type: 'event',
-    name: 'CheckIn',
     inputs: [
-      {
-        name: 'userAddress',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-      {
-        name: 'arxAddress',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-      {
-        name: 'timestamp',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256',
-      },
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'uint256', name: '', type: 'uint256' },
     ],
-    anonymous: false,
+    name: 'users',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
   },
-  {
-    type: 'event',
-    name: 'Join',
-    inputs: [
-      {
-        name: 'userAddress',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-      {
-        name: 'arxAddress',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: 'event',
-    name: 'Register',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-      {
-        name: 'description',
-        type: 'string',
-        indexed: false,
-        internalType: 'string',
-      },
-      {
-        name: 'startTimestamp',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256',
-      },
-      {
-        name: 'endTimestamp',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256',
-      },
-      {
-        name: 'minimumCheckIns',
-        type: 'uint256',
-        indexed: false,
-        internalType: 'uint256',
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: 'event',
-    name: 'Settle',
-    inputs: [
-      {
-        name: 'arxAddress',
-        type: 'address',
-        indexed: true,
-        internalType: 'address',
-      },
-    ],
-    anonymous: false,
-  },
-  {
-    type: 'error',
-    name: 'AddressEmptyCode',
-    inputs: [
-      {
-        name: 'target',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-  },
-  {
-    type: 'error',
-    name: 'ECDSAInvalidSignature',
-    inputs: [],
-  },
-  {
-    type: 'error',
-    name: 'ECDSAInvalidSignatureLength',
-    inputs: [
-      {
-        name: 'length',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
-  },
-  {
-    type: 'error',
-    name: 'ECDSAInvalidSignatureS',
-    inputs: [
-      {
-        name: 's',
-        type: 'bytes32',
-        internalType: 'bytes32',
-      },
-    ],
-  },
-  {
-    type: 'error',
-    name: 'FailedCall',
-    inputs: [],
-  },
-  {
-    type: 'error',
-    name: 'InsufficientBalance',
-    inputs: [
-      {
-        name: 'balance',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-      {
-        name: 'needed',
-        type: 'uint256',
-        internalType: 'uint256',
-      },
-    ],
-  },
-  {
-    type: 'error',
-    name: 'SafeERC20FailedOperation',
-    inputs: [
-      {
-        name: 'token',
-        type: 'address',
-        internalType: 'address',
-      },
-    ],
-  },
+  { inputs: [], name: 'withdraw', outputs: [], stateMutability: 'nonpayable', type: 'function' },
 ] as const;

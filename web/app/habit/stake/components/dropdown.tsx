@@ -63,9 +63,9 @@ export function ChallengesDropDown({
                 style={{ borderColor: 'grey', width: '320px' }}
                 className="bg-light p-2 text-center hover:opacity-80"
                 // label={challenge.name}
-                key={challenge.arxAddress}
+                key={challenge.verifier}
                 onClick={() => {
-                  onChoose(challenge.arxAddress);
+                  onChoose(challenge.verifier);
                   setOpen(false);
                 }}
               >

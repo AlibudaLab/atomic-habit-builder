@@ -30,7 +30,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
     hash: dataHash,
   });
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.verifier);
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -54,7 +54,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.arxAddress as `0x${string}`,
+          challenge.verifier as `0x${string}`,
           getEncodedCheckinMessage(address, timestamp) as `0x${string}`,
           signature.raw.v,
           ('0x' + signature.raw.r) as `0x${string}`,
@@ -97,7 +97,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
 
-      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
+      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.verifier} />
 
       <div>
         {' '}
@@ -105,7 +105,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.arxAddress}`}>
+        <Link href={`/habit/claim/${challenge.verifier}`}>
           <button
             type="button"
             className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"

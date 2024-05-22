@@ -5,10 +5,9 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useParams, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
-import { getEncodedCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
@@ -46,7 +45,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const [activityIdx, setActivityIdx] = useState(-1);
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const { connected, data: runData, error: runDataError } = useRunData();
 
@@ -55,6 +54,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       toast.error('Please select an activity');
       return;
     }
+
+    // todo: change this to get the timestamp of the exercise
+    const timestamp = BigInt(Math.floor(Date.now() / 1000).toString());
 
     let txPendingToastId = null;
     try {
@@ -68,6 +70,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         new URLSearchParams({
           address: address,
           activityId: runData[activityIdx].id.toString(),
+          timestamp: timestamp.toString(),
+          challengeId: challenge.id.toString(),
         }).toString();
       console.log(fetchURL);
 
@@ -87,8 +91,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.arxAddress as `0x${string}`,
-          getEncodedCheckinMessage(address, runData[activityIdx].id) as `0x${string}`,
+          challenge.id,
+          timestamp,
           sig.v,
           ('0x' + sig.r.padStart(64, '0')) as `0x${string}`,
           ('0x' + sig.s.padStart(64, '0')) as `0x${string}`,
@@ -158,7 +162,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <> </>
       )}
 
-      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
+      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.verifier} />
 
       <div>
         {' '}
@@ -166,7 +170,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.arxAddress}`}>
+        <Link href={`/habit/claim/${challenge.verifier}`}>
           <button
             type="button"
             className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
