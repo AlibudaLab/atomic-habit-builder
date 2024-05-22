@@ -15,7 +15,7 @@ export function ChallengesDropDown({
 }: {
   setSelectedChallenge: React.Dispatch<SetStateAction<Challenge | null>>;
   selectedChallenge: Challenge | null;
-  onChoose: (challengeArx: string) => void;
+  onChoose: (id: string) => void;
 }) {
   const [open, setOpen] = useState(true);
 
@@ -63,9 +63,9 @@ export function ChallengesDropDown({
                 style={{ borderColor: 'grey', width: '320px' }}
                 className="bg-light p-2 text-center hover:opacity-80"
                 // label={challenge.name}
-                key={challenge.verifier}
+                key={challenge.id.toString()}
                 onClick={() => {
-                  onChoose(challenge.verifier);
+                  onChoose(challenge.id.toString());
                   setOpen(false);
                 }}
               >

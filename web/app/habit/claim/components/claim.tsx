@@ -14,7 +14,7 @@ const img = require('@/imgs/success.png') as string;
 export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();
 
-  const challenge = challenges.find((c) => c.verifier === challengeId);
+  const challenge = challenges.find((c) => c.id.toString() === challengeId);
 
   const { push } = useRouter();
 

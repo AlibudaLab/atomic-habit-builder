@@ -17,6 +17,7 @@ import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
+import moment from 'moment';
 
 const physical = require('@/imgs/physical.png') as string;
 
@@ -56,7 +57,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     }
 
     // todo: change this to get the timestamp of the exercise
-    const timestamp = BigInt(Math.floor(Date.now() / 1000).toString());
+    const timestamp = moment().unix();
 
     let txPendingToastId = null;
     try {
@@ -92,7 +93,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         functionName: 'checkIn',
         args: [
           challenge.id,
-          timestamp,
+          BigInt(timestamp),
           sig.v,
           ('0x' + sig.r.padStart(64, '0')) as `0x${string}`,
           ('0x' + sig.s.padStart(64, '0')) as `0x${string}`,
@@ -162,7 +163,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <> </>
       )}
 
-      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.verifier} />
+      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} challengeId={challenge.id} />
 
       <div>
         {' '}
@@ -170,7 +171,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.verifier}`}>
+        <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
             className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"

@@ -32,8 +32,8 @@ export default function Join() {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<null | Challenge>(null);
 
-  const handleOnChoose = (challengeArx: string) => {
-    const challenge = challenges.find((c) => c.verifier === challengeArx) ?? null;
+  const handleOnChoose = (id: string) => {
+    const challenge = challenges.find((c) => c.id.toString() === id) ?? null;
     setSelectedChallenge(challenge);
   };
 

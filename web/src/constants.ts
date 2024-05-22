@@ -15,7 +15,7 @@ export const challenges: Challenge[] = [
     id: BigInt(0),
     duration: 'May 1 - 27',
     verifier: '0x883167E6b5d489B82cB97bEf9C7967afe3A3D299',
-    stake: 0.001,
+    stake: 0.2,
     donationOrg: 'Gitcoin',
     type: ChallengeTypes.NFC_Chip,
     mapKey:
@@ -23,11 +23,11 @@ export const challenges: Challenge[] = [
     targetNum: 10,
   },
   {
-    name: 'Cowork with cool devs at SYD',
+    name: 'NFC Challenge 2',
     id: BigInt(1),
     duration: 'May 3 - 6',
     verifier: '0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07',
-    stake: 0.003,
+    stake: 0.5,
     donationOrg: 'Gitcoin',
     type: ChallengeTypes.NFC_Chip,
     mapKey:
@@ -35,9 +35,9 @@ export const challenges: Challenge[] = [
     targetNum: 5,
   },
   {
-    name: 'Run 30 mins 10 times',
+    name: 'Nouns Running Challenge - May',
     id: BigInt(2),
-    duration: 'May 19 - June 19',
+    duration: 'May 1 - May 30',
     verifier: '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897',
     stake: 0.025,
     donationOrg: 'Gitcoin',
@@ -45,9 +45,9 @@ export const challenges: Challenge[] = [
     targetNum: 10,
   },
   {
-    name: 'Run 30 mins 10 times',
+    name: 'Nouns Running Challenge - June',
     id: BigInt(3),
-    duration: 'May 19 - June 19',
+    duration: 'June 1 - June 30',
     verifier: '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897',
     stake: 0.025,
     donationOrg: 'Gitcoin',

@@ -54,8 +54,8 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.verifier as `0x${string}`,
-          getEncodedCheckinMessage(address, timestamp) as `0x${string}`,
+          challenge.id,
+          BigInt(timestamp),
           signature.raw.v,
           ('0x' + signature.raw.r) as `0x${string}`,
           ('0x' + signature.raw.s) as `0x${string}`,
@@ -97,7 +97,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
 
-      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.verifier} />
+      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} challengeId={challenge.id} />
 
       <div>
         {' '}
@@ -105,7 +105,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.verifier}`}>
+        <Link href={`/habit/claim/${challenge.id.toString()}`}>
           <button
             type="button"
             className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
