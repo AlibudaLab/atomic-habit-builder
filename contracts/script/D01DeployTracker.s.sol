@@ -27,8 +27,8 @@ contract Deploy is Script {
             address(0x883167E6b5d489B82cB97bEf9C7967afe3A3D299),
             "NFC Challenge 3",
             10,
-            block.timestamp + 10,
-            block.timestamp + 1000,
+            block.timestamp,
+            block.timestamp + 10 days,
             address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
             0.02 ether
         );
@@ -36,9 +36,9 @@ contract Deploy is Script {
             address(0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07),
             "NFC Challenge 2",
             5,
-            block.timestamp + 10,
-            block.timestamp + 1000,
-            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
+            block.timestamp + 1 days,
+            block.timestamp + 60 days,
+            official_verifier,
             0.05 ether
         );
         tracker.register(
@@ -47,7 +47,7 @@ contract Deploy is Script {
             10,
             1714492800, // May 1
             1717084800, // May 31
-            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
+            official_verifier,
             0.025 ether
         );
 
@@ -57,7 +57,7 @@ contract Deploy is Script {
             10,
             1717171200, // June 1
             1719676800, // June 30
-            address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
+            official_verifier,
             0.025 ether
         );
     }
