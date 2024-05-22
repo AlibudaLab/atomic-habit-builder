@@ -1,4 +1,4 @@
-import { ChallengeTypes } from "./constants";
+import { ChallengeTypes } from './constants';
 
 export enum RunVerifier {
   None = 'None',
@@ -24,8 +24,8 @@ export type ChallengeDetail = {
 export type ChallengeMetaData = {
   id: bigint;
   name: string;
-  type: ChallengeTypes
+  type: ChallengeTypes;
   mapKey?: string;
-}
+};
 
-export type Challenge = ChallengeDetail & ChallengeMetaData
+export type Challenge = ChallengeDetail & ChallengeMetaData;

@@ -90,10 +90,7 @@ export default function Join() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'approve',
-      args: [
-        trackerContract.address ,
-        parseEther(selectedChallenge.stake.toString()),
-      ],
+      args: [trackerContract.address, parseEther(selectedChallenge.stake.toString())],
     });
   };
 
@@ -177,13 +174,10 @@ export default function Join() {
             address: testTokenContract.address as `0x${string}`,
             abi: testTokenContract.abi,
             functionName: 'approve',
-            args: [
-              trackerContract.address ,
-              parseEther(selectedChallenge.stake.toString()),
-            ],
+            args: [trackerContract.address, parseEther(selectedChallenge.stake.toString())],
           },
           {
-            address: trackerContract.address ,
+            address: trackerContract.address,
             abi: trackerContract.abi,
             functionName: 'join',
             args: [selectedChallenge.id],
@@ -192,7 +186,7 @@ export default function Join() {
       });
     } else {
       joinWriteContract({
-        address: trackerContract.address ,
+        address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'join',
         args: [selectedChallenge.id],

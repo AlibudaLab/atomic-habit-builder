@@ -87,7 +87,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       console.log('sig', sig);
 
       writeContract({
-        address: trackerContract.address ,
+        address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [

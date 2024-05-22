@@ -60,12 +60,12 @@ const useAllChallenges = () => {
           })
           .map((c) => {
             const matchingMetaData = challengeMetaDatas.find((meta) => meta.id === c.id);
-            if (!matchingMetaData) return undefined
+            if (!matchingMetaData) return undefined;
             return { ...c, ...matchingMetaData };
           })
           .filter((c) => c !== undefined) as Challenge[];
 
-          setChallenges(newData);
+        setChallenges(newData);
 
         setLoading(false);
       } catch (_error) {

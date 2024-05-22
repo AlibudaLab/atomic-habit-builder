@@ -3,6 +3,7 @@
 
 import { Challenge } from '@/types';
 import { challengeToEmoji } from '@/utils/challenges';
+import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -30,7 +31,9 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
             <div className="flex w-full justify-between">
               <div className="mr-4 text-2xl">{challengeToEmoji(challenge.type)}</div>
               <div className="justify-left items-start hover:text-black">
-                <div className="flex text-sm">{challenge.startTimestamp} </div>
+                <div className="flex text-sm">
+                  {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+                </div>
                 <div className="flex text-sm">{challenge.name} </div>
               </div>
               <div className="text-lg">

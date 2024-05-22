@@ -21,7 +21,7 @@ const useUserChallenges = (address: string | undefined) => {
 
         const userChallenges = await readContract(config, {
           abi: trackerContract.abi,
-          address: trackerContract.address ,
+          address: trackerContract.address,
           functionName: 'getUserChallenges',
           args: [address as `0x${string}`],
         });
@@ -36,13 +36,11 @@ const useUserChallenges = (address: string | undefined) => {
           knownChallenges.map(async (c) => {
             const checkedIn = (await readContract(config, {
               abi: trackerContract.abi,
-              address: trackerContract.address ,
+              address: trackerContract.address,
               functionName: 'getUserCheckInCounts',
               args: [c.id, address as `0x${string}`],
             })) as unknown as number;
-            knownChallenges = knownChallenges.map((k) =>
-              k.id === c.id ? { ...k, checkedIn } : k,
-            );
+            knownChallenges = knownChallenges.map((k) => (k.id === c.id ? { ...k, checkedIn } : k));
           }),
         );
 

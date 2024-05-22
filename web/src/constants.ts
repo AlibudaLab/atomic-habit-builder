@@ -28,7 +28,6 @@ export const challengeMetaDatas: ChallengeMetaData[] = [
     id: BigInt(2),
     name: 'Nouns Running Challenge - May',
     type: ChallengeTypes.Run,
-    
   },
   {
     id: BigInt(3),

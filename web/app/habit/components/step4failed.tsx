@@ -32,8 +32,7 @@ export default function Step4Failed({
       </button>
 
       <div className="p-4 text-xs">
-        50% of the stake is donated to public good. Thank you for your
-        contribution! !
+        50% of the stake is donated to public good. Thank you for your contribution! !
       </div>
 
       <Image src={img} width="440" height="440" alt="Step 4 Image" className="mb-3 object-cover" />

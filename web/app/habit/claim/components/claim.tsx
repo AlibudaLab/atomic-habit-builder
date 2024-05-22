@@ -31,7 +31,7 @@ export default function Claim() {
 
   const onClaimClick = async () => {
     writeContract({
-      address: trackerContract.address ,
+      address: trackerContract.address,
       abi: trackerContract.abi,
       functionName: 'withdraw',
       args: [],
