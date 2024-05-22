@@ -23,7 +23,7 @@ contract Tracker is EIP712 {
 
     //FIXME: This should be included in struct Challenge
     address public underlyingToken;
-    uint256 public challengeCounter;
+    uint256 public challengeCounter = 1;
 
     mapping(uint256 challengeId => Challenge) public challenges;
     mapping(uint256 challengeId => address[]) public users;
@@ -105,20 +105,15 @@ contract Tracker is EIP712 {
     // settle a challenge after the ending timestamp
     function settle(uint256 challengeId) public {
         //require(block.timestamp > challenges[challengeId].endTimestamp, "Challenge has not ended");
+        require(!challenges[challengeId].settled, "challenge already settled");
         emit Settle(challengeId);
         challenges[challengeId].settled = true;
         uint256 succeedUserCounts = succeedUsers[challengeId].length;
 
-        if (succeedUserCounts > 0) {
-            uint256 halfFailedUserStake =
-                (challenges[challengeId].totalStake - (succeedUserCounts * challenges[challengeId].stakePerUser)) / 2;
-            challenges[challengeId].totalStake -= halfFailedUserStake;
-            IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, halfFailedUserStake);
-        } else {
-            uint256 balance = challenges[challengeId].totalStake;
-            challenges[challengeId].totalStake = 0;
-            IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, balance);
-        }
+        uint256 halfFailedUserStake =
+            (challenges[challengeId].totalStake - (succeedUserCounts * challenges[challengeId].stakePerUser)) / 2;
+        challenges[challengeId].totalStake -= halfFailedUserStake;
+        IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, halfFailedUserStake);
     }
 
     function getClaimableAmount(uint256 challengeId, address user) public view returns (uint256) {
@@ -135,6 +130,7 @@ contract Tracker is EIP712 {
         require(challenges[challengeId].settled, "challenge not yet settled");
         require(claimable[challengeId][msg.sender], "user not eligible or already claimed");
         uint256 amount = getClaimableAmount(challengeId, msg.sender);
+        claimable[challengeId][msg.sender] = false;
         IERC20(underlyingToken).safeTransfer(msg.sender, amount);
     }
 

@@ -28,76 +28,69 @@ contract TrackerTest is Test {
     }
 
     function commonJoinAndCheckIn(uint256 timestamp) internal {
-        tracker.join(0);
-        bytes32 digest = tracker.getCheckInDigest(0, timestamp, address(this));
+        tracker.join(1);
+        bytes32 digest = tracker.getCheckInDigest(1, timestamp, address(this));
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(key, digest);
 
         vm.warp(timestamp + 11);
-        tracker.checkIn(0, timestamp, v, r, s);
+        tracker.checkIn(1, timestamp, v, r, s);
     }
 
-    function test_register() public view {
-        (,, uint256 startTimestamp,,,,,) = tracker.challenges(0);
-        require(startTimestamp != 0, "Register failed");
+    function test_Register() public view {
+        (,, uint256 startTimestamp,,,,,) = tracker.challenges(1);
+        assertNotEq(startTimestamp, 0, "Register failed");
     }
 
-    function test_join() public {
-        tracker.join(0);
-        require(tracker.hasJoined(0, address(this)), "Join failed");
+    function test_Join() public {
+        tracker.join(1);
+        assertEq(tracker.hasJoined(1, address(this)), true, "Join failed");
     }
 
-    function test_checkIn(uint256 timestamp) public {
+    function test_CheckIn(uint256 timestamp) public {
         vm.assume(timestamp > 0 && timestamp < 1e20);
         commonJoinAndCheckIn(timestamp);
-        require(tracker.checkIns(0, address(this), 0) != 0, "Check in failed");
+        assertNotEq(tracker.checkIns(1, address(this), 0), 0, "Check in failed");
     }
 
-    function test_settle(uint256 timestamp) public {
-        vm.assume(timestamp > 0 && timestamp < 1e20);
-        commonJoinAndCheckIn(timestamp);
-
-        vm.warp(block.timestamp + 1001);
-        tracker.settle(0);
-        (,,,,,,, bool settled) = tracker.challenges(0);
-        require(settled, "Settle failed");
-        require(tracker.getClaimableAmount(0, address(this)) == 0.0001 ether, "Settle failed");
-    }
-
-    function test_withdraw(uint256 timestamp) public {
+    function test_Settle(uint256 timestamp) public {
         vm.assume(timestamp > 0 && timestamp < 1e20);
         commonJoinAndCheckIn(timestamp);
 
         vm.warp(block.timestamp + 1001);
-        tracker.settle(0);
-        uint256 beforeBalance = underlying.balanceOf(address(this));
-        tracker.withdraw(0);
-        uint256 afterBalance = underlying.balanceOf(address(this));
-        require(afterBalance - beforeBalance == PER_USER_STAKE, "withdraw failed");
+        tracker.settle(1);
+        (,,,,,,, bool settled) = tracker.challenges(1);
+        assertEq(settled, true, "Settle failed");
+        assertEq(tracker.getClaimableAmount(1, address(this)), PER_USER_STAKE, "Settle failed");
     }
 
-    function test_withdraw_failed_user(address failedUser, uint256 timestamp) public {
+    function test_Withdraw(address failedUser, uint256 timestamp) public {
         vm.assume(timestamp > 0 && timestamp < 1e20);
+        vm.assume(failedUser != address(0));
         commonJoinAndCheckIn(timestamp);
 
         vm.startPrank(failedUser);
         underlying.mint(failedUser, PER_USER_STAKE);
-        uint256 failedUserBalance = underlying.balanceOf(failedUser);
         underlying.approve(address(tracker), PER_USER_STAKE);
-        tracker.join(0);
+        tracker.join(1);
         vm.stopPrank();
 
         vm.warp(block.timestamp + 1001);
-        tracker.settle(0);
+        tracker.settle(1);
 
         uint256 beforeBalance = underlying.balanceOf(address(this));
-        tracker.withdraw(0);
+        tracker.withdraw(1);
         uint256 afterBalance = underlying.balanceOf(address(this));
-        require(afterBalance - beforeBalance == PER_USER_STAKE + PER_USER_STAKE / 2, "withdraw failed");
+        assertEq(afterBalance - beforeBalance, PER_USER_STAKE + PER_USER_STAKE / 2, "withdraw failed");
+    }
 
-        vm.startPrank(failedUser);
+    function test_RevertWhen_FailedUserWithdraw(uint256 timestamp) public {
+        vm.assume(timestamp > 0 && timestamp < 1e20);
+        tracker.join(1);
+
+        vm.warp(block.timestamp + 1001);
+        tracker.settle(1);
+
         vm.expectRevert(bytes("user not eligible or already claimed"));
-        tracker.withdraw(0);
-        afterBalance = underlying.balanceOf(failedUser);
-        vm.stopPrank();
+        tracker.withdraw(1);
     }
 }
