@@ -4,15 +4,18 @@
 
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { Challenge } from '@/hooks/useUserChallenges';
-import { challenges, ChallengeTypes } from '@/constants';
+import { Challenge } from '@/types';
+import { ChallengeTypes } from '@/constants';
 import RunCheckIn from './checkinRun';
 import NFCCheckIn from './nfc';
+import useAllChallenges from '@/hooks/useAllChallenges';
 
 const img = require('@/imgs/step3.png') as string;
 
 export default function CheckIn() {
   const { challengeId } = useParams<{ challengeId: string }>();
+  const { challenges } = useAllChallenges();
+
   const challenge = challenges.find((c) => c.id.toString() === challengeId) as Challenge;
 
   return (
@@ -28,9 +31,15 @@ export default function CheckIn() {
         <p className="mr-auto text-lg ">Check in every day</p>
       </div>
 
-      {challenge.type === ChallengeTypes.Run && <RunCheckIn challenge={challenge} />}
+      {challenge ? (
+        <>
+          {challenge.type === ChallengeTypes.Run && <RunCheckIn challenge={challenge} />}
 
-      {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
+          {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
+        </>
+      ) : (
+        <>Loading Challenges</>
+      )}
     </div>
   );
 }

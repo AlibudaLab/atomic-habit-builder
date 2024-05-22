@@ -1,12 +1,9 @@
-import { Avatar } from '@coinbase/onchainkit/identity';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { clsx } from 'clsx';
-
-import { Challenge } from '@/hooks/useUserChallenges';
 import { SetStateAction, useState } from 'react';
-
-import { ChallengeTypes, challenges } from '@/constants';
 import { challengeToEmoji } from '@/utils/challenges';
+import { Challenge } from '@/types';
+import useAllChallenges from '@/hooks/useAllChallenges';
 
 export function ChallengesDropDown({
   setSelectedChallenge,
@@ -19,6 +16,8 @@ export function ChallengesDropDown({
 }) {
   const [open, setOpen] = useState(true);
 
+  const { challenges } = useAllChallenges()
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
@@ -29,7 +28,7 @@ export function ChallengesDropDown({
                 <div className="p-2 text-2xl"> {challengeToEmoji(selectedChallenge.type)} </div>
                 <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
                   <div className="flex flex-col items-start justify-start p-2">
-                    <p className="text-xs opacity-80">{selectedChallenge.duration}</p>
+                    <p className="text-xs opacity-80">{selectedChallenge.startTimestamp}</p>
                     <p className="text-sm">{selectedChallenge.name}</p>
                   </div>
                 </button>
@@ -72,7 +71,7 @@ export function ChallengesDropDown({
                 <div className="flex justify-start">
                   <div className="p-2 text-2xl"> {challengeToEmoji(challenge.type)} </div>
                   <div className="flex flex-col items-start justify-start p-2">
-                    <p className="text-xs opacity-80">{challenge.duration}</p>
+                    <p className="text-xs opacity-80">{challenge.startTimestamp}</p>
                     <p className="text-sm">{challenge.name}</p>
                   </div>
                 </div>

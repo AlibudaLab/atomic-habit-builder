@@ -50,7 +50,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
 
       writeContract({
-        address: trackerContract.address as `0x${string}`,
+        address: trackerContract.address ,
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [

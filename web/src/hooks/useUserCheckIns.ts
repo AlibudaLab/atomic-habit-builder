@@ -17,7 +17,7 @@ const useUserChallengeCheckIns = (address: string | undefined, challengeId: bigi
 
         const achieved = (await readContract(config, {
           abi: trackerContract.abi,
-          address: trackerContract.address as `0x${string}`,
+          address: trackerContract.address ,
           functionName: 'getUserCheckInCounts',
           args: [challengeId, address as `0x${string}`],
         })) as unknown as bigint;

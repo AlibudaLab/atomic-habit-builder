@@ -1,6 +1,6 @@
 'use client';
 
-import useUserChallenges, { Challenge } from '@/hooks/useUserChallenges';
+import { Challenge } from '@/hooks/useUserChallenges';
 import Image from 'next/image';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
@@ -32,7 +32,7 @@ export default function Step4Failed({
       </button>
 
       <div className="p-4 text-xs">
-        50% of the stake is donated to {challenge.donationOrg ?? 'public good'}. Thank you for your
+        50% of the stake is donated to public good. Thank you for your
         contribution! !
       </div>
 

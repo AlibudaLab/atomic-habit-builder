@@ -1,6 +1,6 @@
 'use client';
 
-import useUserChallenges, { Challenge } from '@/hooks/useUserChallenges';
+import { Challenge } from '@/types';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
