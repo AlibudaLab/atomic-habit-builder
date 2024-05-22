@@ -10,7 +10,7 @@ const domain = {
   name: 'Alibuda Habit Builder',
   version: '1.0',
   chainId: baseSepolia.id,
-  verifyingContract: trackerAddr as `0x${string}`,
+  verifyingContract: trackerAddr,
 };
 
 const types = {

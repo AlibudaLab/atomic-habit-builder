@@ -10,13 +10,14 @@ import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
-import { Challenge } from '@/hooks/useUserChallenges';
+import { Challenge } from '@/types';
 import useRunData from '@/hooks/useRunData';
 import { timeDifference } from '@/utils/time';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import moment from 'moment';
+import { formatDuration } from '@/utils/timestamp';
 
 const physical = require('@/imgs/physical.png') as string;
 
@@ -128,7 +129,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* overview   */}
       <div className="py-2">
-        <p className="px-2 text-sm"> Duration: {challenge.duration} </p>
+        <p className="px-2 text-sm">
+          {' '}
+          Duration: {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}{' '}
+        </p>
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
 
