@@ -9,7 +9,7 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import useAllChallenges from '@/hooks/useAllChallenges';
 
-const img = require('@/imgs/success.png') as string;
+import GenerateByName from '@/components/Noun/GenerateByName';
 
 export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -83,13 +83,7 @@ export default function Claim() {
 
           <div className="p-4 text-xs">Get back {challenge.stake} ETH.</div>
 
-          <Image
-            src={img}
-            width="440"
-            height="440"
-            alt="Step 4 Image"
-            className="mb-3 object-cover"
-          />
+          <GenerateByName properties={{ name: 'You Success', alt: 'Step 4 Image' }} />
         </>
       ) : (
         <div>Invalid Challenge Id</div>

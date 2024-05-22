@@ -3,7 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-const nouns = require('@/imgs/nouns.png') as string;
+import GetSingleTrait from '@/components/Noun/GetSingleTrait';
+
 const step1 = require('@/imgs/step1.png') as string;
 const step2 = require('@/imgs/step2.png') as string;
 const step3 = require('@/imgs/step3.png') as string;
@@ -12,7 +13,7 @@ const step4 = require('@/imgs/step4.png') as string;
 export default function HomePage() {
   return (
     <main className="container mx-auto flex flex-col items-center px-8 py-16 text-center ">
-      <Image src={nouns} width="100" height="100" alt="Nouns Logo" className="mb-10" />
+      <GetSingleTrait properties={{ name: 'Nouns Logo', glasses: -2, width: 163, height: 62 }} />
 
       <div className="font-title container mb-4 w-full text-center text-4xl">
         Alibuda Habit Builder
