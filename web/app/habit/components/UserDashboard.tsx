@@ -1,25 +1,26 @@
 /* eslint-disable */
 'use client';
 
-import { Challenge } from '@/hooks/useUserChallenges';
+import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { challengeToEmoji } from '@/utils/challenges';
+import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 type DashboardProps = {
-  challenges: Challenge[];
+  onGoingChallenges: ChallengeWithCheckIns[];
 };
 
-export default function Dashboard({ challenges }: DashboardProps) {
+export default function Dashboard({ onGoingChallenges }: DashboardProps) {
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Only show challenges */}
       <div className="flex w-full items-center justify-center gap-6 text-center">
-        {challenges.length > 0 && <p className="text-lg"> My Ongoing Challenges </p>}
+        {onGoingChallenges.length > 0 && <p className="text-lg"> My Ongoing Challenges </p>}
       </div>
 
       {/* map challenges to list of buttons */}
-      {challenges.map((challenge, idx) => (
+      {onGoingChallenges.map((challenge, idx) => (
         <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`}>
           <button
             key={challenge.id.toString()}
@@ -30,7 +31,9 @@ export default function Dashboard({ challenges }: DashboardProps) {
             <div className="flex w-full justify-between">
               <div className="mr-4 text-2xl">{challengeToEmoji(challenge.type)}</div>
               <div className="justify-left items-start hover:text-black">
-                <div className="flex text-sm">{challenge.duration} </div>
+                <div className="flex text-sm">
+                  {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+                </div>
                 <div className="flex text-sm">{challenge.name} </div>
               </div>
               <div className="text-lg">

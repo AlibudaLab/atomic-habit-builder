@@ -14,7 +14,7 @@ import * as trackerContract from '@/contracts/tracker';
 import toast from 'react-hot-toast';
 
 import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
-import { Challenge } from '@/hooks/useUserChallenges';
+import { Challenge } from '@/types';
 
 const img = require('@/imgs/step2.png') as string;
 const kangaroo = require('@/imgs/kangaroo.png') as string;
@@ -22,15 +22,18 @@ const kangaroo = require('@/imgs/kangaroo.png') as string;
 import { formatEther, parseEther } from 'viem';
 
 import { ChallengesDropDown } from './components/dropdown';
-import { challenges, EXPECTED_CHAIN } from '@/constants';
+import { EXPECTED_CHAIN } from '@/constants';
 import Header from '../components/Header';
 
 import { useRouter } from 'next/navigation';
+import useAllChallenges from '@/hooks/useAllChallenges';
 
 export default function Join() {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<null | Challenge>(null);
+
+  const { challenges } = useAllChallenges();
 
   const handleOnChoose = (id: string) => {
     const challenge = challenges.find((c) => c.id.toString() === id) ?? null;
@@ -51,8 +54,10 @@ export default function Join() {
     address: testTokenContract.address,
     args: [smartWallet as `0x${string}`, trackerContract.address],
   });
-  const hasEnoughAllowance =
-    selectedChallenge && Number(formatEther(allowance as bigint)) >= selectedChallenge.stake;
+
+  const hasEnoughAllowance = allowance
+    ? selectedChallenge && Number(formatEther(allowance)) >= selectedChallenge.stake
+    : false;
 
   const {
     writeContract: mintWriteContract,
@@ -87,10 +92,7 @@ export default function Join() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'approve',
-      args: [
-        trackerContract.address as `0x${string}`,
-        parseEther(selectedChallenge.stake.toString()),
-      ],
+      args: [trackerContract.address, parseEther(selectedChallenge.stake.toString())],
     });
   };
 
@@ -174,13 +176,10 @@ export default function Join() {
             address: testTokenContract.address as `0x${string}`,
             abi: testTokenContract.abi,
             functionName: 'approve',
-            args: [
-              trackerContract.address as `0x${string}`,
-              parseEther(selectedChallenge.stake.toString()),
-            ],
+            args: [trackerContract.address, parseEther(selectedChallenge.stake.toString())],
           },
           {
-            address: trackerContract.address as `0x${string}`,
+            address: trackerContract.address,
             abi: trackerContract.abi,
             functionName: 'join',
             args: [selectedChallenge.id],
@@ -189,7 +188,7 @@ export default function Join() {
       });
     } else {
       joinWriteContract({
-        address: trackerContract.address as `0x${string}`,
+        address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'join',
         args: [selectedChallenge.id],
@@ -280,7 +279,7 @@ export default function Join() {
           {selectedChallenge === null
             ? 'Choose a Challenge'
             : hasEnoughAllowance || currentChainSupportBatchTx
-            ? `Stake ${selectedChallenge.stake} ALI`
+            ? `Stake ${formatEther(selectedChallenge.stake)} ALI`
             : 'Approve'}
         </button>
 

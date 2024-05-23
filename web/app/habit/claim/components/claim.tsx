@@ -6,13 +6,15 @@ import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
 import toast from 'react-hot-toast';
 import { useParams } from 'next/navigation';
-import { challenges } from '@/constants';
 import { useRouter } from 'next/navigation';
+import useAllChallenges from '@/hooks/useAllChallenges';
 
 const img = require('@/imgs/success.png') as string;
 
 export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();
+
+  const { challenges } = useAllChallenges();
 
   const challenge = challenges.find((c) => c.id.toString() === challengeId);
 
@@ -31,7 +33,7 @@ export default function Claim() {
 
   const onClaimClick = async () => {
     writeContract({
-      address: trackerContract.address as `0x${string}`,
+      address: trackerContract.address,
       abi: trackerContract.abi,
       functionName: 'withdraw',
       args: [],

@@ -8,11 +8,12 @@ import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/u
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
-import { Challenge } from '@/hooks/useUserChallenges';
+import { Challenge } from '@/types';
 import moment from 'moment';
 import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
+import { formatDuration } from '@/utils/timestamp';
 
 const mental = require('@/imgs/mental.png') as string;
 
@@ -50,7 +51,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
 
       writeContract({
-        address: trackerContract.address as `0x${string}`,
+        address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
@@ -93,7 +94,10 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       {/* overview   */}
       <div className="py-2">
         <p className="px-2 font-bold">Mental Health Habit Building</p>
-        <p className="px-2 text-sm"> Duration: {challenge.duration} </p>
+        <p className="px-2 text-sm">
+          {' '}
+          Duration: {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}{' '}
+        </p>
         <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
       </div>
 
