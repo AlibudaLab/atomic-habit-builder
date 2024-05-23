@@ -1,14 +1,14 @@
 /* eslint-disable */
 'use client';
 
-import { Challenge } from '@/types';
+import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { challengeToEmoji } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 type DashboardProps = {
-  onGoingChallenges: Challenge[];
+  onGoingChallenges: ChallengeWithCheckIns[];
 };
 
 export default function Dashboard({ onGoingChallenges }: DashboardProps) {
@@ -38,7 +38,7 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
               </div>
               <div className="text-lg">
                 {' '}
-                {/* {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '} */}
+                {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
               </div>
             </div>
           </button>

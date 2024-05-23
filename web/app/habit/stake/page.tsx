@@ -54,8 +54,10 @@ export default function Join() {
     address: testTokenContract.address,
     args: [smartWallet as `0x${string}`, trackerContract.address],
   });
-  const hasEnoughAllowance =
-    selectedChallenge && Number(formatEther(allowance as bigint)) >= selectedChallenge.stake;
+
+  const hasEnoughAllowance = allowance
+    ? selectedChallenge && Number(formatEther(allowance)) >= selectedChallenge.stake
+    : false;
 
   const {
     writeContract: mintWriteContract,

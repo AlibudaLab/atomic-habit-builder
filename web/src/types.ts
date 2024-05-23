@@ -19,7 +19,7 @@ export type ChallengeDetail = {
   verifier: string;
   stake: bigint;
   targetNum: number;
-  donationDestination: Address
+  donationDestination: Address;
 };
 
 // Defined by us, off-chain
@@ -31,3 +31,7 @@ export type ChallengeMetaData = {
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;
+
+export type ChallengeWithCheckIns = Challenge & {
+  checkedIn: number;
+};

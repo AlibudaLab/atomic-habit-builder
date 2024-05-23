@@ -3,14 +3,14 @@ import * as trackerContract from '@/contracts/tracker';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import useAllChallenges from './useAllChallenges';
-import { Challenge } from '@/types';
+import { ChallengeWithCheckIns } from '@/types';
 
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
 
   const { challenges } = useAllChallenges();
 
-  const [data, setData] = useState<Challenge[] | []>([]);
+  const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const useUserChallenges = (address: string | undefined) => {
         // all challenges that user participants in
         let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(c.id));
 
-        await Promise.all(
+        const checkedIns = await Promise.all(
           knownChallenges.map(async (c) => {
             const checkedIn = (await readContract(config, {
               abi: trackerContract.abi,
@@ -40,13 +40,15 @@ const useUserChallenges = (address: string | undefined) => {
               functionName: 'getUserCheckInCounts',
               args: [c.id, address as `0x${string}`],
             })) as unknown as number;
-            knownChallenges = knownChallenges.map((k) => (k.id === c.id ? { ...k, checkedIn } : k));
+            return checkedIn;
           }),
         );
 
-        console.log(knownChallenges);
+        const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
+          return { ...c, checkedIn: checkedIns[idx] };
+        });
 
-        setData(knownChallenges);
+        setData(challengesWithCheckIns);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
