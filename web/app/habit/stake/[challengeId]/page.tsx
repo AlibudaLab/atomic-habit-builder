@@ -21,8 +21,8 @@ import { EXPECTED_CHAIN } from '@/constants';
 import { useParams, useRouter } from 'next/navigation';
 import useChallenge from '@/hooks/useChallenge';
 import Header from 'app/habit/components/Header';
-import { challengeToEmoji, getCheckInDescription } from '@/utils/challenges';
-import { formatDuration } from '@/utils/timestamp';
+import { getCheckInDescription } from '@/utils/challenges';
+import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 
 export default function StakeChallenge() {
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -219,19 +219,7 @@ export default function StakeChallenge() {
 
         {challenge && (
           <>
-            <div className="bg-primary m-2 w-full rounded-xl p-2 text-white">
-              <div className="flex  items-center justify-start ">
-                <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
-                <div className="flex flex-col items-start justify-start p-2 text-start">
-                  <p className="text-xs text-white opacity-80">
-                    {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
-                  </p>
-                  <p className="text-sm font-bold">{challenge.name}</p>
-                  <p className="text-sm"> 5 joined </p>
-                </div>
-                <div className="ml-auto p-2 text-sm">{challenge.targetNum} times</div>
-              </div>
-            </div>
+           <ChallengeBoxFilled challenge={challenge} />
 
             {/* goal description */}
             <div className="justify-start p-6 pb-2 text-start w-full">

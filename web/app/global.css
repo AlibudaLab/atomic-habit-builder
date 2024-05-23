@@ -75,10 +75,17 @@ html .wrapped {
   border-radius: 10px;
 }
 
-html .wrapped :hover, :focus {
+div .wrapped-filled {
+  background-color: var(--palette-primary);
+  color: var(--palette-bg);
+  border-radius: 10px;
+}
+
+div .wrapped :focus {
   background-color: var(--palette-primary);
   color: var(--palette-bg);
 }
+
 
 body {
   height: 100%;
