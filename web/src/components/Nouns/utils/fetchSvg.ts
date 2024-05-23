@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify';
 const fetchSvg = async (properties: any) => {
   console.log('Fetching SVG data...');
   try {
-    const response = await fetch('/api/noun', {
+    const response = await fetch('/api/nouns', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
