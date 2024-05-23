@@ -80,8 +80,8 @@ export default function CallbackStrava() {
 
           {!isPending && (
             <Link
-              href="/habit"
-              className="bg-yellow m-4 rounded-md p-4 font-bold text-white no-underline"
+              href="/"
+              className="bg-primary m-4 rounded-md p-4 font-bold text-white no-underline"
             >
               See Challenges
             </Link>

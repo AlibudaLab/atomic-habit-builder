@@ -17,7 +17,7 @@ export default function Header() {
         </button>
       </Link>
 
-      <div className="font-title container mb-10 w-full text-center text-3xl">
+      <div className="font-title container mb-10 w-full text-center text-3xl text-primary">
         {' '}
         Alibuda Habit Builder{' '}
       </div>

@@ -1,7 +1,6 @@
 'use client';
 
 import useUserChallenges from '@/hooks/useUserChallenges';
-import useAllChallenges from '@/hooks/useAllChallenges';
 import Onboard from './components/Onboard';
 import Dashboard from './components/UserDashboard';
 import Header from './components/Header';

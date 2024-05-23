@@ -20,22 +20,21 @@ import { formatEther, parseEther } from 'viem';
 
 import { ChallengesDropDown } from './components/dropdown';
 import { EXPECTED_CHAIN } from '@/constants';
-import Header from '../components/Header';
 
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import useAllChallenges from '@/hooks/useAllChallenges';
+import useChallenge from '@/hooks/useChallenge';
+import Header from 'app/habit/components/Header';
+import { challengeToEmoji } from '@/utils/challenges';
+import { formatDuration } from '@/utils/timestamp';
 
-export default function Join() {
+export default function StakeChallenge() {
+  const { challengeId } = useParams<{ challengeId: string }>();
+
+  const { challenge, loading } = useChallenge(Number(challengeId));
+
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
-  const [selectedChallenge, setSelectedChallenge] = useState<null | Challenge>(null);
-
-  const { challenges } = useAllChallenges();
-
-  const handleOnChoose = (id: string) => {
-    const challenge = challenges.find((c) => c.id.toString() === id) ?? null;
-    setSelectedChallenge(challenge);
-  };
 
   const { push } = useRouter();
   const { address: smartWallet } = useAccount();
@@ -46,14 +45,14 @@ export default function Join() {
       ?.atomicBatch.supported;
   const balance = useBalance({ address: smartWallet, token: testTokenContract.address });
   const testTokenBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
-  const hasEnoughBalance = selectedChallenge && testTokenBalance >= selectedChallenge.stake;
+  const hasEnoughBalance = challenge && testTokenBalance >= challenge.stake;
   const { data: allowance } = useReadErc20Allowance({
     address: testTokenContract.address,
     args: [smartWallet as `0x${string}`, trackerContract.address],
   });
 
   const hasEnoughAllowance = allowance
-    ? selectedChallenge && Number(formatEther(allowance)) >= selectedChallenge.stake
+    ? challenge && Number(formatEther(allowance)) >= challenge.stake
     : false;
 
   const {
@@ -64,15 +63,12 @@ export default function Join() {
   } = useWriteContract();
 
   const onMintTestTokenClick = async () => {
-    if (!selectedChallenge) return;
+    if (!challenge) return;
     mintWriteContract({
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'mint',
-      args: [
-        smartWallet as `0x${string}`,
-        parseEther(selectedChallenge.stake.toString()) * BigInt(10),
-      ],
+      args: [smartWallet as `0x${string}`, parseEther(challenge.stake.toString()) * BigInt(10)],
     });
   };
 
@@ -84,12 +80,12 @@ export default function Join() {
   } = useWriteContract();
 
   const onApproveTestTokenClick = async () => {
-    if (!selectedChallenge) return;
+    if (!challenge) return;
     approveWriteContract({
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'approve',
-      args: [trackerContract.address, parseEther(selectedChallenge.stake.toString())],
+      args: [trackerContract.address, parseEther(challenge.stake.toString())],
     });
   };
 
@@ -164,8 +160,10 @@ export default function Join() {
   });
 
   const onJoinButtonClick = async () => {
-    if (!selectedChallenge) return;
-
+    if (!challenge) {
+      toast.error('Loading Challenge');
+      return;
+    }
     if (currentChainSupportBatchTx) {
       joinWriteContracts({
         contracts: [
@@ -173,13 +171,13 @@ export default function Join() {
             address: testTokenContract.address as `0x${string}`,
             abi: testTokenContract.abi,
             functionName: 'approve',
-            args: [trackerContract.address, parseEther(selectedChallenge.stake.toString())],
+            args: [trackerContract.address, parseEther(challenge.stake.toString())],
           },
           {
             address: trackerContract.address,
             abi: trackerContract.abi,
             functionName: 'join',
-            args: [selectedChallenge.id],
+            args: [challenge.id],
           },
         ],
       });
@@ -188,7 +186,7 @@ export default function Join() {
         address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'join',
-        args: [selectedChallenge.id],
+        args: [challenge.id],
       });
     }
   };
@@ -199,10 +197,10 @@ export default function Join() {
 
       // go to checkin page after 2 secs
       setTimeout(() => {
-        push(`/habit/checkin/${selectedChallenge?.id}`);
+        push(`/habit/checkin/${challenge?.id}`);
       }, 2000);
     }
-  }, [isJoinSuccess, selectedChallenge?.id, push]);
+  }, [isJoinSuccess, challenge?.id, push]);
 
   useEffect(() => {
     if (mintError) {
@@ -217,21 +215,30 @@ export default function Join() {
   }, [mintError, approveError, joinError, joinErrorInBatchTx]);
 
   return (
-    <main className="container mx-auto flex flex-col items-center text-center px-8 pt-16">
+    <main className="container mx-auto flex flex-col items-center px-8 pt-16 text-center">
       <Header />
 
       <div className="flex flex-col items-center justify-center">
-        
-        <p className="text-lg font-bold text-center text-primary"> Choose a challenge </p>
+        <p className="text-primary text-center text-lg font-bold"> Stake and Commit to it </p>
 
-        {/* drop down here */}
-        <div className="pt-4">
-          <ChallengesDropDown
-            selectedChallenge={selectedChallenge}
-            setSelectedChallenge={setSelectedChallenge}
-            onChoose={handleOnChoose}
-          />
-        </div>
+        {challenge && (
+          <button
+            type="button"
+            className="m-2 w-full p-2 bg-primary text-white rounded-xl"
+          >
+            <div className="flex w-full items-center justify-start ">
+              <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
+              <div className="flex flex-col items-start justify-start p-2">
+                <p className="text-xs opacity-80 text-white">
+                  {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+                </p>
+                <p className="text-sm font-bold">{challenge.name}</p>
+                <p className="text-sm"> 5 joined </p>
+              </div>
+              <div className="ml-auto text-sm">{challenge.targetNum} times</div>
+            </div>
+          </button>
+        )}
 
         {/**
          * Disable button when challenge hasn't selected or when not enough balance
@@ -239,38 +246,38 @@ export default function Join() {
          * If doesn't support batch tx, has enough balance, has enough allowance -> Stake Tx
          * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
-        <button
-          type="button"
-          className="bg-primary bg-primary mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
-          style={{ width: '250px', height: '45px', color: 'white' }}
-          onClick={
-            currentChainSupportBatchTx || hasEnoughAllowance
-              ? onJoinButtonClick
-              : onApproveTestTokenClick
-          }
-          disabled={
-            !selectedChallenge ||
-            !hasEnoughBalance ||
-            mintPending ||
-            approvePending ||
-            joinPending ||
-            joinPendingInBatchTx ||
-            isJoinLoading ||
-            isMintLoading ||
-            isApproveLoading
-          }
-        >
-          {/**
-           * Display only when challenge is selected
-           * If doesn't have enough balance -> Display Approve
-           * If has enough allowance -> Display Stake
-           */}
-          {selectedChallenge === null
-            ? 'Choose a Challenge'
-            : hasEnoughAllowance || currentChainSupportBatchTx
-            ? `Stake ${formatEther(selectedChallenge.stake)} ALI`
-            : 'Approve'}
-        </button>
+        {challenge && (
+          <button
+            type="button"
+            className="bg-primary bg-primary mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:cursor-not-allowed disabled:bg-gray-400"
+            style={{ width: '250px', height: '45px', color: 'white' }}
+            onClick={
+              currentChainSupportBatchTx || hasEnoughAllowance
+                ? onJoinButtonClick
+                : onApproveTestTokenClick
+            }
+            disabled={
+              !challenge ||
+              !hasEnoughBalance ||
+              mintPending ||
+              approvePending ||
+              joinPending ||
+              joinPendingInBatchTx ||
+              isJoinLoading ||
+              isMintLoading ||
+              isApproveLoading
+            }
+          >
+            {/**
+             * Display only when challenge is selected
+             * If doesn't have enough balance -> Display Approve
+             * If has enough allowance -> Display Stake
+             */}
+            {hasEnoughAllowance || currentChainSupportBatchTx
+              ? `Stake ${formatEther(challenge.stake)} ALI`
+              : 'Approve'}
+          </button>
+        )}
 
         {/**
          * Display only when challenge is selected
@@ -278,7 +285,7 @@ export default function Join() {
          * If has enough balance -> Show balance
          */}
         <div className="p-4 text-xs">
-          {!selectedChallenge ? (
+          {!challenge ? (
             <p> </p>
           ) : balance.data && !hasEnoughBalance ? (
             <p>

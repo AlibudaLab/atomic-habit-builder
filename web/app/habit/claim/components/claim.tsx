@@ -63,9 +63,9 @@ export default function Claim() {
           {isSuccess ? (
             <button
               type="button"
-              className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+              className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
               onClick={() => {
-                push('/habit/');
+                push('/');
               }}
             >
               Start a new Challenge
@@ -73,7 +73,7 @@ export default function Claim() {
           ) : (
             <button
               type="button"
-              className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+              className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
               onClick={onClaimClick}
             >
               Claim Rewards
