@@ -1,3 +1,4 @@
+import { Address } from 'viem';
 import { ChallengeTypes } from './constants';
 
 export enum RunVerifier {
@@ -18,6 +19,7 @@ export type ChallengeDetail = {
   verifier: string;
   stake: bigint;
   targetNum: number;
+  donationDestination: Address
 };
 
 // Defined by us, off-chain

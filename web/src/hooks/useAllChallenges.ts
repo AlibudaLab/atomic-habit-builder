@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Address } from 'viem';
-import { Challenge, ChallengeDetail } from '@/types';
+import { Challenge } from '@/types';
 import { challengeMetaDatas } from '@/constants';
 
 const useAllChallenges = () => {
@@ -54,7 +54,7 @@ const useAllChallenges = () => {
               targetNum: Number(res[1].toString()),
               startTimestamp: Number(res[2].toString()),
               endTimestamp: Number(res[3].toString()),
-              // donationOrg?: res[4];
+              donationDestination: res[4],
               stake: res[5],
             };
           })

@@ -116,6 +116,6 @@
   },
   "packageManager": "yarn@4.1.0",
   "resolutions": {
-    "@coinbase/wallet-sdk": "npm:@coinbase/wallet-sdk@4.0.0-beta.12"
+    "@coinbase/wallet-sdk": "npm:@coinbase/wallet-sdk@4.0.2"
   }
 }

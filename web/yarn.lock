@@ -1560,9 +1560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@coinbase/wallet-sdk@npm:@coinbase/wallet-sdk@4.0.0-beta.12":
-  version: 4.0.0-beta.12
-  resolution: "@coinbase/wallet-sdk@npm:4.0.0-beta.12"
+"@coinbase/wallet-sdk@npm:@coinbase/wallet-sdk@4.0.2":
+  version: 4.0.2
+  resolution: "@coinbase/wallet-sdk@npm:4.0.2"
   dependencies:
     buffer: "npm:^6.0.3"
     clsx: "npm:^1.2.1"
@@ -1570,7 +1570,7 @@ __metadata:
     keccak: "npm:^3.0.3"
     preact: "npm:^10.16.0"
     sha.js: "npm:^2.4.11"
-  checksum: 10c0/17f1edba3f04035bc796a1a976355ff7c0926d1e0e681db740f8c26e1bafe4e37104a879c0bae1c8e69740c64ae3da04abc9a762c313dab0f4fd38757b54972e
+  checksum: 10c0/fa06f48ac1b81f7d25eb98a48af04c481d7cfee15845aa386328257d873c9a900d15e0b5a114f6c481e12250946ea326865341fd388b6f18ab5b25163a2dd209
   languageName: node
   linkType: hard
 
