@@ -10,13 +10,12 @@ import useAllChallenges from '@/hooks/useAllChallenges';
 import { formatEther } from 'viem';
 
 import GenerateByName from '@/components/Nouns/GenerateByName';
+import useChallenge from '@/hooks/useChallenge';
 
 export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();
 
-  const { challenges } = useAllChallenges();
-
-  const challenge = challenges.find((c) => c.id.toString() === challengeId);
+  const { challenge, loading } = useChallenge(Number(challengeId));
 
   const { push } = useRouter();
 
@@ -85,6 +84,8 @@ export default function Claim() {
 
           <GenerateByName properties={{ name: 'You Success', alt: 'Step 4 Image' }} />
         </>
+      ) : loading ? (
+        <div> Loading...</div>
       ) : (
         <div>Invalid Challenge Id</div>
       )}
