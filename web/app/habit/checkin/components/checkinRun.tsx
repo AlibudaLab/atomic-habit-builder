@@ -142,6 +142,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
+      <div className="w-full justify-start p-6 pb-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+        <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+      </div>
+
       {connected && runData.length === 0 ? (
         <div className="p-2 pt-6 text-center text-sm"> No record found </div>
       ) : connected ? (
