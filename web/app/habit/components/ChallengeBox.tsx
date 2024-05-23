@@ -41,11 +41,11 @@ export function ChallengeBoxFilled({
         {
           // if checkedIn is defined, show the checkedIn number, otherwise show the target number
           checkedIn !== undefined ? (
-            <div className="ml-auto p-2 text-sm">
+            <div className="ml-auto p-2 text-lg">
               {checkedIn} / {challenge.targetNum}
             </div>
           ) : (
-            <div className="ml-auto p-2 text-sm">{challenge.targetNum} times</div>
+            <div className="text-md ml-auto p-2">{challenge.targetNum} times</div>
           )
         }
       </div>
