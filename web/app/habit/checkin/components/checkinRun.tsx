@@ -124,17 +124,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <GenerateByTrait
-        properties={{
-          name: 'Health',
-          width: 250,
-          height: 250,
-          className: 'mb-3 rounded-full object-cover',
-          head: 204,
-          background: -1,
-        }}
-      />
-
       {/* overview   */}
       <div className="py-2">
         <p className="px-2 text-sm">

@@ -17,7 +17,7 @@ export function ChallengeButtonList() {
     >
       <button
         type="button"
-        className="text-primary w-3/4 m-2 wrapped"
+        className="text-primary w-4/5 m-2 wrapped"
         style={{ borderColor: 'text-primary' }}
         
       >

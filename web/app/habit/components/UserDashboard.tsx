@@ -1,11 +1,10 @@
 /* eslint-disable */
 'use client';
 
-import { Challenge, ChallengeWithCheckIns } from '@/types';
+import { ChallengeWithCheckIns } from '@/types';
 import { challengeToEmoji } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -45,28 +44,16 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
         </Link>
       ))}
 
-      {/* Space Divier */}
+      {/* Space Divider */}
       <div className="py-12"></div>
 
-      <Link href="/habit/stake">
+      <Link href="/habit/list">
         <button
           type="button"
-          className="mt-4 rounded-lg px-6 py-3	outline-dotted outline-2"
-          style={{ width: '350px', height: '80px' }}
+          className="rounded-lg px-6 py-3 wrapped max-w-96 w-full"
         >
           <p className="text-md font-bold"> Join a Challenge </p>
           <p className="text-sm"> Join on-going challenges </p>
-        </button>
-      </Link>
-
-      <Link href={''} onClick={() => toast('Coming soon')}>
-        <button
-          type="button"
-          className="mt-4 rounded-lg px-6 py-3 outline-dotted outline-2 "
-          style={{ width: '350px', height: '80px' }}
-        >
-          <p className="text-md font-bold"> Create a New Challenge </p>
-          <p className="text-sm"> Create a new challenge and share! </p>
         </button>
       </Link>
     </div>
