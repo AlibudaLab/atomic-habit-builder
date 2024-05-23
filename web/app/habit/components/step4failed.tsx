@@ -1,11 +1,10 @@
 'use client';
 
 import { Challenge } from '@/types';
-import Image from 'next/image';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
-const img = require('@/imgs/failed.png') as string;
+import GenerateByName from '@/components/Nouns/GenerateByName';
 
 export default function Step4Failed({
   setSteps,
@@ -35,7 +34,7 @@ export default function Step4Failed({
         50% of the stake is donated to public good. Thank you for your contribution! !
       </div>
 
-      <Image src={img} width="440" height="440" alt="Step 4 Image" className="mb-3 object-cover" />
+      <GenerateByName properties={{ name: 'You Failed', width: 440, height: 440 }} />
     </div>
   );
 }

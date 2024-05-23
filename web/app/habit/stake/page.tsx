@@ -17,7 +17,8 @@ import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { Challenge } from '@/types';
 
 const img = require('@/imgs/step2.png') as string;
-const kangaroo = require('@/imgs/kangaroo.png') as string;
+
+import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
 import { formatEther, parseEther } from 'viem';
 
@@ -312,7 +313,7 @@ export default function Join() {
         </div>
 
         <div className="w-full justify-start px-6">
-          <Image src={kangaroo} width="350" alt="Kangaroo" className="mb object-cover" />
+          <GenerateByTrait properties={{ name: 'Kangaroo', head: 113, background: -1 }} />
         </div>
       </div>
     </main>

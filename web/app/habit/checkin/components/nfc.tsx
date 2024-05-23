@@ -1,7 +1,6 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import Image from 'next/image';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
@@ -15,7 +14,7 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import { formatDuration } from '@/utils/timestamp';
 
-const mental = require('@/imgs/mental.png') as string;
+import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
@@ -89,7 +88,16 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <Image src={mental} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
+      <GenerateByTrait
+        properties={{
+          name: 'Health',
+          width: 250,
+          height: 250,
+          className: 'mb-3 rounded-full object-cover',
+          head: 101,
+          background: -1,
+        }}
+      />
 
       {/* overview   */}
       <div className="py-2">

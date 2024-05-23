@@ -3,7 +3,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
@@ -19,7 +18,7 @@ import Link from 'next/link';
 import moment from 'moment';
 import { formatDuration } from '@/utils/timestamp';
 
-const physical = require('@/imgs/physical.png') as string;
+import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
 /**
  * Running activity check-in page.
@@ -125,7 +124,16 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <Image src={physical} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
+      <GenerateByTrait
+        properties={{
+          name: 'Health',
+          width: 250,
+          height: 250,
+          className: 'mb-3 rounded-full object-cover',
+          head: 204,
+          background: -1,
+        }}
+      />
 
       {/* overview   */}
       <div className="py-2">
