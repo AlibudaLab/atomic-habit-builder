@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
-import DOMPurify from 'dompurify';
+import fetchSvg from './utils/fetchSvg';
 
 export type NounsProperty = {
   name?: string;
@@ -22,25 +22,9 @@ function GenerateByName({ properties }: { properties: NounsProperty | null }) {
 
     prevProperties.current = properties;
 
-    const fetchSvg = async () => {
-      console.log('Fetching SVG data...');
-      try {
-        const response = await fetch('/api/noun', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ name: properties?.name }),
-        });
-        const { svgText } = await response.json();
-        const sanitizedSvg = DOMPurify.sanitize(svgText);
-        setSvgData(sanitizedSvg);
-      } catch (error) {
-        console.error('Error fetching the SVG:', error);
-      }
-    };
-
-    fetchSvg().catch(console.error);
+    fetchSvg({ name: properties?.name })
+      .then(sanitizedSvg => setSvgData(sanitizedSvg))
+      .catch(console.error);
   }, [properties]);
 
   if (!svgData) {

@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
-import DOMPurify from 'dompurify';
+import fetchSvg from './utils/fetchSvg';
 
 export type NounsProperty = {
   name?: string;
@@ -69,36 +69,21 @@ function GetSingleTrait({ properties }: { properties: NounsProperty | null }) {
       transformedProperties[singleDefinedProperty.key] = singleDefinedProperty.value;
     }
 
-    const fetchSvg = async () => {
-      console.log('Fetching SVG data...');
-      try {
-        const response = await fetch('/api/noun', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(transformedProperties),
-        });
-        const { svgText } = await response.json();
-        const sanitizedSvg = DOMPurify.sanitize(svgText);
-
-        if (singleDefinedProperty.key === 'glasses') {
-          // Adjust the viewBox, width, and height
-          setSvgData(
-            sanitizedSvg
-              .replace(/viewBox="[^"]+"/, 'viewBox="70 110 160 60"')
-              .replace(/width="[^"]+"/, 'width="160"')
-              .replace(/height="[^"]+"/, 'height="60"'),
-          );
-        } else {
-          setSvgData(sanitizedSvg);
-        }
-      } catch (error) {
-        console.error('Error fetching the SVG:', error);
+    fetchSvg(transformedProperties)
+    .then(sanitizedSvg => {
+      if (singleDefinedProperty.key === 'glasses') {
+        // Adjust the viewBox, width, and height
+        setSvgData(
+          sanitizedSvg
+            .replace(/viewBox="[^"]+"/, 'viewBox="70 110 160 60"')
+            .replace(/width="[^"]+"/, 'width="160"')
+            .replace(/height="[^"]+"/, 'height="60"'),
+        );
+      } else {
+        setSvgData(sanitizedSvg);
       }
-    };
-
-    fetchSvg().catch(console.error);
+    })
+    .catch(console.error);
   }, [properties]);
 
   if (!svgData) {
