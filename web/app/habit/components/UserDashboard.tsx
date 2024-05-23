@@ -20,9 +20,9 @@ export default function Dashboard({ challenges }: DashboardProps) {
 
       {/* map challenges to list of buttons */}
       {challenges.map((challenge, idx) => (
-        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.arxAddress}`}>
+        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`}>
           <button
-            key={challenge.arxAddress}
+            key={challenge.id.toString()}
             type="button"
             className="mt-4 w-full rounded-lg px-6 py-3 outline outline-2"
             style={{ borderColor: '#EDB830', width: '350px', height: '60px' }}

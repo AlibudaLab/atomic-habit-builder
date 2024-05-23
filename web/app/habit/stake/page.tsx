@@ -32,8 +32,8 @@ export default function Join() {
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const [selectedChallenge, setSelectedChallenge] = useState<null | Challenge>(null);
 
-  const handleOnChoose = (challengeArx: string) => {
-    const challenge = challenges.find((c) => c.arxAddress === challengeArx) ?? null;
+  const handleOnChoose = (id: string) => {
+    const challenge = challenges.find((c) => c.id.toString() === id) ?? null;
     setSelectedChallenge(challenge);
   };
 
@@ -183,7 +183,7 @@ export default function Join() {
             address: trackerContract.address as `0x${string}`,
             abi: trackerContract.abi,
             functionName: 'join',
-            args: [selectedChallenge.arxAddress],
+            args: [selectedChallenge.id],
           },
         ],
       });
@@ -192,7 +192,7 @@ export default function Join() {
         address: trackerContract.address as `0x${string}`,
         abi: trackerContract.abi,
         functionName: 'join',
-        args: [selectedChallenge.arxAddress as `0x${string}`],
+        args: [selectedChallenge.id],
       });
     }
   };
@@ -203,10 +203,10 @@ export default function Join() {
 
       // go to checkin page after 2 secs
       setTimeout(() => {
-        push(`/habit/checkin/${selectedChallenge?.arxAddress}`);
+        push(`/habit/checkin/${selectedChallenge?.id}`);
       }, 2000);
     }
-  }, [isJoinSuccess, selectedChallenge?.arxAddress, push]);
+  }, [isJoinSuccess, selectedChallenge?.id, push]);
 
   useEffect(() => {
     if (mintError) {

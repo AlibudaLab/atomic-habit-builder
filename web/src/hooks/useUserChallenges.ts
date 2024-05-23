@@ -6,8 +6,9 @@ import { wagmiConfig as config } from '@/OnchainProviders';
 
 export type Challenge = {
   name: string;
+  id: bigint;
   duration: string;
-  arxAddress: string;
+  verifier: string;
   stake: number;
   donationOrg?: string;
   type: ChallengeTypes;
@@ -35,12 +36,10 @@ const useUserChallenges = (address: string | undefined) => {
         });
 
         // fetch user activities from rpc
-        const userRegisteredAddresses = (userChallenges as string[]).map((a) => a.toLowerCase());
+        const userRegisteredIds = userChallenges as bigint[];
 
         // all challenges that user participants in
-        let knownChallenges = challenges.filter((c) =>
-          userRegisteredAddresses.includes(c.arxAddress.toLowerCase()),
-        );
+        let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(c.id));
 
         await Promise.all(
           knownChallenges.map(async (c) => {
@@ -48,10 +47,10 @@ const useUserChallenges = (address: string | undefined) => {
               abi: trackerContract.abi,
               address: trackerContract.address as `0x${string}`,
               functionName: 'getUserCheckInCounts',
-              args: [c.arxAddress as `0x${string}`, address as `0x${string}`],
+              args: [c.id, address as `0x${string}`],
             })) as unknown as number;
             knownChallenges = knownChallenges.map((k) =>
-              k.arxAddress.toLowerCase() === c.arxAddress.toLowerCase() ? { ...k, checkedIn } : k,
+              k.verifier.toLowerCase() === c.verifier.toLowerCase() ? { ...k, checkedIn } : k,
             );
           }),
         );

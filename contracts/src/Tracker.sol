@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
 struct Challenge {
     address verifier;
-    uint256 minimunCheckIns;
+    uint256 minimumCheckIns;
     uint256 startTimestamp;
     uint256 endTimestamp;
     address donateDestination;
@@ -56,7 +56,7 @@ contract Tracker is EIP712 {
     function register(
         address verifier,
         string memory description,
-        uint256 minimunCheckIns,
+        uint256 minimumCheckIns,
         uint256 startTimestamp,
         uint256 endTimestamp,
         address donateDestination,
@@ -64,8 +64,8 @@ contract Tracker is EIP712 {
     ) public {
         //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
         challenges[challengeCounter++] =
-            Challenge(verifier, minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
-        emit Register(challengeCounter, verifier, description, startTimestamp, endTimestamp, minimunCheckIns);
+            Challenge(verifier, minimumCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
+        emit Register(challengeCounter, verifier, description, startTimestamp, endTimestamp, minimumCheckIns);
     }
 
     // user join a habit challenge
@@ -81,6 +81,7 @@ contract Tracker is EIP712 {
         emit Join(msg.sender, challengeId);
     }
 
+    // todo: change signature to bytes, so we can support contract checkins
     function checkIn(uint256 challengeId, uint256 timestamp, uint8 v, bytes32 r, bytes32 s) public {
         /*require(
             timestamp <= challenges[challengeId].endTimestamp && timestamp >= challenges[challengeId].startTimestamp,
@@ -93,7 +94,7 @@ contract Tracker is EIP712 {
 
         digestUsed[digest] = true;
         checkIns[challengeId][msg.sender].push(timestamp);
-        if (checkIns[challengeId][msg.sender].length == challenges[challengeId].minimunCheckIns) {
+        if (checkIns[challengeId][msg.sender].length == challenges[challengeId].minimumCheckIns) {
             challenges[challengeId].totalStake -= challenges[challengeId].stakePerUser;
             balances[msg.sender] += challenges[challengeId].stakePerUser;
             succeedUsers[challengeId].push(msg.sender);
@@ -132,7 +133,7 @@ contract Tracker is EIP712 {
         return _hashTypedDataV4(
             keccak256(
                 abi.encode(
-                    keccak256("checkInSigningMessage(uint256 challengeId, uint256 timestamp, address user)"),
+                    keccak256("checkInSigningMessage(uint256 challengeId,uint256 timestamp,address user)"),
                     challengeId,
                     timestamp,
                     user

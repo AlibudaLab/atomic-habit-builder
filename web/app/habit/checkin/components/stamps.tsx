@@ -5,15 +5,15 @@ import Image from 'next/image';
 type StampProps = {
   checkInNum: number;
   targetNum: number;
-  id: string;
+  challengeId: bigint;
 };
 
-export default function Stamps({ checkInNum, targetNum, id }: StampProps) {
+export default function Stamps({ checkInNum, targetNum, challengeId }: StampProps) {
   return (
     <div className="flex flex-wrap justify-center gap-4 px-12 py-6">
       {Array.from({ length: targetNum }).map((_, idx) => {
         const done = idx < checkInNum;
-        const iconIdx = ((Number(id) % 20) + idx) % 20;
+        const iconIdx = ((Number(challengeId) % 20) + idx) % 20;
         const icon = require(`@/imgs/hats/${iconIdx + 1}.png`) as string;
         return done ? (
           <div

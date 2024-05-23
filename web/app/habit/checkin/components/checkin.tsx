@@ -13,7 +13,7 @@ const img = require('@/imgs/step3.png') as string;
 
 export default function CheckIn() {
   const { challengeId } = useParams<{ challengeId: string }>();
-  const challenge = challenges.find((c) => c.arxAddress === challengeId) as Challenge;
+  const challenge = challenges.find((c) => c.id.toString() === challengeId) as Challenge;
 
   return (
     <div className="flex flex-col items-center justify-center">

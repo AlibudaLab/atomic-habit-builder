@@ -16,7 +16,7 @@ contract TrackerTest is Test {
 
     function setUp() public {
         underlying = new Alibuda();
-        tracker = new Tracker(address(underlying), "Alibuda Habbit Builder", "1.0");
+        tracker = new Tracker(address(underlying), "Alibuda Habit Builder", "1.0");
 
         (verifier, key) = makeAddrAndKey("test_verifier");
         tracker.register(
