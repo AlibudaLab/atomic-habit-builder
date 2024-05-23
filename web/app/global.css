@@ -14,8 +14,8 @@
   --palette-bg: #ffffff;
   --palette-bg-soft-black: #141519;
   --palette-bg-white: #fff;
-  --palette-text-dark: #3A3042;
-  --palette-primary: #FF784F;
+  --palette-text-dark: #3a3042;
+  --palette-primary: #ff784f;
 
   /* Build Onchain Apps shared variables */
   --boat-color-background: var(--palette-bg);
@@ -85,7 +85,6 @@ div .wrapped :focus {
   background-color: var(--palette-primary);
   color: var(--palette-bg);
 }
-
 
 body {
   height: 100%;

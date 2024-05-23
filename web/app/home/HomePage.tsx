@@ -14,14 +14,14 @@ export default function DashboardPage() {
 
   const { data: challenges, loading } = useUserChallenges(address);
 
-  const router = useRouter()
+  const router = useRouter();
 
   // go to the list page if no challenges (first time user)
   useEffect(() => {
     if (address && !loading && challenges.length === 0) {
-      router.push('/habit/list')
+      router.push('/habit/list');
     }
-  }, [address, loading, challenges, router])
+  }, [address, loading, challenges, router]);
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">

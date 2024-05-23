@@ -20,15 +20,15 @@ const useChallenge = (id: number) => {
         setLoading(true);
 
         const res = await publicClient.readContract({
-            address: trackerContract.address,
-            abi: trackerContract.abi,
-            functionName: 'challenges',
-            args: [BigInt(id.toString())],
-          })
+          address: trackerContract.address,
+          abi: trackerContract.abi,
+          functionName: 'challenges',
+          args: [BigInt(id.toString())],
+        });
 
         const metaData = challengeMetaDatas.find((c) => c.id.toString() === id.toString());
-        if (!metaData) return
-        
+        if (!metaData) return;
+
         const data = {
           verifier: res[0],
           targetNum: Number(res[1].toString()),
@@ -36,11 +36,10 @@ const useChallenge = (id: number) => {
           endTimestamp: Number(res[3].toString()),
           donationDestination: res[4],
           stake: res[5],
-          ...metaData
+          ...metaData,
         };
-          
-        setChallenge(data);
 
+        setChallenge(data);
       } catch (_error) {
         console.log('error', _error);
         setError(_error);

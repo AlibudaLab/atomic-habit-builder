@@ -48,10 +48,7 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
       <div className="py-12"></div>
 
       <Link href="/habit/list">
-        <button
-          type="button"
-          className="rounded-lg px-6 py-3 wrapped max-w-96 w-full"
-        >
+        <button type="button" className="wrapped w-full max-w-96 rounded-lg px-6 py-3">
           <p className="text-md font-bold"> Join a Challenge </p>
           <p className="text-sm"> Join on-going challenges </p>
         </button>

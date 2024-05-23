@@ -219,22 +219,22 @@ export default function StakeChallenge() {
 
         {challenge && (
           <>
-           <ChallengeBoxFilled challenge={challenge} />
+            <ChallengeBoxFilled challenge={challenge} />
 
             {/* goal description */}
-            <div className="justify-start p-6 pb-2 text-start w-full">
+            <div className="w-full justify-start p-6 pb-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
               <div className="text-dark text-sm"> {challenge.description} </div>
             </div>
 
             {/* checkIn description */}
-            <div className="justify-start p-6 pb-2 text-start w-full">
+            <div className="w-full justify-start p-6 pb-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
               <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
             </div>
 
             {/* checkIn description */}
-            <div className="justify-start p-6 pb-2 text-start w-full">
+            <div className="w-full justify-start p-6 pb-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
               <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
             </div>
@@ -274,9 +274,7 @@ export default function StakeChallenge() {
              * If doesn't have enough balance -> Display Approve
              * If has enough allowance -> Display Stake
              */}
-            {hasEnoughAllowance || currentChainSupportBatchTx
-              ? `Join`
-              : 'Approve'}
+            {hasEnoughAllowance || currentChainSupportBatchTx ? `Join` : 'Approve'}
           </button>
         )}
 

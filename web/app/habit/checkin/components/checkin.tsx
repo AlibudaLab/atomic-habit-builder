@@ -19,7 +19,7 @@ export default function CheckIn() {
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
-      
+
       {challenge ? (
         <>
           {challenge.type === ChallengeTypes.Run && <RunCheckIn challenge={challenge} />}

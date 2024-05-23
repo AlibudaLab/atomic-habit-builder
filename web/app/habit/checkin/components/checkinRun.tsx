@@ -126,32 +126,31 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   }, [checkInError]);
 
   return (
-    <div className="flex flex-col items-center justify-center max-w-96">
-
+    <div className="flex max-w-96 flex-col items-center justify-center">
       {/* overview   */}
       <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
 
       {/* goal description */}
-      <div className="justify-start p-6 py-2 text-start w-full">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Description </div>
         <div className="text-dark text-sm"> {challenge.description} </div>
       </div>
 
       {/* checkIn description */}
-      <div className="justify-start p-6 pb-2 text-start w-full">
+      <div className="w-full justify-start p-6 pb-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
         <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
       {connected && runData.length === 0 ? (
-        <div className="pt-6 p-2 text-center text-sm"> No record found </div>
+        <div className="p-2 pt-6 text-center text-sm"> No record found </div>
       ) : connected ? (
-        <div className='w-full flex justify-center'>
-      <ActivityDropDown
-        setActivityIdx={setActivityIdx}
-        activityIdx={activityIdx}
-        activities={runData}
-        />
+        <div className="flex w-full justify-center">
+          <ActivityDropDown
+            setActivityIdx={setActivityIdx}
+            activityIdx={activityIdx}
+            activities={runData}
+          />
         </div>
       ) : (
         <> </>
@@ -161,7 +160,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="mt-4 rounded-lg bg-primary px-6 py-4 font-bold text-white hover:scale-105 transition-transform duration-300"
+            className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           >
             Finish
           </button>
@@ -169,7 +168,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-primary px-6 py-4 font-bold text-white hover:scale-105 transition-transform duration-300"
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
@@ -179,7 +178,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : runDataError ? (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-primary px-6 py-4 font-bold text-white "
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
           onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
         >
           Re-Connect Running App
@@ -187,7 +186,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-primary px-6 py-4 font-bold text-white "
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
           onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
         >
           Connect Running App

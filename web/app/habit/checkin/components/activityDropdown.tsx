@@ -55,7 +55,7 @@ export function ActivityDropDown({
             {activities.map((activity, idx) => (
               <button
                 type="button"
-                style={{ width: '320px'}}
+                style={{ width: '320px' }}
                 className="hover:text-primary p-2 text-center"
                 key={activity.id}
                 onClick={() => {
@@ -64,13 +64,13 @@ export function ActivityDropDown({
                 }}
               >
                 <div className="px-2 text-sm font-bold"> {activity.name} </div>
-                <div className="flex justify-center gap-4 hover:text-yellow">
-                  <div className="flex items-center px-2 hover:text-yellow">
+                <div className="hover:text-yellow flex justify-center gap-4">
+                  <div className="hover:text-yellow flex items-center px-2">
                     <div className="px-2 text-xs">
                       {' '}
                       {(activity.distance / 1000).toPrecision(2)} KM{' '}
                     </div>
-                    <div className="text-grey px-2 text-xs hover:text-yellow">
+                    <div className="text-grey hover:text-yellow px-2 text-xs">
                       {' '}
                       {timeDifference(Date.now(), Date.parse(activity.timestamp))}{' '}
                     </div>

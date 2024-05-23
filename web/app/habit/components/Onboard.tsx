@@ -8,7 +8,7 @@ export default function Onboard() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <p className="pt-2 pb-4 text-lg"> Stake and commit to a new habit! </p>
+      <p className="pb-4 pt-2 text-lg"> Stake and commit to a new habit! </p>
 
       <button
         type="button"
