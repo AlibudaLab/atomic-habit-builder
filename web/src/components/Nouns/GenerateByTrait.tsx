@@ -38,7 +38,7 @@ function GenerateByTrait({ properties }: { properties: NounsProperty | null }) {
       : null;
 
     fetchSvg(transformedProperties)
-      .then(sanitizedSvg => setSvgData(sanitizedSvg))
+      .then((sanitizedSvg) => setSvgData(sanitizedSvg))
       .catch(console.error);
   }, [properties]);
 

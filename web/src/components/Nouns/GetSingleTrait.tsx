@@ -70,20 +70,20 @@ function GetSingleTrait({ properties }: { properties: NounsProperty | null }) {
     }
 
     fetchSvg(transformedProperties)
-    .then(sanitizedSvg => {
-      if (singleDefinedProperty.key === 'glasses') {
-        // Adjust the viewBox, width, and height
-        setSvgData(
-          sanitizedSvg
-            .replace(/viewBox="[^"]+"/, 'viewBox="70 110 160 60"')
-            .replace(/width="[^"]+"/, 'width="160"')
-            .replace(/height="[^"]+"/, 'height="60"'),
-        );
-      } else {
-        setSvgData(sanitizedSvg);
-      }
-    })
-    .catch(console.error);
+      .then((sanitizedSvg) => {
+        if (singleDefinedProperty.key === 'glasses') {
+          // Adjust the viewBox, width, and height
+          setSvgData(
+            sanitizedSvg
+              .replace(/viewBox="[^"]+"/, 'viewBox="70 110 160 60"')
+              .replace(/width="[^"]+"/, 'width="160"')
+              .replace(/height="[^"]+"/, 'height="60"'),
+          );
+        } else {
+          setSvgData(sanitizedSvg);
+        }
+      })
+      .catch(console.error);
   }, [properties]);
 
   if (!svgData) {
