@@ -27,9 +27,10 @@ export function ChallengeButtonList() {
             <p className="text-xs opacity-80">
               {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
             </p>
-            <p className="text-sm font-bold">{challenge.name}</p>
+            <p className="text-sm font-bold text-start">{challenge.name}</p>
             <p className="text-sm"> 5 joined </p>
           </div>
+          <div className="ml-auto text-sm p-2">{challenge.targetNum} times</div>
         </div>
       </button>
     </Link>

@@ -3,7 +3,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
 
-import Image from 'next/image';
 import { useRef, useState, useEffect } from 'react';
 import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { useWriteContracts, useCapabilities, useCallsStatus } from 'wagmi/experimental';
@@ -14,18 +13,15 @@ import * as trackerContract from '@/contracts/tracker';
 import toast from 'react-hot-toast';
 
 import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
-import { Challenge } from '@/types';
 
 import { formatEther, parseEther } from 'viem';
 
-import { ChallengesDropDown } from './components/dropdown';
 import { EXPECTED_CHAIN } from '@/constants';
 
 import { useParams, useRouter } from 'next/navigation';
-import useAllChallenges from '@/hooks/useAllChallenges';
 import useChallenge from '@/hooks/useChallenge';
 import Header from 'app/habit/components/Header';
-import { challengeToEmoji } from '@/utils/challenges';
+import { challengeToEmoji, getCheckInDescription } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 
 export default function StakeChallenge() {
@@ -143,7 +139,7 @@ export default function StakeChallenge() {
     query: {
       enabled: !!joinIdInBatchTx,
       // Poll every second until the calls are confirmed
-      refetchInterval: (data) => (data.state.data?.status === 'CONFIRMED' ? false : 1000),
+      refetchInterval: (data: any) => (data.state.data?.status === 'CONFIRMED' ? false : 1000),
     },
   });
 
@@ -218,26 +214,43 @@ export default function StakeChallenge() {
     <main className="container mx-auto flex flex-col items-center px-8 pt-16 text-center">
       <Header />
 
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex max-w-96 flex-col items-center justify-center">
         <p className="text-primary text-center text-lg font-bold"> Stake and Commit to it </p>
 
         {challenge && (
-          <button
-            type="button"
-            className="m-2 w-full p-2 bg-primary text-white rounded-xl"
-          >
-            <div className="flex w-full items-center justify-start ">
-              <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
-              <div className="flex flex-col items-start justify-start p-2">
-                <p className="text-xs opacity-80 text-white">
-                  {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
-                </p>
-                <p className="text-sm font-bold">{challenge.name}</p>
-                <p className="text-sm"> 5 joined </p>
+          <>
+            <div className="bg-primary m-2 w-full rounded-xl p-2 text-white">
+              <div className="flex  items-center justify-start ">
+                <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
+                <div className="flex flex-col items-start justify-start p-2 text-start">
+                  <p className="text-xs text-white opacity-80">
+                    {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+                  </p>
+                  <p className="text-sm font-bold">{challenge.name}</p>
+                  <p className="text-sm"> 5 joined </p>
+                </div>
+                <div className="ml-auto p-2 text-sm">{challenge.targetNum} times</div>
               </div>
-              <div className="ml-auto text-sm">{challenge.targetNum} times</div>
             </div>
-          </button>
+
+            {/* goal description */}
+            <div className="justify-start p-6 pb-2 text-start w-full">
+              <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+              <div className="text-dark text-sm"> {challenge.description} </div>
+            </div>
+
+            {/* checkIn description */}
+            <div className="justify-start p-6 pb-2 text-start w-full">
+              <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+              <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+            </div>
+
+            {/* checkIn description */}
+            <div className="justify-start p-6 pb-2 text-start w-full">
+              <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+              <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+            </div>
+          </>
         )}
 
         {/**
@@ -274,7 +287,7 @@ export default function StakeChallenge() {
              * If has enough allowance -> Display Stake
              */}
             {hasEnoughAllowance || currentChainSupportBatchTx
-              ? `Stake ${formatEther(challenge.stake)} ALI`
+              ? `Join`
               : 'Approve'}
           </button>
         )}
@@ -285,8 +298,8 @@ export default function StakeChallenge() {
          * If has enough balance -> Show balance
          */}
         <div className="p-4 text-xs">
-          {!challenge ? (
-            <p> </p>
+          {!challenge || loading ? (
+            <p> Loading Challenge </p>
           ) : balance.data && !hasEnoughBalance ? (
             <p>
               {' '}

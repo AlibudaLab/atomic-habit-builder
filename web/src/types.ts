@@ -28,6 +28,7 @@ export type ChallengeMetaData = {
   name: string;
   type: ChallengeTypes;
   mapKey?: string;
+  description?: string;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;
