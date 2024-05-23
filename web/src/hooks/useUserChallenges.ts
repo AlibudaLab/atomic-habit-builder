@@ -28,7 +28,6 @@ const useUserChallenges = (address: string | undefined) => {
 
         // fetch user activities from rpc
         const userRegisteredIds = userChallenges as bigint[];
-        userRegisteredIds.push(BigInt(2));
 
         // all challenges that user participants in
         let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(c.id));
