@@ -18,7 +18,7 @@ import Link from 'next/link';
 import moment from 'moment';
 import { formatDuration } from '@/utils/timestamp';
 
-import GenerateByTrait from '@/components/Noun/GenerateByTrait';
+import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
 /**
  * Running activity check-in page.

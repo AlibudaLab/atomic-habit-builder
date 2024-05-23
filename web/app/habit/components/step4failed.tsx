@@ -4,7 +4,7 @@ import { Challenge } from '@/types';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
-import GenerateByName from '@/components/Noun/GenerateByName';
+import GenerateByName from '@/components/Nouns/GenerateByName';
 
 export default function Step4Failed({
   setSteps,

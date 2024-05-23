@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 
-import GetSingleTrait from '@/components/Noun/GetSingleTrait';
+import GetSingleTrait from '@/components/Nouns/GetSingleTrait';
 
 type StampProps = {
   checkInNum: number;

@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect } from 'react';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
@@ -9,7 +8,7 @@ import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import useAllChallenges from '@/hooks/useAllChallenges';
 
-import GenerateByName from '@/components/Noun/GenerateByName';
+import GenerateByName from '@/components/Nouns/GenerateByName';
 
 export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();

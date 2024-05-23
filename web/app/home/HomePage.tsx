@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import GetSingleTrait from '@/components/Noun/GetSingleTrait';
+import GetSingleTrait from '@/components/Nouns/GetSingleTrait';
 
 const step1 = require('@/imgs/step1.png') as string;
 const step2 = require('@/imgs/step2.png') as string;

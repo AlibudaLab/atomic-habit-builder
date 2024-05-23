@@ -18,7 +18,7 @@ import { Challenge } from '@/types';
 
 const img = require('@/imgs/step2.png') as string;
 
-import GenerateByTrait from '@/components/Noun/GenerateByTrait';
+import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
 import { formatEther, parseEther } from 'viem';
 

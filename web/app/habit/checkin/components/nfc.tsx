@@ -14,7 +14,7 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import { formatDuration } from '@/utils/timestamp';
 
-import GenerateByTrait from '@/components/Noun/GenerateByTrait';
+import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();

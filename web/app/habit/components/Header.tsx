@@ -3,7 +3,7 @@
 import { Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 
-import GetSingleTrait from '@/components/Noun/GetSingleTrait';
+import GetSingleTrait from '@/components/Nouns/GetSingleTrait';
 
 export default function Header() {
   return (
