@@ -15,7 +15,7 @@ export default function Onboard() {
         className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white transition-transform duration-300 hover:scale-105"
         onClick={() => connect({ connector })}
       >
-        Sign In
+        Use Base Smart Wallet
       </button>
     </div>
   );
