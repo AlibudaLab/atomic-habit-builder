@@ -236,21 +236,21 @@ export default function StakeChallenge() {
             <ChallengeBoxFilled challenge={challenge} />
 
             {/* goal description */}
-            <div className="w-full justify-start p-6 pb-2 text-start">
+            {/* goal description */}
+            <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
-              <div className="text-dark text-sm"> {challenge.description} </div>
+              <div className="text-primary text-sm"> {challenge.description} </div>
             </div>
 
             {/* checkIn description */}
-            <div className="w-full justify-start p-6 pb-2 text-start">
+            <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-              <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+              <div className="text-primary text-sm"> {getCheckInDescription(challenge.type)} </div>
             </div>
 
-            {/* checkIn description */}
-            <div className="w-full justify-start p-6 pb-2 text-start">
+            <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-              <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+              <div className="text-primary text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
             </div>
           </>
         )}
@@ -264,7 +264,7 @@ export default function StakeChallenge() {
         {challenge && (
           <button
             type="button"
-            className="wrapped text-primary mt-6 rounded-lg border-solid px-6 py-3 font-bold disabled:opacity-50"
+            className="wrapped text-primary mt-14 rounded-lg border-solid px-6 py-3 font-bold disabled:opacity-50"
             onClick={
               currentChainSupportBatchTx || hasEnoughAllowance
                 ? onJoinButtonClick

@@ -145,12 +145,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       {/* checkIn description */}
-      <div className="w-full justify-start p-6 pb-2 text-start">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
         <div className="text-primary text-sm"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
-      <div className="w-full justify-start p-6 pb-2 text-start">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
         <div className="text-primary text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
       </div>

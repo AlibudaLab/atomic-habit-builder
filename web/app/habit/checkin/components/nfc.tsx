@@ -92,18 +92,18 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
-        <div className="text-dark text-sm"> {challenge.description} </div>
+        <div className="text-primary text-sm"> {challenge.description} </div>
       </div>
 
       {/* checkIn description */}
-      <div className="w-full justify-start p-6 pb-2 text-start">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-        <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+        <div className="text-primary text-sm"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
-      <div className="w-full justify-start p-6 pb-2 text-start">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-primary text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
       </div>
 
       {checkedIn >= challenge.targetNum ? (
