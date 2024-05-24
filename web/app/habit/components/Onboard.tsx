@@ -8,7 +8,7 @@ export default function Onboard() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <p className="pb-4 pt-2 text-lg"> Please Sign in First </p>
+      <p className="pb-4 text-center font-londrina text-xl font-bold"> Please Sign in First </p>
 
       <button
         type="button"

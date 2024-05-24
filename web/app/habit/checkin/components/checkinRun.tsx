@@ -3,7 +3,6 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import toast from 'react-hot-toast';
@@ -104,6 +103,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     } catch (err) {
       console.log(err);
       toast.error('Error checking in');
+    } finally {
       if (txPendingToastId) {
         toast.dismiss(txPendingToastId);
       }
@@ -157,10 +157,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {connected && stravaLoading ? (
         <div className="p-2 pt-6 text-center text-sm"> Loading activities... </div>
-      ) : runData.length === 0 ? (
+      ) : connected && runData.length === 0 ? (
         <div className="p-2 pt-6 text-center text-sm"> No record found </div>
       ) : connected ? (
-        <div className="flex w-full justify-center pt-8">
+        <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
             setActivityIdx={setActivityIdx}
             activityIdx={activityIdx}
@@ -175,7 +175,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="wrapped text-primary mt-16 rounded-lg px-6 py-4 font-bold transition-transform duration-300 focus:scale-105"
+            className="wrapped text-primary mt-12 rounded-lg px-6 py-2 font-bold transition-transform duration-300 focus:scale-105"
           >
             Finish
           </button>
@@ -183,7 +183,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="wrapped text-primary mt-16 rounded-lg px-6 py-4 font-bold transition-transform duration-300 focus:scale-105"
+          className="wrapped text-primary mt-12 rounded-lg px-12 py-2 font-bold transition-transform duration-300 focus:scale-105"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
@@ -193,7 +193,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="wrapped text-primary mt-16 rounded-lg px-6 py-4 font-bold transition-transform duration-300 focus:scale-105"
+          className="wrapped text-primary mt-12 rounded-lg px-6 py-2 font-bold transition-transform duration-300 focus:scale-105"
           onClick={onClickConnectStrava}
         >
           Connect with Strava

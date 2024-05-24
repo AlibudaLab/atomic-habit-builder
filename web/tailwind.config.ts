@@ -41,6 +41,10 @@ const config: Config = {
         'boat-color-orange': '#f55925',
         'boat-gold': '#7b602f',
       },
+      fontFamily: {
+        nunito: ['var(--font-nunito)'],
+        londrina: ['var(--font-londrina)'],
+      },
     },
   },
   plugins: [],

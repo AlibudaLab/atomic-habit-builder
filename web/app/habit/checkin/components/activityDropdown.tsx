@@ -46,9 +46,9 @@ export function ActivityDropDown({
               </div>
             </button>
           ) : (
-            <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
+            <button onClick={() => setOpen(true)} type="button">
               <div className="flex flex-col justify-center p-2 text-center">
-                <p className="text-md"> Select a Record </p>
+                <p className="text-primary text-sm"> Select a Record </p>
               </div>
             </button>
           )}

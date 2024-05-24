@@ -17,7 +17,10 @@ export default function CheckIn() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <p className="pb-4 pt-2 text-lg"> Happy Builder; Habit Builder! </p>
+      <p className="pb-4 text-center font-londrina text-xl font-bold">
+        {' '}
+        Happy Builder; Habit Builder!{' '}
+      </p>
 
       {challenge ? (
         <>
