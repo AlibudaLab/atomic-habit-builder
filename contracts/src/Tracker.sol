@@ -26,13 +26,13 @@ contract Tracker is EIP712 {
     uint256 public challengeCounter;
 
     mapping(uint256 challengeId => Challenge) public challenges;
-    mapping(address user => uint256[]) public userChallenges;
-    mapping(address user => uint256) public balances;
-    mapping(uint256 challengeId => mapping(address user => uint256[])) public checkIns;
-    mapping(uint256 challengeId => mapping(address user => bool)) public hasJoined;
     mapping(uint256 challengeId => address[]) public users;
     mapping(uint256 challengeId => address[]) public succeedUsers;
     mapping(bytes32 digest => bool) public digestUsed;
+    mapping(address user => uint256[]) public userChallenges;
+    mapping(uint256 challengeId => mapping(address user => uint256[])) public checkIns;
+    mapping(uint256 challengeId => mapping(address user => bool)) public hasJoined;
+    mapping(uint256 challengeId => mapping(address user => bool)) public claimable;
 
     event CheckIn(address indexed user, uint256 indexed challengeId, uint256 timestamp);
     event Register(
@@ -63,7 +63,7 @@ contract Tracker is EIP712 {
         uint256 stake
     ) public {
         //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
-        challenges[challengeCounter++] =
+        challenges[++challengeCounter] =
             Challenge(verifier, minimumCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
         emit Register(challengeCounter, verifier, description, startTimestamp, endTimestamp, minimumCheckIns);
     }
@@ -73,6 +73,7 @@ contract Tracker is EIP712 {
         require(challenges[challengeId].startTimestamp != 0, "challenge does not exist");
         require(!hasJoined[challengeId][msg.sender], "user already joined the challenge");
         //require(block.timestamp < challenges[challengeId].startTimestamp, "Challenge has started");
+
         IERC20(underlyingToken).safeTransferFrom(msg.sender, address(this), challenges[challengeId].stakePerUser);
         hasJoined[challengeId][msg.sender] = true;
         userChallenges[msg.sender].push(challengeId);
@@ -94,10 +95,10 @@ contract Tracker is EIP712 {
 
         digestUsed[digest] = true;
         checkIns[challengeId][msg.sender].push(timestamp);
+
         if (checkIns[challengeId][msg.sender].length == challenges[challengeId].minimumCheckIns) {
-            challenges[challengeId].totalStake -= challenges[challengeId].stakePerUser;
-            balances[msg.sender] += challenges[challengeId].stakePerUser;
             succeedUsers[challengeId].push(msg.sender);
+            claimable[challengeId][msg.sender] = true;
         }
         emit CheckIn(msg.sender, challengeId, timestamp);
     }
@@ -105,28 +106,32 @@ contract Tracker is EIP712 {
     // settle a challenge after the ending timestamp
     function settle(uint256 challengeId) public {
         //require(block.timestamp > challenges[challengeId].endTimestamp, "Challenge has not ended");
+        require(!challenges[challengeId].settled, "challenge already settled");
         emit Settle(challengeId);
         challenges[challengeId].settled = true;
+        uint256 succeedUserCounts = succeedUsers[challengeId].length;
 
-        if (succeedUsers[challengeId].length == 0 || challenges[challengeId].totalStake == 0) return;
-
-        uint256 halfStakeBalance = challenges[challengeId].totalStake / 2;
-        uint256 bonus = halfStakeBalance / succeedUsers[challengeId].length;
-
-        for (uint256 i = 0; i < succeedUsers[challengeId].length; i++) {
-            address user = users[challengeId][i];
-            balances[user] += bonus;
-        }
-
-        IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, halfStakeBalance);
+        uint256 halfFailedUserStake =
+            (challenges[challengeId].totalStake - (succeedUserCounts * challenges[challengeId].stakePerUser)) / 2;
+        challenges[challengeId].totalStake -= halfFailedUserStake;
+        IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, halfFailedUserStake);
     }
 
-    //FIXME: This should be withdraw by challenge id
-    function withdraw() public {
-        uint256 balance = balances[msg.sender];
-        require(balance > 0, "Insufficient balance");
-        balances[msg.sender] = 0;
-        IERC20(underlyingToken).safeTransfer(msg.sender, balance);
+    function getClaimableAmount(uint256 challengeId, address user) public view returns (uint256) {
+        uint256 succeedUserCount = succeedUsers[challengeId].length;
+
+        if (!challenges[challengeId].settled || !claimable[challengeId][user] || succeedUserCount == 0) {
+            return 0;
+        }
+
+        return challenges[challengeId].totalStake / succeedUserCount;
+    }
+
+    function withdraw(uint256 challengeId) public {
+        require(challenges[challengeId].settled, "challenge not yet settled");
+        uint256 amount = getClaimableAmount(challengeId, msg.sender);
+        claimable[challengeId][msg.sender] = false;
+        IERC20(underlyingToken).safeTransfer(msg.sender, amount);
     }
 
     function getCheckInDigest(uint256 challengeId, uint256 timestamp, address user) public view returns (bytes32) {

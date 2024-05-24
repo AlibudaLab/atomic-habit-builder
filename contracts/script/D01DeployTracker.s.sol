@@ -4,10 +4,9 @@ pragma solidity 0.8.25;
 import {Script} from "forge-std/Script.sol";
 import {Tracker} from "../src/Tracker.sol";
 
-
 contract Deploy is Script {
     address official_verifier = 0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897;
-    
+
     function setUp() public {}
 
     function run() public {
