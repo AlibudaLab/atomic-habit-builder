@@ -1,34 +1,44 @@
 /* eslint-disable */
 'use client';
 
-import { Challenge } from '@/hooks/useUserChallenges';
+import { ChallengeWithCheckIns } from '@/types';
+import { challengeToEmoji } from '@/utils/challenges';
+import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
+import { ChallengeBoxFilled } from './ChallengeBox';
 
 type DashboardProps = {
-  challenges: Challenge[];
+  onGoingChallenges: ChallengeWithCheckIns[];
 };
 
-export default function Dashboard({ challenges }: DashboardProps) {
+export default function Dashboard({ onGoingChallenges }: DashboardProps) {
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* Img and Description */}
+      {/* Only show challenges */}
       <div className="flex w-full items-center justify-center gap-6 text-center">
-        <p className="text-lg"> Ongoing Challenges</p>
+        {onGoingChallenges.length > 0 && <p className="text-lg"> My Ongoing Challenges </p>}
       </div>
 
       {/* map challenges to list of buttons */}
-      {challenges.map((challenge, idx) => (
-        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.arxAddress}`}>
-          <button
-            key={challenge.arxAddress}
+      {onGoingChallenges.map((challenge, idx) => (
+        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`} className="no-underline">
+          <ChallengeBoxFilled
+            key={challenge.id.toString()}
+            challenge={challenge}
+            checkedIn={challenge.checkedIn}
+          />
+          {/* <button
+            key={challenge.id.toString()}
             type="button"
-            className="mt-4 w-full rounded-lg px-6 py-3"
-            style={{ borderColor: '#EDB830', border: 'solid', width: '350px', height: '60px' }}
+            className="mt-4 w-full rounded-lg px-6 py-3 outline outline-2"
+            style={{ borderColor: '#EDB830', width: '350px', height: '60px' }}
           >
             <div className="flex w-full justify-between">
-              <div className="mr-4 text-2xl">{challenge.icon}</div>
+              <div className="mr-4 text-2xl">{challengeToEmoji(challenge.type)}</div>
               <div className="justify-left items-start hover:text-black">
-                <div className="flex text-sm">{challenge.duration} </div>
+                <div className="flex text-sm">
+                  {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+                </div>
                 <div className="flex text-sm">{challenge.name} </div>
               </div>
               <div className="text-lg">
@@ -36,17 +46,16 @@ export default function Dashboard({ challenges }: DashboardProps) {
                 {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
               </div>
             </div>
-          </button>
+          </button> */}
         </Link>
       ))}
 
-      <Link href="/habit/stake">
-        <button
-          type="button"
-          className="mt-4 rounded-lg border-solid px-6 py-3 text-sm font-bold"
-          style={{ width: '300px', height: '50px' }}
-        >
-          Join a New Challenge{' '}
+      {/* Space Divider */}
+      <div className="py-12"></div>
+
+      <Link href="/habit/list">
+        <button type="button" className="wrapped text-primary w-full max-w-96 rounded-lg px-6 py-3">
+          <p className="text-md font-bold"> Join a new Challenge </p>
         </button>
       </Link>
     </div>

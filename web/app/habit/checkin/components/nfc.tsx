@@ -1,21 +1,19 @@
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import Image from 'next/image';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
-import { arxSignMessage, getCheckinMessage, getEncodedCheckinMessage } from '@/utils/arx';
+import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
-import trackerContract from '@/contracts/tracker.json';
-import { Challenge } from '@/hooks/useUserChallenges';
+import * as trackerContract from '@/contracts/tracker';
+import { Challenge } from '@/types';
 import moment from 'moment';
-import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
-
-const mental = require('@/imgs/mental.png') as string;
+import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import { getCheckInDescription } from '@/utils/challenges';
+import { formatEther } from 'viem';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
@@ -31,7 +29,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
     hash: dataHash,
   });
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.arxAddress);
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -51,15 +49,15 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
 
       writeContract({
-        address: trackerContract.address as `0x${string}`,
+        address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.arxAddress,
-          getEncodedCheckinMessage(address, timestamp),
+          challenge.id,
+          BigInt(timestamp),
           signature.raw.v,
-          '0x' + signature.raw.r,
-          '0x' + signature.raw.s,
+          ('0x' + signature.raw.r) as `0x${string}`,
+          ('0x' + signature.raw.s) as `0x${string}`,
         ],
       });
     } catch (err) {
@@ -89,27 +87,30 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <Image src={mental} width="250" alt="Health" className="mb-3 rounded-full object-cover " />
+      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
 
-      {/* overview   */}
-      <div className="py-2">
-        <p className="px-2 font-bold">Mental Health Habit Building</p>
-        <p className="px-2 text-sm"> Duration: {challenge.duration} </p>
-        <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
+      {/* goal description */}
+      <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Description </div>
+        <div className="text-dark text-sm"> {challenge.description} </div>
       </div>
 
-      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} id={challenge.arxAddress} />
+      {/* checkIn description */}
+      <div className="w-full justify-start p-6 pb-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+        <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+      </div>
 
-      <div>
-        {' '}
-        {checkedIn.toString()} / {challenge.targetNum}{' '}
+      <div className="w-full justify-start p-6 pb-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+        <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
       </div>
 
       {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.arxAddress}`}>
+        <Link href={`/habit/claim/${challenge.id.toString()}`}>
           <button
             type="button"
-            className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+            className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           >
             Finish
           </button>
@@ -117,12 +118,12 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           onClick={onCheckInButtonClick}
           disabled={checkInPending || isLoading}
         >
           {' '}
-          {isLoading ? 'Sending tx...' : 'Tap Here and Tap NFC'}{' '}
+          {isLoading ? 'Sending tx...' : 'Click & Tap NFC'}{' '}
         </button>
       )}
     </div>

@@ -1,11 +1,10 @@
 'use client';
 
-import useUserChallenges, { Challenge } from '@/hooks/useUserChallenges';
-import Image from 'next/image';
+import { Challenge } from '@/types';
 import { SetStateAction } from 'react';
 import { useAccount, useConnect } from 'wagmi';
 
-const img = require('@/imgs/failed.png') as string;
+import GenerateByName from '@/components/Nouns/GenerateByName';
 
 export default function Step4Failed({
   setSteps,
@@ -25,18 +24,17 @@ export default function Step4Failed({
 
       <button
         type="button"
-        className="bg-yellow mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
         onClick={() => setSteps(2)}
       >
         Start a new Challenge
       </button>
 
       <div className="p-4 text-xs">
-        50% of the stake is donated to {challenge.donationOrg ?? 'public good'}. Thank you for your
-        contribution! !
+        50% of the stake is donated to public good. Thank you for your contribution! !
       </div>
 
-      <Image src={img} width="440" height="440" alt="Step 4 Image" className="mb-3 object-cover" />
+      <GenerateByName properties={{ name: 'You Failed', width: 440, height: 440 }} />
     </div>
   );
 }

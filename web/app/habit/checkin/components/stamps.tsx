@@ -1,20 +1,19 @@
 /* eslint-disable react/no-array-index-key */
 
-import Image from 'next/image';
+import GetSingleTrait from '@/components/Nouns/GetSingleTrait';
 
 type StampProps = {
   checkInNum: number;
   targetNum: number;
-  id: string;
+  challengeId: bigint;
 };
 
-export default function Stamps({ checkInNum, targetNum, id }: StampProps) {
+export default function Stamps({ checkInNum, targetNum, challengeId }: StampProps) {
   return (
     <div className="flex flex-wrap justify-center gap-4 px-12 py-6">
       {Array.from({ length: targetNum }).map((_, idx) => {
         const done = idx < checkInNum;
-        const iconIdx = (Number(id) % 20) + idx;
-        const icon = require(`@/imgs/hats/${iconIdx + 1}.png`) as string;
+        const iconIdx = (Number(challengeId) + idx) % 233;
         return done ? (
           <div
             style={{ borderColor: '#EDB830', paddingTop: '4px' }}
@@ -22,7 +21,9 @@ export default function Stamps({ checkInNum, targetNum, id }: StampProps) {
             className="h-12 w-12 justify-center rounded-full border border-solid text-center"
           >
             {' '}
-            <Image src={icon} alt="checkin" />
+            <GetSingleTrait
+              properties={{ name: 'Hat Items', alt: 'checkin', head: iconIdx, className: '' }}
+            />
           </div>
         ) : (
           <div

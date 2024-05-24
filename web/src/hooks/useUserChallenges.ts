@@ -1,26 +1,16 @@
-import { ActivityTypes, VerificationType, challenges } from '@/constants';
 import { readContract } from '@wagmi/core';
-import trackerContract from '@/contracts/tracker.json';
+import * as trackerContract from '@/contracts/tracker';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
-
-export type Challenge = {
-  name: string;
-  duration: string;
-  arxAddress: string;
-  stake: number;
-  icon: string;
-  donationOrg?: string;
-  type: ActivityTypes;
-  verificationType: VerificationType;
-  mapKey?: string;
-  targetNum: number;
-  checkedIn?: number;
-};
+import useAllChallenges from './useAllChallenges';
+import { ChallengeWithCheckIns } from '@/types';
 
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<Challenge[] | []>([]);
+
+  const { challenges } = useAllChallenges();
+
+  const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
 
   useEffect(() => {
@@ -31,36 +21,36 @@ const useUserChallenges = (address: string | undefined) => {
 
         const userChallenges = await readContract(config, {
           abi: trackerContract.abi,
-          address: trackerContract.address as `0x${string}`,
+          address: trackerContract.address,
           functionName: 'getUserChallenges',
-          args: [address],
+          args: [address as `0x${string}`],
         });
 
         // fetch user activities from rpc
-        const userRegisteredAddresses = (userChallenges as string[]).map((a) => a.toLowerCase());
+        const userRegisteredIds = userChallenges as bigint[];
 
         // all challenges that user participants in
-        let knownChallenges = challenges.filter((c) =>
-          userRegisteredAddresses.includes(c.arxAddress.toLowerCase()),
-        );
+        let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(c.id));
 
-        await Promise.all(
+        const checkedIns = await Promise.all(
           knownChallenges.map(async (c) => {
             const checkedIn = (await readContract(config, {
               abi: trackerContract.abi,
-              address: trackerContract.address as `0x${string}`,
+              address: trackerContract.address,
               functionName: 'getUserCheckInCounts',
-              args: [c.arxAddress, address],
-            })) as number;
-            knownChallenges = knownChallenges.map((k) =>
-              k.arxAddress.toLowerCase() === c.arxAddress.toLowerCase() ? { ...k, checkedIn } : k,
-            );
+              args: [c.id, address as `0x${string}`],
+            })) as unknown as bigint;
+            return checkedIn;
           }),
         );
 
-        console.log(knownChallenges);
+        console.log('checkedIns', checkedIns);
 
-        setData(knownChallenges);
+        const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
+          return { ...c, checkedIn: Number(checkedIns[idx].toString()) };
+        });
+
+        setData(challengesWithCheckIns);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -70,7 +60,7 @@ const useUserChallenges = (address: string | undefined) => {
     };
 
     fetchData().catch(console.error);
-  }, [address]);
+  }, [address, challenges]);
 
   return { loading, data, error };
 };
