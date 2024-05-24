@@ -2,7 +2,7 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
@@ -11,17 +11,14 @@ import { useWriteContract } from 'wagmi';
 import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/types';
 import useRunData from '@/hooks/useRunData';
-import { timeDifference } from '@/utils/time';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import moment from 'moment';
-import { formatDuration } from '@/utils/timestamp';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
 import { formatEther } from 'viem';
 import { ActivityDropDown } from './activityDropdown';
-
-import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
+import * as stravaUtils from '@/utils/strava';
 
 /**
  * Running activity check-in page.
@@ -112,10 +109,20 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     }
   };
 
+  // only show this button if user is not connected to strava
+  const onClickConnectStrava = useCallback(() => {
+    // path that user will be redirected to after connecting to strava
+    const redirectUri = window.origin + '/connect-run/strava';
+
+    // after verification on the connect-run/strava page, direct back to this page
+    const authUrl = stravaUtils.getAuthURL(redirectUri, window.location.href);
+    window.location = authUrl as any;
+  }, []);
+
   useEffect(() => {
     if (isSuccess) {
       toast.dismiss();
-      toast.success('Recorded on smart contract!! 🥳🥳🥳');
+      toast.success('Successfully checked in!! 🥳🥳🥳');
     }
   }, [isSuccess]);
 
@@ -180,21 +187,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           {' '}
           {isLoading ? 'Sending tx...' : 'Check In'}{' '}
         </button>
-      ) : runDataError ? (
-        <button
-          type="button"
-          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
-          onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
-        >
-          Re-Connect Running App
-        </button>
       ) : (
         <button
           type="button"
           className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
-          onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
+          onClick={onClickConnectStrava}
         >
-          Connect Running App
+          Connect with Strava
         </button>
       )}
     </div>
