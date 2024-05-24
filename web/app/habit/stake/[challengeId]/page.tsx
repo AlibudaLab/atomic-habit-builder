@@ -39,14 +39,20 @@ export default function StakeChallenge() {
   const currentChainSupportBatchTx =
     capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
       ?.atomicBatch.supported;
-  const {data: testTokenBalance} = useBalance({ address: smartWallet, token: testTokenContract.address });
+  const { data: testTokenBalance } = useBalance({
+    address: smartWallet,
+    token: testTokenContract.address,
+  });
 
-  console.log('testTokenBalance', testTokenBalance)
-  
-  const hasEnoughBalance = challenge && Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
+  console.log('testTokenBalance', testTokenBalance);
 
-  console.log('hasEnoughBalance', hasEnoughBalance)
-  
+  const hasEnoughBalance =
+    challenge &&
+    testTokenBalance &&
+    Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
+
+  console.log('hasEnoughBalance', hasEnoughBalance);
+
   const { data: allowance } = useReadErc20Allowance({
     address: testTokenContract.address,
     args: [smartWallet as `0x${string}`, trackerContract.address],
@@ -294,14 +300,23 @@ export default function StakeChallenge() {
           ) : testTokenBalance && !hasEnoughBalance ? (
             <p>
               {' '}
-              🚨 Insufficient Balance: {testTokenBalance ? formatEther(testTokenBalance.value) : 0} ALI.{' '}
+              🚨 Insufficient Balance: {testTokenBalance
+                ? formatEther(testTokenBalance.value)
+                : 0}{' '}
+              ALI.{' '}
               <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
                 {' '}
                 Mint Test Token now{' '}
               </span>{' '}
             </p>
           ) : (
-            <p> 💰 Smart Wallet Balance: {testTokenBalance ? formatEther(testTokenBalance.value) : 0} ALI. </p>
+            <p>
+              {' '}
+              💰 Smart Wallet Balance: {testTokenBalance
+                ? formatEther(testTokenBalance.value)
+                : 0}{' '}
+              ALI.{' '}
+            </p>
           )}
         </div>
       </div>
