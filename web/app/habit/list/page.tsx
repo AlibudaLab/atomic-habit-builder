@@ -13,7 +13,7 @@ export default function ChallengeList() {
       <Header />
 
       <div className="flex flex-col items-center justify-center">
-        <p className="text-center text-lg"> Choose a challenge </p>
+        <p className="text-center text-lg"> Choose a challenge to Join </p>
 
         {/* Challenge List */}
         <div className="pt-4">

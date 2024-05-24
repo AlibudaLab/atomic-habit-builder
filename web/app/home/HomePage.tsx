@@ -25,8 +25,6 @@ export default function DashboardPage() {
 
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
-      <GetSingleTrait properties={{ name: 'Nouns Logo', glasses: -2, width: 163, height: 62 }} />
-
       <Header />
 
       <div className="flex flex-col items-center justify-center">
