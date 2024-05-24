@@ -27,7 +27,7 @@ export default function CheckIn() {
           {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
         </>
       ) : (
-        <>Loading Challenges</>
+        <>Loading Challenge Detail</>
       )}
     </div>
   );

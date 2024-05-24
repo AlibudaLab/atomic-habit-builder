@@ -7,10 +7,8 @@ import Image from 'next/image';
 import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import toast from 'react-hot-toast';
 
 const StravaImg = require('../../src/imgs/apps/strava.png') as string;
-const NRCImg = require('../../src/imgs/apps/nike-run.png') as string;
 
 export default function ConnectRunDataSource() {
   // if url contains 'original_path', then pass this info to the strava callback page, so after connecting we can go back

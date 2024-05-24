@@ -39,16 +39,27 @@ export default function StakeChallenge() {
   const currentChainSupportBatchTx =
     capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
       ?.atomicBatch.supported;
-  const balance = useBalance({ address: smartWallet, token: testTokenContract.address });
-  const testTokenBalance = balance.data ? Number(formatEther(balance.data.value)) : 0;
-  const hasEnoughBalance = challenge && testTokenBalance >= challenge.stake;
+  const { data: testTokenBalance } = useBalance({
+    address: smartWallet,
+    token: testTokenContract.address,
+  });
+
+  console.log('testTokenBalance', testTokenBalance);
+
+  const hasEnoughBalance =
+    challenge &&
+    testTokenBalance &&
+    Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
+
+  console.log('hasEnoughBalance', hasEnoughBalance);
+
   const { data: allowance } = useReadErc20Allowance({
     address: testTokenContract.address,
     args: [smartWallet as `0x${string}`, trackerContract.address],
   });
 
   const hasEnoughAllowance = allowance
-    ? challenge && Number(formatEther(allowance)) >= challenge.stake
+    ? challenge && Number(allowance) >= Number(formatEther(challenge.stake))
     : false;
 
   const {
@@ -64,7 +75,7 @@ export default function StakeChallenge() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'mint',
-      args: [smartWallet as `0x${string}`, parseEther(challenge.stake.toString()) * BigInt(10)],
+      args: [smartWallet as `0x${string}`, challenge.stake],
     });
   };
 
@@ -81,7 +92,7 @@ export default function StakeChallenge() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'approve',
-      args: [trackerContract.address, parseEther(challenge.stake.toString())],
+      args: [trackerContract.address, challenge.stake],
     });
   };
 
@@ -167,7 +178,7 @@ export default function StakeChallenge() {
             address: testTokenContract.address as `0x${string}`,
             abi: testTokenContract.abi,
             functionName: 'approve',
-            args: [trackerContract.address, parseEther(challenge.stake.toString())],
+            args: [trackerContract.address, challenge.stake],
           },
           {
             address: trackerContract.address,
@@ -286,17 +297,26 @@ export default function StakeChallenge() {
         <div className="p-4 text-xs">
           {!challenge || loading ? (
             <p> Loading Challenge </p>
-          ) : balance.data && !hasEnoughBalance ? (
+          ) : testTokenBalance && !hasEnoughBalance ? (
             <p>
               {' '}
-              🚨 Insufficient Balance: {testTokenBalance?.toString() || 0} Test Token.{' '}
+              🚨 Insufficient Balance: {testTokenBalance
+                ? formatEther(testTokenBalance.value)
+                : 0}{' '}
+              ALI.{' '}
               <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
                 {' '}
                 Mint Test Token now{' '}
               </span>{' '}
             </p>
           ) : (
-            <p> 💰 Smart Wallet Balance: {testTokenBalance?.toString() || 0} Test Token </p>
+            <p>
+              {' '}
+              💰 Smart Wallet Balance: {testTokenBalance
+                ? formatEther(testTokenBalance.value)
+                : 0}{' '}
+              ALI.{' '}
+            </p>
           )}
         </div>
       </div>
