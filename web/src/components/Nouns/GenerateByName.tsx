@@ -23,7 +23,7 @@ function GenerateByName({ properties }: { properties: NounsProperty | null }) {
     prevProperties.current = properties;
 
     fetchSvg({ name: properties?.name })
-      .then(sanitizedSvg => setSvgData(sanitizedSvg))
+      .then((sanitizedSvg) => setSvgData(sanitizedSvg))
       .catch(console.error);
   }, [properties]);
 

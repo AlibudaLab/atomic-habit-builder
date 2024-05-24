@@ -12,11 +12,14 @@ import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/types';
 import useRunData from '@/hooks/useRunData';
 import { timeDifference } from '@/utils/time';
-import Stamps from './stamps';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import moment from 'moment';
 import { formatDuration } from '@/utils/timestamp';
+import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import { getCheckInDescription } from '@/utils/challenges';
+import { formatEther } from 'viem';
+import { ActivityDropDown } from './activityDropdown';
 
 import GenerateByTrait from '@/components/Nouns/GenerateByTrait';
 
@@ -123,69 +126,46 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   }, [checkInError]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <GenerateByTrait
-        properties={{
-          name: 'Health',
-          width: 250,
-          height: 250,
-          className: 'mb-3 rounded-full object-cover',
-          head: 204,
-          background: -1,
-        }}
-      />
-
+    <div className="flex max-w-96 flex-col items-center justify-center">
       {/* overview   */}
-      <div className="py-2">
-        <p className="px-2 text-sm">
-          {' '}
-          Duration: {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}{' '}
-        </p>
-        <p className="px-2 text-sm"> Challenge: {challenge.name} </p>
+      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
+
+      {/* goal description */}
+      <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Description </div>
+        <div className="text-dark text-sm"> {challenge.description} </div>
       </div>
 
-      {connected &&
-        runData.map((activity, idx) => (
-          <div
-            key={`${activity.name}-${idx}`}
-            style={{ borderColor: '#EDB830', width: '250px' }}
-            className={`m-2 rounded-md border border-solid p-2 ${
-              activityIdx === idx ? 'bg-yellow' : 'bg-normal'
-            } items-center justify-center`}
-          >
-            <button type="button" onClick={() => setActivityIdx(idx)}>
-              <div className="px-2 text-sm font-bold"> {activity.name} </div>
-              <div className="flex items-center px-2">
-                <div className="px-2 text-xs"> {(activity.distance / 1000).toPrecision(2)} KM </div>
-                <div className="text-grey px-2 text-xs">
-                  {' '}
-                  {timeDifference(Date.now(), Date.parse(activity.timestamp))}{' '}
-                </div>
-              </div>
-            </button>
-          </div>
-        ))}
+      {/* checkIn description */}
+      <div className="w-full justify-start p-6 pb-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+        <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+      </div>
+
+      <div className="w-full justify-start p-6 pb-2 text-start">
+        <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+        <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+      </div>
 
       {connected && runData.length === 0 ? (
-        <div className="p-2 text-center text-xs"> No record found </div>
+        <div className="p-2 pt-6 text-center text-sm"> No record found </div>
       ) : connected ? (
-        <div className="p-2 text-center text-xs"> Choose an activity to check in </div>
+        <div className="flex w-full justify-center">
+          <ActivityDropDown
+            setActivityIdx={setActivityIdx}
+            activityIdx={activityIdx}
+            activities={runData}
+          />
+        </div>
       ) : (
         <> </>
       )}
-
-      <Stamps targetNum={challenge.targetNum} checkInNum={checkedIn} challengeId={challenge.id} />
-
-      <div>
-        {' '}
-        {checkedIn.toString()} / {challenge.targetNum}{' '}
-      </div>
 
       {checkedIn >= challenge.targetNum ? (
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+            className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           >
             Finish
           </button>
@@ -193,7 +173,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
@@ -203,7 +183,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : runDataError ? (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
           onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
         >
           Re-Connect Running App
@@ -211,7 +191,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="mt-4 rounded-lg bg-yellow-500 px-6 py-4 font-bold text-white hover:bg-yellow-600"
+          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
           onClick={() => router.push(`/connect-run?original_path=${pathName}`)}
         >
           Connect Running App

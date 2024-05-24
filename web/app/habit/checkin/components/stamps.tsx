@@ -13,7 +13,7 @@ export default function Stamps({ checkInNum, targetNum, challengeId }: StampProp
     <div className="flex flex-wrap justify-center gap-4 px-12 py-6">
       {Array.from({ length: targetNum }).map((_, idx) => {
         const done = idx < checkInNum;
-        const iconIdx = (Number(challengeId)+ idx) % 233;
+        const iconIdx = (Number(challengeId) + idx) % 233;
         return done ? (
           <div
             style={{ borderColor: '#EDB830', paddingTop: '4px' }}

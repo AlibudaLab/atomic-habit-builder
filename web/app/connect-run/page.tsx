@@ -38,7 +38,7 @@ export default function ConnectRunDataSource() {
           {/* connect with strava */}
           <button
             type="button"
-            className="my-2 flex min-w-[250px] items-center justify-center rounded-md bg-white p-2 transition-transform hover:scale-105"
+            className="my-2 flex min-w-[250px] items-center justify-center rounded-md p-2"
             onClick={onClickStrava}
           >
             <div className="rounded-md bg-white p-4">Strava</div>
@@ -46,14 +46,14 @@ export default function ConnectRunDataSource() {
           </button>
 
           {/* connect with NRC */}
-          <button
+          {/* <button
             type="button"
             className="my-2 flex min-w-[250px] items-center justify-center rounded-md bg-white p-2 transition-transform hover:scale-105"
             onClick={() => toast('Coming soon', { icon: '🚧' })}
           >
             <div className="rounded-md bg-white p-4">Nike Run Club</div>
             <Image src={NRCImg} height={55} width={55} alt="NRC" />
-          </button>
+          </button> */}
         </div>
         {/* )} */}
       </div>

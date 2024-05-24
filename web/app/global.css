@@ -11,15 +11,14 @@
   --developer-experience-code-window-background: var(--slate-12);
 
   /* Palette */
-  --palette-bg: #f9f4e6;
+  --palette-bg: #ffffff;
   --palette-bg-soft-black: #141519;
   --palette-bg-white: #fff;
-  --palette-text-dark: #7e7956;
-  --palette-dark-yellow: #edb830;
+  --palette-text-dark: #3a3042;
+  --palette-primary: #ff784f;
 
   /* Build Onchain Apps shared variables */
   --boat-color-background: var(--palette-bg);
-  --boat-color-text: var(--palette-text-dark);
 
   /* Indicates that the element can be rendered using 
    * the operating system dark color scheme. 
@@ -51,12 +50,16 @@ html .font-slogan {
   font-weight: 100;
 }
 
-html .text-yellow {
-  color: var(--palette-dark-yellow);
+html .text-primary {
+  color: var(--palette-primary);
 }
 
-html .bg-yellow {
-  background-color: var(--palette-dark-yellow);
+html .text-dark {
+  color: var(--palette-text-dark);
+}
+
+html .bg-primary {
+  background-color: var(--palette-primary);
 }
 
 html .font-normal {
@@ -65,6 +68,22 @@ html .font-normal {
 
 html .bg-light {
   background-color: var(--palette-bg);
+}
+
+html .wrapped {
+  border: var(--palette-primary) 3px solid;
+  border-radius: 10px;
+}
+
+div .wrapped-filled {
+  background-color: var(--palette-primary);
+  color: var(--palette-bg);
+  border-radius: 10px;
+}
+
+div .wrapped :focus {
+  background-color: var(--palette-primary);
+  color: var(--palette-bg);
 }
 
 body {

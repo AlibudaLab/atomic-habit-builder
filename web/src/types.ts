@@ -27,7 +27,7 @@ export type ChallengeMetaData = {
   id: bigint;
   name: string;
   type: ChallengeTypes;
-  mapKey?: string;
+  description?: string;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;

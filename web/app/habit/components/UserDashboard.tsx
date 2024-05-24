@@ -1,11 +1,11 @@
 /* eslint-disable */
 'use client';
 
-import { Challenge, ChallengeWithCheckIns } from '@/types';
+import { ChallengeWithCheckIns } from '@/types';
 import { challengeToEmoji } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
+import { ChallengeBoxFilled } from './ChallengeBox';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -21,8 +21,13 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
 
       {/* map challenges to list of buttons */}
       {onGoingChallenges.map((challenge, idx) => (
-        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`}>
-          <button
+        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`} className="no-underline">
+          <ChallengeBoxFilled
+            key={challenge.id.toString()}
+            challenge={challenge}
+            checkedIn={challenge.checkedIn}
+          />
+          {/* <button
             key={challenge.id.toString()}
             type="button"
             className="mt-4 w-full rounded-lg px-6 py-3 outline outline-2"
@@ -41,32 +46,16 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
                 {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
               </div>
             </div>
-          </button>
+          </button> */}
         </Link>
       ))}
 
-      {/* Space Divier */}
+      {/* Space Divider */}
       <div className="py-12"></div>
 
-      <Link href="/habit/stake">
-        <button
-          type="button"
-          className="mt-4 rounded-lg px-6 py-3	outline-dotted outline-2"
-          style={{ width: '350px', height: '80px' }}
-        >
-          <p className="text-md font-bold"> Join a Challenge </p>
-          <p className="text-sm"> Join on-going challenges </p>
-        </button>
-      </Link>
-
-      <Link href={''} onClick={() => toast('Coming soon')}>
-        <button
-          type="button"
-          className="mt-4 rounded-lg px-6 py-3 outline-dotted outline-2 "
-          style={{ width: '350px', height: '80px' }}
-        >
-          <p className="text-md font-bold"> Create a New Challenge </p>
-          <p className="text-sm"> Create a new challenge and share! </p>
+      <Link href="/habit/list">
+        <button type="button" className="wrapped text-primary w-full max-w-96 rounded-lg px-6 py-3">
+          <p className="text-md font-bold"> Join a new Challenge </p>
         </button>
       </Link>
     </div>

@@ -39,13 +39,15 @@ const useUserChallenges = (address: string | undefined) => {
               address: trackerContract.address,
               functionName: 'getUserCheckInCounts',
               args: [c.id, address as `0x${string}`],
-            })) as unknown as number;
+            })) as unknown as bigint;
             return checkedIn;
           }),
         );
 
+        console.log('checkedIns', checkedIns);
+
         const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
-          return { ...c, checkedIn: checkedIns[idx] };
+          return { ...c, checkedIn: Number(checkedIns[idx].toString()) };
         });
 
         setData(challengesWithCheckIns);
