@@ -75,7 +75,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   useEffect(() => {
     if (isSuccess) {
       toast.dismiss();
-      toast.success('Recorded on smart contract!! 🥳🥳🥳');
+      toast.success('Successfully checked in!! 🥳🥳🥳');
     }
   }, [isSuccess]);
 
@@ -91,7 +91,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Description </div>
+        <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
         <div className="text-dark text-sm"> {challenge.description} </div>
       </div>
 

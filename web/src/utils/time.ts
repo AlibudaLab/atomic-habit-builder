@@ -26,7 +26,7 @@ export const timeDifference = (current: number, previous: number) => {
 
 /**
  * Return text like 10 mins, 1 hour 23 mins
- * @param totalElapsed 
+ * @param totalElapsed
  */
 export const getActivityDuration = (totalElapsed: number) => {
   const hours = Math.floor(totalElapsed / 3600);
@@ -34,4 +34,4 @@ export const getActivityDuration = (totalElapsed: number) => {
   return `${hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : ''} ${
     minutes > 0 ? `${minutes} min${minutes > 1 ? 's' : ''}` : ''
   }`;
-}
+};

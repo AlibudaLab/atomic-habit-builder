@@ -21,7 +21,9 @@ export async function GET(req: NextRequest): Promise<Response> {
     const url = `https://www.strava.com/api/v3/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${perPage}`;
 
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
-    const activities = (await response.json()).filter((activity: any) => activity.type === 'WeightTraining') 
+    const activities = (await response.json()).filter(
+      (activity: any) => activity.type === 'WeightTraining',
+    );
 
     const workouts = activities.map((run: any) => {
       return {
@@ -31,7 +33,7 @@ export async function GET(req: NextRequest): Promise<Response> {
         timestamp: run.start_date,
       };
     });
-    
+
     return NextResponse.json({ workouts }, { status: 200 });
   } catch (error) {
     console.error('Error getting Strava workouts:', error);

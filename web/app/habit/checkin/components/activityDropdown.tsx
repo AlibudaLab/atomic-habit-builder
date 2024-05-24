@@ -6,7 +6,7 @@ import { getActivityDuration, timeDifference } from '@/utils/time';
 
 const isRunData = (data: StravaRunData | StravaWorkoutData): data is StravaRunData => {
   return (data as StravaRunData).distance !== undefined;
-}
+};
 
 export function ActivityDropDown({
   setActivityIdx,
@@ -31,11 +31,14 @@ export function ActivityDropDown({
                 <div className="px-2 text-xs">
                   {getActivityDuration(activities[activityIdx].moving_time)}{' '}
                 </div>
-                { isRunData(activities[activityIdx]) && 
+                {isRunData(activities[activityIdx]) && (
                   <div className="px-2 text-xs">
-                  {' '}
-                  {((activities[activityIdx] as StravaRunData).distance / 1000).toPrecision(2)} KM{' '}
-                </div>}
+                    {' '}
+                    {((activities[activityIdx] as StravaRunData).distance / 1000).toPrecision(
+                      2,
+                    )} KM{' '}
+                  </div>
+                )}
                 <div className="text-grey px-2 text-xs">
                   {' '}
                   {timeDifference(Date.now(), Date.parse(activities[activityIdx].timestamp))}{' '}
@@ -43,14 +46,11 @@ export function ActivityDropDown({
               </div>
             </button>
           ) : (
-            <>
-              <div className="p-2 text-2xl"> + </div>
-              <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
-                <div className="flex flex-col items-start justify-start p-2">
-                  <p className="text-lg"> Select a record </p>
-                </div>
-              </button>
-            </>
+            <button onClick={() => setOpen(true)} type="button" style={{ width: '220px' }}>
+              <div className="flex flex-col justify-center p-2 text-center">
+                <p className="text-md"> Select a Record </p>
+              </div>
+            </button>
           )}
         </div>
       </DropdownMenu.Trigger>
@@ -87,12 +87,12 @@ export function ActivityDropDown({
                         {' '}
                         {getActivityDuration(activity.moving_time)}{' '}
                       </div>
-                      { 
-                      isRunData(activity) &&
-                      <div className="px-2 text-xs">
-                        {' '}
-                        {(activity.distance / 1000).toPrecision(2)} KM{' '}
-                      </div>}
+                      {isRunData(activity) && (
+                        <div className="px-2 text-xs">
+                          {' '}
+                          {(activity.distance / 1000).toPrecision(2)} KM{' '}
+                        </div>
+                      )}
                       <div className="px-2 text-xs">
                         {' '}
                         {timeDifference(Date.now(), Date.parse(activity.timestamp))}{' '}

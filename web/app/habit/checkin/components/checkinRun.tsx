@@ -44,7 +44,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
-  const { connected, runData, workoutData, error: runDataError } = useRunData();
+  const {
+    connected,
+    runData,
+    workoutData,
+    error: runDataError,
+    loading: stravaLoading,
+  } = useRunData();
 
   const onClickCheckIn = async () => {
     if (activityIdx === -1) {
@@ -134,29 +140,31 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Description </div>
-        <div className="text-dark text-sm"> {challenge.description} </div>
+        <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+        <div className="text-primary text-sm"> {challenge.description} </div>
       </div>
 
       {/* checkIn description */}
       <div className="w-full justify-start p-6 pb-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-        <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+        <div className="text-primary text-sm"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
       <div className="w-full justify-start p-6 pb-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-primary text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
       </div>
 
-      {connected && runData.length === 0 ? (
+      {connected && stravaLoading ? (
+        <div className="p-2 pt-6 text-center text-sm"> Loading activities... </div>
+      ) : runData.length === 0 ? (
         <div className="p-2 pt-6 text-center text-sm"> No record found </div>
       ) : connected ? (
         <div className="flex w-full justify-center pt-8">
           <ActivityDropDown
             setActivityIdx={setActivityIdx}
             activityIdx={activityIdx}
-            activities={challenge.type === ChallengeTypes.Run ? runData : workoutData }
+            activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
           />
         </div>
       ) : (
@@ -167,7 +175,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
+            className="wrapped text-primary mt-16 rounded-lg px-6 py-4 font-bold transition-transform duration-300 focus:scale-105"
           >
             Finish
           </button>
@@ -175,7 +183,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
+          className="wrapped text-primary mt-16 rounded-lg px-6 py-4 font-bold transition-transform duration-300 focus:scale-105"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
@@ -185,7 +193,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
+          className="wrapped text-primary mt-16 rounded-lg px-6 py-4 font-bold transition-transform duration-300 focus:scale-105"
           onClick={onClickConnectStrava}
         >
           Connect with Strava

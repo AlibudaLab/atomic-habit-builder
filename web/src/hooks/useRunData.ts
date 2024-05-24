@@ -11,7 +11,6 @@ const useRunData = () => {
 
   const [loading, setLoading] = useState(true);
 
-  
   const [runData, setRunData] = useState<StravaRunData[]>([]);
   const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
 
@@ -79,8 +78,7 @@ const useRunData = () => {
         const [newRunData, newWorkoutData] = await Promise.all([
           stravaUtils.fetchRuns(accessToken),
           stravaUtils.fetchWorkouts(accessToken),
-        ])
-
+        ]);
 
         if (!newRunData || !newWorkoutData) {
           setError('No data found');
@@ -88,7 +86,7 @@ const useRunData = () => {
         }
 
         setRunData(newRunData);
-        setWorkoutData(newWorkoutData)
+        setWorkoutData(newWorkoutData);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);

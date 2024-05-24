@@ -17,11 +17,13 @@ export default function CheckIn() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* Img and Description */}
+      <p className="pb-4 pt-2 text-lg"> Happy Builder; Habit Builder! </p>
 
       {challenge ? (
         <>
-          {(challenge.type === ChallengeTypes.Run || challenge.type === ChallengeTypes.Workout) && <RunCheckIn challenge={challenge} />}
+          {(challenge.type === ChallengeTypes.Run || challenge.type === ChallengeTypes.Workout) && (
+            <RunCheckIn challenge={challenge} />
+          )}
 
           {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
         </>

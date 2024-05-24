@@ -24,7 +24,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
     const activities = await response.json();
     const runs = activities.filter((activity: any) => activity.type === 'Run');
-    
+
     const runData = runs.map((run: any) => {
       return {
         id: run.id,

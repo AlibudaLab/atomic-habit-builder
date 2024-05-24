@@ -8,7 +8,6 @@ import { useAccount } from 'wagmi';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import GetSingleTrait from '@/components/Nouns/GetSingleTrait';
 export default function DashboardPage() {
   const { address } = useAccount();
 
