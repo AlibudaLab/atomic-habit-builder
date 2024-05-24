@@ -19,18 +19,15 @@ import { getCheckInDescription } from '@/utils/challenges';
 import { formatEther } from 'viem';
 import { ActivityDropDown } from './activityDropdown';
 import * as stravaUtils from '@/utils/strava';
+import { ChallengeTypes } from '@/constants';
 
 /**
- * Running activity check-in page.
+ * TEMP: Workout & Running activity check-in
  * @param param0
  * @returns
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
-
-  const pathName = usePathname();
-
-  const router = useRouter();
 
   const {
     writeContract,
@@ -47,7 +44,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
-  const { connected, data: runData, error: runDataError } = useRunData();
+  const { connected, runData, workoutData, error: runDataError } = useRunData();
 
   const onClickCheckIn = async () => {
     if (activityIdx === -1) {
@@ -83,8 +80,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           },
         })
       ).json()) as { v: number; r: string; s: string };
-
-      console.log('sig', sig);
 
       writeContract({
         address: trackerContract.address,
@@ -157,11 +152,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {connected && runData.length === 0 ? (
         <div className="p-2 pt-6 text-center text-sm"> No record found </div>
       ) : connected ? (
-        <div className="flex w-full justify-center">
+        <div className="flex w-full justify-center pt-8">
           <ActivityDropDown
             setActivityIdx={setActivityIdx}
             activityIdx={activityIdx}
-            activities={runData}
+            activities={challenge.type === ChallengeTypes.Run ? runData : workoutData }
           />
         </div>
       ) : (

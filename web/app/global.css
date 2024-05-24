@@ -81,10 +81,10 @@ div .wrapped-filled {
   border-radius: 10px;
 }
 
-div .wrapped :focus {
+/* div .wrapped :focus {
   background-color: var(--palette-primary);
   color: var(--palette-bg);
-}
+} */
 
 body {
   height: 100%;

@@ -28,7 +28,7 @@ export function ChallengeBoxFilled({
   checkedIn?: number;
 }) {
   return (
-    <div className="wrapped-filled m-4 w-full p-2">
+    <div className="wrapped-filled m-2 w-full p-2">
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">

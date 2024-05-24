@@ -12,7 +12,7 @@ export default function Header() {
       <Link href="/habit" className="p-2">
         <button type="button" aria-label="Nouns Logo">
           <GetSingleTrait
-            properties={{ name: 'Nouns Logo', glasses: -2, width: 163, height: 62 }}
+            properties={{ name: 'Nouns Logo', glasses: -2, width: 100, height: 40 }}
           />
         </button>
       </Link>

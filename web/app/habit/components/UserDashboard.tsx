@@ -21,32 +21,12 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
 
       {/* map challenges to list of buttons */}
       {onGoingChallenges.map((challenge, idx) => (
-        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`} className="no-underline">
+        <Link key={`link-${idx}`} href={`/habit/checkin/${challenge.id}`} className="no-underline w-full">
           <ChallengeBoxFilled
             key={challenge.id.toString()}
             challenge={challenge}
             checkedIn={challenge.checkedIn}
           />
-          {/* <button
-            key={challenge.id.toString()}
-            type="button"
-            className="mt-4 w-full rounded-lg px-6 py-3 outline outline-2"
-            style={{ borderColor: '#EDB830', width: '350px', height: '60px' }}
-          >
-            <div className="flex w-full justify-between">
-              <div className="mr-4 text-2xl">{challengeToEmoji(challenge.type)}</div>
-              <div className="justify-left items-start hover:text-black">
-                <div className="flex text-sm">
-                  {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
-                </div>
-                <div className="flex text-sm">{challenge.name} </div>
-              </div>
-              <div className="text-lg">
-                {' '}
-                {challenge.checkedIn?.toString()}/ {challenge.targetNum}{' '}
-              </div>
-            </div>
-          </button> */}
         </Link>
       ))}
 

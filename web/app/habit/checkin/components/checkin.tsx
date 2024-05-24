@@ -9,12 +9,11 @@ import { ChallengeTypes } from '@/constants';
 import RunCheckIn from './checkinRun';
 import NFCCheckIn from './nfc';
 import useAllChallenges from '@/hooks/useAllChallenges';
+import useChallenge from '@/hooks/useChallenge';
 
 export default function CheckIn() {
   const { challengeId } = useParams<{ challengeId: string }>();
-  const { challenges } = useAllChallenges();
-
-  const challenge = challenges.find((c) => c.id.toString() === challengeId) as Challenge;
+  const { challenge } = useChallenge(Number(challengeId));
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -22,7 +21,7 @@ export default function CheckIn() {
 
       {challenge ? (
         <>
-          {challenge.type === ChallengeTypes.Run && <RunCheckIn challenge={challenge} />}
+          {(challenge.type === ChallengeTypes.Run || challenge.type === ChallengeTypes.Workout) && <RunCheckIn challenge={challenge} />}
 
           {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
         </>

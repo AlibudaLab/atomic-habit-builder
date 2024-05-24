@@ -75,7 +75,7 @@ export default function StakeChallenge() {
       address: testTokenContract.address as `0x${string}`,
       abi: testTokenContract.abi,
       functionName: 'mint',
-      args: [smartWallet as `0x${string}`, challenge.stake],
+      args: [smartWallet as `0x${string}`, challenge.stake * BigInt(10)],
     });
   };
 
