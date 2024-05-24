@@ -23,7 +23,7 @@ contract Tracker is EIP712 {
 
     //FIXME: This should be included in struct Challenge
     address public underlyingToken;
-    uint256 public challengeCounter = 1;
+    uint256 public challengeCounter;
 
     mapping(uint256 challengeId => Challenge) public challenges;
     mapping(uint256 challengeId => address[]) public users;
@@ -63,7 +63,7 @@ contract Tracker is EIP712 {
         uint256 stake
     ) public {
         //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
-        challenges[challengeCounter++] =
+        challenges[++challengeCounter] =
             Challenge(verifier, minimunCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
         emit Register(challengeCounter, verifier, description, startTimestamp, endTimestamp, minimunCheckIns);
     }
@@ -128,7 +128,6 @@ contract Tracker is EIP712 {
 
     function withdraw(uint256 challengeId) public {
         require(challenges[challengeId].settled, "challenge not yet settled");
-        require(claimable[challengeId][msg.sender], "user not eligible or already claimed");
         uint256 amount = getClaimableAmount(challengeId, msg.sender);
         claimable[challengeId][msg.sender] = false;
         IERC20(underlyingToken).safeTransfer(msg.sender, amount);
