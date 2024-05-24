@@ -4,7 +4,10 @@ import { formatDuration } from '@/utils/timestamp';
 
 export function ChallengeBox({ challenge }: { challenge: Challenge }) {
   return (
-    <div className="wrapped m-4 w-full">
+    <button
+      type="button"
+      className="wrapped m-2 w-full transition-transform duration-300 focus:scale-105"
+    >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="text-primary flex flex-col items-start justify-start p-2">
@@ -16,7 +19,7 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
         </div>
         <div className="ml-auto p-2 text-sm font-bold">{challenge.targetNum} times</div>
       </div>
-    </div>
+    </button>
   );
 }
 

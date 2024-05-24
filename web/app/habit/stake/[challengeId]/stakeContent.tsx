@@ -264,7 +264,7 @@ export default function StakeChallenge() {
         {challenge && (
           <button
             type="button"
-            className="wrapped text-primary mt-4 rounded-lg border-solid px-6 py-3 font-bold disabled:opacity-50"
+            className="wrapped text-primary mt-6 rounded-lg border-solid px-6 py-3 font-bold disabled:opacity-50"
             onClick={
               currentChainSupportBatchTx || hasEnoughAllowance
                 ? onJoinButtonClick
