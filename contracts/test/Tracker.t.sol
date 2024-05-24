@@ -80,17 +80,19 @@ contract TrackerTest is Test {
         uint256 beforeBalance = underlying.balanceOf(address(this));
         tracker.withdraw(1);
         uint256 afterBalance = underlying.balanceOf(address(this));
-        assertEq(afterBalance - beforeBalance, PER_USER_STAKE + PER_USER_STAKE / 2, "withdraw failed");
+        assertEq(afterBalance - beforeBalance, PER_USER_STAKE + PER_USER_STAKE / 2, "testing withdraw failed");
     }
 
-    function test_RevertWhen_FailedUserWithdraw(uint256 timestamp) public {
+    function test_FailedUserWithdraw(uint256 timestamp) public {
         vm.assume(timestamp > 0 && timestamp < 1e20);
         tracker.join(1);
 
         vm.warp(block.timestamp + 1001);
         tracker.settle(1);
 
-        vm.expectRevert(bytes("user not eligible or already claimed"));
+        uint256 beforeBalance = underlying.balanceOf(address(this));
         tracker.withdraw(1);
+        uint256 afterBalance = underlying.balanceOf(address(this));
+        assertEq(afterBalance - beforeBalance, 0, "testing failed user withdraw failed");
     }
 }
