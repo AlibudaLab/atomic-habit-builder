@@ -17,7 +17,6 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
       coinbaseWallet({
         appName: 'Alibuda',
         appChainIds: [baseSepolia.id],
-        preference: 'smartWalletOnly',
       }),
     ],
     ssr: true,
