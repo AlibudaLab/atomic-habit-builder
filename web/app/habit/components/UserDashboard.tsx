@@ -13,7 +13,7 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="flex w-full items-center justify-center gap-6 text-center">
-        {onGoingChallenges.length > 0 && <p className="text-xl"> Challenges you Joined </p>}
+        {onGoingChallenges.length > 0 && <p className="text-xl font-londrina text-xl font-bold"> Challenges you Joined </p>}
       </div>
 
       <Link href="/habit/list" className="my-6 py-4 text-primary">
