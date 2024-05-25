@@ -16,7 +16,7 @@ export default function DashboardPage() {
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />
 
-      {loading ? (
+      {address && loading ? (
         <Loading />
       ) : (
         <div className="flex flex-col items-center justify-center">
