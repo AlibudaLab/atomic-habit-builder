@@ -23,3 +23,15 @@ export const timeDifference = (current: number, previous: number) => {
     return Math.round(elapsed / msPerYear) + ' years ago';
   }
 };
+
+/**
+ * Return text like 10 mins, 1 hour 23 mins
+ * @param totalElapsed
+ */
+export const getActivityDuration = (totalElapsed: number) => {
+  const hours = Math.floor(totalElapsed / 3600);
+  const minutes = Math.floor((totalElapsed % 3600) / 60);
+  return `${hours > 0 ? `${hours} hour${hours > 1 ? 's' : ''}` : ''} ${
+    minutes > 0 ? `${minutes} min${minutes > 1 ? 's' : ''}` : ''
+  }`;
+};

@@ -4,15 +4,17 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
-import { StravaActivity } from '@/utils/strava';
 
 const useRunData = () => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
 
-  // TODO: change to more generic type
-  const [data, setData] = useState<StravaActivity[]>([]);
+  const [runData, setRunData] = useState<stravaUtils.StravaRunData[]>([]);
+
+  // TODO: move this to a separate hook when we have more sources for workout data / run data
+  const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
+
   const [error, setError] = useState<unknown | null>(null);
 
   const connected = verifier !== RunVerifier.None;
@@ -55,7 +57,7 @@ const useRunData = () => {
     updateAccessToken().catch(console.error);
   }, [secret, updateVerifierAndSecret, verifier, expired]);
 
-  // fetch data when access token are updated and not expired
+  // fetch run data when access token are updated and not expired
   useEffect(() => {
     // TODO: add others verifiers
     if (verifier !== RunVerifier.Strava) {
@@ -74,13 +76,18 @@ const useRunData = () => {
       const { accessToken } = stravaUtils.splitSecret(secret);
       console.log('using accessToken', accessToken);
       try {
-        const newData = await stravaUtils.fetchActivities(accessToken);
-        if (!newData) {
+        const [newRunData, newWorkoutData] = await Promise.all([
+          stravaUtils.fetchRuns(accessToken),
+          stravaUtils.fetchWorkouts(accessToken),
+        ]);
+
+        if (!newRunData || !newWorkoutData) {
           setError('No data found');
           return;
         }
 
-        setData(newData);
+        setRunData(newRunData);
+        setWorkoutData(newWorkoutData);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -92,7 +99,7 @@ const useRunData = () => {
     fetchData().catch(setError);
   }, [secret, verifier, updateVerifierAndSecret, expired]);
 
-  return { loading, data, error, connected };
+  return { loading, runData, workoutData, error, connected };
 };
 
 export default useRunData;

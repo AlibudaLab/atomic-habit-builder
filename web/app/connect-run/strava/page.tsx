@@ -77,15 +77,6 @@ export default function CallbackStrava() {
             <div className="py-4 text-lg font-bold"> Connected with Strava! </div>
           )}
           <Image src={StravaImg} height={55} width={55} alt="Strava" />
-
-          {!isPending && (
-            <Link
-              href="/"
-              className="bg-primary m-4 rounded-md p-4 font-bold text-white no-underline"
-            >
-              See Challenges
-            </Link>
-          )}
         </>
       )}
     </main>

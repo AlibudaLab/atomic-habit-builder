@@ -8,14 +8,14 @@ export default function Onboard() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <p className="pb-4 pt-2 text-lg"> Stake and commit to a new habit! </p>
+      <p className="pb-4 text-center font-londrina text-xl font-bold"> Please Sign in First </p>
 
       <button
         type="button"
-        className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="mt-4 rounded-lg bg-primary px-6 py-3 font-bold text-white transition-transform duration-300 hover:scale-105"
         onClick={() => connect({ connector })}
       >
-        Sign In
+        Use Base Smart Wallet
       </button>
     </div>
   );

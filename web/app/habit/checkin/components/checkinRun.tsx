@@ -2,9 +2,7 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useCallback, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
@@ -12,6 +10,7 @@ import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/types';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
+import useUsedActivity from '@/hooks/useUsedActivities';
 import Link from 'next/link';
 import moment from 'moment';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
@@ -19,18 +18,18 @@ import { getCheckInDescription } from '@/utils/challenges';
 import { formatEther } from 'viem';
 import { ActivityDropDown } from './activityDropdown';
 import * as stravaUtils from '@/utils/strava';
+import { ChallengeTypes } from '@/constants';
+import WaitingTx from 'app/habit/components/WaitingTx';
 
 /**
- * Running activity check-in page.
+ * TEMP: Workout & Running activity check-in
  * @param param0
  * @returns
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
 
-  const pathName = usePathname();
-
-  const router = useRouter();
+  const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
   const {
     writeContract,
@@ -45,9 +44,17 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const [activityIdx, setActivityIdx] = useState(-1);
 
+  const [checkInPendingId, setCheckInPendingId] = useState<string | null>(null);
+
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
-  const { connected, data: runData, error: runDataError } = useRunData();
+  const {
+    connected,
+    runData,
+    workoutData,
+    error: runDataError,
+    loading: stravaLoading,
+  } = useRunData();
 
   const onClickCheckIn = async () => {
     if (activityIdx === -1) {
@@ -65,11 +72,16 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         return;
       }
 
+      const activityId =
+        challenge.type === ChallengeTypes.Run
+          ? runData[activityIdx].id
+          : workoutData[activityIdx].id;
+
       const fetchURL =
         '/api/sign?' +
         new URLSearchParams({
           address: address,
-          activityId: runData[activityIdx].id.toString(),
+          activityId: activityId.toString(),
           timestamp: timestamp.toString(),
           challengeId: challenge.id.toString(),
         }).toString();
@@ -84,8 +96,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         })
       ).json()) as { v: number; r: string; s: string };
 
-      console.log('sig', sig);
-
       writeContract({
         address: trackerContract.address,
         abi: trackerContract.abi,
@@ -99,10 +109,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         ],
       });
 
+      setCheckInPendingId(activityId.toString());
+
       txPendingToastId = toast.loading('Sending transaction...');
     } catch (err) {
       console.log(err);
       toast.error('Error checking in');
+    } finally {
       if (txPendingToastId) {
         toast.dismiss(txPendingToastId);
       }
@@ -123,6 +136,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     if (isSuccess) {
       toast.dismiss();
       toast.success('Successfully checked in!! 🥳🥳🥳');
+
+      if (checkInPendingId) updateUsedActivities(checkInPendingId);
+      setActivityIdx(-1);
     }
   }, [isSuccess]);
 
@@ -139,40 +155,38 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Description </div>
-        <div className="text-dark text-sm"> {challenge.description} </div>
+        <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+        <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
       {/* checkIn description */}
-      <div className="w-full justify-start p-6 pb-2 text-start">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-        <div className="text-dark text-sm"> {getCheckInDescription(challenge.type)} </div>
+        <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
-      <div className="w-full justify-start p-6 pb-2 text-start">
+      <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-dark text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
       </div>
 
-      {connected && runData.length === 0 ? (
-        <div className="p-2 pt-6 text-center text-sm"> No record found </div>
-      ) : connected ? (
-        <div className="flex w-full justify-center">
+      {connected && (
+        <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
+            loading={stravaLoading}
             setActivityIdx={setActivityIdx}
             activityIdx={activityIdx}
-            activities={runData}
+            activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
+            usedActivities={usedActivities}
           />
         </div>
-      ) : (
-        <> </>
       )}
 
       {checkedIn >= challenge.targetNum ? (
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
+            className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
           >
             Finish
           </button>
@@ -180,17 +194,17 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
+          className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
           {' '}
-          {isLoading ? 'Sending tx...' : 'Check In'}{' '}
+          {isLoading ? <WaitingTx /> : 'Check In'}{' '}
         </button>
       ) : (
         <button
           type="button"
-          className="bg-primary mt-4 rounded-lg px-6 py-4 font-bold text-white "
+          className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
           onClick={onClickConnectStrava}
         >
           Connect with Strava

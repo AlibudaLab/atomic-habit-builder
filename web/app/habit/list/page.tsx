@@ -1,33 +1,19 @@
-'use client';
-
+import { generateMetadata } from '@/utils/generateMetadata';
+import ChallengeList from './components/challengeList';
 import Header from '../components/Header';
-import useAllChallenges from '@/hooks/useAllChallenges';
-import Link from 'next/link';
-import { ChallengeBox } from '../components/ChallengeBox';
 
-export default function ChallengeList() {
-  const { challenges } = useAllChallenges();
+export const metadata = generateMetadata({
+  title: 'Challenges',
+  description: 'Habit Builder for Happy Builders',
+  images: 'themes.png',
+  pathname: '',
+});
 
+export default function ChallengeListPage() {
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 pt-16 text-center">
+    <div className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />
-
-      <div className="flex flex-col items-center justify-center">
-        <p className="text-center text-lg"> Choose a challenge to Join </p>
-
-        {/* Challenge List */}
-        <div className="pt-4">
-          {challenges.map((challenge) => (
-            <Link
-              className="w-full no-underline"
-              key={challenge.id.toString()}
-              href={`/habit/stake/${challenge.id}`}
-            >
-              <ChallengeBox challenge={challenge} />
-            </Link>
-          ))}
-        </div>
-      </div>
-    </main>
+      <ChallengeList />
+    </div>
   );
 }

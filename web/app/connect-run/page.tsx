@@ -42,16 +42,6 @@ export default function ConnectRunDataSource() {
             <div className="rounded-md bg-white p-4">Strava</div>
             <Image src={StravaImg} height={55} width={55} alt="Strava" />
           </button>
-
-          {/* connect with NRC */}
-          {/* <button
-            type="button"
-            className="my-2 flex min-w-[250px] items-center justify-center rounded-md bg-white p-2 transition-transform hover:scale-105"
-            onClick={() => toast('Coming soon', { icon: '🚧' })}
-          >
-            <div className="rounded-md bg-white p-4">Nike Run Club</div>
-            <Image src={NRCImg} height={55} width={55} alt="NRC" />
-          </button> */}
         </div>
         {/* )} */}
       </div>

@@ -4,19 +4,22 @@ import { formatDuration } from '@/utils/timestamp';
 
 export function ChallengeBox({ challenge }: { challenge: Challenge }) {
   return (
-    <div className="wrapped m-4 w-full">
+    <button
+      type="button"
+      className="wrapped m-2 w-full transition-transform duration-300 focus:scale-105"
+    >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
-        <div className="flex flex-col items-start justify-start p-2">
-          <p className="text-xs opacity-80">
+        <div className="flex flex-col items-start justify-start p-2 text-primary">
+          <p className="text-xs font-bold opacity-80">
             {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
           </p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-sm"> 5 joined </p>
         </div>
-        <div className="ml-auto p-2 text-sm">{challenge.targetNum} times</div>
+        <div className="ml-auto p-2 text-sm font-bold">{challenge.targetNum} times</div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -28,7 +31,7 @@ export function ChallengeBoxFilled({
   checkedIn?: number;
 }) {
   return (
-    <div className="wrapped-filled m-4 w-full p-2">
+    <div className="wrapped-filled m-2 w-full p-2">
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">

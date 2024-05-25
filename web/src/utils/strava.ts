@@ -1,11 +1,18 @@
 export const SEPERATOR = 'STRAVA_SECRET_SEPARATOR';
 
-export type StravaActivity = {
+export type StravaRunData = {
   id: number;
   name: string;
   timestamp: string;
   distance: number;
   max_heartrate: number;
+  moving_time: number;
+};
+
+export type StravaWorkoutData = {
+  id: number;
+  name: string;
+  timestamp: string;
   moving_time: number;
 };
 
@@ -50,8 +57,8 @@ export function joinSecret(accessToken: string, refreshToken: string) {
   return `${accessToken}${SEPERATOR}${refreshToken}`;
 }
 
-export async function fetchActivities(accessToken: string) {
-  const fetchURL = `/api/strava/activities?accessToken=${accessToken}`;
+export async function fetchRuns(accessToken: string) {
+  const fetchURL = `/api/strava/runs?accessToken=${accessToken}`;
 
   const response = (await (
     await fetch(fetchURL, {
@@ -60,9 +67,24 @@ export async function fetchActivities(accessToken: string) {
         'Content-Type': 'application/json',
       },
     })
-  ).json()) as { runData: StravaActivity[] };
+  ).json()) as { runData: StravaRunData[] };
 
   return response.runData;
+}
+
+export async function fetchWorkouts(accessToken: string) {
+  const fetchURL = `/api/strava/workout?accessToken=${accessToken}`;
+
+  const response = (await (
+    await fetch(fetchURL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  ).json()) as { workouts: StravaWorkoutData[] };
+
+  return response.workouts;
 }
 
 export async function refreshAccessToken(refreshToken: string) {

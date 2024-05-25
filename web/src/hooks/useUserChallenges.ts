@@ -15,6 +15,8 @@ const useUserChallenges = (address: string | undefined) => {
 
   useEffect(() => {
     if (!address) return;
+    if (challenges.length === 0) return;
+
     const fetchData = async () => {
       try {
         setLoading(true);
