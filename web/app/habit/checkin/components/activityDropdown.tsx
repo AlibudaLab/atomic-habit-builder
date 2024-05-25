@@ -4,7 +4,8 @@ import { SetStateAction, useState } from 'react';
 import { StravaRunData, StravaWorkoutData } from '@/utils/strava';
 import { getActivityDuration, timeDifference } from '@/utils/time';
 import { PulseLoader } from 'react-spinners';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+// import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { ChevronDown } from 'lucide-react';
 
 const isRunData = (data: StravaRunData | StravaWorkoutData): data is StravaRunData => {
   return (data as StravaRunData).distance !== undefined;
@@ -67,7 +68,7 @@ export function ActivityDropDown({
             <button className="w-4/5 max-w-80" type="button" onClick={() => setOpen(true)}>
               <div className="flex items-center justify-center gap-2">
                 <p className="text-md p-2 text-primary"> Select a Record </p>
-                <ChevronDownIcon fontSize={30} color="#ffd200" />
+                <ChevronDown width={24} className="text-primary" />{' '}
               </div>
             </button>
           )}
