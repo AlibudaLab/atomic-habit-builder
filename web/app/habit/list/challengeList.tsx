@@ -16,9 +16,7 @@ export default function ChallengeList() {
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 pt-16 text-center">
-      <Header />
-
+    <main className="container mx-auto flex flex-col items-center px-8 text-center">
       <div className="flex flex-col items-center justify-center">
         <p className="pb-4 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 

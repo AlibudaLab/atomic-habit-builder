@@ -6,6 +6,7 @@ import Dashboard from '../habit/components/UserDashboard';
 import Header from '../habit/components/Header';
 import { useAccount } from 'wagmi';
 import Loading from 'app/habit/components/Loading';
+import ChallengeList from 'app/habit/list/challengeList';
 
 export default function DashboardPage() {
   const { address } = useAccount();
@@ -15,13 +16,14 @@ export default function DashboardPage() {
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />
-
-      {address && loading ? (
+      {!address ? (
+        <Onboard />
+      ) : loading ? (
         <Loading />
+      ) : challenges.length === 0 ? (
+        <ChallengeList />
       ) : (
-        <div className="flex flex-col items-center justify-center">
-          {!address ? <Onboard /> : <Dashboard onGoingChallenges={challenges} />}
-        </div>
+        <Dashboard onGoingChallenges={challenges} />
       )}
     </main>
   );

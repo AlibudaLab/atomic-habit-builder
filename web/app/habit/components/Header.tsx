@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <main className="container mx-auto flex flex-col items-center pt-2">
       <Toaster />
-      <Link href="/">
+      <Link href="/" style={{ height: 40 }}>
         <button type="button" aria-label="Nouns Logo">
           <GetSingleTrait properties={{ name: 'Nouns Logo', glasses: -2, width: 80, height: 32 }} />
         </button>

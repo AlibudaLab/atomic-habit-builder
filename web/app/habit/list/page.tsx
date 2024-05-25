@@ -1,5 +1,6 @@
 import { generateMetadata } from '@/utils/generateMetadata';
 import ChallengeList from './challengeList';
+import Header from '../components/Header';
 
 export const metadata = generateMetadata({
   title: 'Challenges',
@@ -9,5 +10,10 @@ export const metadata = generateMetadata({
 });
 
 export default function ChallengeListPage() {
-  return <ChallengeList />;
+  return (
+    <>
+      <Header />
+      <ChallengeList />
+    </>
+  );
 }

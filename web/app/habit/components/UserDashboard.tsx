@@ -2,8 +2,6 @@
 'use client';
 
 import { ChallengeWithCheckIns } from '@/types';
-import { challengeToEmoji } from '@/utils/challenges';
-import { formatDuration } from '@/utils/timestamp';
 import Link from 'next/link';
 import { ChallengeBoxFilled } from './ChallengeBox';
 
@@ -14,7 +12,6 @@ type DashboardProps = {
 export default function Dashboard({ onGoingChallenges }: DashboardProps) {
   return (
     <div className="flex flex-col items-center justify-center">
-      {/* Only show challenges */}
       <div className="flex w-full items-center justify-center gap-6 text-center">
         {onGoingChallenges.length > 0 && <p className="text-xl"> Challenges you Joined </p>}
       </div>
