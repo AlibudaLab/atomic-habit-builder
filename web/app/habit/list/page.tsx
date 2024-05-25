@@ -1,5 +1,5 @@
 import { generateMetadata } from '@/utils/generateMetadata';
-import ChallengeList from './challengeList';
+import ChallengeList from './components/challengeList';
 import Header from '../components/Header';
 
 export const metadata = generateMetadata({

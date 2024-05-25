@@ -1,5 +1,5 @@
 import { generateMetadata } from '@/utils/generateMetadata';
-import StakeContent from './stakeContent';
+import StakeContent from '../components/stakeContent';
 
 export const metadata = generateMetadata({
   title: 'Join',

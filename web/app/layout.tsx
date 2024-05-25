@@ -3,7 +3,7 @@ import './global.css';
 import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
 import OnchainProviders from '@/OnchainProviders';
 import { initAnalytics } from '@/utils/analytics';
-import { nunito, londrina } from './fonts';
+import { roboto, londrina } from './fonts';
 import type { Metadata } from 'next';
 
 // export const viewport = {
@@ -27,7 +27,7 @@ initAnalytics();
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${nunito.className} ${londrina.variable} ${nunito.variable}`}>
+    <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
       <body className="flex flex-1 flex-col">
         <OnchainProviders>
           <div className="lg:mx-auto lg:max-w-3xl lg:px-32">{children}</div>

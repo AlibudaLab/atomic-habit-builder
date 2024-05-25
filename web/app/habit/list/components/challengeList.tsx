@@ -1,12 +1,12 @@
 'use client';
 
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import useAllChallenges from '@/hooks/useAllChallenges';
 import Link from 'next/link';
-import { ChallengeBox } from '../components/ChallengeBox';
+import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
 import useUserChallenges from '@/hooks/useUserChallenges';
-import Loading from '../components/Loading';
+import Loading from '../../components/Loading';
 
 export default function ChallengeList() {
   const { address } = useAccount();

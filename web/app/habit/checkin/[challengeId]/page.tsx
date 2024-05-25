@@ -10,7 +10,7 @@ export const metadata = generateMetadata({
   pathname: '',
 });
 
-export default function CheckInLayout() {
+export default function CheckInPage() {
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />

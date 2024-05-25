@@ -4,6 +4,7 @@ import { SetStateAction, useState } from 'react';
 import { StravaRunData, StravaWorkoutData } from '@/utils/strava';
 import { getActivityDuration, timeDifference } from '@/utils/time';
 import { PulseLoader } from 'react-spinners';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 const isRunData = (data: StravaRunData | StravaWorkoutData): data is StravaRunData => {
   return (data as StravaRunData).distance !== undefined;
@@ -22,12 +23,12 @@ export function ActivityDropDown({
   activities: StravaRunData[] | StravaWorkoutData[];
   usedActivities: string[];
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <div className="wrapped m-2 flex w-full max-w-80 justify-center p-2">
+        <div className="m-2 flex min-h-16 w-full max-w-80 justify-center rounded-lg border-2 border-solid border-primary p-2">
           {activityIdx !== -1 ? (
             <button type="button" onClick={() => setOpen(true)}>
               <div className="px-2 text-sm font-bold"> {activities[activityIdx].name} </div>
@@ -52,7 +53,7 @@ export function ActivityDropDown({
             </button>
           ) : loading ? (
             <button onClick={() => setOpen(true)} type="button">
-              <div className="flex flex-col justify-center p-2 text-center">
+              <div className="flex flex-col justify-center p-2 text-center ">
                 <PulseLoader color="#ff784f" />{' '}
               </div>
             </button>
@@ -63,9 +64,10 @@ export function ActivityDropDown({
               </div>
             </button>
           ) : (
-            <button type="button" onClick={() => setOpen(true)}>
-              <div className="flex flex-col justify-center p-2 text-center">
-                <p className="text-sm font-bold text-primary"> Select a Record </p>
+            <button className="w-4/5 max-w-80" type="button" onClick={() => setOpen(true)}>
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-md p-2 text-primary"> Select a Record </p>
+                <ChevronDownIcon fontSize={30} color="#ffd200" />
               </div>
             </button>
           )}

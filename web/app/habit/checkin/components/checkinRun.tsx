@@ -2,9 +2,7 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useCallback, useState } from 'react';
-import { PropagateLoader } from 'react-spinners';
-import { useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
@@ -188,7 +186,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="wrapped mt-12 rounded-lg px-6 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105"
+            className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
           >
             Finish
           </button>
@@ -196,7 +194,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="wrapped mt-12  w-3/4 max-w-56 rounded-lg px-12 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
+          className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
@@ -206,7 +204,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="wrapped mt-12 rounded-lg px-6 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105"
+          className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
           onClick={onClickConnectStrava}
         >
           Connect with Strava

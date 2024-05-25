@@ -4,14 +4,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
-import { StravaRunData } from '@/utils/strava';
 
 const useRunData = () => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
 
-  const [runData, setRunData] = useState<StravaRunData[]>([]);
+  const [runData, setRunData] = useState<stravaUtils.StravaRunData[]>([]);
 
   // TODO: move this to a separate hook when we have more sources for workout data / run data
   const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
