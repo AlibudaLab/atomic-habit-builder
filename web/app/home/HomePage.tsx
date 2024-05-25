@@ -12,8 +12,6 @@ export default function DashboardPage() {
 
   const { data: challenges, loading } = useUserChallenges(address);
 
-  console.log('loading', loading);
-
   return (
     <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />

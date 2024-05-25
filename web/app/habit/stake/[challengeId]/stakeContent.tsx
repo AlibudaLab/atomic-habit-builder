@@ -45,14 +45,10 @@ export default function StakeChallenge() {
     token: testTokenContract.address,
   });
 
-  console.log('testTokenBalance', testTokenBalance);
-
   const hasEnoughBalance =
     challenge &&
     testTokenBalance &&
     Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
-
-  console.log('hasEnoughBalance', hasEnoughBalance);
 
   const { data: allowance } = useReadErc20Allowance({
     address: testTokenContract.address,
