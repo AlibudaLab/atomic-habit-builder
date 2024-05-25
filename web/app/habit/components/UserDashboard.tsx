@@ -19,7 +19,7 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
         {onGoingChallenges.length > 0 && <p className="text-xl"> Challenges you Joined </p>}
       </div>
 
-      <Link href="/habit/list" className="text-primary my-6 py-4">
+      <Link href="/habit/list" className="my-6 py-4 text-primary">
         <p className="text-md font-bold"> Join Other Challenges </p>
       </Link>
 

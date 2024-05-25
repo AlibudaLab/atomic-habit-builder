@@ -63,7 +63,7 @@ export default function Claim() {
           {isSuccess ? (
             <button
               type="button"
-              className="wrapped text-primary mt-4 rounded-lg px-6 py-3 font-bold transition-transform duration-300 hover:scale-105"
+              className="wrapped mt-4 rounded-lg px-6 py-3 font-bold text-primary transition-transform duration-300 hover:scale-105"
               onClick={() => {
                 push('/');
               }}
@@ -73,7 +73,7 @@ export default function Claim() {
           ) : (
             <button
               type="button"
-              className="wrapped text-primary mt-4 rounded-lg px-6 py-3 font-bold transition-transform duration-300 hover:scale-105"
+              className="wrapped mt-4 rounded-lg px-6 py-3 font-bold text-primary transition-transform duration-300 hover:scale-105"
               onClick={onClaimClick}
             >
               Claim

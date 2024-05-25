@@ -147,42 +147,37 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
-        <div className="text-primary text-sm"> {challenge.description} </div>
+        <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
       {/* checkIn description */}
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-        <div className="text-primary text-sm"> {getCheckInDescription(challenge.type)} </div>
+        <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-primary text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
       </div>
 
-      {connected && stravaLoading ? (
-        <div className="p-2 pt-6 text-center text-sm"> Loading activities... </div>
-      ) : connected && runData.length === 0 ? (
-        <div className="p-2 pt-6 text-center text-sm"> No record found </div>
-      ) : connected ? (
+      {connected && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
+            loading={stravaLoading}
             setActivityIdx={setActivityIdx}
             activityIdx={activityIdx}
             activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
             usedActivities={usedActivities}
           />
         </div>
-      ) : (
-        <> </>
       )}
 
       {checkedIn >= challenge.targetNum ? (
         <Link href={`/habit/claim/${challenge.id}`}>
           <button
             type="button"
-            className="wrapped text-primary mt-12 rounded-lg px-6 py-2 font-bold transition-transform duration-300 focus:scale-105"
+            className="wrapped mt-12 rounded-lg px-6 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105"
           >
             Finish
           </button>
@@ -190,7 +185,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="wrapped text-primary mt-12 rounded-lg px-12 py-2 font-bold transition-transform duration-300 focus:scale-105"
+          className="wrapped mt-12 rounded-lg px-12 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
@@ -200,7 +195,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : (
         <button
           type="button"
-          className="wrapped text-primary mt-12 rounded-lg px-6 py-2 font-bold transition-transform duration-300 focus:scale-105"
+          className="wrapped mt-12 rounded-lg px-6 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105"
           onClick={onClickConnectStrava}
         >
           Connect with Strava

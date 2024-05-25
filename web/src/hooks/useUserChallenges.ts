@@ -51,10 +51,10 @@ const useUserChallenges = (address: string | undefined) => {
         });
 
         setData(challengesWithCheckIns);
-        setLoading(false);
       } catch (_error) {
         console.log('error', _error);
         setError(_error);
+      } finally {
         setLoading(false);
       }
     };

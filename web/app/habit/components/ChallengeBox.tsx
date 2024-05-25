@@ -10,7 +10,7 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
-        <div className="text-primary flex flex-col items-start justify-start p-2">
+        <div className="flex flex-col items-start justify-start p-2 text-primary">
           <p className="text-xs font-bold opacity-80">
             {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
           </p>

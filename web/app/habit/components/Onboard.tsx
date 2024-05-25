@@ -12,7 +12,7 @@ export default function Onboard() {
 
       <button
         type="button"
-        className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white transition-transform duration-300 hover:scale-105"
+        className="mt-4 rounded-lg bg-primary px-6 py-3 font-bold text-white transition-transform duration-300 hover:scale-105"
         onClick={() => connect({ connector })}
       >
         Use Base Smart Wallet

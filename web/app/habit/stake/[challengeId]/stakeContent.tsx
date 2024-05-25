@@ -23,6 +23,7 @@ import useChallenge from '@/hooks/useChallenge';
 import Header from 'app/habit/components/Header';
 import { getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import Loading from 'app/habit/components/Loading';
 
 export default function StakeChallenge() {
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -239,18 +240,18 @@ export default function StakeChallenge() {
             {/* goal description */}
             <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
-              <div className="text-primary text-sm"> {challenge.description} </div>
+              <div className="text-sm text-primary"> {challenge.description} </div>
             </div>
 
             {/* checkIn description */}
             <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-              <div className="text-primary text-sm"> {getCheckInDescription(challenge.type)} </div>
+              <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
             </div>
 
             <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-              <div className="text-primary text-sm"> {`${formatEther(challenge.stake)} ALI`} </div>
+              <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
             </div>
           </>
         )}
@@ -264,7 +265,7 @@ export default function StakeChallenge() {
         {challenge && (
           <button
             type="button"
-            className="wrapped text-primary mt-14 rounded-lg border-solid px-6 py-3 font-bold disabled:opacity-50"
+            className="wrapped mt-14 rounded-lg border-solid px-6 py-3 font-bold text-primary disabled:opacity-50"
             onClick={
               currentChainSupportBatchTx || hasEnoughAllowance
                 ? onJoinButtonClick
@@ -298,7 +299,7 @@ export default function StakeChallenge() {
          */}
         <div className="p-4 text-xs">
           {!challenge || loading ? (
-            <p> Loading Challenge </p>
+            <Loading />
           ) : testTokenBalance && !hasEnoughBalance ? (
             <p>
               {' '}

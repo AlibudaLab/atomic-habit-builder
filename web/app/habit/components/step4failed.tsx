@@ -24,7 +24,7 @@ export default function Step4Failed({
 
       <button
         type="button"
-        className="bg-primary mt-4 rounded-lg px-6 py-3 font-bold text-white hover:bg-yellow-600"
+        className="mt-4 rounded-lg bg-primary px-6 py-3 font-bold text-white hover:bg-yellow-600"
         onClick={() => setSteps(2)}
       >
         Start a new Challenge

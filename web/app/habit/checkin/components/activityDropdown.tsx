@@ -3,6 +3,7 @@ import { clsx } from 'clsx';
 import { SetStateAction, useState } from 'react';
 import { StravaRunData, StravaWorkoutData } from '@/utils/strava';
 import { getActivityDuration, timeDifference } from '@/utils/time';
+import { PulseLoader } from 'react-spinners';
 
 const isRunData = (data: StravaRunData | StravaWorkoutData): data is StravaRunData => {
   return (data as StravaRunData).distance !== undefined;
@@ -10,10 +11,12 @@ const isRunData = (data: StravaRunData | StravaWorkoutData): data is StravaRunDa
 
 export function ActivityDropDown({
   setActivityIdx,
+  loading,
   activityIdx,
   activities,
   usedActivities,
 }: {
+  loading: boolean;
   setActivityIdx: React.Dispatch<SetStateAction<number>>;
   activityIdx: number;
   activities: StravaRunData[] | StravaWorkoutData[];
@@ -47,10 +50,22 @@ export function ActivityDropDown({
                 </div>
               </div>
             </button>
-          ) : (
+          ) : loading ? (
             <button onClick={() => setOpen(true)} type="button">
               <div className="flex flex-col justify-center p-2 text-center">
-                <p className="text-primary text-sm"> Select a Record </p>
+                <PulseLoader color="#ff784f" />{' '}
+              </div>
+            </button>
+          ) : activities.length === 0 ? (
+            <button disabled type="button">
+              <div className="flex flex-col justify-center p-2 text-center">
+                <p className="text-sm font-bold text-primary"> No Activities Found </p>
+              </div>
+            </button>
+          ) : (
+            <button disabled type="button">
+              <div className="flex flex-col justify-center p-2 text-center">
+                <p className="text-sm font-bold text-primary"> Select a Record </p>
               </div>
             </button>
           )}
