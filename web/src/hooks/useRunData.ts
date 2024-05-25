@@ -12,6 +12,8 @@ const useRunData = () => {
   const [loading, setLoading] = useState(true);
 
   const [runData, setRunData] = useState<StravaRunData[]>([]);
+
+  // TODO: move this to a separate hook when we have more sources for workout data / run data
   const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
 
   const [error, setError] = useState<unknown | null>(null);

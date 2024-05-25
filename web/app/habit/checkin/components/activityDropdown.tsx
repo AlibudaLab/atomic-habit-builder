@@ -12,10 +12,12 @@ export function ActivityDropDown({
   setActivityIdx,
   activityIdx,
   activities,
+  usedActivities,
 }: {
   setActivityIdx: React.Dispatch<SetStateAction<number>>;
   activityIdx: number;
   activities: StravaRunData[] | StravaWorkoutData[];
+  usedActivities: string[];
 }) {
   const [open, setOpen] = useState(true);
 
@@ -65,17 +67,19 @@ export function ActivityDropDown({
             )}
           >
             {activities.map((activity, idx) => {
+              const isUsed = usedActivities.includes(activity.id.toString());
               const isChosen = activityIdx === idx;
               return (
                 <button
                   type="button"
                   style={{ width: '320px' }}
-                  className="p-2 hover:bg-white"
+                  className={`p-2 ${isUsed && 'opacity-50'}`}
                   key={activity.id}
                   onClick={() => {
                     setActivityIdx(idx);
                     setOpen(false);
                   }}
+                  disabled={isUsed}
                 >
                   <div className={`px-2 text-sm font-bold ${isChosen && 'text-primary'}`}>
                     {' '}

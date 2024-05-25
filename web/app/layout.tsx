@@ -6,10 +6,10 @@ import { initAnalytics } from '@/utils/analytics';
 import { nunito, londrina } from './fonts';
 import type { Metadata } from 'next';
 
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1.0,
-};
+// export const viewport = {
+//   width: 'device-width',
+//   initialScale: 1.0,
+// };
 
 export const metadata: Metadata = {
   manifest: '/manifest.json',

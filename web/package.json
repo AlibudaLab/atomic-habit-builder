@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@arx-research/libhalo": "^1.2.30",
-    "@coinbase/onchainkit": "0.13.4",
-    "@coinbase/wallet-sdk": "4.0.0-beta.12",
+    "@coinbase/onchainkit": "0.16.10",
+    "@coinbase/wallet-sdk": "4.0.0",
     "@farcaster/hub-nodejs": "^0.11.9",
     "@gatefi/js-sdk": "^0.18.0",
     "@privy-io/react-auth": "^1.56.2",
@@ -58,7 +58,7 @@
     "shikiji-core": "^0.9.17",
     "unified": "^11.0.4",
     "viem": "2.x",
-    "wagmi": "2.8.7",
+    "wagmi": "2.9.2",
     "workbox-webpack-plugin": "^7.0.0"
   },
   "devDependencies": {
@@ -119,6 +119,6 @@
   },
   "packageManager": "yarn@4.1.0",
   "resolutions": {
-    "@coinbase/wallet-sdk": "npm:@coinbase/wallet-sdk@4.0.0-beta.12"
+    "@coinbase/wallet-sdk": "npm:@coinbase/wallet-sdk@4.0.0-beta.14"
   }
 }

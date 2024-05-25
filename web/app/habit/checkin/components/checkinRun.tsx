@@ -11,6 +11,7 @@ import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/types';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
+import useUsedActivity from '@/hooks/useUsedActivities';
 import Link from 'next/link';
 import moment from 'moment';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
@@ -27,6 +28,8 @@ import { ChallengeTypes } from '@/constants';
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
+
+  const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
   const {
     writeContract,
@@ -124,6 +127,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     if (isSuccess) {
       toast.dismiss();
       toast.success('Successfully checked in!! 🥳🥳🥳');
+
+      updateUsedActivities(runData[activityIdx].id.toString());
+      setActivityIdx(-1);
     }
   }, [isSuccess]);
 
@@ -165,6 +171,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             setActivityIdx={setActivityIdx}
             activityIdx={activityIdx}
             activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
+            usedActivities={usedActivities}
           />
         </div>
       ) : (
