@@ -63,7 +63,7 @@ export function ActivityDropDown({
               </div>
             </button>
           ) : (
-            <button type="button">
+            <button type="button" onClick={() => setOpen(true)}>
               <div className="flex flex-col justify-center p-2 text-center">
                 <p className="text-sm font-bold text-primary"> Select a Record </p>
               </div>

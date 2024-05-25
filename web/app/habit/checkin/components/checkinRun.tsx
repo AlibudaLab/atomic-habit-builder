@@ -3,6 +3,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { PropagateLoader } from 'react-spinners';
 import { useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import toast from 'react-hot-toast';
@@ -20,6 +21,7 @@ import { formatEther } from 'viem';
 import { ActivityDropDown } from './activityDropdown';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
+import WaitingTx from 'app/habit/components/WaitingTx';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -43,6 +45,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   });
 
   const [activityIdx, setActivityIdx] = useState(-1);
+
+  const [checkInPendingId, setCheckInPendingId] = useState<string | null>(null);
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
@@ -70,11 +74,16 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         return;
       }
 
+      const activityId =
+        challenge.type === ChallengeTypes.Run
+          ? runData[activityIdx].id
+          : workoutData[activityIdx].id;
+
       const fetchURL =
         '/api/sign?' +
         new URLSearchParams({
           address: address,
-          activityId: runData[activityIdx].id.toString(),
+          activityId: activityId.toString(),
           timestamp: timestamp.toString(),
           challengeId: challenge.id.toString(),
         }).toString();
@@ -102,6 +111,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         ],
       });
 
+      setCheckInPendingId(activityId.toString());
+
       txPendingToastId = toast.loading('Sending transaction...');
     } catch (err) {
       console.log(err);
@@ -128,7 +139,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       toast.dismiss();
       toast.success('Successfully checked in!! 🥳🥳🥳');
 
-      updateUsedActivities(runData[activityIdx].id.toString());
+      if (checkInPendingId) updateUsedActivities(checkInPendingId);
       setActivityIdx(-1);
     }
   }, [isSuccess]);
@@ -185,12 +196,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       ) : connected && !runDataError ? (
         <button
           type="button"
-          className="wrapped mt-12 rounded-lg px-12 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105"
+          className="wrapped mt-12  w-3/4 max-w-56 rounded-lg px-12 py-2 font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
           disabled={checkInPending || isLoading || activityIdx === -1}
         >
           {' '}
-          {isLoading ? 'Sending tx...' : 'Check In'}{' '}
+          {isLoading ? <WaitingTx /> : 'Check In'}{' '}
         </button>
       ) : (
         <button

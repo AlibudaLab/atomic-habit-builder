@@ -23,7 +23,7 @@ const useUsedActivity = () => {
       setActivities(newActivities);
       storage.setItem(STORAGE_KEY_ACTIVITY, JSON.stringify(newActivities));
     },
-    [setActivities],
+    [setActivities, activities],
   );
 
   return { activities, updateUsedActivities };
