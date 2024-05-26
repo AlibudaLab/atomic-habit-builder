@@ -21,11 +21,6 @@
       "src": "/icons/512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "/icons/1024x1024.png",
-      "sizes": "1024x1024",
-      "type": "image/png"
     }
   ],
   "theme_color": "#ff784f",
