@@ -9,7 +9,6 @@ import type { Metadata } from 'next';
 export const headers = {};
 
 export const metadata: Metadata = {
-  manifest: '/manifest.json',
   other: {
     boat: '0.17.0',
   },
