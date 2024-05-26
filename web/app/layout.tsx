@@ -6,9 +6,7 @@ import { initAnalytics } from '@/utils/analytics';
 import { roboto, londrina } from './fonts';
 import type { Metadata } from 'next';
 
-export const headers = {
-
-}
+export const headers = {};
 
 export const metadata: Metadata = {
   manifest: '/manifest.json',
@@ -27,7 +25,10 @@ initAnalytics();
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
-      <script>  </script>
+      <head>
+        <link rel="manifest" href="https://progressier.app/5tDVOY8QCkShlBZ2Fdfe/progressier.json" />
+        <script defer src="https://progressier.app/5tDVOY8QCkShlBZ2Fdfe/script.js" />
+      </head>
       <body className="flex flex-1 flex-col">
         <OnchainProviders>
           <div className="lg:mx-auto lg:max-w-3xl lg:px-32">{children}</div>
