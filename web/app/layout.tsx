@@ -7,15 +7,15 @@ import { roboto, londrina } from './fonts';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Alibuda",
-  description: "Build habits, track progress, and earn rewards",
+  title: 'Alibuda',
+  description: 'Build habits, track progress, and earn rewards',
   manifest: '/manifest.json',
-  generator: "Next.js",
+  generator: 'Next.js',
   viewport:
-    "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+    'minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover',
   icons: [
-    { rel: "apple-touch-icon", url: "icons/512x512.png" },
-    { rel: "icon", url: "icons/512x512.png" },
+    { rel: 'apple-touch-icon', url: 'icons/512x512.png' },
+    { rel: 'icon', url: 'icons/512x512.png' },
   ],
 };
 

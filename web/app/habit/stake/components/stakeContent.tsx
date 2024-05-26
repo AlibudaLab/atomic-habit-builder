@@ -219,7 +219,7 @@ export default function StakeChallenge() {
   }, [mintError, approveError, joinError, joinErrorInBatchTx]);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 pt-16 text-center">
+    <main className="container mx-auto flex flex-col items-center px-4 pt-16 text-center">
       <Header />
 
       <div className="flex max-w-96 flex-col items-center justify-center">

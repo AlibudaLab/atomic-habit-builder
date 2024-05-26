@@ -15,7 +15,7 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = withPWA({
   reactStrictMode: false,
-  swcMinify: true,      // Enable SWC minification for improved performance
+  swcMinify: true, // Enable SWC minification for improved performance
   images: {
     remotePatterns: [
       {
