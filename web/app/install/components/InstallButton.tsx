@@ -1,3 +1,4 @@
+import { PlusSquareIcon, ShareIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 function InstallPWA() {
@@ -7,7 +8,6 @@ function InstallPWA() {
   useEffect(() => {
     const handler = (e: any) => {
       e.preventDefault();
-      console.log('we are being triggered :D');
       setSupportsPWA(true);
       setPromptInstall(e);
     };
@@ -25,7 +25,21 @@ function InstallPWA() {
     (promptInstall as any).prompt();
   };
   if (!supportsPWA) {
-    return null;
+    return (
+      <div className="text-dark flex items-center text-base">
+        Click{' '}
+        <span className="flex gap-1 p-2 font-bold">
+          {' '}
+          Share <ShareIcon />{' '}
+        </span>{' '}
+        and{' '}
+        <span className="flex gap-1 p-2 font-bold">
+          {' '}
+          Add to Home Screen <PlusSquareIcon />{' '}
+        </span>{' '}
+        to install the App!
+      </div>
+    );
   }
   return (
     <button
