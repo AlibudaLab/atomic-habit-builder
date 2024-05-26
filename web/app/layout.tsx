@@ -12,10 +12,16 @@ import type { Metadata } from 'next';
 // };
 
 export const metadata: Metadata = {
+  title: "Alibuda",
+  description: "Build habits, track progress, and earn rewards",
   manifest: '/manifest.json',
-  other: {
-    boat: '0.17.0',
-  },
+  generator: "Next.js",
+  viewport:
+    "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
+  icons: [
+    { rel: "apple-touch-icon", url: "icons/icon512x512.png" },
+    { rel: "icon", url: "icons/icon-512x512.png" },
+  ],
 };
 
 // Stat analytics before the App renders,

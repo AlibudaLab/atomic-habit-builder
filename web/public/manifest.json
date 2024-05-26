@@ -1,6 +1,6 @@
 {
-  "name": "Build Onchain Apps",
-  "short_name": "Onchain App",
+  "name": "Alibuda Habit Builder",
+  "short_name": "Alibuda",
   "icons": [
     {
       "src": "/icons/16x16.png",
@@ -16,10 +16,21 @@
       "src": "/icons/96x96.png",
       "sizes": "96x96",
       "type": "image/png"
+    },
+    {
+      "src": "/icons/512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/1024x1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
     }
   ],
-  "theme_color": "#FFFFFF",
+  "theme_color": "#ff784f",
   "background_color": "#FFFFFF",
+  "scope": "/",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait"
