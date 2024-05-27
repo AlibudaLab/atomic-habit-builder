@@ -17,6 +17,7 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
       coinbaseWallet({
         appName: 'Alibuda',
         preference: 'smartWalletOnly',
+        appLogoUrl: '/icons/512x512.png',
       }),
     ],
     ssr: true,

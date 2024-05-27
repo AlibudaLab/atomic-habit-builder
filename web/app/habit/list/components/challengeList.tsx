@@ -16,7 +16,7 @@ export default function ChallengeList() {
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 text-center">
+    <main className="container mx-auto flex flex-col items-center px-4 text-center">
       <div className="flex flex-col items-center justify-center">
         <p className="pb-4 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 
@@ -24,7 +24,7 @@ export default function ChallengeList() {
         {loadingUserData || loadingAllChallenges ? (
           <Loading />
         ) : (
-          <div className="pt-4">
+          <div className="w-full pt-4">
             {challenges.map((challenge) => {
               const isJoined = joined?.find((j) => j.id === challenge.id);
               if (!isJoined)
