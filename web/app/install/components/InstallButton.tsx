@@ -1,5 +1,5 @@
 import { PlusSquareIcon, ShareIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function InstallPWA() {
   const [supportsPWA, setSupportsPWA] = useState(false);
