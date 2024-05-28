@@ -66,6 +66,7 @@ export default function StakeChallenge() {
     isPending: mintPending,
   } = useWriteContract();
 
+  console.log('Address: ', smartWallet);
   console.log('Challenge stake:', challenge?.stake);
   console.log('Challenge stake update:', BigInt(challenge?.stake?? BigInt(0)) * BigInt(10));
 
@@ -211,6 +212,7 @@ export default function StakeChallenge() {
 
   useEffect(() => {
     if (mintError) {
+      console.log('Mint error:', mintError);
       toast.error('Error minting test token. Please try again');
     }
     if (approveError) {
