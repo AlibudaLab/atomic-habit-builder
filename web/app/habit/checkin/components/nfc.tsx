@@ -34,12 +34,17 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
     setTapNFC(true);
 
-    try {
-      onCheckInTx();
-    } catch (err) {
-      console.error(err);
-      toast.error('Please try to tap the NFC again');
-    }
+    // Simulate a delay to ensure the state update is processed
+    setTimeout(() => {
+      try {
+        onCheckInTx();
+      } catch (err) {
+        console.error(err);
+        toast.error('Please try to tap the NFC again');
+      } finally {
+        setTapNFC(false); // reset state after attempting to check in
+      }
+    }, 0);
   };
 
   return (
