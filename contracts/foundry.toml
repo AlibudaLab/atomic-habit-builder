@@ -11,6 +11,7 @@ evm_version = 'cancun'
 base = "https://mainnet.base.org"
 base_sepolia = "https://sepolia.base.org"
 base_goerli = "https://goerli.base.org"
+anvil = "127.0.0.1:8545"
 
 [etherscan]
 base = { key = "${BLOCK_EXPLORER_API_KEY}" }
