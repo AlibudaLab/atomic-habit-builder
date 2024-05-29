@@ -7,12 +7,11 @@ import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatEther } from 'viem';
 import { useAccount } from 'wagmi';
-import moment from 'moment';
 import { Challenge } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
-import useCheckIn from '@/hooks/transaction/useCheckIn';
+import useCheckInRun from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useUsedActivity from '@/hooks/useUsedActivities';
@@ -30,32 +29,21 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
-  const [timestamp, setTimestamp] = useState<number>(0);
-  const [v, setV] = useState<number>(0);
-  const [r, setR] = useState<string>('');
-  const [s, setS] = useState<string>('');
-
   const [activityIdx, setActivityIdx] = useState(-1);
-
-  const [checkInPendingId, setCheckInPendingId] = useState<string | null>(null);
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const {
-    onSubmitTransaction: onCheckInTx,
-    isPreparing: isCheckInPreparing,
-    isLoading: isCheckInLoading,
-  } = useCheckIn(
-    challenge.id,
-    BigInt(timestamp),
-    v,
-    ('0x' + r) as `0x${string}`,
-    ('0x' + s) as `0x${string}`,
-    () => {
-      if (checkInPendingId) updateUsedActivities(checkInPendingId);
-      setActivityIdx(-1);
+    activityId: checkInPendingId,
+    checkIn: {
+      onSubmitTransaction: onCheckInTx,
+      isPreparing: isCheckInPreparing,
+      isLoading: isCheckInLoading,
     },
-  );
+  } = useCheckInRun(challenge, activityIdx, () => {
+    if (checkInPendingId) updateUsedActivities(checkInPendingId.toString());
+    setActivityIdx(-1);
+  });
 
   const {
     connected,
@@ -66,60 +54,17 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   } = useRunData();
 
   const onClickCheckIn = async () => {
+    if (!address) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
     if (activityIdx === -1) {
       toast.error('Please select an activity');
       return;
     }
 
-    // todo: change this to get the timestamp of the exercise
-    setTimestamp(moment().unix());
-
-    let txPendingToastId = null;
-    try {
-      if (!address) {
-        toast.error('Please connect your wallet first');
-        return;
-      }
-
-      const activityId =
-        challenge.type === ChallengeTypes.Run
-          ? runData[activityIdx].id
-          : workoutData[activityIdx].id;
-
-      const fetchURL =
-        '/api/sign?' +
-        new URLSearchParams({
-          address: address,
-          activityId: activityId.toString(),
-          timestamp: timestamp.toString(),
-          challengeId: challenge.id.toString(),
-        }).toString();
-
-      const sig = (await (
-        await fetch(fetchURL, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      ).json()) as { v: number; r: string; s: string };
-
-      setV(sig.v);
-      setR('0x' + sig.r.padStart(64, '0'));
-      setS('0x' + sig.s.padStart(64, '0'));
-      onCheckInTx();
-
-      setCheckInPendingId(activityId.toString());
-
-      txPendingToastId = toast.loading('Sending transaction...');
-    } catch (err) {
-      console.log(err);
-      toast.error('Error checking in');
-    } finally {
-      if (txPendingToastId) {
-        toast.dismiss(txPendingToastId);
-      }
-    }
+    onCheckInTx();
   };
 
   // only show this button if user is not connected to strava
