@@ -1,54 +1,89 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
-import { formatEther } from 'viem';
-import { useAccount } from 'wagmi';
+import { useWriteContract } from 'wagmi';
+import * as trackerContract from '@/contracts/tracker';
 import { Challenge } from '@/types';
-import { getCheckInDescription } from '@/utils/challenges';
+import moment from 'moment';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
-import useCheckInNFC from '@/hooks/transaction/useCheckInNFC';
+import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import { getCheckInDescription } from '@/utils/challenges';
+import { formatEther } from 'viem';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
-  const [tapNFC, setTapNFC] = useState(false);
 
   const {
-    checkIn: {
-      onSubmitTransaction: onCheckInTx,
-      isPreparing: isCheckInPreparing,
-      isLoading: isCheckInLoading,
-    },
-  } = useCheckInNFC(challenge, tapNFC);
+    writeContract,
+    data: dataHash,
+    error: checkInError,
+    isPending: checkInPending,
+  } = useWriteContract();
+
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
+    hash: dataHash,
+  });
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const onCheckInButtonClick = async () => {
-    console.log('onCheckInButtonClick enter', tapNFC);
-    if (!address) {
-      toast.error('Please connect your wallet first');
-      return;
-    }
-
-    setTapNFC(true);
-    console.log('onCheckInButtonClick post set', tapNFC);
-
-    // Simulate a delay to ensure the state update is processed
-    setTimeout(() => {
-      try {
-        console.log('onCheckInButtonClick tx', tapNFC);
-        onCheckInTx();
-      } catch (err) {
-        console.error(err);
-        toast.error('Please try to tap the NFC again');
-      } finally {
-        setTapNFC(false); // reset state after attempting to check in
+    let nfcPendingToastId = null;
+    let txPendingToastId = null;
+    try {
+      if (!address) {
+        toast.error('Please connect your wallet first');
+        return;
       }
-    }, 0);
+
+      nfcPendingToastId = toast.loading('Sensing NFC...');
+      const timestamp = moment().unix();
+      const checkInMessage = getCheckinMessage(address, timestamp);
+      const arxSignature = await arxSignMessage(checkInMessage);
+      const signature = arxSignature.signature;
+      toast.dismiss(nfcPendingToastId);
+      txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
+
+      writeContract({
+        address: trackerContract.address,
+        abi: trackerContract.abi,
+        functionName: 'checkIn',
+        args: [
+          challenge.id,
+          BigInt(timestamp),
+          signature.raw.v,
+          ('0x' + signature.raw.r) as `0x${string}`,
+          ('0x' + signature.raw.s) as `0x${string}`,
+        ],
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error('Please try to tap the NFC again');
+      if (nfcPendingToastId) {
+        toast.dismiss(nfcPendingToastId);
+      }
+      if (txPendingToastId) {
+        toast.dismiss(txPendingToastId);
+      }
+    }
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.dismiss();
+      toast.success('Successfully checked in!! 🥳🥳🥳');
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (checkInError) {
+      toast.error('Error checking in.');
+    }
+  }, [checkInError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -85,10 +120,10 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           className="mt-4 rounded-lg bg-primary px-6 py-4 font-bold text-white transition-transform duration-300 hover:scale-105"
           onClick={onCheckInButtonClick}
-          disabled={isCheckInPreparing || isCheckInLoading}
+          disabled={checkInPending || isLoading}
         >
           {' '}
-          {isCheckInLoading ? 'Sending tx...' : 'Click & Tap NFC'}{' '}
+          {isLoading ? 'Sending tx...' : 'Click & Tap NFC'}{' '}
         </button>
       )}
     </div>
