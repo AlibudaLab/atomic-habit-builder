@@ -27,16 +27,19 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const onCheckInButtonClick = async () => {
+    console.log('onCheckInButtonClick enter', tapNFC);
     if (!address) {
       toast.error('Please connect your wallet first');
       return;
     }
 
     setTapNFC(true);
+    console.log('onCheckInButtonClick post set', tapNFC);
 
     // Simulate a delay to ensure the state update is processed
     setTimeout(() => {
       try {
+        console.log('onCheckInButtonClick tx', tapNFC);
         onCheckInTx();
       } catch (err) {
         console.error(err);

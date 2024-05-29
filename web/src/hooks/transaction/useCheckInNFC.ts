@@ -21,7 +21,9 @@ const useCheckInNFC = (challenge: Challenge, tapNFT?: boolean, onSuccess?: () =>
   const timestamp = moment().unix();
 
   useEffect(() => {
+    console.log('useCheckInNFC before', tapNFT);
     if (!tapNFT || signature !== null) return;
+    console.log('useCheckInNFC after', tapNFT);
     const checkInMessage = getCheckinMessage(address as `0x${string}`, timestamp);
     const fetchSignature = async (): Promise<{ v: number; r: string; s: string }> => {
       toast.loading('Sensing NFC...');
