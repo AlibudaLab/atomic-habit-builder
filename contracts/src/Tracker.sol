@@ -10,6 +10,7 @@ struct Challenge {
     address verifier;
     uint256 minimumCheckIns;
     uint256 startTimestamp;
+    uint256 joinDueTimestamp;
     uint256 endTimestamp;
     address donateDestination;
     uint256 stakePerUser;
@@ -40,6 +41,7 @@ contract Tracker is EIP712 {
         address verifier,
         string description,
         uint256 startTimestamp,
+        uint256 joinDueTimestamp,
         uint256 endTimestamp,
         uint256 minimumCheckIns
     );
@@ -58,21 +60,34 @@ contract Tracker is EIP712 {
         string memory description,
         uint256 minimumCheckIns,
         uint256 startTimestamp,
+        uint256 joinDueTimestamp,
         uint256 endTimestamp,
         address donateDestination,
         uint256 stake
     ) public {
-        //require(endTimestamp > startTimestamp, "End timestamp must be greater than start timestamp");
-        challenges[++challengeCounter] =
-            Challenge(verifier, minimumCheckIns, startTimestamp, endTimestamp, donateDestination, stake, 0, false);
-        emit Register(challengeCounter, verifier, description, startTimestamp, endTimestamp, minimumCheckIns);
+        require(endTimestamp > startTimestamp, "end timestamp must be greater than start timestamp");
+        require(joinDueTimestamp <= endTimestamp, "should not allow joining time larger than challenge ending time");
+        challenges[++challengeCounter] = Challenge(
+            verifier,
+            minimumCheckIns,
+            startTimestamp,
+            joinDueTimestamp,
+            endTimestamp,
+            donateDestination,
+            stake,
+            0,
+            false
+        );
+        emit Register(
+            challengeCounter, verifier, description, startTimestamp, joinDueTimestamp, endTimestamp, minimumCheckIns
+        );
     }
 
     // user join a habit challenge
     function join(uint256 challengeId) public payable {
         require(challenges[challengeId].startTimestamp != 0, "challenge does not exist");
         require(!hasJoined[challengeId][msg.sender], "user already joined the challenge");
-        //require(block.timestamp < challenges[challengeId].startTimestamp, "Challenge has started");
+        require(block.timestamp < challenges[challengeId].joinDueTimestamp, "joining period has ended");
 
         IERC20(underlyingToken).safeTransferFrom(msg.sender, address(this), challenges[challengeId].stakePerUser);
         hasJoined[challengeId][msg.sender] = true;
@@ -83,11 +98,12 @@ contract Tracker is EIP712 {
     }
 
     // todo: change signature to bytes, so we can support contract checkins
+    // todo: change checkin digest into bytes, to be more flexible
     function checkIn(uint256 challengeId, uint256 timestamp, uint8 v, bytes32 r, bytes32 s) public {
-        /*require(
+        require(
             timestamp <= challenges[challengeId].endTimestamp && timestamp >= challenges[challengeId].startTimestamp,
-            "Invalid timestamp"
-        );*/
+            "invalid timestamp"
+        );
         require(hasJoined[challengeId][msg.sender], "user has not joined the challenge");
         bytes32 digest = getCheckInDigest(challengeId, timestamp, msg.sender);
         require(!digestUsed[digest], "digest has been used");
@@ -105,7 +121,7 @@ contract Tracker is EIP712 {
 
     // settle a challenge after the ending timestamp
     function settle(uint256 challengeId) public {
-        //require(block.timestamp > challenges[challengeId].endTimestamp, "Challenge has not ended");
+        require(block.timestamp > challenges[challengeId].endTimestamp, "challenge has not ended");
         require(!challenges[challengeId].settled, "challenge already settled");
         emit Settle(challengeId);
         challenges[challengeId].settled = true;

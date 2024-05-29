@@ -27,6 +27,7 @@ contract Deploy is Script {
             "NFC Challenge 3",
             10,
             block.timestamp,
+            block.timestamp + 1 days,
             block.timestamp + 10 days,
             address(0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897),
             0.02 ether
@@ -36,6 +37,7 @@ contract Deploy is Script {
             "NFC Challenge 2",
             5,
             block.timestamp + 1 days,
+            block.timestamp + 2 days,
             block.timestamp + 60 days,
             official_verifier,
             0.05 ether
@@ -46,6 +48,7 @@ contract Deploy is Script {
             10,
             1714492800, // May 1
             1717084800, // May 31
+            1717084800, // May 31
             official_verifier,
             0.025 ether
         );
@@ -54,6 +57,7 @@ contract Deploy is Script {
             official_verifier,
             "Nonce Run Club June",
             10,
+            1717171200, // June 1
             1717171200, // June 1
             1719676800, // June 30
             official_verifier,
