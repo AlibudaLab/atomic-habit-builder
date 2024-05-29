@@ -10,18 +10,18 @@ export enum ChallengeTypes {
 }
 
 export const challengeMetaDatas: ChallengeMetaData[] = [
-  {
-    id: BigInt(0),
-    name: 'NFC Challenge 1',
-    type: ChallengeTypes.NFC_Chip,
-    description: 'Go to Sydney Park and find the hidden NFC chip to check in!',
-  },
-  {
-    id: BigInt(1),
-    name: 'NFC Challenge',
-    type: ChallengeTypes.NFC_Chip,
-    description: 'Go find a cool dev with the ARX chip to check in!',
-  },
+  // {
+  //   id: BigInt(0),
+  //   name: 'NFC Challenge 1',
+  //   type: ChallengeTypes.NFC_Chip,
+  //   description: 'Go to Sydney Park and find the hidden NFC chip to check in!',
+  // },
+  // {
+  //   id: BigInt(1),
+  //   name: 'NFC Challenge',
+  //   type: ChallengeTypes.NFC_Chip,
+  //   description: 'Go find a cool dev with the ARX chip to check in!',
+  // },
   {
     id: BigInt(2),
     name: 'May Running Challenge',
