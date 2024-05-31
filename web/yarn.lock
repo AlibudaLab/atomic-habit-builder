@@ -16074,7 +16074,7 @@ __metadata:
     "@babel/preset-react": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
     "@coinbase/onchainkit": "npm:0.16.10"
-    "@coinbase/wallet-sdk": "npm:4.0.0"
+    "@coinbase/wallet-sdk": "npm:4.0.2"
     "@farcaster/hub-nodejs": "npm:^0.11.9"
     "@gatefi/js-sdk": "npm:^0.18.0"
     "@jest/globals": "npm:^29.7.0"

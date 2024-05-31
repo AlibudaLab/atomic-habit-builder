@@ -14,7 +14,7 @@ export const challengeMetaDatas: ChallengeMetaData[] = [
   //   id: BigInt(0),
   //   name: 'NFC Challenge 1',
   //   type: ChallengeTypes.NFC_Chip,
-  //   description: "Go to Sydney Park and find the hidden NFC chip to check in!",
+  //   description: 'Go to Sydney Park and find the hidden NFC chip to check in!',
   // },
   // {
   //   id: BigInt(1),

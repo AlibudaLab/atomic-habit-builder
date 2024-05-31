@@ -3,25 +3,25 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { useAccount, useBalance, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { useWriteContracts, useCapabilities, useCallsStatus } from 'wagmi/experimental';
+import { useParams } from 'next/navigation';
+import { useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { formatEther } from 'viem';
+import { useAccount, useBalance } from 'wagmi';
+import { useCapabilities } from 'wagmi/experimental';
 import crypto from 'crypto';
 import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
-import * as testTokenContract from '@/contracts/testToken';
-import * as trackerContract from '@/contracts/tracker';
-import toast from 'react-hot-toast';
-
-import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
-
-import { formatEther } from 'viem';
 
 import { EXPECTED_CHAIN } from '@/constants';
-
-import { useParams, useRouter } from 'next/navigation';
+import * as testTokenContract from '@/contracts/testToken';
+import * as trackerContract from '@/contracts/tracker';
 import useChallenge from '@/hooks/useChallenge';
-import Header from 'app/habit/components/Header';
+import useMintERC20 from '@/hooks/transaction/useMintERC20';
+import useApproveERC20 from '@/hooks/transaction/useApproveERC20';
+import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
+import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { getCheckInDescription } from '@/utils/challenges';
+import Header from 'app/habit/components/Header';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 
@@ -33,13 +33,13 @@ export default function StakeChallenge() {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
-  const { push } = useRouter();
   const { address: smartWallet } = useAccount();
-  const { data: capabilities } = useCapabilities();
 
+  const { data: capabilities } = useCapabilities();
   const currentChainSupportBatchTx =
     capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
       ?.atomicBatch.supported;
+
   const { data: testTokenBalance } = useBalance({
     address: smartWallet,
     token: testTokenContract.address,
@@ -60,37 +60,33 @@ export default function StakeChallenge() {
     : false;
 
   const {
-    writeContract: mintWriteContract,
-    data: mintDataHash,
-    error: mintError,
-    isPending: mintPending,
-  } = useWriteContract();
+    onSubmitTransaction: onMintTx,
+    isPreparing: isMintPreparing,
+    isLoading: isMintLoading,
+  } = useMintERC20(
+    testTokenContract.address as `0x${string}`,
+    smartWallet as `0x${string}`,
+    challenge?.stake ?? BigInt(0) * BigInt(10),
+  );
 
   const onMintTestTokenClick = async () => {
     if (!challenge) return;
-    mintWriteContract({
-      address: testTokenContract.address as `0x${string}`,
-      abi: testTokenContract.abi,
-      functionName: 'mint',
-      args: [smartWallet as `0x${string}`, challenge.stake * BigInt(10)],
-    });
+    onMintTx();
   };
 
   const {
-    writeContract: approveWriteContract,
-    data: approveDataHash,
-    error: approveError,
-    isPending: approvePending,
-  } = useWriteContract();
+    onSubmitTransaction: onApproveTx,
+    isPreparing: isApprovePreparing,
+    isLoading: isApproveLoading,
+  } = useApproveERC20(
+    testTokenContract.address as `0x${string}`,
+    trackerContract.address,
+    challenge?.stake ?? BigInt(0),
+  );
 
   const onApproveTestTokenClick = async () => {
     if (!challenge) return;
-    approveWriteContract({
-      address: testTokenContract.address as `0x${string}`,
-      abi: testTokenContract.abi,
-      functionName: 'approve',
-      args: [trackerContract.address, challenge.stake],
-    });
+    onApproveTx();
   };
 
   const onOnrampClick = async () => {
@@ -129,94 +125,22 @@ export default function StakeChallenge() {
   };
 
   const {
-    writeContract: joinWriteContract,
-    data: joinDataHash,
-    error: joinError,
-    isPending: joinPending,
-  } = useWriteContract();
-
-  const {
-    writeContracts: joinWriteContracts,
-    data: joinIdInBatchTx,
-    error: joinErrorInBatchTx,
-    isPending: joinPendingInBatchTx,
-  } = useWriteContracts();
-
-  const { data: callsStatus } = useCallsStatus({
-    id: joinIdInBatchTx as string,
-    query: {
-      enabled: !!joinIdInBatchTx,
-      // Poll every second until the calls are confirmed
-      refetchInterval: (data: any) => (data.state.data?.status === 'CONFIRMED' ? false : 1000),
-    },
-  });
-
-  const { isLoading: isJoinLoading, isSuccess: isJoinSuccess } = useWaitForTransactionReceipt({
-    hash: joinDataHash ?? (callsStatus?.receipts?.[0]?.transactionHash as `0x${string}`),
-  });
-
-  const { isLoading: isMintLoading } = useWaitForTransactionReceipt({
-    hash: mintDataHash,
-  });
-
-  const { isLoading: isApproveLoading } = useWaitForTransactionReceipt({
-    hash: approveDataHash,
-  });
+    onSubmitTransaction: onJoinTx,
+    isPreparing: isJoinPreparing,
+    isLoading: isJoinLoading,
+  } = useJoinChallenge(
+    challenge?.id ?? BigInt(0),
+    currentChainSupportBatchTx,
+    challenge?.stake ?? BigInt(0),
+  );
 
   const onJoinButtonClick = async () => {
     if (!challenge) {
       toast.error('Loading Challenge');
       return;
     }
-    if (currentChainSupportBatchTx) {
-      joinWriteContracts({
-        contracts: [
-          {
-            address: testTokenContract.address as `0x${string}`,
-            abi: testTokenContract.abi,
-            functionName: 'approve',
-            args: [trackerContract.address, challenge.stake],
-          },
-          {
-            address: trackerContract.address,
-            abi: trackerContract.abi,
-            functionName: 'join',
-            args: [challenge.id],
-          },
-        ],
-      });
-    } else {
-      joinWriteContract({
-        address: trackerContract.address,
-        abi: trackerContract.abi,
-        functionName: 'join',
-        args: [challenge.id],
-      });
-    }
+    onJoinTx();
   };
-
-  useEffect(() => {
-    if (isJoinSuccess) {
-      toast.success('Joined! Directing to checkIn!');
-
-      // go to checkin page after 2 secs
-      setTimeout(() => {
-        push(`/habit/checkin/${challenge?.id}`);
-      }, 2000);
-    }
-  }, [isJoinSuccess, challenge?.id, push]);
-
-  useEffect(() => {
-    if (mintError) {
-      toast.error('Error minting test token. Please try again');
-    }
-    if (approveError) {
-      toast.error('Error approving test token. Please try again');
-    }
-    if (joinError || joinErrorInBatchTx) {
-      toast.error('Error joining the challenge. Please try again');
-    }
-  }, [mintError, approveError, joinError, joinErrorInBatchTx]);
 
   return (
     <main className="container mx-auto flex flex-col items-center px-4 pt-16 text-center">
@@ -232,7 +156,6 @@ export default function StakeChallenge() {
           <>
             <ChallengeBoxFilled challenge={challenge} />
 
-            {/* goal description */}
             {/* goal description */}
             <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
@@ -270,10 +193,9 @@ export default function StakeChallenge() {
             disabled={
               !challenge ||
               !hasEnoughBalance ||
-              mintPending ||
-              approvePending ||
-              joinPending ||
-              joinPendingInBatchTx ||
+              isMintPreparing ||
+              isApprovePreparing ||
+              isJoinPreparing ||
               isJoinLoading ||
               isMintLoading ||
               isApproveLoading

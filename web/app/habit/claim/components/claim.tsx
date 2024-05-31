@@ -1,52 +1,25 @@
+/* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useEffect } from 'react';
-import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import * as trackerContract from '@/contracts/tracker';
-import toast from 'react-hot-toast';
-import { useParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import useAllChallenges from '@/hooks/useAllChallenges';
+import { useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { formatEther } from 'viem';
-
-import GenerateByName from '@/components/Nouns/GenerateByName';
 import useChallenge from '@/hooks/useChallenge';
+import useWithdraw from '@/hooks/transaction/useWithdraw';
+import GenerateByName from '@/components/Nouns/GenerateByName';
 
 export default function Claim() {
-  const { challengeId } = useParams<{ challengeId: string }>();
-
-  const { challenge, loading } = useChallenge(Number(challengeId));
-
   const { push } = useRouter();
-
+  const { challengeId } = useParams<{ challengeId: string }>();
+  const { challenge, loading } = useChallenge(Number(challengeId));
+  const [isSuccess, setIsSuccess] = useState(false);
   const {
-    writeContract,
-    data: dataHash,
-    error: claimError,
-    isPending: claimPending,
-  } = useWriteContract();
-
-  const { isSuccess } = useWaitForTransactionReceipt({
-    hash: dataHash,
+    onSubmitTransaction: onWithdrawTx,
+    isPreparing: isWithdrawPreparing,
+    isLoading: isWithdrawLoading,
+  } = useWithdraw(challenge?.id ?? BigInt(0), () => {
+    setIsSuccess(true);
   });
-
-  const onClaimClick = async () => {
-    writeContract({
-      address: trackerContract.address,
-      abi: trackerContract.abi,
-      functionName: 'withdraw',
-      args: [],
-    });
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success('Successfully Claimed!');
-    }
-    if (claimError) {
-      toast.error(claimError.name);
-    }
-  }, [isSuccess, claimError]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -74,7 +47,7 @@ export default function Claim() {
             <button
               type="button"
               className="wrapped mt-4 rounded-lg px-6 py-3 font-bold text-primary transition-transform duration-300 hover:scale-105"
-              onClick={onClaimClick}
+              onClick={onWithdrawTx}
             >
               Claim
             </button>

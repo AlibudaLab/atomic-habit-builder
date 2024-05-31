@@ -2,24 +2,22 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import { useCallback, useState, useEffect } from 'react';
-import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
+import Link from 'next/link';
+import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useWriteContract } from 'wagmi';
-import * as trackerContract from '@/contracts/tracker';
+import { formatEther } from 'viem';
+import { useAccount } from 'wagmi';
 import { Challenge } from '@/types';
+import { getCheckInDescription } from '@/utils/challenges';
+import * as stravaUtils from '@/utils/strava';
+import { ChallengeTypes } from '@/constants';
+import useCheckInRun from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useUsedActivity from '@/hooks/useUsedActivities';
-import Link from 'next/link';
-import moment from 'moment';
-import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
-import { getCheckInDescription } from '@/utils/challenges';
-import { formatEther } from 'viem';
 import { ActivityDropDown } from './activityDropdown';
-import * as stravaUtils from '@/utils/strava';
-import { ChallengeTypes } from '@/constants';
 import WaitingTx from 'app/habit/components/WaitingTx';
+import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -31,22 +29,21 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
-  const {
-    writeContract,
-    data: dataHash,
-    error: checkInError,
-    isPending: checkInPending,
-  } = useWriteContract();
-
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: dataHash,
-  });
-
   const [activityIdx, setActivityIdx] = useState(-1);
 
-  const [checkInPendingId, setCheckInPendingId] = useState<string | null>(null);
-
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
+
+  const {
+    activityId: checkInPendingId,
+    checkIn: {
+      onSubmitTransaction: onCheckInTx,
+      isPreparing: isCheckInPreparing,
+      isLoading: isCheckInLoading,
+    },
+  } = useCheckInRun(challenge, activityIdx, () => {
+    if (checkInPendingId) updateUsedActivities(checkInPendingId.toString());
+    setActivityIdx(-1);
+  });
 
   const {
     connected,
@@ -57,69 +54,17 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   } = useRunData();
 
   const onClickCheckIn = async () => {
+    if (!address) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+
     if (activityIdx === -1) {
       toast.error('Please select an activity');
       return;
     }
 
-    // todo: change this to get the timestamp of the exercise
-    const timestamp = moment().unix();
-
-    let txPendingToastId = null;
-    try {
-      if (!address) {
-        toast.error('Please connect your wallet first');
-        return;
-      }
-
-      const activityId =
-        challenge.type === ChallengeTypes.Run
-          ? runData[activityIdx].id
-          : workoutData[activityIdx].id;
-
-      const fetchURL =
-        '/api/sign?' +
-        new URLSearchParams({
-          address: address,
-          activityId: activityId.toString(),
-          timestamp: timestamp.toString(),
-          challengeId: challenge.id.toString(),
-        }).toString();
-      console.log(fetchURL);
-
-      const sig = (await (
-        await fetch(fetchURL, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-      ).json()) as { v: number; r: string; s: string };
-
-      writeContract({
-        address: trackerContract.address,
-        abi: trackerContract.abi,
-        functionName: 'checkIn',
-        args: [
-          challenge.id,
-          BigInt(timestamp),
-          sig.v,
-          ('0x' + sig.r.padStart(64, '0')) as `0x${string}`,
-          ('0x' + sig.s.padStart(64, '0')) as `0x${string}`,
-        ],
-      });
-
-      setCheckInPendingId(activityId.toString());
-
-      txPendingToastId = toast.loading('Sending transaction...');
-    } catch (err) {
-      console.log(err);
-      toast.error('Error checking in');
-    } finally {
-      if (txPendingToastId) {
-        toast.dismiss(txPendingToastId);
-      }
-    }
+    onCheckInTx();
   };
 
   // only show this button if user is not connected to strava
@@ -131,22 +76,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     const authUrl = stravaUtils.getAuthURL(redirectUri, window.location.href);
     window.location = authUrl as any;
   }, []);
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.dismiss();
-      toast.success('Successfully checked in!! 🥳🥳🥳');
-
-      if (checkInPendingId) updateUsedActivities(checkInPendingId);
-      setActivityIdx(-1);
-    }
-  }, [isSuccess]);
-
-  useEffect(() => {
-    if (checkInError) {
-      toast.error('Error checking in.');
-    }
-  }, [checkInError]);
 
   return (
     <div className="flex max-w-96 flex-col items-center justify-center">
@@ -196,10 +125,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
-          disabled={checkInPending || isLoading || activityIdx === -1}
+          disabled={isCheckInPreparing || isCheckInLoading || activityIdx === -1}
         >
           {' '}
-          {isLoading ? <WaitingTx /> : 'Check In'}{' '}
+          {isCheckInLoading ? <WaitingTx /> : 'Check In'}{' '}
         </button>
       ) : (
         <button

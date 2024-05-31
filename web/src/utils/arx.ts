@@ -1,6 +1,5 @@
-import { execHaloCmdWeb } from '@arx-research/libhalo/api/web';
-import moment from 'moment';
 import { hashMessage } from 'viem';
+import { execHaloCmdWeb } from '@arx-research/libhalo/api/web';
 
 type ArxSignature = {
   input: {
