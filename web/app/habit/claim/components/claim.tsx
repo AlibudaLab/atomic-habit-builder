@@ -21,10 +21,6 @@ export default function Claim() {
     setIsSuccess(true);
   });
 
-  const onClaimClick = async () => {
-    onWithdrawTx();
-  };
-
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Img and Description */}
@@ -51,7 +47,7 @@ export default function Claim() {
             <button
               type="button"
               className="wrapped mt-4 rounded-lg px-6 py-3 font-bold text-primary transition-transform duration-300 hover:scale-105"
-              onClick={onClaimClick}
+              onClick={onWithdrawTx}
             >
               Claim
             </button>
