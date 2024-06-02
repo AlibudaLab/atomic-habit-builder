@@ -13,9 +13,8 @@ contract TrackerTest is Test {
     Tracker tracker;
     address verifier;
     uint256 key;
-    uint256 joinDueDays;
-    uint256 challengeEndDays;
-
+    uint64 joinDueDays;
+    uint64 challengeEndDays;
     uint256 constant PER_USER_STAKE = 0.0001 ether;
 
     function setUp() public {
@@ -30,9 +29,9 @@ contract TrackerTest is Test {
             verifier,
             "test challenge",
             1,
-            block.timestamp,
-            block.timestamp + joinDueDays * 1 days,
-            block.timestamp + challengeEndDays * 1 days,
+            uint64(block.timestamp),
+            uint64(block.timestamp + joinDueDays * 1 days),
+            uint64(block.timestamp + challengeEndDays * 1 days),
             address(this),
             PER_USER_STAKE
         );

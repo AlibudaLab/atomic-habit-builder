@@ -8,10 +8,10 @@ import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 
 struct Challenge {
     address verifier;
-    uint256 minimumCheckIns;
-    uint256 startTimestamp;
-    uint256 joinDueTimestamp;
-    uint256 endTimestamp;
+    uint64 minimumCheckIns;
+    uint64 startTimestamp;
+    uint64 joinDueTimestamp;
+    uint64 endTimestamp;
     address donateDestination;
     uint256 stakePerUser;
     uint256 totalStake;
@@ -39,7 +39,7 @@ contract Tracker is EIP712 {
     event Register(
         uint256 indexed challengeId,
         address verifier,
-        string description,
+        string extraData,
         uint256 startTimestamp,
         uint256 joinDueTimestamp,
         uint256 endTimestamp,
@@ -57,11 +57,11 @@ contract Tracker is EIP712 {
     // register a new habit challenge
     function register(
         address verifier,
-        string memory description,
-        uint256 minimumCheckIns,
-        uint256 startTimestamp,
-        uint256 joinDueTimestamp,
-        uint256 endTimestamp,
+        string memory extraData,
+        uint64 minimumCheckIns,
+        uint64 startTimestamp,
+        uint64 joinDueTimestamp,
+        uint64 endTimestamp,
         address donateDestination,
         uint256 stake
     ) public {
