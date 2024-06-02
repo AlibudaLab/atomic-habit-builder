@@ -15,7 +15,7 @@ contract TrackerTest is Test {
     uint256 key;
     uint64 joinDueDays;
     uint64 challengeEndDays;
-    uint256 constant PER_USER_STAKE = 0.0001 ether;
+    uint256 constant PER_USER_STAKE = 100 * 1e6;
 
     function setUp() public {
         challengeEndDays = 100;

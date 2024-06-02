@@ -30,7 +30,7 @@ contract Deploy is Script {
             uint64(block.timestamp + 1 days),
             uint64(block.timestamp + 10 days),
             official_verifier,
-            0.02 ether
+            100 * 1e6
         );
         tracker.register(
             address(0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07),
@@ -40,7 +40,7 @@ contract Deploy is Script {
             uint64(block.timestamp + 2 days),
             uint64(block.timestamp + 60 days),
             official_verifier,
-            0.05 ether
+            50 * 1e6
         );
         tracker.register(
             official_verifier,
@@ -50,7 +50,7 @@ contract Deploy is Script {
             1717084800, // May 31
             1717084800, // May 31
             official_verifier,
-            0.025 ether
+            25 * 1e6
         );
 
         tracker.register(
@@ -61,7 +61,7 @@ contract Deploy is Script {
             1719676800, // June 30
             1719676800, // June 30
             official_verifier,
-            0.025 ether
+            25 * 1e6
         );
     }
 
