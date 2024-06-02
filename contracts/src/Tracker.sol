@@ -79,7 +79,7 @@ contract Tracker is EIP712 {
             false
         );
         emit Register(
-            challengeCounter, verifier, description, startTimestamp, joinDueTimestamp, endTimestamp, minimumCheckIns
+            challengeCounter, verifier, extraData, startTimestamp, joinDueTimestamp, endTimestamp, minimumCheckIns
         );
     }
 
