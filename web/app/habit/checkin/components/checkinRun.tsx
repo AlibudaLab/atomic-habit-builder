@@ -128,7 +128,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
-          disabled={isCheckInLoading || activityIdx === -1}
+          disabled={isCheckInLoading || isCheckInPreparing || activityIdx === -1}
         >
           {' '}
           {isCheckInLoading ? <WaitingTx /> : 'Check In'}{' '}
