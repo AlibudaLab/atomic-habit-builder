@@ -18,12 +18,11 @@ import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
 const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: () => void) => {
   const { address } = useAccount();
   const { runData, workoutData } = useRunData();
+  const [timestamp, setTimestamp] = useState<number>(0);
   const [signature, setSignature] = useState<{ v: number; r: string; s: string } | null>(null);
 
-  console.log('signature', signature);
-
+  
   // todo: change this to get the timestamp of the exercise
-  const timestamp = moment().unix();
   const activityId =
     activityIdx && activityIdx !== -1
       ? challenge.type === ChallengeTypes.Run
@@ -31,19 +30,21 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
         : workoutData[activityIdx].id
       : null;
 
-  const fetchURL =
+  useEffect(() => {
+    if (activityId === null || signature !== null) return;
+
+    const now = moment().unix();
+
+    const fetchURL =
     activityId !== null
       ? '/api/sign?' +
         new URLSearchParams({
           address: address as string,
           activityId: activityId.toString(),
-          timestamp: timestamp.toString(),
+          timestamp: now.toString(),
           challengeId: challenge.id.toString(),
         }).toString()
       : '';
-
-  useEffect(() => {
-    if (activityId === null || signature !== null) return;
 
     const fetchSignature = async (): Promise<{ v: number; r: string; s: string }> => {
       const response = await fetch(fetchURL, {
@@ -59,11 +60,14 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
     fetchSignature()
       .then((_signature) => {
         setSignature(_signature);
+        setTimestamp(now);
+        console.log('Signature:', _signature);
+        console.log('Timestamp:', now)
       })
       .catch((error) => {
         console.error('Error fetching the signature:', error);
       });
-  }, [activityId, signature, fetchURL]);
+  }, [activityId, signature, address, challenge.id]);
 
   return {
     activityId,

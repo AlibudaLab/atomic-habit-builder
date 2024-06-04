@@ -25,7 +25,7 @@ export const challengeMetaDatas: ChallengeMetaData[] = [
   {
     id: BigInt(2),
     name: 'June Running Challenge',
-    description: 'Finish more than 10 runs on Strava in June to complete this challenge!',
+    description: 'Finish more than 10 runs on Strava to complete this challenge!',
     type: ChallengeTypes.Run,
   },
   {
