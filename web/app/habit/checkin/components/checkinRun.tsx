@@ -3,9 +3,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { formatEther } from 'viem';
+import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { Challenge } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
@@ -18,6 +18,7 @@ import useUsedActivity from '@/hooks/useUsedActivities';
 import { ActivityDropDown } from './activityDropdown';
 import WaitingTx from 'app/habit/components/WaitingTx';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import moment from 'moment';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -32,6 +33,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const [activityIdx, setActivityIdx] = useState(-1);
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
+
+  const challengeStarted = useMemo(() => moment().unix() > challenge.startTimestamp, [challenge.startTimestamp]); 
 
   const {
     activityId: checkInPendingId,
@@ -96,7 +99,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
       </div>
 
       {connected && (
@@ -125,10 +128,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
-          disabled={isCheckInPreparing || isCheckInLoading || activityIdx === -1}
+          disabled={!challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1}
         >
           {' '}
-          {isCheckInLoading ? <WaitingTx /> : 'Check In'}{' '}
+          {isCheckInLoading ? <WaitingTx /> : challengeStarted ? 'Check In' : 'Not started yet'}{' '}
         </button>
       ) : (
         <button

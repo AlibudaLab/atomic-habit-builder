@@ -20,11 +20,11 @@ contract Deploy is Script {
     function preDeploy() public {}
 
     function deploy() public {
-        address _underlyingToken = vm.envAddress("ALIBUDA_TOKEN");
+        address _underlyingToken = vm.envAddress("TESTNET_TOKEN");
         Tracker tracker = new Tracker(_underlyingToken, "Alibuda Habit Builder", "1.0");
         tracker.register(
             address(0x883167E6b5d489B82cB97bEf9C7967afe3A3D299),
-            "NFC Challenge 3",
+            "NFC Challenge 1",
             10,
             uint64(block.timestamp),
             uint64(block.timestamp + 1 days),
@@ -44,24 +44,46 @@ contract Deploy is Script {
         );
         tracker.register(
             official_verifier,
-            "Nonce Run Club May",
-            10,
-            1714492800, // May 1
-            1717084800, // May 31
-            1717084800, // May 31
-            official_verifier,
-            25 * 1e6
-        );
-
-        tracker.register(
-            official_verifier,
-            "Nonce Run Club June",
+            "Running Challenge June",
             10,
             1717171200, // June 1
             1719676800, // June 30
             1719676800, // June 30
             official_verifier,
             25 * 1e6
+        );
+
+        tracker.register(
+            official_verifier,
+            "Workout Challenge June",
+            12,
+            1717171200, // June 1
+            1719676800, // June 30
+            1719676800, // June 30
+            official_verifier,
+            50 * 1e6
+        );
+
+        tracker.register(
+            official_verifier,
+            "Running Challenge July",
+            10,
+            1719763200, // July 1
+            1722355200, // July 31
+            1722355200, // July 31
+            official_verifier,
+            25 * 1e6
+        );
+
+        tracker.register(
+            official_verifier,
+            "Workout Challenge July",
+            12,
+            1719763200, // July 1
+            1722355200, // July 31
+            1722355200, // July 31
+            official_verifier,
+            50 * 1e6
         );
     }
 

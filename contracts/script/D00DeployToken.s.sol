@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-import {Alibuda} from "../src/Alibuda.sol";
+import {MockERC20} from "../test/mock/MockERC20.sol";
 
 contract Deploy is Script {
     using Strings for uint256;
@@ -22,7 +22,7 @@ contract Deploy is Script {
 
     function deploy() public {
         console.log("Deploying with Address: ", msg.sender);
-        Alibuda alibuda = new Alibuda();
+        new MockERC20("USDC", "USDC", 6);
     }
 
     function postDeploy() public {}

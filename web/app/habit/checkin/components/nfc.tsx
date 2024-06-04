@@ -13,7 +13,7 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
-import { formatEther } from 'viem';
+import { formatUnits } from 'viem';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
@@ -103,7 +103,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
       </div>
 
       {checkedIn >= challenge.targetNum ? (
