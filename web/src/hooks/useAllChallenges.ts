@@ -49,7 +49,6 @@ const useAllChallenges = () => {
               bigint, // total staked
               boolean,
             ];
-            console.log('res', res);
             return {
               id: BigInt(idx + 1),
               verifier: res[0],
@@ -69,8 +68,6 @@ const useAllChallenges = () => {
           .filter((c) => c !== undefined) as Challenge[];
 
         setChallenges(newData);
-
-        console.log('newData', newData);
 
         setLoading(false);
       } catch (_error) {
