@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { formatEther, formatUnits } from 'viem';
+import { formatUnits } from 'viem';
 import useChallenge from '@/hooks/useChallenge';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import GenerateByName from '@/components/Nouns/GenerateByName';

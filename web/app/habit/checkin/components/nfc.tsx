@@ -13,7 +13,7 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
-import { formatEther, formatUnits } from 'viem';
+import { formatUnits } from 'viem';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();

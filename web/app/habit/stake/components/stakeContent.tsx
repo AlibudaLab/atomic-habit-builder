@@ -6,7 +6,7 @@
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { formatEther, formatUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { useCapabilities } from 'wagmi/experimental';
 import crypto from 'crypto';
