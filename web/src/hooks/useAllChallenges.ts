@@ -51,7 +51,7 @@ const useAllChallenges = () => {
             ];
             console.log('res', res);
             return {
-              id: BigInt(idx),
+              id: BigInt(idx + 1),
               verifier: res[0],
               targetNum: Number(res[1].toString()),
               startTimestamp: Number(res[2].toString()),
