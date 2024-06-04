@@ -24,21 +24,21 @@ export const challengeMetaDatas: ChallengeMetaData[] = [
   // },
   {
     id: BigInt(2),
-    name: 'May Running Challenge',
+    name: 'June Running Challenge',
     description: 'Finish more than 10 runs on Strava in May to complete this challenge!',
     type: ChallengeTypes.Run,
   },
   {
     id: BigInt(3),
-    name: 'June Running Challenge',
-    description: 'Finish more than 10 runs on Strava in June to complete this challenge!',
-    type: ChallengeTypes.Run,
+    name: 'Workout for summer - May',
+    description: 'Finish more than 14 workouts on Strava in May to complete this challenge!',
+    type: ChallengeTypes.Workout,
   },
   {
     id: BigInt(4),
-    name: 'Workout for summer - May',
-    description: 'Finish more than 10 workouts on Strava in May to complete this challenge!',
-    type: ChallengeTypes.Workout,
+    name: 'July Running Challenge',
+    description: 'Finish more than 10 runs on Strava in June to complete this challenge!',
+    type: ChallengeTypes.Run,
   },
   {
     id: BigInt(5),

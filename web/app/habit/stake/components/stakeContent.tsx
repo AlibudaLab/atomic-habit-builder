@@ -6,7 +6,7 @@
 import { useParams } from 'next/navigation';
 import { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { formatEther } from 'viem';
+import { formatEther, formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { useCapabilities } from 'wagmi/experimental';
 import crypto from 'crypto';
@@ -55,9 +55,7 @@ export default function StakeChallenge() {
     args: [smartWallet as `0x${string}`, trackerContract.address],
   });
 
-  const hasEnoughAllowance = allowance
-    ? challenge && Number(allowance) >= Number(formatEther(challenge.stake))
-    : false;
+  const hasEnoughAllowance = allowance ? challenge && allowance >= challenge.stake : false;
 
   const {
     onSubmitTransaction: onMintTx,
@@ -66,7 +64,7 @@ export default function StakeChallenge() {
   } = useMintERC20(
     testTokenContract.address as `0x${string}`,
     smartWallet as `0x${string}`,
-    challenge?.stake ?? BigInt(0) * BigInt(10),
+    500_000000n, // mint 500 USDC
   );
 
   const onMintTestTokenClick = async () => {
@@ -170,7 +168,10 @@ export default function StakeChallenge() {
 
             <div className="w-full justify-start p-6 py-2 text-start">
               <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-              <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
+              <div className="text-sm text-primary">
+                {' '}
+                {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
+              </div>
             </div>
           </>
         )}
@@ -221,10 +222,8 @@ export default function StakeChallenge() {
           ) : testTokenBalance && !hasEnoughBalance ? (
             <p>
               {' '}
-              🚨 Insufficient Balance: {testTokenBalance
-                ? formatEther(testTokenBalance.value)
-                : 0}{' '}
-              ALI.{' '}
+              🚨 Insufficient Balance:{' '}
+              {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC.{' '}
               <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
                 {' '}
                 Mint Test Token now{' '}
@@ -233,10 +232,8 @@ export default function StakeChallenge() {
           ) : (
             <p>
               {' '}
-              💰 Smart Wallet Balance: {testTokenBalance
-                ? formatEther(testTokenBalance.value)
-                : 0}{' '}
-              ALI.{' '}
+              💰 Smart Wallet Balance:{' '}
+              {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC{' '}
             </p>
           )}
         </div>

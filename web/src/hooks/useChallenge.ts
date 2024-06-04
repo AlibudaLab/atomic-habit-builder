@@ -33,9 +33,10 @@ const useChallenge = (id: number) => {
           verifier: res[0],
           targetNum: Number(res[1].toString()),
           startTimestamp: Number(res[2].toString()),
-          endTimestamp: Number(res[3].toString()),
-          donationDestination: res[4],
-          stake: res[5],
+          joinDueTimestamp: Number(res[3].toString()),
+          endTimestamp: Number(res[4].toString()),
+          donationDestination: res[5],
+          stake: res[6],
           ...metaData,
         };
 

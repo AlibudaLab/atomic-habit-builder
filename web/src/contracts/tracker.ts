@@ -1,4 +1,4 @@
-export const address = '0x2B1d06d53C8597d586690A49776E5B3b4bf2eC61' as `0x${string}`;
+export const address = '0x60378Ca0dB4BB8B51605746F23b58b068C5c5a3e' as `0x${string}`;
 
 export const abi = [
   {
@@ -71,8 +71,9 @@ export const abi = [
     inputs: [
       { indexed: true, internalType: 'uint256', name: 'challengeId', type: 'uint256' },
       { indexed: false, internalType: 'address', name: 'verifier', type: 'address' },
-      { indexed: false, internalType: 'string', name: 'description', type: 'string' },
+      { indexed: false, internalType: 'string', name: 'extraData', type: 'string' },
       { indexed: false, internalType: 'uint256', name: 'startTimestamp', type: 'uint256' },
+      { indexed: false, internalType: 'uint256', name: 'joinDueTimestamp', type: 'uint256' },
       { indexed: false, internalType: 'uint256', name: 'endTimestamp', type: 'uint256' },
       { indexed: false, internalType: 'uint256', name: 'minimumCheckIns', type: 'uint256' },
     ],
@@ -86,13 +87,6 @@ export const abi = [
     type: 'event',
   },
   {
-    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
-    name: 'balances',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'challengeCounter',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
@@ -104,9 +98,10 @@ export const abi = [
     name: 'challenges',
     outputs: [
       { internalType: 'address', name: 'verifier', type: 'address' },
-      { internalType: 'uint256', name: 'minimumCheckIns', type: 'uint256' },
-      { internalType: 'uint256', name: 'startTimestamp', type: 'uint256' },
-      { internalType: 'uint256', name: 'endTimestamp', type: 'uint256' },
+      { internalType: 'uint64', name: 'minimumCheckIns', type: 'uint64' },
+      { internalType: 'uint64', name: 'startTimestamp', type: 'uint64' },
+      { internalType: 'uint64', name: 'joinDueTimestamp', type: 'uint64' },
+      { internalType: 'uint64', name: 'endTimestamp', type: 'uint64' },
       { internalType: 'address', name: 'donateDestination', type: 'address' },
       { internalType: 'uint256', name: 'stakePerUser', type: 'uint256' },
       { internalType: 'uint256', name: 'totalStake', type: 'uint256' },
@@ -140,6 +135,16 @@ export const abi = [
     type: 'function',
   },
   {
+    inputs: [
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'address', name: 'user', type: 'address' },
+    ],
+    name: 'claimable',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
     inputs: [{ internalType: 'bytes32', name: 'digest', type: 'bytes32' }],
     name: 'digestUsed',
     outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
@@ -169,6 +174,16 @@ export const abi = [
     ],
     name: 'getCheckInDigest',
     outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'challengeId', type: 'uint256' },
+      { internalType: 'address', name: 'user', type: 'address' },
+    ],
+    name: 'getClaimableAmount',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -209,10 +224,11 @@ export const abi = [
   {
     inputs: [
       { internalType: 'address', name: 'verifier', type: 'address' },
-      { internalType: 'string', name: 'description', type: 'string' },
-      { internalType: 'uint256', name: 'minimumCheckIns', type: 'uint256' },
-      { internalType: 'uint256', name: 'startTimestamp', type: 'uint256' },
-      { internalType: 'uint256', name: 'endTimestamp', type: 'uint256' },
+      { internalType: 'string', name: 'extraData', type: 'string' },
+      { internalType: 'uint64', name: 'minimumCheckIns', type: 'uint64' },
+      { internalType: 'uint64', name: 'startTimestamp', type: 'uint64' },
+      { internalType: 'uint64', name: 'joinDueTimestamp', type: 'uint64' },
+      { internalType: 'uint64', name: 'endTimestamp', type: 'uint64' },
       { internalType: 'address', name: 'donateDestination', type: 'address' },
       { internalType: 'uint256', name: 'stake', type: 'uint256' },
     ],
@@ -265,5 +281,11 @@ export const abi = [
     stateMutability: 'view',
     type: 'function',
   },
-  { inputs: [], name: 'withdraw', outputs: [], stateMutability: 'nonpayable', type: 'function' },
+  {
+    inputs: [{ internalType: 'uint256', name: 'challengeId', type: 'uint256' }],
+    name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
 ] as const;

@@ -15,6 +15,7 @@ export enum WorkoutVerifier {
 export type ChallengeDetail = {
   id: bigint;
   startTimestamp: number;
+  joinDueTimestamp: number;
   endTimestamp: number;
   verifier: string;
   stake: bigint;

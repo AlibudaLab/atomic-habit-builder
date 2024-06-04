@@ -5,7 +5,7 @@
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
-import { formatEther } from 'viem';
+import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { Challenge } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
@@ -67,6 +67,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     onCheckInTx();
   };
 
+  console.log('stravaLoading', stravaLoading);
+  console.log('isCheckInPreparing', isCheckInPreparing);
+
   // only show this button if user is not connected to strava
   const onClickConnectStrava = useCallback(() => {
     // path that user will be redirected to after connecting to strava
@@ -96,7 +99,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-sm text-primary"> {`${formatEther(challenge.stake)} ALI`} </div>
+        <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
       </div>
 
       {connected && (
@@ -125,7 +128,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
-          disabled={isCheckInPreparing || isCheckInLoading || activityIdx === -1}
+          disabled={isCheckInLoading || activityIdx === -1}
         >
           {' '}
           {isCheckInLoading ? <WaitingTx /> : 'Check In'}{' '}

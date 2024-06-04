@@ -32,7 +32,7 @@ const useAllChallenges = () => {
             address: trackerContract.address,
             abi: trackerContract.abi,
             functionName: 'challenges',
-            args: [i],
+            args: [i + 1],
           })),
         });
 
@@ -40,22 +40,25 @@ const useAllChallenges = () => {
           .map((raw, idx) => {
             const res = raw.result as any as [
               Address,
-              bigint,
-              bigint,
-              bigint,
-              Address,
-              bigint,
-              bigint,
+              number, // checkins
+              number, // start
+              number, // join due
+              number, // end
+              Address, // donation
+              bigint, // stake
+              bigint, // total staked
               boolean,
             ];
+            console.log('res', res);
             return {
               id: BigInt(idx),
               verifier: res[0],
               targetNum: Number(res[1].toString()),
               startTimestamp: Number(res[2].toString()),
-              endTimestamp: Number(res[3].toString()),
-              donationDestination: res[4],
-              stake: res[5],
+              joinDueTimestamp: Number(res[3].toString()),
+              endTimestamp: Number(res[4].toString()),
+              donationDestination: res[5],
+              stake: res[6],
             };
           })
           .map((c) => {
@@ -66,6 +69,8 @@ const useAllChallenges = () => {
           .filter((c) => c !== undefined) as Challenge[];
 
         setChallenges(newData);
+
+        console.log('newData', newData);
 
         setLoading(false);
       } catch (_error) {

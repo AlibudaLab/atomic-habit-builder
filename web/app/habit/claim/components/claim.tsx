@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { formatEther } from 'viem';
+import { formatEther, formatUnits } from 'viem';
 import useChallenge from '@/hooks/useChallenge';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import GenerateByName from '@/components/Nouns/GenerateByName';
@@ -53,7 +53,7 @@ export default function Claim() {
             </button>
           )}
 
-          <div className="p-4 text-xs">Get back {formatEther(challenge.stake)} ALI.</div>
+          <div className="p-4 text-xs">Get back {formatUnits(challenge.stake, 6)} USDC.</div>
 
           <GenerateByName properties={{ name: 'You Success', alt: 'Step 4 Image' }} />
         </>

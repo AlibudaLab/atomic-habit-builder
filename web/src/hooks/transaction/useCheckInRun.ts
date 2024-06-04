@@ -20,6 +20,8 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
   const { runData, workoutData } = useRunData();
   const [signature, setSignature] = useState<{ v: number; r: string; s: string } | null>(null);
 
+  console.log('signature', signature);
+
   // todo: change this to get the timestamp of the exercise
   const timestamp = moment().unix();
   const activityId =
