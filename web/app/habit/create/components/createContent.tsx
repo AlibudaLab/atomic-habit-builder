@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-pascal-case */
 'use client';
 
-import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
+import CreateStep2 from './step2';
 import moment from 'moment';
 import './create.css';
+import Link from 'next/link';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -47,30 +48,36 @@ export default function Create() {
           <div className="mr-6 text-xl">Create</div>
           {/* based on step, mark current page */}
           <div className="flex items-center justify-center gap-1 py-4">
-            <p
+            <button
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 1 ? 'bg-dark text-white' : 'border-dark border border-solid'
               } `}
+              onClick={() => setStep(1)}
+              type="button"
             >
               {' '}
               1{' '}
-            </p>
-            <p
+            </button>
+            <button
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 2 ? 'bg-dark text-white' : 'border-dark border border-solid'
               } `}
+              onClick={() => setStep(2)}
+              type="button"
             >
               {' '}
               2{' '}
-            </p>
-            <p
+            </button>
+            <button
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 3 ? 'bg-dark text-white' : 'border-dark border border-solid'
               } `}
+              onClick={() => setStep(3)}
+              type="button"
             >
               {' '}
               3{' '}
-            </p>
+            </button>
           </div>
         </div>
 
@@ -88,8 +95,16 @@ export default function Create() {
             setEndTimestamp={setEndTimestamp}
             stake={Number(stake)}
             setStake={setStake}
+            setStep={setStep}
           />
         )}
+
+        {
+          step === 2 && (
+            <CreateStep2 />
+
+          )
+        }
       </div>
     </div>
   );

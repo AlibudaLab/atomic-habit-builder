@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 'use client';
 
 import React from 'react';
@@ -5,6 +6,7 @@ import moment from 'moment';
 import { DateRangePicker } from '@nextui-org/react';
 import { parseDate } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
+import {Button} from "@nextui-org/react";
 
 type Step1Props = {
   name: string;
@@ -19,6 +21,7 @@ type Step1Props = {
   setEndTimestamp: (endTimestamp: number) => void;
   stake: number;
   setStake: (stake: number) => void;
+  setStep: (step: number) => void;
 };
 
 export default function CreateStep1({
@@ -34,6 +37,7 @@ export default function CreateStep1({
   setEndTimestamp,
   stake,
   setStake,
+  setStep
 }: Step1Props) {
   return (
     <div className="flex max-w-[500px] flex-col items-center justify-start px-10">
@@ -66,7 +70,7 @@ export default function CreateStep1({
 
       <DateRangePicker
         label="Challenge Duration"
-        className="my-4 max-w-xs"
+        className="my-4"
         value={{
           start: parseDate(moment.unix(startTimestamp).format('YYYY-MM-DD')),
           end: parseDate(moment.unix(endTimestamp).format('YYYY-MM-DD')),
@@ -90,6 +94,13 @@ export default function CreateStep1({
           </div>
         }
       />
+
+      <Button
+        onClick={() => setStep(2)}
+        className="mt-4"
+        >
+          Next: Setup Check-in
+        </Button>
     </div>
   );
 }
