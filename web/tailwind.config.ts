@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+const { nextui } = require('@nextui-org/react');
 
 import { nextui } from '@nextui-org/theme';
 
@@ -6,8 +7,12 @@ const config: Config = {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+<<<<<<< HEAD
     './node_modules/@nextui-org/theme/dist/components/snippet.js',
     './node_modules/@nextui-org/theme/dist/components/select.js',
+=======
+    './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+>>>>>>> 0b7fbc2 (chore: create challenge flow)
   ],
   theme: {
     container: {
