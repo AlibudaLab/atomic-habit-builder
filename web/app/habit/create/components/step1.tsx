@@ -6,7 +6,8 @@ import moment from 'moment';
 import { DateRangePicker } from '@nextui-org/react';
 import { parseDate } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
-import {Button} from "@nextui-org/react";
+import { Button } from '@nextui-org/react';
+import { Switch } from '@nextui-org/switch';
 
 type Step1Props = {
   name: string;
@@ -37,10 +38,12 @@ export default function CreateStep1({
   setEndTimestamp,
   stake,
   setStake,
-  setStep
+  setStep,
 }: Step1Props) {
   return (
     <div className="flex max-w-[500px] flex-col items-center justify-start px-10">
+      {/* todo: add public challenge later */}
+
       <Input
         type="text"
         label="Challenge Name"
@@ -50,6 +53,16 @@ export default function CreateStep1({
         className="my-4"
         required
       />
+      <Switch
+        isDisabled
+        defaultSelected
+        size="sm"
+        className="my-2"
+        // description="Public challenges are visible to everyone"
+      >
+        {' '}
+        <p className="text-sm"> Private </p>{' '}
+      </Switch>
 
       <Input
         label="Description"
@@ -66,6 +79,7 @@ export default function CreateStep1({
         onChange={(e) => setTotalTimes(Number(e.target.value))}
         placeholder="5"
         className="my-4"
+        description="How many times participants need to check in to complete the challenge"
       />
 
       <DateRangePicker
@@ -95,12 +109,9 @@ export default function CreateStep1({
         }
       />
 
-      <Button
-        onClick={() => setStep(2)}
-        className="mt-4"
-        >
-          Next: Setup Check-in
-        </Button>
+      <Button onClick={() => setStep(2)} className="mt-2 w-full">
+        Next: Setup Check-in
+      </Button>
     </div>
   );
 }

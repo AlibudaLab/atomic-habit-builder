@@ -199,7 +199,10 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
-          <CheckInPopup onClose={handleCloseCheckinPopup} onCheckInPageClick={handleCheckInPageClick} />
+          <CheckInPopup
+            onClose={handleCloseCheckinPopup}
+            onCheckInPageClick={handleCheckInPageClick}
+          />
         )}
         {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
           <InsufficientBalancePopup

@@ -43,6 +43,8 @@
     "abitype": "^0.10.3",
     "clsx": "^2.1.0",
     "dompurify": "^3.1.4",
+    "firebase": "^10.12.2",
+    "firebase-admin": "^12.1.1",
     "framer-motion": "^11.2.10",
     "graphql": "14",
     "graphql-request": "6",

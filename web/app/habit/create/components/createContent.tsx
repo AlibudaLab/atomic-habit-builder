@@ -8,6 +8,10 @@ import CreateStep2 from './step2';
 import moment from 'moment';
 import './create.css';
 import Link from 'next/link';
+import { ChallengeTypes, donationDestinations } from '@/constants';
+import { Address } from 'viem';
+
+const defaultDonationDest = donationDestinations[0];
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -32,6 +36,8 @@ export default function Create() {
   const [startTimestamp, setStartTimestamp] = useState(moment().add(1, 'day').unix());
   const [endTimestamp, setEndTimestamp] = useState(moment().add(1, 'week').unix());
   const [stake, setStake] = useState(0);
+  const [type, setType] = useState(ChallengeTypes.Run);
+  const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -99,12 +105,13 @@ export default function Create() {
           />
         )}
 
-        {
-          step === 2 && (
-            <CreateStep2 />
-
-          )
-        }
+        {step === 2 && (
+          <CreateStep2
+            challengeType={type}
+            setChallengeType={setType}
+            setDonationAddr={setDonationAddr}
+          />
+        )}
       </div>
     </div>
   );

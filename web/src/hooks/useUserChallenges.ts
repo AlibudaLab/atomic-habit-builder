@@ -32,7 +32,7 @@ const useUserChallenges = (address: string | undefined) => {
         const userRegisteredIds = userChallenges as bigint[];
 
         // all challenges that user participants in
-        let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(c.id));
+        let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(BigInt(c.id)));
 
         const checkedIns = await Promise.all(
           knownChallenges.map(async (c) => {
@@ -40,7 +40,7 @@ const useUserChallenges = (address: string | undefined) => {
               abi: trackerContract.abi,
               address: trackerContract.address,
               functionName: 'getUserCheckInCounts',
-              args: [c.id, address as `0x${string}`],
+              args: [BigInt(c.id), address as `0x${string}`],
             })) as unknown as bigint;
             return checkedIn;
           }),
