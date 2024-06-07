@@ -3,8 +3,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import moment from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
 import { Challenge } from '@/types';
@@ -18,7 +20,7 @@ import useUsedActivity from '@/hooks/useUsedActivities';
 import { ActivityDropDown } from './activityDropdown';
 import WaitingTx from 'app/habit/components/WaitingTx';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
-import moment from 'moment';
+import CheckinPopup from './CheckinPopup';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -26,6 +28,8 @@ import moment from 'moment';
  * @returns
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
+  const { push } = useRouter();
+
   const { address } = useAccount();
 
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
@@ -39,6 +43,14 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     [challenge.startTimestamp],
   );
 
+  const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
+
+  const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
+  const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
+  const handleChallengeListClick = () => {
+    push('/');
+  };
+
   const {
     activityId: checkInPendingId,
     checkIn: {
@@ -49,6 +61,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   } = useCheckInRun(challenge, activityIdx, () => {
     if (checkInPendingId) updateUsedActivities(checkInPendingId.toString());
     setActivityIdx(-1);
+    handleOpenCheckinPopup();
   });
 
   const {
@@ -69,7 +82,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       toast.error('Please select an activity');
       return;
     }
-
     onCheckInTx();
   };
 
@@ -152,6 +164,14 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         >
           Connect with Strava
         </button>
+      )}
+
+      {isCheckinPopupOpen && (
+        <CheckinPopup
+          challenge={challenge}
+          onClose={handleCloseCheckinPopup}
+          onCheckInPageClick={handleChallengeListClick}
+        />
       )}
     </div>
   );
