@@ -2,23 +2,27 @@
 'use client';
 
 import React from 'react';
-import moment from 'moment';
 import { Input } from '@nextui-org/input';
 import { ChallengeTypes } from '@/constants';
 import { Select, SelectItem } from '@nextui-org/select';
 import { donationDestinations } from '@/constants';
 import { Address } from 'viem';
+import { Button } from '@nextui-org/button';
 
 type Step2Props = {
   challengeType: ChallengeTypes;
   setChallengeType: (challengeType: ChallengeTypes) => void;
   setDonationAddr: (donationAddr: Address) => void;
+  onClickCreate: () => void;
+  isCreating: boolean;
 };
 
 export default function CreateStep2({
   challengeType,
   setChallengeType,
   setDonationAddr,
+  onClickCreate,
+  isCreating,
 }: Step2Props) {
   return (
     <div className="flex max-w-[500px] flex-col items-center justify-start px-10">
@@ -64,6 +68,10 @@ export default function CreateStep2({
           </SelectItem>
         ))}
       </Select>
+
+      <Button isLoading={isCreating} onClick={onClickCreate} className="mt-2 w-full bg-primary">
+        Create
+      </Button>
     </div>
   );
 }

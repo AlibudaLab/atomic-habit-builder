@@ -10,3 +10,6 @@ if (!admin.apps.length) {
     databaseURL: `https://${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.firebaseio.com`,
   });
 }
+
+const adminDb = admin.firestore();
+export { adminDb };

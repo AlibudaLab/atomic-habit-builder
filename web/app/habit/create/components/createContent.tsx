@@ -1,15 +1,16 @@
 /* eslint-disable react/jsx-pascal-case */
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
 import moment from 'moment';
 import './create.css';
 import Link from 'next/link';
-import { ChallengeTypes, donationDestinations } from '@/constants';
-import { Address } from 'viem';
+import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constants';
+import { Address, parseUnits } from 'viem';
+import useCreateChallenge from '@/hooks/transaction/useCreate';
 
 const defaultDonationDest = donationDestinations[0];
 
@@ -38,6 +39,22 @@ export default function Create() {
   const [stake, setStake] = useState(0);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
+
+  const stakeInUSDC = useMemo(() => parseUnits(stake.toString(), 6), [stake])
+
+  const onCreateSuccess = useCallback(() => setStep(3), [])
+
+  const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
+    defaultVerifier,
+    name,
+    totalTimes,
+    startTimestamp,
+    endTimestamp, // for testing purpose, allow join until last second!
+    endTimestamp,
+    donatioAddr,
+    stakeInUSDC,
+    onCreateSuccess
+  )
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -110,6 +127,8 @@ export default function Create() {
             challengeType={type}
             setChallengeType={setType}
             setDonationAddr={setDonationAddr}
+            onClickCreate={create}
+            isCreating={isCreating}
           />
         )}
       </div>
