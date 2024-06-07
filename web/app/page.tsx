@@ -1,3 +1,4 @@
+import { NextUIProvider } from '@nextui-org/system';
 import { generateMetadata } from '@/utils/generateMetadata';
 import HomePage from './home/HomePage';
 
@@ -15,5 +16,9 @@ export const metadata = generateMetadata({
  * https://nextjs.org/docs/app/building-your-application/rendering/client-components
  */
 export default function Page() {
-  return <HomePage />;
+  return (
+    <NextUIProvider>
+      <HomePage />
+    </NextUIProvider>
+  );
 }
