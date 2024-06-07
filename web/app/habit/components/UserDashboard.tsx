@@ -14,13 +14,9 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
     <div className="flex flex-col items-center justify-center">
       <div className="flex w-full items-center justify-center gap-6 text-center">
         {onGoingChallenges.length > 0 && (
-          <p className="font-londrina text-xl text-xl font-bold"> Challenges you Joined </p>
+          <p className="my-4 font-londrina text-xl font-bold"> Challenge List </p>
         )}
       </div>
-
-      <Link href="/habit/list" className="my-6 py-4 text-primary">
-        <p className="text-md font-bold"> Join Other Challenges </p>
-      </Link>
 
       {/* map challenges to list of buttons */}
       {onGoingChallenges.map((challenge, idx) => (
@@ -36,6 +32,10 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
           />
         </Link>
       ))}
+
+      <Link href="/habit/list" className="text-dark my-6 py-4">
+        <p className="text-md font-bold"> Join Other Challenges </p>
+      </Link>
     </div>
   );
 }

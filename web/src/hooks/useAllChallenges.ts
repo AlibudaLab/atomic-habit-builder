@@ -60,6 +60,7 @@ const useAllChallenges = () => {
               stake: res[6],
             };
           })
+          .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))
           .map((c) => {
             const matchingMetaData = challengeMetaDatas.find((meta) => meta.id === c.id);
             if (!matchingMetaData) return undefined;
