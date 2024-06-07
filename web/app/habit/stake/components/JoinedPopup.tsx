@@ -18,7 +18,9 @@ function JoinedPopup({ challenge, onClose, onCheckInPageClick }: JoinedPopupProp
     <div>
       <p>Challenge starts from</p>
       <p>
-        <strong>{moment.unix(Number(challenge.startTimestamp.toString())).format('MMMM Do')}</strong>
+        <strong>
+          {moment.unix(Number(challenge.startTimestamp.toString())).format('MMMM Do')}
+        </strong>
       </p>
     </div>
   );
