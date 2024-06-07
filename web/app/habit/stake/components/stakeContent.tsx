@@ -67,7 +67,7 @@ export default function StakeChallenge() {
   const handleCloseInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(false);
   const handleOpenDepositPopup = () => setIsDepositPopupOpen(true);
   const handleCloseDepositPopup = () => setIsDepositPopupOpen(false);
-  const handleCheckInPage = () => {
+  const handleCheckInPageClick = () => {
     // Logic to navigate to the check-in page
     setTimeout(() => {
       push(`/habit/checkin/${challengeId}`);
@@ -199,12 +199,12 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
-          <CheckInPopup onClose={handleCloseCheckinPopup} onCheckInPage={handleCheckInPage} />
+          <CheckInPopup onClose={handleCloseCheckinPopup} onCheckInPageClick={handleCheckInPageClick} />
         )}
         {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
           <InsufficientBalancePopup
             onClose={handleCloseInsufficientBalancePopup}
-            onDepositPopup={handleOpenDepositPopup}
+            onDepositClick={handleOpenDepositPopup}
           />
         )}
 

@@ -5,10 +5,10 @@ import PopupWindow from '@/components/PopupWindow/PopupWindow';
 
 type CheckInPopupProps = {
   onClose: () => void;
-  onCheckInPage: () => void;
+  onCheckInPageClick: () => void;
 };
 
-function CheckInPopup({ onClose, onCheckInPage }: CheckInPopupProps) {
+function CheckInPopup({ onClose, onCheckInPageClick }: CheckInPopupProps) {
   const title = "You've Successfully\nJoined the Challenge!";
 
   //TODO @ryanycw: Change the date to the actual start date
@@ -26,7 +26,7 @@ function CheckInPopup({ onClose, onCheckInPage }: CheckInPopupProps) {
       {
         id: 'goToCheckIn',
         label: 'Go to Check in Page',
-        onClick: onCheckInPage,
+        onClick: onCheckInPageClick,
         className: 'popup-buttons',
       },
     ];
@@ -37,7 +37,7 @@ function CheckInPopup({ onClose, onCheckInPage }: CheckInPopupProps) {
 
 CheckInPopup.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onCheckInPage: PropTypes.func.isRequired,
+  onCheckInPageClick: PropTypes.func.isRequired,
 };
 
 export default CheckInPopup;

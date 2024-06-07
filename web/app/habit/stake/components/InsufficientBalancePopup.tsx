@@ -8,10 +8,10 @@ import PopupWindow from '@/components/PopupWindow/PopupWindow';
 
 type InsufficientBalancePopupProps = {
   onClose: () => void;
-  onDepositPopup: () => void;
+  onDepositClick: () => void;
 };
 
-function InsufficientBalancePopup({ onClose, onDepositPopup }: InsufficientBalancePopupProps) {
+function InsufficientBalancePopup({ onClose, onDepositClick }: InsufficientBalancePopupProps) {
   const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
@@ -68,7 +68,7 @@ function InsufficientBalancePopup({ onClose, onDepositPopup }: InsufficientBalan
       {
         id: 'deposit',
         label: 'Deposit',
-        onClick: onDepositPopup,
+        onClick: onDepositClick,
         className: 'popup-buttons',
       },
       {
@@ -91,7 +91,7 @@ function InsufficientBalancePopup({ onClose, onDepositPopup }: InsufficientBalan
 
 InsufficientBalancePopup.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onDepositPopup: PropTypes.func.isRequired,
+  onDepositClick: PropTypes.func.isRequired,
 };
 
 export default InsufficientBalancePopup;
