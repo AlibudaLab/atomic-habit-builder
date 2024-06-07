@@ -22,7 +22,7 @@ import { getCheckInDescription } from '@/utils/challenges';
 import Header from 'app/habit/components/Header';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
-import CheckInPopup from './CheckinPopup';
+import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 
@@ -197,7 +197,7 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
-          <CheckInPopup challenge={challenge} onClose={handleCloseCheckinPopup} onCheckInPageClick={handleCheckInPageClick} />
+          <JoinedPopup challenge={challenge} onClose={handleCloseCheckinPopup} onCheckInPageClick={handleCheckInPageClick} />
         )}
         {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
           <InsufficientBalancePopup

@@ -5,16 +5,15 @@ import moment from 'moment';
 import { Challenge } from '@/types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 
-type CheckInPopupProps = {
+type JoinedPopupProps = {
   challenge: Challenge;
   onClose: () => void;
   onCheckInPageClick: () => void;
 };
 
-function CheckInPopup({ challenge, onClose, onCheckInPageClick }: CheckInPopupProps) {
+function JoinedPopup({ challenge, onClose, onCheckInPageClick }: JoinedPopupProps) {
   const title = "You've Successfully\nJoined the Challenge!";
 
-  //TODO @ryanycw: Change the date to the actual start date
   const content = (
     <div>
       <p>Challenge starts from</p>
@@ -38,10 +37,10 @@ function CheckInPopup({ challenge, onClose, onCheckInPageClick }: CheckInPopupPr
   return <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />;
 }
 
-CheckInPopup.propTypes = {
+JoinedPopup.propTypes = {
   challenge: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onCheckInPageClick: PropTypes.func.isRequired,
 };
 
-export default CheckInPopup;
+export default JoinedPopup;
