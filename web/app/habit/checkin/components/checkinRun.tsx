@@ -32,7 +32,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const [activityIdx, setActivityIdx] = useState(-1);
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
+  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
 
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
