@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 import * as testTokenContract from '@/contracts/testToken';
@@ -10,9 +9,12 @@ import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
  * useShowErrorToast and useToast was removed
  */
 
-const useJoinChallenge = (challengeId: bigint, batchTx?: boolean, approveAmt?: bigint) => {
-  const { push } = useRouter();
-
+const useJoinChallenge = (
+  challengeId: bigint,
+  batchTx?: boolean,
+  approveAmt?: bigint,
+  onSuccess?: () => void,
+) => {
   const txConfig = batchTx
     ? {
         contracts: [
@@ -46,10 +48,7 @@ const useJoinChallenge = (challengeId: bigint, batchTx?: boolean, approveAmt?: b
       //In the orginal file they refetch after success refetch();
       toast.success('Joined! Directing to checkIn!');
 
-      // go to checkin page after 2 secs
-      setTimeout(() => {
-        push(`/habit/checkin/${challengeId}`);
-      }, 2000);
+      onSuccess?.();
     },
   });
 };

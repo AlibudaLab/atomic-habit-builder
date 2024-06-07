@@ -49,7 +49,7 @@ export async function GET(req: NextRequest): Promise<Response> {
       return NextResponse.json({ error: 'challengeId is required' }, { status: 400 });
     }
 
-    console.log('Signing:', { address, activityId, timestamp, challengeId })
+    console.log('Signing:', { address, activityId, timestamp, challengeId });
 
     const verifier = privateKeyToAccount(`0x${process.env.FAUCET_PRIVATE_KEY}`);
 

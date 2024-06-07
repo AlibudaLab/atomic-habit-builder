@@ -21,7 +21,6 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
   const [timestamp, setTimestamp] = useState<number>(0);
   const [signature, setSignature] = useState<{ v: number; r: string; s: string } | null>(null);
 
-  
   // todo: change this to get the timestamp of the exercise
   const activityId =
     activityIdx && activityIdx !== -1
@@ -36,15 +35,15 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
     const now = moment().unix();
 
     const fetchURL =
-    activityId !== null
-      ? '/api/sign?' +
-        new URLSearchParams({
-          address: address as string,
-          activityId: activityId.toString(),
-          timestamp: now.toString(),
-          challengeId: challenge.id.toString(),
-        }).toString()
-      : '';
+      activityId !== null
+        ? '/api/sign?' +
+          new URLSearchParams({
+            address: address as string,
+            activityId: activityId.toString(),
+            timestamp: now.toString(),
+            challengeId: challenge.id.toString(),
+          }).toString()
+        : '';
 
     const fetchSignature = async (): Promise<{ v: number; r: string; s: string }> => {
       const response = await fetch(fetchURL, {
@@ -62,7 +61,7 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
         setSignature(_signature);
         setTimestamp(now);
         console.log('Signature:', _signature);
-        console.log('Timestamp:', now)
+        console.log('Timestamp:', now);
       })
       .catch((error) => {
         console.error('Error fetching the signature:', error);
