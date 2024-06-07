@@ -3,14 +3,12 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { useCapabilities } from 'wagmi/experimental';
-import crypto from 'crypto';
-import { GateFiDisplayModeEnum, GateFiSDK, GateFiLangEnum } from '@gatefi/js-sdk';
 
 import { EXPECTED_CHAIN } from '@/constants';
 import * as testTokenContract from '@/contracts/testToken';
@@ -24,14 +22,16 @@ import { getCheckInDescription } from '@/utils/challenges';
 import Header from 'app/habit/components/Header';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
+import CheckInPopup from './CheckinPopup';
+import InsufficientBalancePopup from './InsufficientBalancePopup';
+import DepositPopup from './DepositPopup';
 
 export default function StakeChallenge() {
+  const { push } = useRouter();
+
   const { challengeId } = useParams<{ challengeId: string }>();
 
   const { challenge, loading } = useChallenge(Number(challengeId));
-
-  const overlayInstanceSDK = useRef<GateFiSDK | null>(null);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
   const { address: smartWallet } = useAccount();
 
@@ -56,6 +56,23 @@ export default function StakeChallenge() {
   });
 
   const hasEnoughAllowance = allowance ? challenge && allowance >= challenge.stake : false;
+
+  const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
+  const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
+  const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
+
+  const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
+  const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
+  const handleOpenInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(true);
+  const handleCloseInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(false);
+  const handleOpenDepositPopup = () => setIsDepositPopupOpen(true);
+  const handleCloseDepositPopup = () => setIsDepositPopupOpen(false);
+  const handleCheckInPage = () => {
+    // Logic to navigate to the check-in page
+    setTimeout(() => {
+      push(`/habit/checkin/${challengeId}`);
+    }, 2000);
+  };
 
   const {
     onSubmitTransaction: onMintTx,
@@ -87,41 +104,6 @@ export default function StakeChallenge() {
     onApproveTx();
   };
 
-  const onOnrampClick = async () => {
-    if (overlayInstanceSDK.current) {
-      if (isOverlayVisible) {
-        console.log('is visible');
-        overlayInstanceSDK.current.hide();
-        setIsOverlayVisible(false);
-      } else {
-        console.log('is not visible');
-        overlayInstanceSDK.current.show();
-        setIsOverlayVisible(true);
-      }
-    } else {
-      const randomString = crypto.randomBytes(32).toString('hex');
-      overlayInstanceSDK.current = new GateFiSDK({
-        merchantId: `${process.env.NEXT_PUBLIC_UNLIMIT_MERCHANTID}`,
-        displayMode: GateFiDisplayModeEnum.Overlay,
-        nodeSelector: '#overlay-button',
-        lang: GateFiLangEnum.en_US,
-        isSandbox: true,
-        successUrl: window.location.href,
-        walletAddress: smartWallet,
-        externalId: randomString,
-        defaultFiat: {
-          currency: 'USD',
-          amount: '20',
-        },
-        defaultCrypto: {
-          currency: 'ETH',
-        },
-      });
-    }
-    overlayInstanceSDK.current?.show();
-    setIsOverlayVisible(true);
-  };
-
   const {
     onSubmitTransaction: onJoinTx,
     isPreparing: isJoinPreparing,
@@ -130,6 +112,9 @@ export default function StakeChallenge() {
     challenge?.id ?? BigInt(0),
     currentChainSupportBatchTx,
     challenge?.stake ?? BigInt(0),
+    () => {
+      handleOpenCheckinPopup(); // trigger pop up window
+    },
   );
 
   const onJoinButtonClick = async () => {
@@ -137,7 +122,10 @@ export default function StakeChallenge() {
       toast.error('Loading Challenge');
       return;
     }
-    onJoinTx();
+    if (hasEnoughBalance) {
+      onJoinTx();
+    }
+    handleOpenInsufficientBalancePopup();
   };
 
   return (
@@ -193,7 +181,6 @@ export default function StakeChallenge() {
             }
             disabled={
               !challenge ||
-              !hasEnoughBalance ||
               isMintPreparing ||
               isApprovePreparing ||
               isJoinPreparing ||
@@ -210,6 +197,18 @@ export default function StakeChallenge() {
             {hasEnoughAllowance || currentChainSupportBatchTx ? `Join This Challenge` : 'Approve'}
           </button>
         )}
+
+        {isCheckinPopupOpen && hasEnoughBalance && (
+          <CheckInPopup onClose={handleCloseCheckinPopup} onCheckInPage={handleCheckInPage} />
+        )}
+        {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
+          <InsufficientBalancePopup
+            onClose={handleCloseInsufficientBalancePopup}
+            onDepositPopup={handleOpenDepositPopup}
+          />
+        )}
+
+        {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
         {/**
          * Display only when challenge is selected
