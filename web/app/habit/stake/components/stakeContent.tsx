@@ -109,7 +109,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(
-    BigInt(challenge?.id) ?? BigInt(0),
+    BigInt(challenge?.id?? 0),
     currentChainSupportBatchTx,
     challenge?.stake ?? BigInt(0),
     () => {
