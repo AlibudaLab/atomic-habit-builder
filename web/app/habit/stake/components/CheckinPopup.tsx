@@ -1,14 +1,17 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
+import { Challenge } from '@/types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 
 type CheckInPopupProps = {
+  challenge: Challenge;
   onClose: () => void;
   onCheckInPageClick: () => void;
 };
 
-function CheckInPopup({ onClose, onCheckInPageClick }: CheckInPopupProps) {
+function CheckInPopup({ challenge, onClose, onCheckInPageClick }: CheckInPopupProps) {
   const title = "You've Successfully\nJoined the Challenge!";
 
   //TODO @ryanycw: Change the date to the actual start date
@@ -16,7 +19,7 @@ function CheckInPopup({ onClose, onCheckInPageClick }: CheckInPopupProps) {
     <div>
       <p>Challenge starts from</p>
       <p>
-        <strong>May 1st</strong>
+        <strong>{moment.unix(Number(challenge.startTimestamp.toString())).format('MMMM Do')}</strong>
       </p>
     </div>
   );
@@ -36,6 +39,7 @@ function CheckInPopup({ onClose, onCheckInPageClick }: CheckInPopupProps) {
 }
 
 CheckInPopup.propTypes = {
+  challenge: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onCheckInPageClick: PropTypes.func.isRequired,
 };
