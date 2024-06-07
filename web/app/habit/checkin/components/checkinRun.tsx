@@ -34,7 +34,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
-  const challengeStarted = useMemo(() => moment().unix() > challenge.startTimestamp, [challenge.startTimestamp]); 
+  const challengeStarted = useMemo(
+    () => moment().unix() > challenge.startTimestamp,
+    [challenge.startTimestamp],
+  );
 
   const {
     activityId: checkInPendingId,
@@ -128,10 +131,18 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
           onClick={onClickCheckIn}
-          disabled={!challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1}
+          disabled={
+            !challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1
+          }
         >
           {' '}
-          {isCheckInLoading ? <WaitingTx /> : challengeStarted ? 'Check In' : 'Not started yet'}{' '}
+          {isCheckInLoading ? (
+            <WaitingTx />
+          ) : challengeStarted ? (
+            'Check In'
+          ) : (
+            'Not started yet'
+          )}{' '}
         </button>
       ) : (
         <button
