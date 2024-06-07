@@ -11250,6 +11250,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clipboard-copy@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "clipboard-copy@npm:4.0.1"
+  checksum: 10c0/382438f78d43512df755740ebcaa6bfa3413bfaf0e7096137799acea88583b3e2ab17164348912c36216d56e69227c47c705da77c50ad8da57456cde8cad0d43
+  languageName: node
+  linkType: hard
+
 "clipboardy@npm:^4.0.0":
   version: 4.0.0
   resolution: "clipboardy@npm:4.0.0"
@@ -20341,6 +20348,7 @@ __metadata:
     abitype: "npm:^0.10.3"
     autoprefixer: "npm:^10.4.16"
     babel-jest: "npm:^29.7.0"
+    clipboard-copy: "npm:^4.0.1"
     clsx: "npm:^2.1.0"
     dompurify: "npm:^3.1.4"
     eslint: "npm:^8.27.0"

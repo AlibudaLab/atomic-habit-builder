@@ -29,6 +29,7 @@ export type ChallengeMetaData = {
   name: string;
   type: ChallengeTypes;
   description?: string;
+  public: boolean;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;

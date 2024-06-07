@@ -7,7 +7,7 @@ import { Address } from 'viem';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
 
-const useAllChallenges = () => {
+const useAllPublicChallenges = () => {
   const publicClient = usePublicClient({ config });
 
   const [loading, setLoading] = useState(true);
@@ -65,16 +65,16 @@ const useAllChallenges = () => {
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))
+
           .map((c) => {
             const matchingMetaData = challengesMetaDatas.find(
-              (meta) => meta.id.toString() === c.id.toString(),
+              (meta) => meta.id === Number(c.id.toString()),
             );
             if (!matchingMetaData) return undefined;
             return { ...c, ...matchingMetaData };
           })
-          .filter((c) => c !== undefined) as Challenge[];
-
-        console.log('newData', newData);
+          .filter((c) => c !== undefined)
+          .filter((c) => c?.public) as Challenge[];
 
         setChallenges(newData);
 
@@ -92,4 +92,4 @@ const useAllChallenges = () => {
   return { loading, challenges, error };
 };
 
-export default useAllChallenges;
+export default useAllPublicChallenges;

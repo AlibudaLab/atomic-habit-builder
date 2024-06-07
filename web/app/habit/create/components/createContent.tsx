@@ -5,12 +5,14 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
+import CreateStep3 from './step3';
 import moment from 'moment';
 import './create.css';
-import Link from 'next/link';
+
 import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constants';
-import { Address, parseUnits } from 'viem';
+import { Address, DecodeEventLogReturnType, parseUnits } from 'viem';
 import useCreateChallenge from '@/hooks/transaction/useCreate';
+import toast from 'react-hot-toast';
 
 const defaultDonationDest = donationDestinations[0];
 
@@ -30,6 +32,9 @@ export default function Create() {
   // 3 steps: input, review, success
   const [step, setStep] = useState(1);
 
+  // generate a random char and number string, 6 chars
+  const accessCode = useMemo(() => Math.random().toString(36).substring(2, 8).toUpperCase(), []);
+
   // all inputs
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -40,9 +45,48 @@ export default function Create() {
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
 
-  const stakeInUSDC = useMemo(() => parseUnits(stake.toString(), 6), [stake])
+  // only set after the challenge creation tx
+  const [createdChallengeId, setCreatedChallengeId] = useState<number>(0);
 
-  const onCreateSuccess = useCallback(() => setStep(3), [])
+  const stakeInUSDC = useMemo(() => parseUnits(stake.toString(), 6), [stake]);
+
+  const onCreateSuccess = useCallback(
+    (receipt: any, events: DecodeEventLogReturnType[]) => {
+      const targetEvent = events.find((e) => e.eventName === 'Register');
+      if (!targetEvent) {
+        return toast.error('Error Creating a Challenge.');
+      }
+
+      const challengeId = Number(((targetEvent.args as any).challengeId as bigint).toString());
+
+      // add this to firestore DB
+      fetch('/api/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          description,
+          type,
+          public: false,
+          challengeId,
+          accessCode: accessCode,
+          user: address,
+        }),
+      })
+        .then((res) => {
+          console.log('api response', res);
+          setCreatedChallengeId(challengeId);
+          setStep(3);
+        })
+        .catch((error) => {
+          console.error('Error adding challenge:', error);
+          toast.error('Error Creating a Challenge.');
+        });
+    },
+    [name, description, type, accessCode, address],
+  );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
     defaultVerifier,
@@ -53,8 +97,13 @@ export default function Create() {
     endTimestamp,
     donatioAddr,
     stakeInUSDC,
-    onCreateSuccess
-  )
+    onCreateSuccess,
+  );
+
+  const onClickCreate = useCallback(async () => {
+    // submit create tx
+    create();
+  }, [create]);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -127,8 +176,18 @@ export default function Create() {
             challengeType={type}
             setChallengeType={setType}
             setDonationAddr={setDonationAddr}
-            onClickCreate={create}
+            onClickCreate={onClickCreate}
             isCreating={isCreating}
+          />
+        )}
+
+        {step === 3 && (
+          <CreateStep3
+            accessCode={accessCode}
+            name={name}
+            stake={stake}
+            challengeType={type}
+            challengeId={createdChallengeId}
           />
         )}
       </div>
