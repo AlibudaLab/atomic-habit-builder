@@ -25,7 +25,7 @@ export default function CreateStep2({
   isCreating,
 }: Step2Props) {
   return (
-    <div className="flex flex-col items-center justify-start px-10">
+    <div className="flex flex-col items-center justify-start px-10 ">
       <Select label="Challenge Type" className="my-4" value={challengeType}>
         {Object.values(ChallengeTypes)
           .filter((type: ChallengeTypes) => type !== ChallengeTypes.NFC_Chip)

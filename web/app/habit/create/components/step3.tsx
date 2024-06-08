@@ -34,7 +34,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
   }, [link]);
 
   return (
-    <div className="flex flex-col justify-start p-8 ">
+    <div className="flex flex-col items-center justify-start p-8 ">
       <p className="px-4 py-8 text-lg">Successfully create a new Challenge!</p>
 
       <p className="text-grey-800 text-sm">
