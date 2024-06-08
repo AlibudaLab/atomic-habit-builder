@@ -9,7 +9,7 @@ export const metadata = generateMetadata({
   pathname: '',
 });
 
-export default function ClaimPage() {
+export default function CreatePage() {
   return (
     <main className="container mx-auto flex h-screen flex-col items-center pt-16">
       <Header />
