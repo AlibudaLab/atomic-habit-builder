@@ -1,5 +1,5 @@
 import { baseSepolia } from 'viem/chains';
-import { ChallengeMetaData } from './types';
+import { ChallengeMetaData, DonationDest } from './types';
 
 export const EXPECTED_CHAIN = baseSepolia;
 
@@ -9,41 +9,15 @@ export enum ChallengeTypes {
   NFC_Chip = 'NFC Chip',
 }
 
-export const challengeMetaDatas: ChallengeMetaData[] = [
-  // {
-  //   id: BigInt(1),
-  //   name: 'NFC Challenge 1',
-  //   type: ChallengeTypes.NFC_Chip,
-  //   description: 'Go to Sydney Park and find the hidden NFC chip to check in!',
-  // },
-  // {
-  //   id: BigInt(2),
-  //   name: 'NFC Challenge',
-  //   type: ChallengeTypes.NFC_Chip,
-  //   description: 'Go find a cool dev with the ARX chip to check in!',
-  // },
+export const donationDestinations: DonationDest[] = [
   {
-    id: BigInt(3),
-    name: 'June Running Challenge',
-    description: 'Finish more than 10 runs on Strava to complete this challenge!',
-    type: ChallengeTypes.Run,
+    name: 'Protocol Guild',
+    address: '0x32e3C7fD24e175701A35c224f2238d18439C7dBC',
   },
   {
-    id: BigInt(4),
-    name: 'Workout Challenge #1',
-    description: 'Finish more than 14 workouts on Strava to complete this challenge!',
-    type: ChallengeTypes.Workout,
-  },
-  {
-    id: BigInt(5),
-    name: 'July Running Challenge',
-    description: 'Finish more than 10 runs on Strava in July to complete this challenge!',
-    type: ChallengeTypes.Run,
-  },
-  {
-    id: BigInt(6),
-    name: 'Workout Challenge #2',
-    description: 'Finish more than 14 workouts on Strava to complete this challenge!',
-    type: ChallengeTypes.Workout,
+    name: 'Alibuda',
+    address: '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897',
   },
 ];
+
+export const defaultVerifier = '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897';

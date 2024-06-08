@@ -13,7 +13,7 @@ export enum WorkoutVerifier {
 
 // Raw data from the chain / subgraph
 export type ChallengeDetail = {
-  id: bigint;
+  id: number;
   startTimestamp: number;
   joinDueTimestamp: number;
   endTimestamp: number;
@@ -25,14 +25,21 @@ export type ChallengeDetail = {
 
 // Defined by us, off-chain
 export type ChallengeMetaData = {
-  id: bigint;
+  id: number;
   name: string;
   type: ChallengeTypes;
   description?: string;
+  public: boolean;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;
 
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
+};
+
+export type DonationDest = {
+  name: string;
+  address: Address;
+  logo?: string;
 };

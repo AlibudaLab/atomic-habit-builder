@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Challenge } from '@/types';
-import { challengeMetaDatas } from '@/constants';
+import useChallengeMetaDatas from './useChallengeMetaData';
 
 const useChallenge = (id: number) => {
   const publicClient = usePublicClient({ config });
@@ -12,8 +12,12 @@ const useChallenge = (id: number) => {
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [error, setError] = useState<unknown | null>(null);
 
+  const { challengesMetaDatas, loading: loadingMetaData } = useChallengeMetaDatas();
+
   useEffect(() => {
     if (!publicClient?.multicall) return;
+    if (challengesMetaDatas.length === 0) return;
+    if (loadingMetaData) return;
 
     const fetchData = async () => {
       try {
@@ -26,7 +30,7 @@ const useChallenge = (id: number) => {
           args: [BigInt(id.toString())],
         });
 
-        const metaData = challengeMetaDatas.find((c) => c.id.toString() === id.toString());
+        const metaData = challengesMetaDatas.find((c) => c.id.toString() === id.toString());
         if (!metaData) return;
 
         const data = {
@@ -50,7 +54,7 @@ const useChallenge = (id: number) => {
     };
 
     fetchData().catch(console.error);
-  }, [publicClient, id]);
+  }, [publicClient, id, challengesMetaDatas, loadingMetaData]);
 
   return { loading, challenge, error };
 };

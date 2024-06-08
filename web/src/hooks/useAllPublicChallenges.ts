@@ -5,20 +5,24 @@ import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Address } from 'viem';
 import { Challenge } from '@/types';
-import { challengeMetaDatas } from '@/constants';
+import useChallengeMetaDatas from './useChallengeMetaData';
 
-const useAllChallenges = () => {
+const useAllPublicChallenges = () => {
   const publicClient = usePublicClient({ config });
 
   const [loading, setLoading] = useState(true);
   const [challenges, setChallenges] = useState<Challenge[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
 
+  const { challengesMetaDatas, loading: loadingMetaData } = useChallengeMetaDatas();
+
   useEffect(() => {
     if (!publicClient?.multicall) return;
+    if (loadingMetaData) return;
 
     const fetchData = async () => {
       try {
+        console.log('start fetching');
         setLoading(true);
 
         const challengeCount = await readContract(config, {
@@ -61,12 +65,16 @@ const useAllChallenges = () => {
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))
+
           .map((c) => {
-            const matchingMetaData = challengeMetaDatas.find((meta) => meta.id === c.id);
+            const matchingMetaData = challengesMetaDatas.find(
+              (meta) => meta.id === Number(c.id.toString()),
+            );
             if (!matchingMetaData) return undefined;
             return { ...c, ...matchingMetaData };
           })
-          .filter((c) => c !== undefined) as Challenge[];
+          .filter((c) => c !== undefined)
+          .filter((c) => c?.public) as Challenge[];
 
         setChallenges(newData);
 
@@ -79,9 +87,9 @@ const useAllChallenges = () => {
     };
 
     fetchData().catch(console.error);
-  }, [publicClient]);
+  }, [publicClient, loadingMetaData, challengesMetaDatas]);
 
   return { loading, challenges, error };
 };
 
-export default useAllChallenges;
+export default useAllPublicChallenges;

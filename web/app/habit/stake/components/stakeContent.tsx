@@ -109,7 +109,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(
-    challenge?.id ?? BigInt(0),
+    BigInt(challenge?.id ?? 0),
     currentChainSupportBatchTx,
     challenge?.stake ?? BigInt(0),
     () => {
@@ -199,7 +199,10 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
-          <CheckInPopup onClose={handleCloseCheckinPopup} onCheckInPageClick={handleCheckInPageClick} />
+          <CheckInPopup
+            onClose={handleCloseCheckinPopup}
+            onCheckInPageClick={handleCheckInPageClick}
+          />
         )}
         {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
           <InsufficientBalancePopup
