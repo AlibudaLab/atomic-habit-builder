@@ -197,12 +197,8 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
-<<<<<<< feat/ui-popup-window
           <JoinedPopup
             challenge={challenge}
-=======
-          <CheckInPopup
->>>>>>> master
             onClose={handleCloseCheckinPopup}
             onCheckInPageClick={handleCheckInPageClick}
           />
