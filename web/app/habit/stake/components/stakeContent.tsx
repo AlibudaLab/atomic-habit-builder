@@ -22,7 +22,7 @@ import { getCheckInDescription } from '@/utils/challenges';
 import Header from 'app/habit/components/Header';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
-import CheckInPopup from './CheckinPopup';
+import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 
@@ -69,9 +69,7 @@ export default function StakeChallenge() {
   const handleCloseDepositPopup = () => setIsDepositPopupOpen(false);
   const handleCheckInPageClick = () => {
     // Logic to navigate to the check-in page
-    setTimeout(() => {
-      push(`/habit/checkin/${challengeId}`);
-    }, 2000);
+    push(`/habit/checkin/${challengeId}`);
   };
 
   const {
@@ -170,6 +168,7 @@ export default function StakeChallenge() {
          * If doesn't support batch tx, has enough balance, has enough allowance -> Stake Tx
          * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
+        {/* //TODO @ryanycw: There is some error after minting test token */}
         {challenge && (
           <button
             type="button"
@@ -180,10 +179,9 @@ export default function StakeChallenge() {
                 : onApproveTestTokenClick
             }
             disabled={
-              !challenge ||
+              isJoinPreparing ||
               isMintPreparing ||
               isApprovePreparing ||
-              isJoinPreparing ||
               isJoinLoading ||
               isMintLoading ||
               isApproveLoading
@@ -199,7 +197,8 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
-          <CheckInPopup
+          <JoinedPopup
+            challenge={challenge}
             onClose={handleCloseCheckinPopup}
             onCheckInPageClick={handleCheckInPageClick}
           />

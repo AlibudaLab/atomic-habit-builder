@@ -7,18 +7,29 @@ import { formatUnits } from 'viem';
 import useChallenge from '@/hooks/useChallenge';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import GenerateByName from '@/components/Nouns/GenerateByName';
+import ClaimedPopup from './ClaimedPopup';
 
 export default function Claim() {
   const { push } = useRouter();
   const { challengeId } = useParams<{ challengeId: string }>();
   const { challenge, loading } = useChallenge(Number(challengeId));
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const [isClaimedPopupOpen, setIsClaimedPopupOpen] = useState(false);
+
+  const handleOpenClaimedPopup = () => setIsClaimedPopupOpen(true);
+  const handleCloseClaimedPopup = () => setIsClaimedPopupOpen(false);
+  const handleChallengeListClick = () => {
+    push('/');
+  };
+
   const {
     onSubmitTransaction: onWithdrawTx,
     isPreparing: isWithdrawPreparing,
     isLoading: isWithdrawLoading,
   } = useWithdraw(BigInt(challenge?.id ?? 0), () => {
     setIsSuccess(true);
+    handleOpenClaimedPopup();
   });
 
   return (
@@ -61,6 +72,13 @@ export default function Claim() {
         <div> Loading...</div>
       ) : (
         <div>Invalid Challenge Id</div>
+      )}
+
+      {isClaimedPopupOpen && (
+        <ClaimedPopup
+          onClose={handleCloseClaimedPopup}
+          onCheckInPageClick={handleChallengeListClick}
+        />
       )}
     </div>
   );
