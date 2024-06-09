@@ -27,7 +27,7 @@ export default function Claim() {
     onSubmitTransaction: onWithdrawTx,
     isPreparing: isWithdrawPreparing,
     isLoading: isWithdrawLoading,
-  } = useWithdraw(challenge?.id ?? BigInt(0), () => {
+  } = useWithdraw(BigInt(challenge?.id ?? 0), () => {
     setIsSuccess(true);
     handleOpenClaimedPopup();
   });

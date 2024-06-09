@@ -107,7 +107,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(
-    challenge?.id ?? BigInt(0),
+    BigInt(challenge?.id ?? 0),
     currentChainSupportBatchTx,
     challenge?.stake ?? BigInt(0),
     () => {
@@ -197,8 +197,12 @@ export default function StakeChallenge() {
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (
+<<<<<<< feat/ui-popup-window
           <JoinedPopup
             challenge={challenge}
+=======
+          <CheckInPopup
+>>>>>>> master
             onClose={handleCloseCheckinPopup}
             onCheckInPageClick={handleCheckInPageClick}
           />

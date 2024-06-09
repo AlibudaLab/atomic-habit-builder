@@ -14,7 +14,7 @@
   --palette-bg: #ffffff;
   --palette-bg-soft-black: #141519;
   --palette-bg-white: #fff;
-  --palette-text-dark: #3a3042;
+  --palette-dark: #3a3042;
   --palette-primary: #ff784f;
 
   /* Build Onchain Apps shared variables */
@@ -35,7 +35,7 @@
 html {
   height: 100%;
   scroll-behavior: smooth;
-  color: var(--palette-text-dark);
+  color: var(--palette-dark);
 }
 
 html .font-title {
@@ -55,7 +55,7 @@ html .text-primary {
 }
 
 html .text-dark {
-  color: var(--palette-text-dark);
+  color: var(--palette-dark);
 }
 
 html .bg-primary {
@@ -68,6 +68,10 @@ html .font-normal {
 
 html .bg-light {
   background-color: var(--palette-bg);
+}
+
+html .bg-dark {
+  background-color: var(--palette-dark);
 }
 
 html .wrapped {

@@ -29,7 +29,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
     hash: dataHash,
   });
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
+  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -53,7 +53,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         abi: trackerContract.abi,
         functionName: 'checkIn',
         args: [
-          challenge.id,
+          BigInt(challenge.id),
           BigInt(timestamp),
           signature.raw.v,
           ('0x' + signature.raw.r) as `0x${string}`,
