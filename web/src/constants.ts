@@ -18,6 +18,6 @@ export const donationDestinations: DonationDest[] = [
     name: 'Alibuda',
     address: '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897',
   },
-]; 
+];
 
 export const defaultVerifier = '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897';
