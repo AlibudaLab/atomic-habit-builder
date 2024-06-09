@@ -16,7 +16,7 @@ type CheckinPopupProps = {
 function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupProps) {
   const { address } = useAccount();
 
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
+  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
 
   const remainingDays = Math.max(
     0,
