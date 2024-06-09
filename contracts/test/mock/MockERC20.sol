@@ -16,7 +16,6 @@ contract MockERC20 is ERC20 {
         return __decimals;
     }
 
-
     function mint(address to, uint256 amount) public {
         if (amount > 1e21) {
             revert ExceedMaxAmount();
