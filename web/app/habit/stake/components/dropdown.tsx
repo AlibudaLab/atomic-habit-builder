@@ -2,7 +2,7 @@ import { clsx } from 'clsx';
 import { SetStateAction, useState } from 'react';
 import { challengeToEmoji } from '@/utils/challenges';
 import { Challenge } from '@/types';
-import useAllPublicChallenges from '@/hooks/useAllPublicChallenges';
+import useAllChallenges from '@/hooks/useAllChallenges';
 import { formatDuration } from '@/utils/timestamp';
 
 export function ChallengesDropDown({
@@ -16,7 +16,7 @@ export function ChallengesDropDown({
 }) {
   const [open, setOpen] = useState(true);
 
-  const { challenges } = useAllPublicChallenges();
+  const { challenges } = useAllChallenges();
 
   return (
     <div className=" flex w-full items-center justify-start gap-4">

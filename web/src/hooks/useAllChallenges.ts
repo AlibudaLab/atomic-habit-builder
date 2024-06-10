@@ -7,7 +7,7 @@ import { Address } from 'viem';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
 
-const useAllPublicChallenges = () => {
+const useAllChallenges = () => {
   const publicClient = usePublicClient({ config });
 
   const [loading, setLoading] = useState(true);
@@ -92,4 +92,4 @@ const useAllPublicChallenges = () => {
   return { loading, challenges, error };
 };
 
-export default useAllPublicChallenges;
+export default useAllChallenges;

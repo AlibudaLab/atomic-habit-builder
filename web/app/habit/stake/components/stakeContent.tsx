@@ -33,7 +33,7 @@ export default function StakeChallenge() {
   const { challengeId } = useParams<{ challengeId: string }>();
 
   const searchParams = useSearchParams();
-  const attachedCode = searchParams.get('accessCode') ?? '';
+  const attachedCode = searchParams.get('code') ?? '';
 
   const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
 
