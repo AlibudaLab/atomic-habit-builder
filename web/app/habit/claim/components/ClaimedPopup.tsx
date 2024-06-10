@@ -29,14 +29,12 @@ function ClaimedPopup({ onClose, onCheckInPageClick }: ClaimedPopupProps) {
         id: 'shareOnFarcaster',
         label: 'Share on Farcaster',
         onClick: handleShareOnFarcaster,
-        className: 'popup-buttons',
         disabled: true,
       },
       {
         id: 'backToChallengeList',
         label: 'Back to Challenge List',
         onClick: onCheckInPageClick,
-        className: 'popup-buttons',
       },
     ];
   }, []);

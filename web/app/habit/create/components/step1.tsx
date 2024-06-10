@@ -109,7 +109,7 @@ export default function CreateStep1({
         }
       />
 
-      <Button onClick={() => setStep(2)} className="mt-2 w-full">
+      <Button onClick={() => setStep(2)} className="w-full" color="primary">
         Next: Setup Check-in
       </Button>
     </div>

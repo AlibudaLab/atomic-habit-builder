@@ -69,13 +69,11 @@ function InsufficientBalancePopup({ onClose, onDepositClick }: InsufficientBalan
         id: 'deposit',
         label: 'Deposit',
         onClick: onDepositClick,
-        className: 'popup-buttons',
       },
       {
         id: 'onramp',
         label: 'Onramp',
         onClick: handleOnrampClick,
-        className: 'popup-buttons',
         disabled: true,
       },
     ];

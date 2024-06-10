@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './PopupWindow.css'; // Import appropriate styles
 import PopupCloseButton from './PopupCloseButton';
+import { Button } from '@nextui-org/button';
 
 type ButtonProps = {
   id: string; // Add an ID to use as a key
@@ -56,17 +57,19 @@ function PopupWindow({ title, onClose, content = null, buttons = [] }: PopupWind
               ))}
             </div>
             <div className="popup-content">{content}</div>
-            <div className="popup-buttons">
+            <div>
               {buttons.map((btn) => (
-                <button
+                <Button
                   key={btn.id}
                   type="button"
                   onClick={handleButtonClick(btn.onClick)}
                   className={btn.className}
                   disabled={btn.disabled}
+                  color='primary'
+                  variant='bordered'
                 >
                   {btn.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
