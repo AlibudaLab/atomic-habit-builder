@@ -23,10 +23,11 @@ export function ActivityDropDown({
   return (
     <div className="m-2 flex min-h-16 w-full max-w-80 p-2">
       <Select
-        label="Choose an activity"
+        label="Select an activity"
         className="max-w-xs"
         value={activityId}
         disabledKeys={usedActivities}
+        isLoading={loading}
       >
         {activities.map((activity: StravaRunData | StravaWorkoutData) => {
           const isChosen = activityId === activity.id;

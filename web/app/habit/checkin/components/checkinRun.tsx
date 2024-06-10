@@ -140,45 +140,44 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       )}
 
-      {(checkedIn >= challenge.targetNum ? (
-          <Link href={`/habit/claim/${challenge.id}`}>
-            <Button
-              type="button"
-              color="primary"
-              variant="bordered"
-              className="mt-12 min-h-12 w-3/4 max-w-56"
-            >
-              Finish
-            </Button>
-          </Link>
-        ) : connected && !runDataError ? (
+      {checkedIn >= challenge.targetNum ? (
+        <Link href={`/habit/claim/${challenge.id}`}>
           <Button
             type="button"
             color="primary"
             variant="bordered"
             className="mt-12 min-h-12 w-3/4 max-w-56"
-            onClick={onClickCheckIn}
-            isDisabled={
-              !challengeStarted || isCheckInLoading || isCheckInPreparing || activityId === -1
-            }
-            isLoading={isCheckInLoading}
           >
-            {' '}
-            {challengeStarted ? 'Check In' : 'Not started yet'}{' '}
+            Finish
           </Button>
-        ) : (
-          <Button
-            type="button"
-            color="primary"
-            variant="bordered"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
-            onClick={onClickConnectStrava}
-          >
-            Connect with Strava
-          </Button>
-        ))}
+        </Link>
+      ) : connected && !runDataError ? (
+        <Button
+          type="button"
+          color="primary"
+          variant="bordered"
+          className="mt-12 min-h-12 w-3/4 max-w-56"
+          onClick={onClickCheckIn}
+          isDisabled={
+            !challengeStarted || isCheckInLoading || isCheckInPreparing || activityId === -1
+          }
+          isLoading={isCheckInLoading}
+        >
+          {' '}
+          {challengeStarted ? 'Check In' : 'Not started yet'}{' '}
+        </Button>
+      ) : (
+        <Button
+          type="button"
+          color="primary"
+          variant="bordered"
+          className="mt-12 min-h-12 w-3/4 max-w-56"
+          onClick={onClickConnectStrava}
+        >
+          Connect with Strava
+        </Button>
+      )}
 
-      
       {isCheckinPopupOpen && (
         <CheckinPopup
           challenge={challenge}
