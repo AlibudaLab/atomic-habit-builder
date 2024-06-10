@@ -8,13 +8,13 @@ export default function useFields<T>(initFields: T) {
   }, [setFields, initFields]);
 
   const setField = useCallback(
-    <K extends keyof T>(key: K, value: T[K]) => {
-      setFields({
-        ...fields,
-        [key]: value,
-      });
+    (update: Partial<T> | ((fields: T) => Partial<T>)) => {
+      setFields((prevFields) => ({
+        ...prevFields,
+        ...(typeof update === 'function' ? update(prevFields) : update),
+      }));
     },
-    [fields, setFields],
+    [setFields],
   );
 
   return useMemo(() => {
