@@ -22,6 +22,7 @@ import WaitingTx from 'app/habit/components/WaitingTx';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserJoined from '@/hooks/useUserJoined';
+import { Button } from '@nextui-org/button';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -139,43 +140,45 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       )}
 
-      {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.id}`}>
-          <button
+      {(checkedIn >= challenge.targetNum ? (
+          <Link href={`/habit/claim/${challenge.id}`}>
+            <Button
+              type="button"
+              color="primary"
+              variant="bordered"
+              className="mt-12 min-h-12 w-3/4 max-w-56"
+            >
+              Finish
+            </Button>
+          </Link>
+        ) : connected && !runDataError ? (
+          <Button
             type="button"
-            className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
+            color="primary"
+            variant="bordered"
+            className="mt-12 min-h-12 w-3/4 max-w-56"
+            onClick={onClickCheckIn}
+            isDisabled={
+              !challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1
+            }
+            isLoading={isCheckInLoading}
           >
-            Finish
-          </button>
-        </Link>
-      ) : connected && !runDataError ? (
-        <button
-          type="button"
-          className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
-          onClick={onClickCheckIn}
-          disabled={
-            !challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1
-          }
-        >
-          {' '}
-          {isCheckInLoading ? (
-            <WaitingTx />
-          ) : challengeStarted ? (
-            'Check In'
-          ) : (
-            'Not started yet'
-          )}{' '}
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
-          onClick={onClickConnectStrava}
-        >
-          Connect with Strava
-        </button>
-      )}
+            {' '}
+            {challengeStarted ? 'Check In' : 'Not started yet'}{' '}
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            color="primary"
+            variant="bordered"
+            className="mt-12 min-h-12 w-3/4 max-w-56"
+            onClick={onClickConnectStrava}
+          >
+            Connect with Strava
+          </Button>
+        ))}
 
+      
       {isCheckinPopupOpen && (
         <CheckinPopup
           challenge={challenge}

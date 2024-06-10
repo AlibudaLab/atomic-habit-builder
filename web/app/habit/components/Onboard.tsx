@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@nextui-org/button';
 import { useConnect } from 'wagmi';
 
 export default function Onboard() {
@@ -10,13 +11,14 @@ export default function Onboard() {
     <div className="flex flex-col items-center justify-center">
       <p className="pb-4 text-center font-londrina text-xl font-bold"> Please Sign in First </p>
 
-      <button
+      <Button
         type="button"
-        className="mt-4 rounded-lg bg-primary px-6 py-3 font-bold text-white transition-transform duration-300 hover:scale-105"
+        className="mt-4 p-6"
+        color="primary"
         onClick={() => connect({ connector })}
       >
         Use Base Smart Wallet
-      </button>
+      </Button>
     </div>
   );
 }

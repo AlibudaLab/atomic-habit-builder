@@ -209,7 +209,7 @@ export default function StakeChallenge() {
         {hasAccess && challenge && (
           <Button
             color="primary"
-            variant='bordered'
+            variant="bordered"
             type="button"
             className="mt-14 px-6 py-3 font-bold disabled:opacity-50"
             onClick={
@@ -225,12 +225,14 @@ export default function StakeChallenge() {
               isMintLoading ||
               isApproveLoading
             }
-            isLoading={isJoinPreparing ||
+            isLoading={
+              isJoinPreparing ||
               isMintPreparing ||
               isApprovePreparing ||
               isJoinLoading ||
               isMintLoading ||
-              isApproveLoading}
+              isApproveLoading
+            }
           >
             {/**
              * Display only when challenge is selected

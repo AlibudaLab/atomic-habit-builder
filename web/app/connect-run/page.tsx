@@ -37,7 +37,7 @@ export default function ConnectRunDataSource() {
           {/* connect with strava */}
           <Button
             type="button"
-            className="my-2 p-2 min-w-[250px]"
+            className="my-2 min-w-[250px] p-2"
             onClick={onClickStrava}
             color="primary"
             endContent={<Image src={StravaImg} height={55} width={55} alt="Strava" />}

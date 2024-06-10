@@ -57,16 +57,16 @@ function PopupWindow({ title, onClose, content = null, buttons = [] }: PopupWind
               ))}
             </div>
             <div className="popup-content">{content}</div>
-            <div>
+            <div className="gap-2">
               {buttons.map((btn) => (
                 <Button
                   key={btn.id}
                   type="button"
                   onClick={handleButtonClick(btn.onClick)}
-                  className={btn.className}
+                  className={`${btn.className} m-2`}
                   disabled={btn.disabled}
-                  color='primary'
-                  variant='bordered'
+                  color="primary"
+                  variant="bordered"
                 >
                   {btn.label}
                 </Button>
