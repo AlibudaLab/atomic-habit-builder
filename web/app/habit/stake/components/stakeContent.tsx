@@ -194,7 +194,6 @@ export default function StakeChallenge() {
               description="Example Code: 130M8L"
               value={inputAccessCode}
               onChange={(e) => setInputAccessCode(e.target.value)}
-              errorMessage={inputAccessCode.length === 6 ? 'Invalid Access Code' : ''}
             />
           </div>
         )}
