@@ -38,7 +38,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
-  const [activityIdx, setActivityIdx] = useState(-1);
+  const [activityId, setActivityId] = useState(-1);
 
   const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
 
@@ -62,9 +62,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       isPreparing: isCheckInPreparing,
       isLoading: isCheckInLoading,
     },
-  } = useCheckInRun(challenge, activityIdx, () => {
+  } = useCheckInRun(challenge, activityId, () => {
     if (checkInPendingId) updateUsedActivities(checkInPendingId.toString());
-    setActivityIdx(-1);
+    setActivityId(-1);
     handleOpenCheckinPopup();
   });
 
@@ -82,7 +82,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       return;
     }
 
-    if (activityIdx === -1) {
+    if (activityId === -1) {
       toast.error('Please select an activity');
       return;
     }
@@ -132,8 +132,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
             loading={stravaLoading}
-            setActivityIdx={setActivityIdx}
-            activityIdx={activityIdx}
+            setActivityId={setActivityId}
+            activityId={activityId}
             activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
             usedActivities={usedActivities}
           />
@@ -159,7 +159,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             className="mt-12 min-h-12 w-3/4 max-w-56"
             onClick={onClickCheckIn}
             isDisabled={
-              !challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1
+              !challengeStarted || isCheckInLoading || isCheckInPreparing || activityId === -1
             }
             isLoading={isCheckInLoading}
           >
