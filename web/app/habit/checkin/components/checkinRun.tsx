@@ -21,6 +21,7 @@ import { ActivityDropDown } from './activityDropdown';
 import WaitingTx from 'app/habit/components/WaitingTx';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
+import useUserJoined from '@/hooks/useUserJoined';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -31,6 +32,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
 
   const { address } = useAccount();
+
+  const { joined } = useUserJoined(address, BigInt(challenge.id));
 
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
@@ -95,29 +98,41 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     window.location = authUrl as any;
   }, []);
 
+  // this should always be true by navigating to this page through our app.
+  // if false, simply put a button to redirect to "stake" page
+  const isVisible = useMemo(() => challenge.public || joined, [challenge.public, joined]);
+
   return (
     <div className="flex max-w-96 flex-col items-center justify-center">
       {/* overview   */}
       <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
 
-      {/* goal description */}
-      <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
-        <div className="text-sm text-primary"> {challenge.description} </div>
-      </div>
+      {/* Only show details if the challenge is public, or user already joined */}
+      {isVisible && (
+        <>
+          {/* goal description */}
+          <div className="w-full justify-start p-6 py-2 text-start">
+            <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+            <div className="text-sm text-primary"> {challenge.description} </div>
+          </div>
 
-      {/* checkIn description */}
-      <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-        <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
-      </div>
+          {/* check in description  */}
+          <div className="w-full justify-start p-6 py-2 text-start">
+            <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+            <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
+          </div>
 
-      <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-        <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
-      </div>
+          <div className="w-full justify-start p-6 py-2 text-start">
+            <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+            <div className="text-sm text-primary">
+              {' '}
+              {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
+            </div>
+          </div>
+        </>
+      )}
 
-      {connected && (
+      {isVisible && connected && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
             loading={stravaLoading}
@@ -129,41 +144,53 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       )}
 
-      {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.id}`}>
+      {isVisible &&
+        (checkedIn >= challenge.targetNum ? (
+          <Link href={`/habit/claim/${challenge.id}`}>
+            <button
+              type="button"
+              className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
+            >
+              Finish
+            </button>
+          </Link>
+        ) : connected && !runDataError ? (
+          <button
+            type="button"
+            className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
+            onClick={onClickCheckIn}
+            disabled={
+              !challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1
+            }
+          >
+            {' '}
+            {isCheckInLoading ? (
+              <WaitingTx />
+            ) : challengeStarted ? (
+              'Check In'
+            ) : (
+              'Not started yet'
+            )}{' '}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
+            onClick={onClickConnectStrava}
+          >
+            Connect with Strava
+          </button>
+        ))}
+
+      {!joined && (
+        <Link href={`/habit/stake/${challenge.id}`}>
           <button
             type="button"
             className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
           >
-            Finish
+            Join First
           </button>
         </Link>
-      ) : connected && !runDataError ? (
-        <button
-          type="button"
-          className="wrapped mt-12  min-h-16 w-3/4 max-w-56 rounded-lg text-lg font-bold text-primary transition-transform duration-300 focus:scale-105 disabled:opacity-50"
-          onClick={onClickCheckIn}
-          disabled={
-            !challengeStarted || isCheckInLoading || isCheckInPreparing || activityIdx === -1
-          }
-        >
-          {' '}
-          {isCheckInLoading ? (
-            <WaitingTx />
-          ) : challengeStarted ? (
-            'Check In'
-          ) : (
-            'Not started yet'
-          )}{' '}
-        </button>
-      ) : (
-        <button
-          type="button"
-          className="wrapped mt-12 min-h-16 rounded-lg px-6 py-2 text-lg font-bold text-primary transition-transform duration-300 focus:scale-105"
-          onClick={onClickConnectStrava}
-        >
-          Connect with Strava
-        </button>
       )}
 
       {isCheckinPopupOpen && (
