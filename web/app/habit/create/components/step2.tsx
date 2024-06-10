@@ -69,7 +69,12 @@ export default function CreateStep2({
         ))}
       </Select>
 
-      <Button isLoading={isCreating} onClick={onClickCreate} className="mt-2 w-full bg-primary">
+      <Button
+        isLoading={isCreating}
+        onClick={onClickCreate}
+        className="mt-2 w-full"
+        color="primary"
+      >
         Create
       </Button>
     </div>

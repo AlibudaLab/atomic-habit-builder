@@ -35,20 +35,25 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
   return (
     <div className="flex flex-col items-center justify-start p-8 ">
-      <p className="px-4 py-8 text-lg">Successfully create a new Challenge!</p>
+      <p className="px-4 py-8 text-center text-lg">Challenge Created!</p>
 
-      <p className="text-grey-800 text-sm">
-        Share this Link with your friends to join the challenge
+      <p className="text-grey-800 text-center text-sm">
+        Share this link with your friends to join the challenge
       </p>
 
       <p className="my-4 text-center text-base">{link}</p>
 
-      <Button className="my-8" onClick={onClickCopy}>
+      <Button className="my-8" onClick={onClickCopy} color="primary" variant="bordered">
         COPY LINK
       </Button>
 
-      <Link href={`/habit/stake/${challengeId}?code=${accessCode}`} className="w-full">
-        <Button className="my-8 w-full">Start Challenge</Button>
+      <Link
+        href={`/habit/stake/${challengeId}?code=${accessCode}`}
+        className="w-full justify-center"
+      >
+        <Button className="my-8 w-full" color="primary">
+          Start Challenge
+        </Button>
       </Link>
     </div>
   );

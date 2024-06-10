@@ -42,13 +42,11 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         id: 'backToChallengeList',
         label: 'Back to Challenge List',
         onClick: onCheckInPageClick,
-        className: 'popup-buttons',
       },
       {
         id: 'checkInOtherRecords',
         label: 'Check in other Records',
         onClick: onClose,
-        className: 'popup-buttons',
       },
     ];
   }, []);

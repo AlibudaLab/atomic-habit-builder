@@ -64,27 +64,3 @@
   flex-direction: column; /* Change to column to stack buttons vertically */
   align-items: center; /* Center the buttons */
 }
-
-.popup-buttons button {
-  background-color: white;
-  color: #ff784f;
-  border: 2px solid #ff784f;
-  padding: 8px 12px;
-  border-radius: 8px; /* Adjusted for rounded corners */
-  cursor: pointer;
-  font-weight: 500; /* Added for bold text */
-  font-family: 'Roboto', sans-serif; /* Set Roboto font for the button */
-  display: inline-block; /* Ensure button hugs its content */
-  margin: 0 auto; /* Center the button within the popup */
-  margin-bottom: 20px;
-}
-
-.popup-buttons button:not(:disabled):hover {
-  background-color: #ff784f;
-  color: white;
-}
-
-.popup-buttons button:disabled {
-  opacity: 0.5; /* Apply reduced opacity to disabled buttons */
-  cursor: not-allowed; /* Change cursor to indicate the button is not clickable */
-}

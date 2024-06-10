@@ -8,6 +8,7 @@ import useChallenge from '@/hooks/useChallenge';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import GenerateByName from '@/components/Nouns/GenerateByName';
 import ClaimedPopup from './ClaimedPopup';
+import { Button } from '@nextui-org/button';
 
 export default function Claim() {
   const { push } = useRouter();
@@ -45,23 +46,28 @@ export default function Claim() {
           </div>
 
           {isSuccess ? (
-            <button
+            <Button
               type="button"
-              className="wrapped mt-4 rounded-lg px-6 py-3 font-bold text-primary transition-transform duration-300 hover:scale-105"
+              color="primary"
+              variant="bordered"
+              className="mt-4 font-bold"
               onClick={() => {
                 push('/');
               }}
             >
               Start a new Challenge
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               type="button"
-              className="wrapped mt-4 rounded-lg px-6 py-3 font-bold text-primary transition-transform duration-300 hover:scale-105"
+              className="mt-4 font-bold"
+              color="primary"
+              variant="bordered"
               onClick={onWithdrawTx}
+              isLoading={isWithdrawLoading}
             >
               Claim
-            </button>
+            </Button>
           )}
 
           <div className="p-4 text-xs">Get back {formatUnits(challenge.stake, 6)} USDC.</div>

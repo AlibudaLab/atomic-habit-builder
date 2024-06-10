@@ -26,6 +26,7 @@ import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
+import { Button } from '@nextui-org/button';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -206,15 +207,25 @@ export default function StakeChallenge() {
          */}
         {/* //TODO @ryanycw: There is some error after minting test token */}
         {hasAccess && challenge && (
-          <button
+          <Button
+            color="primary"
+            variant="bordered"
             type="button"
-            className="wrapped mt-14 rounded-lg border-solid px-6 py-3 font-bold text-primary disabled:opacity-50"
+            className="mt-14 px-6 py-3 font-bold disabled:opacity-50"
             onClick={
               currentChainSupportBatchTx || hasEnoughAllowance
                 ? onJoinButtonClick
                 : onApproveTestTokenClick
             }
             disabled={
+              isJoinPreparing ||
+              isMintPreparing ||
+              isApprovePreparing ||
+              isJoinLoading ||
+              isMintLoading ||
+              isApproveLoading
+            }
+            isLoading={
               isJoinPreparing ||
               isMintPreparing ||
               isApprovePreparing ||
@@ -229,7 +240,7 @@ export default function StakeChallenge() {
              * If has enough allowance -> Display Stake
              */}
             {hasEnoughAllowance || currentChainSupportBatchTx ? `Join This Challenge` : 'Approve'}
-          </button>
+          </Button>
         )}
 
         {isCheckinPopupOpen && hasEnoughBalance && (

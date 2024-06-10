@@ -28,7 +28,6 @@ function DepositPopup({ onClose }: DepositPopupProps) {
         id: 'depositViaBinance',
         label: 'Deposit via Binance',
         onClick: onClose,
-        className: 'popup-buttons',
         disabled: true,
       },
     ],

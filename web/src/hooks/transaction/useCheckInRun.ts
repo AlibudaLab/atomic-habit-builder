@@ -15,19 +15,11 @@ import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
  * useShowErrorToast and useToast was removed
  */
 
-const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: () => void) => {
+const useCheckInRun = (challenge: Challenge, activityId?: number, onSuccess?: () => void) => {
   const { address } = useAccount();
   const { runData, workoutData } = useRunData();
   const [timestamp, setTimestamp] = useState<number>(0);
   const [signature, setSignature] = useState<{ v: number; r: string; s: string } | null>(null);
-
-  // todo: change this to get the timestamp of the exercise
-  const activityId =
-    activityIdx && activityIdx !== -1
-      ? challenge.type === ChallengeTypes.Run
-        ? runData[activityIdx].id
-        : workoutData[activityIdx].id
-      : null;
 
   useEffect(() => {
     if (activityId === null || signature !== null) return;
@@ -35,7 +27,7 @@ const useCheckInRun = (challenge: Challenge, activityIdx?: number, onSuccess?: (
     const now = moment().unix();
 
     const fetchURL =
-      activityId !== null
+      activityId !== undefined
         ? '/api/sign?' +
           new URLSearchParams({
             address: address as string,
