@@ -18,7 +18,6 @@ import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useUsedActivity from '@/hooks/useUsedActivities';
 import { ActivityDropDown } from './activityDropdown';
-import WaitingTx from 'app/habit/components/WaitingTx';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserJoined from '@/hooks/useUserJoined';
