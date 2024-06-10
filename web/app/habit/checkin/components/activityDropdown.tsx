@@ -1,22 +1,23 @@
-import { SetStateAction } from 'react';
 import { StravaRunData, StravaWorkoutData } from '@/utils/strava';
 import { getActivityDuration, timeDifference } from '@/utils/time';
 import { Select, SelectItem } from '@nextui-org/select';
+
+import { CheckInFields } from '@/hooks/transaction/useCheckInRun';
 
 const isRunData = (data: StravaRunData | StravaWorkoutData): data is StravaRunData => {
   return (data as StravaRunData).distance !== undefined;
 };
 
 export function ActivityDropDown({
-  setActivityId,
+  fields,
+  onActivitySelect,
   loading,
-  activityId,
   activities,
   usedActivities,
 }: {
+  fields: CheckInFields;
+  onActivitySelect: (activityId: number) => void;
   loading: boolean;
-  setActivityId: React.Dispatch<SetStateAction<number>>;
-  activityId: number;
   activities: StravaRunData[] | StravaWorkoutData[];
   usedActivities: string[];
 }) {
@@ -25,17 +26,18 @@ export function ActivityDropDown({
       <Select
         label="Select an activity"
         className="max-w-xs"
-        value={activityId}
+        value={fields.activityId}
         disabledKeys={usedActivities}
         isLoading={loading}
       >
         {activities.map((activity: StravaRunData | StravaWorkoutData) => {
-          const isChosen = activityId === activity.id;
+          const isChosen = fields.activityId === activity.id;
           return (
             <SelectItem
               key={activity.id.toString()}
+              // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
               onClick={() => {
-                setActivityId(activity.id);
+                onActivitySelect(activity.id);
               }}
               textValue={`${activity.name} (${timeDifference(
                 Date.now(),

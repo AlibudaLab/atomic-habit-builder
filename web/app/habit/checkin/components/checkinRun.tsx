@@ -13,7 +13,8 @@ import { Challenge } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
-import useCheckInRun from '@/hooks/transaction/useCheckInRun';
+import useFields from '@/hooks/useFields';
+import useCheckInRun, { CheckInFields } from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useUsedActivity from '@/hooks/useUsedActivities';
@@ -23,6 +24,15 @@ import CheckinPopup from './CheckinPopup';
 import useUserJoined from '@/hooks/useUserJoined';
 import { Button } from '@nextui-org/button';
 
+const initFields: CheckInFields = {
+  challengeId: 0,
+  timestamp: 0,
+  v: 0,
+  r: '',
+  s: '',
+  activityId: -1,
+};
+
 /**
  * TEMP: Workout & Running activity check-in
  * @param param0
@@ -30,15 +40,10 @@ import { Button } from '@nextui-org/button';
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
-
   const { address } = useAccount();
-
   const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
-
+  const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
-
-  const [activityId, setActivityId] = useState(-1);
-
   const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
 
   const challengeStarted = useMemo(
@@ -55,16 +60,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   };
 
   const {
-    activityId: checkInPendingId,
-    checkIn: {
-      onSubmitTransaction: onCheckInTx,
-      isPreparing: isCheckInPreparing,
-      isLoading: isCheckInLoading,
-    },
-  } = useCheckInRun(challenge, activityId, () => {
-    if (checkInPendingId) updateUsedActivities(checkInPendingId.toString());
-    setActivityId(-1);
+    onSubmitTransaction: onCheckInTx,
+    isPreparing: isCheckInPreparing,
+    isLoading: isCheckInLoading,
+  } = useCheckInRun(fields, () => {
+    if (fields.activityId) updateUsedActivities(fields.activityId.toString());
     handleOpenCheckinPopup();
+    resetFields();
   });
 
   const {
@@ -75,13 +77,57 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     loading: stravaLoading,
   } = useRunData();
 
+  const handleActivitySelect = (activityId: number) => {
+    resetFields();
+    const now = moment().unix();
+
+    const fetchURL =
+      activityId !== undefined
+        ? '/api/sign?' +
+          new URLSearchParams({
+            address: address as string,
+            activityId: activityId.toString(),
+            timestamp: now.toString(),
+            challengeId: challenge.id.toString(),
+          }).toString()
+        : '';
+
+    const fetchSignature = async (): Promise<{ v: number; r: string; s: string }> => {
+      const response = await fetch(fetchURL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      return data;
+    };
+
+    fetchSignature()
+      .then((_signature) => {
+        console.log('Signature:', _signature);
+        console.log('Timestamp:', now);
+        setField({
+          v: _signature.v,
+          r: _signature.r,
+          s: _signature.s,
+          challengeId: challenge.id,
+          activityId: activityId,
+          timestamp: now,
+        });
+      })
+      .catch((error) => {
+        console.error('Error fetching the signature:', error);
+      });
+  };
+
   const onClickCheckIn = async () => {
     if (!address) {
       toast.error('Please connect your wallet first');
       return;
     }
 
-    if (activityId === -1) {
+    if (fields.activityId === -1) {
       toast.error('Please select an activity');
       return;
     }
@@ -130,9 +176,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {connected && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
+            fields={fields}
+            onActivitySelect={handleActivitySelect}
             loading={stravaLoading}
-            setActivityId={setActivityId}
-            activityId={activityId}
             activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
             usedActivities={usedActivities}
           />
@@ -158,7 +204,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={onClickCheckIn}
           isDisabled={
-            !challengeStarted || isCheckInLoading || isCheckInPreparing || activityId === -1
+            !challengeStarted || isCheckInLoading || isCheckInPreparing || fields.activityId === -1
           }
           isLoading={isCheckInLoading}
         >
