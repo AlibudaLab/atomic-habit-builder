@@ -8,7 +8,8 @@ import { ChallengeWithCheckIns } from '@/types';
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
 
-  const { challenges } = useAllChallenges();
+  // fetch both public and private challenges
+  const { challenges } = useAllChallenges(false);
 
   const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);

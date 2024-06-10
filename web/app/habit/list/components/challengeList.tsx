@@ -11,7 +11,8 @@ import Loading from '../../components/Loading';
 export default function ChallengeList() {
   const { address } = useAccount();
 
-  const { challenges, loading: loadingAllChallenges } = useAllChallenges();
+  // only fetch public challenges
+  const { challenges, loading: loadingAllChallenges } = useAllChallenges(true);
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
