@@ -7,6 +7,7 @@ import Image from 'next/image';
 import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Button } from '@nextui-org/button';
 
 const StravaImg = require('../../src/imgs/apps/strava.png') as string;
 
@@ -34,14 +35,15 @@ export default function ConnectRunDataSource() {
         {/* {verifier === RunVerifier.None && ( */}
         <div className="gap-2 sm:flex">
           {/* connect with strava */}
-          <button
+          <Button
             type="button"
-            className="my-2 flex min-w-[250px] items-center justify-center rounded-md p-2"
+            className="my-2 p-2 min-w-[250px]"
             onClick={onClickStrava}
+            color="primary"
+            endContent={<Image src={StravaImg} height={55} width={55} alt="Strava" />}
           >
-            <div className="rounded-md bg-white p-4">Strava</div>
-            <Image src={StravaImg} height={55} width={55} alt="Strava" />
-          </button>
+            Link Strava
+          </Button>
         </div>
         {/* )} */}
       </div>
