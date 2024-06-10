@@ -21,7 +21,7 @@ type Step3Props = {
 export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
   const origin = window.location.origin;
 
-  const link = origin + '/join/' + accessCode.toString();
+  const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
 
   const onClickCopy = useCallback(() => {
     copy(link)
@@ -47,7 +47,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
         COPY LINK
       </Button>
 
-      <Link href={`/habit/stake/${challengeId}`} className="w-full">
+      <Link href={`/habit/stake/${challengeId}?code=${accessCode}`} className="w-full">
         <Button className="my-8 w-full">Start Challenge</Button>
       </Link>
     </div>

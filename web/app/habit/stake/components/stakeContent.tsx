@@ -3,12 +3,13 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { useCapabilities } from 'wagmi/experimental';
+import { Input } from '@nextui-org/input';
 
 import { EXPECTED_CHAIN } from '@/constants';
 import * as testTokenContract from '@/contracts/testToken';
@@ -31,7 +32,17 @@ export default function StakeChallenge() {
 
   const { challengeId } = useParams<{ challengeId: string }>();
 
+  const searchParams = useSearchParams();
+  const attachedCode = searchParams.get('accessCode') ?? '';
+
+  const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
+
   const { challenge, loading } = useChallenge(Number(challengeId));
+
+  const hasAccess = useMemo(
+    () => challenge?.public === true || challenge?.accessCode === inputAccessCode,
+    [challenge?.public, challenge?.accessCode, inputAccessCode],
+  );
 
   const { address: smartWallet } = useAccount();
 
@@ -140,26 +151,52 @@ export default function StakeChallenge() {
           <>
             <ChallengeBoxFilled challenge={challenge} />
 
-            {/* goal description */}
-            <div className="w-full justify-start p-6 py-2 text-start">
-              <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
-              <div className="text-sm text-primary"> {challenge.description} </div>
-            </div>
+            {hasAccess && (
+              <>
+                {/* goal description */}
+                <div className="w-full justify-start p-6 py-2 text-start">
+                  <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+                  <div className="text-sm text-primary"> {challenge.description} </div>
+                </div>
 
-            {/* checkIn description */}
-            <div className="w-full justify-start p-6 py-2 text-start">
-              <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
-              <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
-            </div>
+                {/* checkIn description */}
+                <div className="w-full justify-start p-6 py-2 text-start">
+                  <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+                  <div className="text-sm text-primary">
+                    {' '}
+                    {getCheckInDescription(challenge.type)}{' '}
+                  </div>
+                </div>
 
-            <div className="w-full justify-start p-6 py-2 text-start">
-              <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
-              <div className="text-sm text-primary">
-                {' '}
-                {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
-              </div>
-            </div>
+                <div className="w-full justify-start p-6 py-2 text-start">
+                  <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+                  <div className="text-sm text-primary">
+                    {' '}
+                    {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
+                  </div>
+                </div>
+              </>
+            )}
           </>
+        )}
+
+        {/* if no access, show text + button for access code */}
+        {!hasAccess && (
+          <div className="w-full justify-center p-6 py-2 text-center">
+            <div className="text-dark pb-2 text-xl font-bold"> Private Challenge </div>
+            <div className="pt-4 text-sm text-primary">
+              This is a private challenge! Please enter the access code to join.
+            </div>
+            <Input
+              type="text"
+              placeholder="Access Code"
+              className="my-4 w-full py-4 text-center"
+              description="Example Code: 130M8L"
+              value={inputAccessCode}
+              onChange={(e) => setInputAccessCode(e.target.value)}
+              errorMessage={inputAccessCode.length === 6 ? 'Invalid Access Code' : ''}
+            />
+          </div>
         )}
 
         {/**
@@ -169,7 +206,7 @@ export default function StakeChallenge() {
          * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
         {/* //TODO @ryanycw: There is some error after minting test token */}
-        {challenge && (
+        {hasAccess && challenge && (
           <button
             type="button"
             className="wrapped mt-14 rounded-lg border-solid px-6 py-3 font-bold text-primary disabled:opacity-50"
@@ -213,31 +250,32 @@ export default function StakeChallenge() {
         {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
         {/**
-         * Display only when challenge is selected
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
          */}
-        <div className="p-4 text-xs">
-          {!challenge || loading ? (
-            <Loading />
-          ) : testTokenBalance && !hasEnoughBalance ? (
-            <p>
-              {' '}
-              🚨 Insufficient Balance:{' '}
-              {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC.{' '}
-              <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
+        {hasAccess && (
+          <div className="p-4 text-xs">
+            {!challenge || loading ? (
+              <Loading />
+            ) : testTokenBalance && !hasEnoughBalance ? (
+              <p>
                 {' '}
-                Mint Test Token now{' '}
-              </span>{' '}
-            </p>
-          ) : (
-            <p>
-              {' '}
-              💰 Smart Wallet Balance:{' '}
-              {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC{' '}
-            </p>
-          )}
-        </div>
+                🚨 Insufficient Balance:{' '}
+                {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC.{' '}
+                <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
+                  {' '}
+                  Mint Test Token now{' '}
+                </span>{' '}
+              </p>
+            ) : (
+              <p>
+                {' '}
+                💰 Smart Wallet Balance:{' '}
+                {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC{' '}
+              </p>
+            )}
+          </div>
+        )}
       </div>
     </main>
   );

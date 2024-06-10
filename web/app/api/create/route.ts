@@ -44,30 +44,6 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     console.log('Document challenge-metadata written with ID: ', docRef.id);
 
-    const user = payload.user.toLowerCase();
-    const challengeId = payload.challengeId;
-
-    // add user to user-private-challenges collection
-    const userChallengesCollet = await adminDb
-      .collection('user-private-challenges')
-      .where('user', '==', user)
-      .get();
-
-    // append to the collection.joined array if user already exists
-    if (userChallengesCollet.docs.length > 0) {
-      const userDoc = userChallengesCollet.docs[0];
-      await userDoc.ref.update({
-        joined: userDoc.data().joined.concat(challengeId),
-      });
-    } else {
-      await adminDb.collection('user-private-challenges').add({
-        user: user,
-        joined: [challengeId],
-      });
-    }
-
-    console.log('Document challenge-users written with ID: ', user.id);
-
     return NextResponse.json({ status: 200 });
   } catch (error) {
     console.error('Error adding challenge:', error);
