@@ -2,13 +2,14 @@ import { readContract } from '@wagmi/core';
 import * as trackerContract from '@/contracts/tracker';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
-import useAllPublicChallenges from './useAllPublicChallenges';
+import useAllChallenges from './useAllChallenges';
 import { ChallengeWithCheckIns } from '@/types';
 
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
 
-  const { challenges } = useAllPublicChallenges();
+  // fetch both public and private challenges
+  const { challenges } = useAllChallenges(false);
 
   const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);

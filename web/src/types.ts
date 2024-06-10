@@ -30,6 +30,7 @@ export type ChallengeMetaData = {
   type: ChallengeTypes;
   description?: string;
   public: boolean;
+  accessCode?: string; // only for private challenges
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;

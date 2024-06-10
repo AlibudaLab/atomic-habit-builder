@@ -4,7 +4,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import moment from 'moment';
 import { formatUnits } from 'viem';
@@ -21,6 +21,7 @@ import { ActivityDropDown } from './activityDropdown';
 import WaitingTx from 'app/habit/components/WaitingTx';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
+import useUserJoined from '@/hooks/useUserJoined';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -31,6 +32,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
 
   const { address } = useAccount();
+
+  const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
 
   const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
 
@@ -95,6 +98,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     window.location = authUrl as any;
   }, []);
 
+  // if user has not joined the challenge, redirect to the stake page
+  useEffect(() => {
+    if (!loadingJoined && !joined) {
+      push(`/habit/stake/${challenge.id}`);
+    }
+  }, [joined, loadingJoined, challenge.id, push]);
+
   return (
     <div className="flex max-w-96 flex-col items-center justify-center">
       {/* overview   */}
@@ -106,7 +116,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
-      {/* checkIn description */}
+      {/* check in description  */}
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
         <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
