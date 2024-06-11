@@ -22,9 +22,9 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
   return (
     <div className="flex max-w-[500px] flex-col items-center justify-start px-8">
-      <p className="px-4 py-12 text-center text-xl">Challenge Created!</p>
+      <p className="px-4 py-4 text-center text-bold font-londrina text-2xl text-primary">Challenge Created!</p>
 
-      <p className="text-grey-800 text-center text-sm">
+      <p className="text-grey-800 text-center text-sm p-4">
         Share this link with your friends to join the challenge
       </p>
 
@@ -34,7 +34,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
       <Link
         href={`/habit/stake/${challengeId}?code=${accessCode}`}
-        className="mt-44 w-full justify-center"
+        className="mt-36 w-full justify-center"
       >
         <Button className="min-h-12 w-full" color="primary">
           Start Challenge

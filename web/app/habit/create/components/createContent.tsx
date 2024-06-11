@@ -126,7 +126,7 @@ export default function Create() {
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 1 ? 'bg-dark text-white' : 'border-dark border border-solid'
               } `}
-              onClick={() => setStep(1)}
+              // onClick={() => setStep(1)}
               type="button"
             >
               {' '}
@@ -136,7 +136,7 @@ export default function Create() {
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 2 ? 'bg-dark text-white' : 'border-dark border border-solid'
               } `}
-              onClick={() => setStep(2)}
+              // onClick={() => setStep(2)}
               type="button"
             >
               {' '}
@@ -146,7 +146,7 @@ export default function Create() {
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 3 ? 'bg-dark text-white' : 'border-dark border border-solid'
               } `}
-              onClick={() => setStep(3)}
+              // onClick={() => setStep(3)}
               type="button"
             >
               {' '}
