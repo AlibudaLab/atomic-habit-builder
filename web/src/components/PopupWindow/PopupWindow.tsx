@@ -40,8 +40,6 @@ function PopupWindow({ title, onClose, content = null, buttons = [] }: PopupWind
     buttonOnClick();
   };
 
-  console.log(buttons);
-
   return (
     <div className="popup-overlay">
       <div className="popup-window" ref={popupRef}>
