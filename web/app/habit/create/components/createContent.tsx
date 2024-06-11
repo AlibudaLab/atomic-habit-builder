@@ -113,7 +113,9 @@ export default function Create() {
       </p>
 
       <div
-        className={`w-full flex-grow rounded-t-[20px] p-2 shadow-large ${loaded ? 'slide-up' : ''}`}
+        className={`w-full max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 shadow-large ${
+          loaded ? 'slide-up' : ''
+        }`}
       >
         {/* Show text "create" and then the 3 sub steps */}
         <div className="flex items-center justify-center">

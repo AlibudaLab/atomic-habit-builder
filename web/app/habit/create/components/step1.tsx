@@ -41,7 +41,7 @@ export default function CreateStep1({
   setStep,
 }: Step1Props) {
   return (
-    <div className="flex max-w-[500px] flex-col items-center justify-start px-10">
+    <div className="flex max-w-[500px] flex-col items-center justify-start px-8">
       {/* todo: add public challenge later */}
 
       <Input
@@ -109,8 +109,8 @@ export default function CreateStep1({
         }
       />
 
-      <Button onClick={() => setStep(2)} className="w-full" color="primary">
-        Next: Setup Check-in
+      <Button onClick={() => setStep(2)} className="min-h-12 w-full" color="primary">
+        Next
       </Button>
     </div>
   );

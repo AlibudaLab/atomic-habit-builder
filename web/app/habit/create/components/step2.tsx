@@ -25,7 +25,7 @@ export default function CreateStep2({
   isCreating,
 }: Step2Props) {
   return (
-    <div className="flex flex-col items-center justify-start px-10 ">
+    <div className="flex max-w-[500px] flex-col items-center justify-start px-8">
       <Select label="Challenge Type" className="my-4" value={challengeType}>
         {Object.values(ChallengeTypes)
           .filter((type: ChallengeTypes) => type !== ChallengeTypes.NFC_Chip)
@@ -72,7 +72,7 @@ export default function CreateStep2({
       <Button
         isLoading={isCreating}
         onClick={onClickCreate}
-        className="mt-2 w-full"
+        className="mt-2 min-h-12 w-full"
         color="primary"
       >
         Create

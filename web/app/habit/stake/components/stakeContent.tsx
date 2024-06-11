@@ -27,6 +27,7 @@ import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
+import useUserJoined from '@/hooks/useUserJoined';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -46,6 +47,7 @@ export default function StakeChallenge() {
   );
 
   const { address: smartWallet } = useAccount();
+  const { joined, loading: loadingJoined } = useUserJoined(smartWallet, BigInt(challengeId));
 
   const { data: capabilities } = useCapabilities();
   const currentChainSupportBatchTx =
@@ -127,13 +129,14 @@ export default function StakeChallenge() {
     },
   );
 
-  const onJoinButtonClick = async () => {
+  const onJoinButtonClick = () => {
     if (!challenge) {
       toast.error('Loading Challenge');
       return;
     }
     if (hasEnoughBalance) {
       onJoinTx();
+      return;
     }
     handleOpenInsufficientBalancePopup();
   };
@@ -206,18 +209,17 @@ export default function StakeChallenge() {
          * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
         {/* //TODO @ryanycw: There is some error after minting test token */}
-        {hasAccess && challenge && (
+        {hasAccess && !joined && challenge && (
           <Button
             color="primary"
-            variant="bordered"
             type="button"
-            className="mt-14 px-6 py-3 font-bold disabled:opacity-50"
+            className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
             onClick={
               currentChainSupportBatchTx || hasEnoughAllowance
                 ? onJoinButtonClick
                 : onApproveTestTokenClick
             }
-            disabled={
+            isDisabled={
               isJoinPreparing ||
               isMintPreparing ||
               isApprovePreparing ||
@@ -240,6 +242,18 @@ export default function StakeChallenge() {
              * If has enough allowance -> Display Stake
              */}
             {hasEnoughAllowance || currentChainSupportBatchTx ? `Join This Challenge` : 'Approve'}
+          </Button>
+        )}
+
+        {joined && (
+          <Button
+            type="button"
+            color="default"
+            className="mt-14 min-h-12 w-3/4 max-w-56"
+            onClick={handleCheckInPageClick}
+            aria-description="You already joined the challenge"
+          >
+            Check In
           </Button>
         )}
 

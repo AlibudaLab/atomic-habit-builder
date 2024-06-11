@@ -42,6 +42,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         id: 'backToChallengeList',
         label: 'Back to Challenge List',
         onClick: onCheckInPageClick,
+        isPrimary: true,
       },
       {
         id: 'checkInOtherRecords',
@@ -49,7 +50,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         onClick: onClose,
       },
     ];
-  }, []);
+  }, [onCheckInPageClick, onClose]);
 
   return <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />;
 }

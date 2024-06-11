@@ -187,12 +187,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {checkedIn >= challenge.targetNum ? (
         <Link href={`/habit/claim/${challenge.id}`}>
-          <Button
-            type="button"
-            color="primary"
-            variant="bordered"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
-          >
+          <Button type="button" color="primary" className="mt-12 min-h-12 w-3/4 max-w-56">
             Finish
           </Button>
         </Link>
@@ -200,7 +195,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <Button
           type="button"
           color="primary"
-          variant="bordered"
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={onClickCheckIn}
           isDisabled={
@@ -215,7 +209,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <Button
           type="button"
           color="primary"
-          variant="bordered"
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={onClickConnectStrava}
         >
