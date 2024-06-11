@@ -42,14 +42,16 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         id: 'backToChallengeList',
         label: 'Back to Challenge List',
         onClick: onCheckInPageClick,
+        isPrimary: true,
       },
       {
         id: 'checkInOtherRecords',
         label: 'Check in other Records',
         onClick: onClose,
+        isPrimary: true,
       },
     ];
-  }, []);
+  }, [onCheckInPageClick, onClose]);
 
   return <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />;
 }

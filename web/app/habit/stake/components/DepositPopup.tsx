@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 import { Snippet } from '@nextui-org/snippet';
 import { Select, SelectItem } from '@nextui-org/select';
+import { useAccount } from 'wagmi';
 
 type DepositPopupProps = {
   onClose: () => void;
 };
 
 function DepositPopup({ onClose }: DepositPopupProps) {
+  const { address } = useAccount();
+
   const [selectedToken, setSelectedToken] = useState<string>('usdc');
   const [selectedNetwork, setSelectedNetwork] = useState<string>('base');
 
@@ -29,6 +32,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
         label: 'Deposit via Binance',
         onClick: onClose,
         disabled: true,
+        isPrimary: true,
       },
     ],
     [onClose],
@@ -37,19 +41,19 @@ function DepositPopup({ onClose }: DepositPopupProps) {
   const title = 'Deposit';
 
   const tokens = [
-    { key: 'eth', label: 'ETH' },
+    // { key: 'eth', label: 'ETH' },
     { key: 'usdc', label: 'USDC' },
   ];
 
   const networks = [
-    { key: 'eth', label: 'Ethereum' },
-    { key: 'op', label: 'Optimism' },
+    // { key: 'eth', label: 'Ethereum' },
+    // { key: 'op', label: 'Optimism' },
     { key: 'base', label: 'Base' },
   ];
 
   const content = (
     <div className="text-left">
-      <div className="mb-4 flex items-center">
+      <div className="mb-2 flex items-center">
         <label htmlFor="token" className="mr-2 w-1/3 font-bold">
           Token
         </label>
@@ -89,9 +93,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
         </label>
         <div id="depositAddress" className="mt-1 break-all rounded">
           <Snippet symbol="" color="default">
-            <span className="whitespace-normal break-all">
-              0xCDd680cf5c9C64CbCf559Ee6D4B45fb8005d10D0
-            </span>
+            <span className="whitespace-normal break-all">{address}</span>
           </Snippet>
         </div>
       </div>

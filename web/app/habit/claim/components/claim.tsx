@@ -49,8 +49,7 @@ export default function Claim() {
             <Button
               type="button"
               color="primary"
-              variant="bordered"
-              className="mt-4 font-bold"
+              className="mt-4 min-h-12 w-3/4 max-w-56"
               onClick={() => {
                 push('/');
               }}
@@ -60,9 +59,8 @@ export default function Claim() {
           ) : (
             <Button
               type="button"
-              className="mt-4 font-bold"
+              className="mt-4 min-h-12 w-3/4 max-w-56"
               color="primary"
-              variant="bordered"
               onClick={onWithdrawTx}
               isLoading={isWithdrawLoading}
             >

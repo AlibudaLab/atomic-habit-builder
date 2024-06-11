@@ -29,9 +29,9 @@ initAnalytics();
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
-      <body className="flex flex-1 flex-col">
+      <body className="flex flex-1 flex-col items-center">
         <OnchainProviders>
-          <div className="lg:mx-auto lg:max-w-3xl lg:px-32">{children}</div>
+          <div className="max-w-[500px]">{children}</div>
         </OnchainProviders>
       </body>
       <GoogleAnalytics />

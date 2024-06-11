@@ -14,7 +14,6 @@ function ClaimedPopup({ onClose, onCheckInPageClick }: ClaimedPopupProps) {
   const content = (
     <div className="flex flex-col items-center text-left">
       <ul className="mb-4 list-disc pl-5">
-        <li>Nouns NFT Claimed</li>
         <li>Stake Returned</li>
         <li>Stake Reward Received</li>
       </ul>
@@ -30,6 +29,7 @@ function ClaimedPopup({ onClose, onCheckInPageClick }: ClaimedPopupProps) {
         label: 'Share on Farcaster',
         onClick: handleShareOnFarcaster,
         disabled: true,
+        isPrimary: true,
       },
       {
         id: 'backToChallengeList',
@@ -37,7 +37,7 @@ function ClaimedPopup({ onClose, onCheckInPageClick }: ClaimedPopupProps) {
         onClick: onCheckInPageClick,
       },
     ];
-  }, []);
+  }, [handleShareOnFarcaster, onCheckInPageClick]);
 
   return <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />;
 }

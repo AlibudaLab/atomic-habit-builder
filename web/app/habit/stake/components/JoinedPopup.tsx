@@ -31,9 +31,10 @@ function JoinedPopup({ challenge, onClose, onCheckInPageClick }: JoinedPopupProp
         id: 'goToCheckIn',
         label: 'Go to Check in Page',
         onClick: onCheckInPageClick,
+        isPrimary: true,
       },
     ];
-  }, []);
+  }, [onCheckInPageClick]);
 
   return <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />;
 }

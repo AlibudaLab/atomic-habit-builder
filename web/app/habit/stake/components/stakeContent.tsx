@@ -27,6 +27,8 @@ import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
+import useUserJoined from '@/hooks/useUserJoined';
+import Link from 'next/link';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -38,14 +40,15 @@ export default function StakeChallenge() {
 
   const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
 
-  const { challenge, loading } = useChallenge(Number(challengeId));
-
-  const hasAccess = useMemo(
-    () => challenge?.public === true || challenge?.accessCode === inputAccessCode,
-    [challenge?.public, challenge?.accessCode, inputAccessCode],
-  );
+  const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
+  const { joined } = useUserJoined(smartWallet, BigInt(challengeId));
+
+  const hasAccess = useMemo(
+    () => challenge?.public === true || challenge?.accessCode === inputAccessCode || joined,
+    [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
+  );
 
   const { data: capabilities } = useCapabilities();
   const currentChainSupportBatchTx =
@@ -127,13 +130,14 @@ export default function StakeChallenge() {
     },
   );
 
-  const onJoinButtonClick = async () => {
+  const onJoinButtonClick = () => {
     if (!challenge) {
       toast.error('Loading Challenge');
       return;
     }
     if (hasEnoughBalance) {
       onJoinTx();
+      return;
     }
     handleOpenInsufficientBalancePopup();
   };
@@ -182,7 +186,7 @@ export default function StakeChallenge() {
         )}
 
         {/* if no access, show text + button for access code */}
-        {!hasAccess && (
+        {challenge && !hasAccess && (
           <div className="w-full justify-center p-6 py-2 text-center">
             <div className="text-dark pb-2 text-xl font-bold"> Private Challenge </div>
             <div className="pt-4 text-sm text-primary">
@@ -206,18 +210,17 @@ export default function StakeChallenge() {
          * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
          */}
         {/* //TODO @ryanycw: There is some error after minting test token */}
-        {hasAccess && challenge && (
+        {hasAccess && !joined && challenge && (
           <Button
             color="primary"
-            variant="bordered"
             type="button"
-            className="mt-14 px-6 py-3 font-bold disabled:opacity-50"
+            className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
             onClick={
               currentChainSupportBatchTx || hasEnoughAllowance
                 ? onJoinButtonClick
                 : onApproveTestTokenClick
             }
-            disabled={
+            isDisabled={
               isJoinPreparing ||
               isMintPreparing ||
               isApprovePreparing ||
@@ -243,6 +246,18 @@ export default function StakeChallenge() {
           </Button>
         )}
 
+        {joined && (
+          <Button
+            type="button"
+            color="default"
+            className="mt-14 min-h-12 w-3/4 max-w-56"
+            onClick={handleCheckInPageClick}
+            aria-description="You already joined the challenge"
+          >
+            Check In
+          </Button>
+        )}
+
         {isCheckinPopupOpen && hasEnoughBalance && (
           <JoinedPopup
             challenge={challenge}
@@ -259,15 +274,28 @@ export default function StakeChallenge() {
 
         {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
+        {loadingChallenge ? (
+          <Loading />
+        ) : (
+          challenge === null && (
+            <div className="p-4 text-sm">
+              <p>Challenge not found</p>
+              <Link href="/" type="button">
+                <Button color="default" className="mt-4">
+                  Back
+                </Button>
+              </Link>
+            </div>
+          )
+        )}
+
         {/**
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
          */}
         {hasAccess && (
           <div className="p-4 text-xs">
-            {!challenge || loading ? (
-              <Loading />
-            ) : testTokenBalance && !hasEnoughBalance ? (
+            {testTokenBalance && !hasEnoughBalance ? (
               <p>
                 {' '}
                 🚨 Insufficient Balance:{' '}

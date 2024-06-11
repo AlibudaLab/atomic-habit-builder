@@ -10,6 +10,7 @@ type ButtonProps = {
   onClick: () => void;
   className?: string;
   disabled?: boolean;
+  isPrimary?: boolean;
 };
 
 type PopupWindowProps = {
@@ -39,8 +40,6 @@ function PopupWindow({ title, onClose, content = null, buttons = [] }: PopupWind
     buttonOnClick();
   };
 
-  console.log(buttons);
-
   return (
     <div className="popup-overlay">
       <div className="popup-window" ref={popupRef}>
@@ -63,10 +62,9 @@ function PopupWindow({ title, onClose, content = null, buttons = [] }: PopupWind
                   key={btn.id}
                   type="button"
                   onClick={handleButtonClick(btn.onClick)}
-                  className={`${btn.className} m-2`}
-                  disabled={btn.disabled}
-                  color="primary"
-                  variant="bordered"
+                  className={`${btn.className} m-2 w-4/5 max-w-56 p-4`}
+                  isDisabled={btn.disabled}
+                  color={btn.isPrimary ? 'primary' : 'default'}
                 >
                   {btn.label}
                 </Button>

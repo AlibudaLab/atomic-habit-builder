@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { useMemo, useRef, useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useAccount } from 'wagmi';
 import crypto from 'crypto';
@@ -24,7 +24,7 @@ function InsufficientBalancePopup({ onClose, onDepositClick }: InsufficientBalan
     };
   }, []);
 
-  const handleOnrampClick = () => {
+  const handleOnrampClick = useCallback(() => {
     if (overlayInstanceSDK.current) {
       if (isOverlayVisible) {
         console.log('is visible');
@@ -57,11 +57,11 @@ function InsufficientBalancePopup({ onClose, onDepositClick }: InsufficientBalan
     }
     overlayInstanceSDK.current?.show();
     setIsOverlayVisible(true);
-  };
+  }, [isOverlayVisible, smartWallet]);
 
   const title = 'Insufficient Wallet Balance';
 
-  const content = <div>Please deposit or onramp to stake and join the challenge.</div>;
+  const content = <div className="p-4">Please deposit or onramp to join the challenge.</div>;
 
   const buttons = useMemo(() => {
     return [
@@ -69,15 +69,17 @@ function InsufficientBalancePopup({ onClose, onDepositClick }: InsufficientBalan
         id: 'deposit',
         label: 'Deposit',
         onClick: onDepositClick,
+        isPrimary: true,
       },
       {
         id: 'onramp',
         label: 'Onramp',
         onClick: handleOnrampClick,
         disabled: true,
+        isPrimary: true,
       },
     ];
-  }, []);
+  }, [handleOnrampClick, onDepositClick]);
 
   return (
     <div>
