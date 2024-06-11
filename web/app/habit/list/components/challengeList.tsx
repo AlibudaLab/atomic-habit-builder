@@ -7,6 +7,7 @@ import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
 import useUserChallenges from '@/hooks/useUserChallenges';
 import Loading from '../../components/Loading';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 export default function ChallengeList() {
   const { address } = useAccount();
@@ -17,7 +18,7 @@ export default function ChallengeList() {
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-4 text-center">
+    <main className="container mx-auto flex flex-col items-center px-4 text-center mb-30">
       <div className="flex flex-col items-center justify-center">
         <p className="pb-4 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 
@@ -42,6 +43,9 @@ export default function ChallengeList() {
           </div>
         )}
       </div>
+
+
+      <NavbarFooter />
     </main>
   );
 }

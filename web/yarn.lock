@@ -19309,6 +19309,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-icons@npm:^5.2.1":
+  version: 5.2.1
+  resolution: "react-icons@npm:5.2.1"
+  peerDependencies:
+    react: "*"
+  checksum: 10c0/9d52b975afaf27dab07dcaefd50497ba43cc57076fc26ccac5142965e01c7fd0c503a62ea31c3bb710e0b2959a4620c2fed12c3c86960ad8ceb63de7f0085f3a
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -20394,6 +20403,7 @@ __metadata:
     react: "npm:^18"
     react-dom: "npm:^18"
     react-hot-toast: "npm:^2.4.1"
+    react-icons: "npm:^5.2.1"
     react-remove-scroll: "npm:^2.5.7"
     react-spinners: "npm:^0.13.8"
     rehype-pretty-code: "npm:0.12.3"

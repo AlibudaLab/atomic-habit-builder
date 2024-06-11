@@ -11,7 +11,7 @@ export const metadata = generateMetadata({
 
 export default function ChallengeListPage() {
   return (
-    <div className="container mx-auto flex flex-col items-center px-8 pt-16">
+    <div className="container mx-auto flex flex-col items-center px-8 pt-16 pb-30">
       <Header />
       <ChallengeList />
     </div>
