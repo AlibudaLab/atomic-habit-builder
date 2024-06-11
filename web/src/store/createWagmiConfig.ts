@@ -1,6 +1,7 @@
 import { createConfig, http } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
 import { coinbaseWallet } from 'wagmi/connectors';
+import logo from '../../public/icons/512x512.png';
 
 export function createWagmiConfig(rpcUrl: string, projectId?: string) {
   // Keep this till we fully deprecated RK inside the template
@@ -17,7 +18,7 @@ export function createWagmiConfig(rpcUrl: string, projectId?: string) {
       coinbaseWallet({
         appName: 'Alibuda',
         preference: 'smartWalletOnly',
-        appLogoUrl: '/icons/512x512.png',
+        appLogoUrl: logo.src
       }),
     ],
     ssr: true,
