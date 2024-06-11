@@ -22,9 +22,11 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
   return (
     <div className="flex max-w-[500px] flex-col items-center justify-start px-8">
-      <p className="px-4 py-4 text-center text-bold font-londrina text-2xl text-primary">Challenge Created!</p>
+      <p className="text-bold px-4 py-4 text-center font-londrina text-2xl text-primary">
+        Challenge Created!
+      </p>
 
-      <p className="text-grey-800 text-center text-sm p-4">
+      <p className="text-grey-800 p-4 text-center text-sm">
         Share this link with your friends to join the challenge
       </p>
 

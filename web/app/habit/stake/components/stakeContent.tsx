@@ -28,6 +28,7 @@ import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserJoined from '@/hooks/useUserJoined';
+import Link from 'next/link';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -39,15 +40,15 @@ export default function StakeChallenge() {
 
   const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
 
-  const { challenge, loading } = useChallenge(Number(challengeId));
-
-  const hasAccess = useMemo(
-    () => challenge?.public === true || challenge?.accessCode === inputAccessCode,
-    [challenge?.public, challenge?.accessCode, inputAccessCode],
-  );
+  const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
-  const { joined, loading: loadingJoined } = useUserJoined(smartWallet, BigInt(challengeId));
+  const { joined } = useUserJoined(smartWallet, BigInt(challengeId));
+
+  const hasAccess = useMemo(
+    () => challenge?.public === true || challenge?.accessCode === inputAccessCode || joined,
+    [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
+  );
 
   const { data: capabilities } = useCapabilities();
   const currentChainSupportBatchTx =
@@ -185,7 +186,7 @@ export default function StakeChallenge() {
         )}
 
         {/* if no access, show text + button for access code */}
-        {!hasAccess && (
+        {challenge && !hasAccess && (
           <div className="w-full justify-center p-6 py-2 text-center">
             <div className="text-dark pb-2 text-xl font-bold"> Private Challenge </div>
             <div className="pt-4 text-sm text-primary">
@@ -273,15 +274,28 @@ export default function StakeChallenge() {
 
         {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
+        {loadingChallenge ? (
+          <Loading />
+        ) : (
+          challenge === null && (
+            <div className="p-4 text-sm">
+              <p>Challenge not found</p>
+              <Link href="/" type="button">
+                <Button color="default" className="mt-4">
+                  Back
+                </Button>
+              </Link>
+            </div>
+          )
+        )}
+
         {/**
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
          */}
         {hasAccess && (
           <div className="p-4 text-xs">
-            {!challenge || loading ? (
-              <Loading />
-            ) : testTokenBalance && !hasEnoughBalance ? (
+            {testTokenBalance && !hasEnoughBalance ? (
               <p>
                 {' '}
                 🚨 Insufficient Balance:{' '}
