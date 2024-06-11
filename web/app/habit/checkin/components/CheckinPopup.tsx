@@ -48,6 +48,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         id: 'checkInOtherRecords',
         label: 'Check in other Records',
         onClick: onClose,
+        isPrimary: true,
       },
     ];
   }, [onCheckInPageClick, onClose]);
