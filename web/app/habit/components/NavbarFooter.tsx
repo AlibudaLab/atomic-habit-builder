@@ -2,10 +2,12 @@
 import { Tab, Tabs } from '@nextui-org/react';
 import { Key, useEffect, useState } from 'react';
 import { IoIosHome, IoIosAddCircle, IoMdTrophy } from 'react-icons/io';
-import { FaList } from "react-icons/fa";
+import { FaList } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 enum TabKey {
+  None = 'none',
   HOME = 'home',
   LIST = 'list',
   CREATE = 'create',
@@ -13,35 +15,52 @@ enum TabKey {
 }
 
 export default function NavbarFooter() {
-  const [selected, setSelected] = useState<TabKey>(TabKey.HOME);
+  const [selected, setSelected] = useState<TabKey>(TabKey.None);
 
-  const pathName = usePathname()
+  const pathName = usePathname();
+
+  console.log('pathName', pathName);
+
+  const router = useRouter();
 
   // detect url to see which is selected
   useEffect(() => {
     if (pathName.includes('list')) {
-      setSelected(TabKey.LIST)
+      setSelected(TabKey.LIST);
     } else if (pathName.includes('create')) {
-      setSelected(TabKey.CREATE)
+      setSelected(TabKey.CREATE);
+    } else if (pathName === '/') {
+      setSelected(TabKey.HOME);
     } else {
-      setSelected(TabKey.HOME)
+      setSelected(TabKey.None);
     }
-  }, [pathName, setSelected])  
+  }, [pathName, setSelected]);
 
   return (
-    
     <Tabs
       aria-label="Options"
       selectedKey={selected}
-      onSelectionChange={(value: Key) => setSelected(value as TabKey)}
-      size='lg'
-      variant='light'
-      className="fixed bottom-0 z-50 flex items-center justify-around mb-6 mx-6 rounded-2xl shadow-2xl bg-white"
-      color='primary'
+      onSelectionChange={(value: Key) => {
+        console.log('value', value);
+        // setSelected(value as TabKey)
+        // navigate to the selected tab
+        if (value === TabKey.HOME) {
+          router.push('/');
+        } else if (value === TabKey.LIST) {
+          router.push('/habit/list');
+        } else if (value === TabKey.CREATE) {
+          router.push('/habit/create');
+        }
+      }}
+      size="lg"
+      variant="light"
+      className="fixed bottom-0 z-50 mx-6 mb-6 flex items-center justify-around rounded-2xl bg-white shadow-2xl"
+      color="primary"
     >
+      <Tab key={TabKey.None} className="m-0 w-0 p-0" />
       <Tab
         key={TabKey.HOME}
-        className='p-6 text-dark mx-2 focus:bg-dark'
+        className="text-dark focus:bg-dark mx-2 p-6"
         title={
           <div className="flex items-center">
             <IoIosHome size={20} />
@@ -51,35 +70,34 @@ export default function NavbarFooter() {
 
       <Tab
         key={TabKey.LIST}
-        className='p-6 text-dark mx-2'
+        className="text-dark mx-2 p-6"
         title={
           <div className="flex items-center">
-            <FaList size={20}  />
+            <FaList size={20} />
           </div>
         }
       />
 
       <Tab
         key={TabKey.CREATE}
-        className='p-6 text-dark mx-2'
+        className="text-dark mx-2 p-6"
         title={
           <div className="flex items-center">
-            <IoIosAddCircle size={20}  />
+            <IoIosAddCircle size={20} />
           </div>
         }
       />
 
       <Tab
         key={TabKey.TROPHY}
-        className='p-6 text-dark mx-2'
+        className="text-dark mx-2 p-6"
         isDisabled
         title={
           <div className="flex items-center">
-            <IoMdTrophy size={20}  />
+            <IoMdTrophy size={20} />
           </div>
         }
       />
     </Tabs>
-
   );
 }

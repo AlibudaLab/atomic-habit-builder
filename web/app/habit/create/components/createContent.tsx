@@ -13,6 +13,7 @@ import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constan
 import { Address, DecodeEventLogReturnType, parseUnits } from 'viem';
 import useCreateChallenge from '@/hooks/transaction/useCreate';
 import toast from 'react-hot-toast';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 const defaultDonationDest = donationDestinations[0];
 
@@ -193,6 +194,8 @@ export default function Create() {
           />
         )}
       </div>
+
+      <NavbarFooter />
     </div>
   );
 }

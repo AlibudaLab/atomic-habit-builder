@@ -18,7 +18,7 @@ export default function ChallengeList() {
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-4 text-center mb-30">
+    <main className="mb-30 container mx-auto flex flex-col items-center px-4 text-center">
       <div className="flex flex-col items-center justify-center">
         <p className="pb-4 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 
@@ -43,7 +43,6 @@ export default function ChallengeList() {
           </div>
         )}
       </div>
-
 
       <NavbarFooter />
     </main>

@@ -15,7 +15,7 @@ export default function DashboardPage() {
   const { data: challenges, loading } = useUserChallenges(address);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 pt-16 pb-[64px]">
+    <main className="container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />
       {!address ? (
         <Onboard />

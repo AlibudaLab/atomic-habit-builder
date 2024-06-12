@@ -31,7 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
       <body className="flex flex-1 flex-col items-center">
         <OnchainProviders>
-          <div className="max-w-[500px]">{children}</div>
+          {/* pb: reserve space for the footer */}
+          <div className="max-w-[500px] pb-[72px]">{children}</div>
         </OnchainProviders>
       </body>
       <GoogleAnalytics />

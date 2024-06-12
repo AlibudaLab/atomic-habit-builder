@@ -3,6 +3,7 @@
 import Claim from '../components/claim';
 
 import Header from '../../components/Header';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 export default function ClaimPage() {
   return (
@@ -10,6 +11,8 @@ export default function ClaimPage() {
       <Header />
 
       <Claim />
+
+      <NavbarFooter />
     </main>
   );
 }

@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 
 import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
 

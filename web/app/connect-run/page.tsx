@@ -8,6 +8,7 @@ import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Button } from '@nextui-org/button';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 const StravaImg = require('../../src/imgs/apps/strava.png') as string;
 
@@ -27,7 +28,7 @@ export default function ConnectRunDataSource() {
   }, []);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 pt-16">
+    <main className="pb container mx-auto flex flex-col items-center px-8 pt-16">
       <Header />
 
       <div className="py-4 text-lg font-bold">Link Run Data Source</div>
@@ -45,8 +46,9 @@ export default function ConnectRunDataSource() {
             Link Strava
           </Button>
         </div>
-        {/* )} */}
       </div>
+
+      <NavbarFooter />
     </main>
   );
 }

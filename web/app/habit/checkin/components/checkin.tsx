@@ -8,6 +8,7 @@ import RunCheckIn from './checkinRun';
 import NFCCheckIn from './nfc';
 import useChallenge from '@/hooks/useChallenge';
 import Loading from 'app/habit/components/Loading';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 export default function CheckIn() {
   const { challengeId } = useParams<{ challengeId: string }>();
@@ -33,6 +34,8 @@ export default function CheckIn() {
       ) : (
         <div className="text-center"> Challenge not found </div>
       )}
+
+      <NavbarFooter />
     </div>
   );
 }
