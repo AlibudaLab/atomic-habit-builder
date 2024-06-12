@@ -5,11 +5,11 @@ import "forge-std/Test.sol";
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-import "../src/Alibuda.sol";
+import "./mock/MockERC20.sol";
 import "../src/Tracker.sol";
 
 contract TrackerTest is Test {
-    Alibuda underlying;
+    MockERC20 underlying;
     Tracker tracker;
     address verifier;
     uint256 key;
@@ -21,7 +21,7 @@ contract TrackerTest is Test {
         challengeEndDays = 100;
         joinDueDays = 1;
 
-        underlying = new Alibuda();
+        underlying = new MockERC20("Alibuda", "ALI", 6);
         tracker = new Tracker(address(underlying), "Alibuda Habit Builder", "1.0");
 
         (verifier, key) = makeAddrAndKey("test_verifier");
@@ -33,8 +33,11 @@ contract TrackerTest is Test {
             uint64(block.timestamp + joinDueDays * 1 days),
             uint64(block.timestamp + challengeEndDays * 1 days),
             address(this),
+            address(0),
             PER_USER_STAKE
         );
+
+        underlying.mint(address(this), PER_USER_STAKE);
         underlying.approve(address(tracker), PER_USER_STAKE);
     }
 
@@ -43,14 +46,16 @@ contract TrackerTest is Test {
 
         tracker.join(1);
 
-        bytes32 digest = tracker.getCheckInDigest(1, timestamp, address(this));
+        bytes memory checkInData = "";
+
+        bytes32 digest = tracker.getCheckInDigest(1, address(this), checkInData);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(key, digest);
 
-        tracker.checkIn(1, timestamp, v, r, s);
+        tracker.checkIn(1, checkInData, abi.encodePacked(r, s, v));
     }
 
     function test_Register() public view {
-        (,, uint256 startTimestamp,,,,,,) = tracker.challenges(1);
+        (,, uint256 startTimestamp,,,,,,,) = tracker.challenges(1);
         assertNotEq(startTimestamp, 0, "Register failed");
     }
 
@@ -76,7 +81,7 @@ contract TrackerTest is Test {
 
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
         tracker.settle(1);
-        (,,,,,,,, bool settled) = tracker.challenges(1);
+        (,,,,,,,,, bool settled) = tracker.challenges(1);
 
         assertEq(settled, true, "Settle failed");
         assertEq(tracker.getClaimableAmount(1, address(this)), PER_USER_STAKE, "Settle failed");

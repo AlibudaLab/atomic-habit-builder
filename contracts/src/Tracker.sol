@@ -3,8 +3,9 @@ pragma solidity 0.8.25;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
+import "./interfaces/ICheckInJudge.sol";
 
 struct Challenge {
     address verifier;
@@ -13,6 +14,7 @@ struct Challenge {
     uint64 joinDueTimestamp;
     uint64 endTimestamp;
     address donateDestination;
+    address checkInJudge;
     uint256 stakePerUser;
     uint256 totalStake;
     bool settled;
@@ -20,7 +22,6 @@ struct Challenge {
 
 contract Tracker is EIP712 {
     using SafeERC20 for IERC20;
-    using ECDSA for bytes32;
 
     //FIXME: This should be included in struct Challenge
     address public underlyingToken;
@@ -43,7 +44,9 @@ contract Tracker is EIP712 {
         uint256 startTimestamp,
         uint256 joinDueTimestamp,
         uint256 endTimestamp,
-        uint256 minimumCheckIns
+        uint256 minimumCheckIns,
+        address donationDestination,
+        address checkInJudge
     );
     event Join(address indexed user, uint256 indexed challengeId);
     event Settle(uint256 indexed challengeId);
@@ -63,6 +66,7 @@ contract Tracker is EIP712 {
         uint64 joinDueTimestamp,
         uint64 endTimestamp,
         address donateDestination,
+        address checkInJudge,
         uint256 stake
     ) public {
         require(endTimestamp > startTimestamp, "end timestamp must be greater than start timestamp");
@@ -74,12 +78,21 @@ contract Tracker is EIP712 {
             joinDueTimestamp,
             endTimestamp,
             donateDestination,
+            checkInJudge,
             stake,
             0,
             false
         );
         emit Register(
-            challengeCounter, verifier, extraData, startTimestamp, joinDueTimestamp, endTimestamp, minimumCheckIns
+            challengeCounter,
+            verifier,
+            extraData,
+            startTimestamp,
+            joinDueTimestamp,
+            endTimestamp,
+            minimumCheckIns,
+            donateDestination,
+            checkInJudge
         );
     }
 
@@ -97,17 +110,37 @@ contract Tracker is EIP712 {
         emit Join(msg.sender, challengeId);
     }
 
-    // todo: change signature to bytes, so we can support contract checkins
-    // todo: change checkin digest into bytes, to be more flexible
-    function checkIn(uint256 challengeId, uint256 timestamp, uint8 v, bytes32 r, bytes32 s) public {
+    /**
+     * @param challengeId id of the challenge to check in, required to prevent replays from other challenges in case the same verifiers are used.
+     * @param checkInData application specific extra check in data.
+     * @param signature checkInDigest signed by verifier address.
+     * @dev If the checkInJudge contract is specified, checkInData would be passed with the call checkInJudge.judge(checkInData).
+     * checkInJudge.judge(checkInData) should implement what to check on and replay prevention and the checkInJudge contract address should be specified at challenge creation.
+     * The main tracker is only responsible for checking:
+     * 1. If the signing address matches the validator address
+     * 2. The challenge ID is the ID included in the signing digest.
+     * 3. The msg.sender is the user address included in the signing digest.
+     */
+    function checkIn(uint256 challengeId, bytes memory checkInData, bytes memory signature) public {
+        uint256 timestamp = block.timestamp;
         require(
-            timestamp <= challenges[challengeId].endTimestamp && timestamp >= challenges[challengeId].startTimestamp,
-            "invalid timestamp"
+            timestamp >= challenges[challengeId].startTimestamp && timestamp <= challenges[challengeId].endTimestamp,
+            "invalid checkin period"
         );
         require(hasJoined[challengeId][msg.sender], "user has not joined the challenge");
-        bytes32 digest = getCheckInDigest(challengeId, timestamp, msg.sender);
+
+        bytes32 digest = getCheckInDigest(challengeId, msg.sender, checkInData);
         require(!digestUsed[digest], "digest has been used");
-        require(challenges[challengeId].verifier == ECDSA.recover(digest, v, r, s), "invalid signature");
+        require(
+            SignatureChecker.isValidSignatureNow(challenges[challengeId].verifier, digest, signature),
+            "invalid signature"
+        );
+
+        address checkInJudge = challenges[challengeId].checkInJudge;
+
+        if (checkInJudge != address(0)) {
+            require(ICheckInJudge(checkInJudge).judge(checkInData), "checkin criteria not met");
+        }
 
         digestUsed[digest] = true;
         checkIns[challengeId][msg.sender].push(timestamp);
@@ -126,7 +159,6 @@ contract Tracker is EIP712 {
         emit Settle(challengeId);
         challenges[challengeId].settled = true;
         uint256 succeedUserCounts = succeedUsers[challengeId].length;
-
         uint256 halfFailedUserStake =
             (challenges[challengeId].totalStake - (succeedUserCounts * challenges[challengeId].stakePerUser)) / 2;
         challenges[challengeId].totalStake -= halfFailedUserStake;
@@ -150,14 +182,18 @@ contract Tracker is EIP712 {
         IERC20(underlyingToken).safeTransfer(msg.sender, amount);
     }
 
-    function getCheckInDigest(uint256 challengeId, uint256 timestamp, address user) public view returns (bytes32) {
+    function getCheckInDigest(uint256 challengeId, address user, bytes memory checkInData)
+        public
+        view
+        returns (bytes32)
+    {
         return _hashTypedDataV4(
             keccak256(
                 abi.encode(
-                    keccak256("checkInSigningMessage(uint256 challengeId,uint256 timestamp,address user)"),
+                    keccak256("checkInSigningMessage(uint256 challengeId,address user,bytes checkInData)"),
                     challengeId,
-                    timestamp,
-                    user
+                    user,
+                    checkInData
                 )
             )
         );
