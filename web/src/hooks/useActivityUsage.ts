@@ -55,8 +55,8 @@ const useActivityUsage = (user: Address | undefined) => {
       .then((res) => {
         console.log('api response', res);
       })
-      .catch((error) => {
-        console.error('Error adding activity:', error);
+      .catch((err) => {
+        console.error('Error adding activity:', err);
       });
   };
 
