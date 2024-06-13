@@ -2,6 +2,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DateValue } from '@nextui-org/react';
 import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
@@ -13,9 +14,11 @@ import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constan
 import { Address, DecodeEventLogReturnType, parseUnits } from 'viem';
 import useCreateChallenge from '@/hooks/transaction/useCreate';
 import toast from 'react-hot-toast';
-import NavbarFooter from 'app/habit/components/NavbarFooter';
+import { parseAbsoluteToLocal } from '@internationalized/date';
 
 const defaultDonationDest = donationDestinations[0];
+
+const defaultStart = moment().hour(0).minutes(0).seconds(0).milliseconds(0).add(1, 'day');
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -40,8 +43,12 @@ export default function Create() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [totalTimes, setTotalTimes] = useState(5);
-  const [startTimestamp, setStartTimestamp] = useState(moment().add(1, 'day').unix());
-  const [endTimestamp, setEndTimestamp] = useState(moment().add(1, 'week').unix());
+
+  const [duration, setDuration] = useState({
+    start: parseAbsoluteToLocal(defaultStart.toISOString()),
+    end: parseAbsoluteToLocal(defaultStart.add(1, 'week').toISOString()),
+  });
+
   const [stake, setStake] = useState(0);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
@@ -93,9 +100,9 @@ export default function Create() {
     defaultVerifier,
     name,
     totalTimes,
-    startTimestamp,
-    endTimestamp, // for testing purpose, allow join until last second!
-    endTimestamp,
+    moment.utc(duration.start.toAbsoluteString()).unix(),
+    moment.utc(duration.end.toAbsoluteString()).unix(),
+    moment.utc(duration.end.toAbsoluteString()).unix(),
     donatioAddr,
     stakeInUSDC,
     onCreateSuccess,
@@ -163,10 +170,8 @@ export default function Create() {
             setDescription={setDescription}
             totalTimes={totalTimes}
             setTotalTimes={setTotalTimes}
-            startTimestamp={startTimestamp}
-            setStartTimestamp={setStartTimestamp}
-            endTimestamp={endTimestamp}
-            setEndTimestamp={setEndTimestamp}
+            duration={duration}
+            setDuration={setDuration}
             stake={Number(stake)}
             setStake={setStake}
             setStep={setStep}
