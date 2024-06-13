@@ -3,8 +3,8 @@
 
 import React from 'react';
 import moment from 'moment';
-import { DateRangePicker } from '@nextui-org/react';
-import { parseDate } from '@internationalized/date';
+import { DateRangePicker, DateValue } from '@nextui-org/react';
+import { ZonedDateTime, parseAbsoluteToLocal } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
 import { Switch } from '@nextui-org/switch';
@@ -16,10 +16,8 @@ type Step1Props = {
   setDescription: (description: string) => void;
   totalTimes: number;
   setTotalTimes: (totalTimes: number) => void;
-  startTimestamp: number;
-  setStartTimestamp: (startTimestamp: number) => void;
-  endTimestamp: number;
-  setEndTimestamp: (endTimestamp: number) => void;
+  duration: { start: ZonedDateTime; end: ZonedDateTime };
+  setDuration: (duration: { start: ZonedDateTime; end: ZonedDateTime }) => void;
   stake: number;
   setStake: (stake: number) => void;
   setStep: (step: number) => void;
@@ -32,10 +30,8 @@ export default function CreateStep1({
   setDescription,
   totalTimes,
   setTotalTimes,
-  startTimestamp,
-  setStartTimestamp,
-  endTimestamp,
-  setEndTimestamp,
+  duration,
+  setDuration,
   stake,
   setStake,
   setStep,
@@ -85,14 +81,9 @@ export default function CreateStep1({
       <DateRangePicker
         label="Challenge Duration"
         className="my-4"
-        value={{
-          start: parseDate(moment.unix(startTimestamp).format('YYYY-MM-DD')),
-          end: parseDate(moment.unix(endTimestamp).format('YYYY-MM-DD')),
-        }}
-        onChange={(value) => {
-          setStartTimestamp(moment(value.start).unix());
-          setEndTimestamp(moment(value.end).unix());
-        }}
+        granularity="day"
+        value={duration}
+        onChange={setDuration}
       />
 
       <Input
