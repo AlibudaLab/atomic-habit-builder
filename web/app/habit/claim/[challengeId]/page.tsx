@@ -1,12 +1,10 @@
-import { generateMetadata } from '@/utils/generateMetadata';
 import Claim from '../components/claim';
+import { Metadata } from 'next';
 
-export const metadata = generateMetadata({
+export const metadata: Metadata = {
   title: 'Claim',
   description: 'Habit Builder for Happy Builders',
-  images: 'icons/512x512.png',
-  pathname: '',
-});
+};
 
 export default function ClaimPage() {
   return <Claim />;

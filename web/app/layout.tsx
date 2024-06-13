@@ -6,7 +6,6 @@ import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
 import OnchainProviders from '@/OnchainProviders';
 import { initAnalytics } from '@/utils/analytics';
 import { roboto, londrina } from './fonts';
-import type { Metadata } from 'next';
 import NavbarFooter from './habit/components/NavbarFooter';
 import Header from './habit/components/Header';
 
