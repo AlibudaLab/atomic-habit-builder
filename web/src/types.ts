@@ -44,3 +44,5 @@ export type DonationDest = {
   address: Address;
   logo?: string;
 };
+
+export type ActivityMap = Record<string, string[]>;

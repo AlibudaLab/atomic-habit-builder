@@ -1,32 +1,66 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { ActivityMap } from '@/types';
+import { useState, useEffect } from 'react';
+import { Address } from 'viem';
 
-import storage from 'local-storage-fallback';
+const useActivityUsage = (user: Address | undefined) => {
+  const [activityMap, setActivityMap] = useState<ActivityMap>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-const STORAGE_KEY_ACTIVITY = 'strava-activity-used';
+  console.log('activityMap', activityMap);
 
-// TEMP: store this in browser
-const useUsedActivity = () => {
-  const [activities, setActivities] = useState<string[]>([]);
-
-  // when first loaded, try getting from local storage
   useEffect(() => {
-    if (!window) return;
-    const stored = storage.getItem(STORAGE_KEY_ACTIVITY) ?? '[]';
-    setActivities(JSON.parse(stored));
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchChallenges = async () => {
+      try {
+        const response = await fetch(`/api/user?$address${user}`);
+        const data = await response.json();
+        setActivityMap(data.activityMap as ActivityMap);
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChallenges().then(console.log).catch(console.error);
   }, []);
 
-  const updateUsedActivities = useCallback(
-    (newId: string) => {
-      const newActivities = [...activities, newId];
-      setActivities(newActivities);
-      storage.setItem(STORAGE_KEY_ACTIVITY, JSON.stringify(newActivities));
-    },
-    [setActivities, activities],
-  );
+  const addToActivityMap = (challengeId: number, activityId: string) => {
+    setActivityMap((prev) => {
+      const prevActivities = prev[challengeId] || [];
+      return {
+        ...prev,
+        [challengeId]: [...prevActivities, activityId],
+      };
+    });
 
-  return { activities, updateUsedActivities };
+    fetch('/api/user/activities', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user,
+        challengeId,
+        activityId,
+      }),
+    })
+      .then((res) => {
+        console.log('api response', res);
+      })
+      .catch((error) => {
+        console.error('Error adding activity:', error);
+      });
+  };
+
+  return { activityMap, addToActivityMap, loading, error };
 };
 
-export default useUsedActivity;
+export default useActivityUsage;
