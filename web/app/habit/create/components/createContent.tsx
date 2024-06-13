@@ -114,7 +114,7 @@ export default function Create() {
       </p>
 
       <div
-        className={`w-full max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 shadow-large ${
+        className={`h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-32 shadow-large ${
           loaded ? 'slide-up' : ''
         }`}
       >
@@ -125,9 +125,9 @@ export default function Create() {
           <div className="flex items-center justify-center gap-1 py-4">
             <button
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
-                step === 1 ? 'bg-dark text-white' : 'border-dark border border-solid'
+                step === 1 ? 'bg-dark text-white' : 'border border-solid border-dark'
               } `}
-              // onClick={() => setStep(1)}
+              onClick={() => setStep(1)}
               type="button"
             >
               {' '}
@@ -135,9 +135,9 @@ export default function Create() {
             </button>
             <button
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
-                step === 2 ? 'bg-dark text-white' : 'border-dark border border-solid'
+                step === 2 ? 'bg-dark text-white' : 'border border-solid border-dark'
               } `}
-              // onClick={() => setStep(2)}
+              onClick={() => setStep(2)}
               type="button"
             >
               {' '}
@@ -145,9 +145,9 @@ export default function Create() {
             </button>
             <button
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
-                step === 3 ? 'bg-dark text-white' : 'border-dark border border-solid'
+                step === 3 ? 'bg-dark text-white' : 'border border-solid border-dark'
               } `}
-              // onClick={() => setStep(3)}
+              onClick={() => setStep(3)}
               type="button"
             >
               {' '}
@@ -155,7 +155,6 @@ export default function Create() {
             </button>
           </div>
         </div>
-
         {step === 1 && (
           <CreateStep1
             name={name}
@@ -194,8 +193,6 @@ export default function Create() {
           />
         )}
       </div>
-
-      <NavbarFooter />
     </div>
   );
 }

@@ -1,13 +1,19 @@
+import { Metadata } from 'next';
 import { NextUIProvider } from '@nextui-org/system';
-import { generateMetadata } from '@/utils/generateMetadata';
 import HomePage from './home/HomePage';
 
-export const metadata = generateMetadata({
-  title: 'Alibuda Habit Builder',
-  description: 'Habit Builder for Happy Builders',
-  images: 'themes.png',
-  pathname: '',
-});
+export const metadata: Metadata = {
+  title: 'Alibuda',
+  description: 'Build habits, track progress, and earn rewards',
+  manifest: '/manifest.json',
+  generator: 'Next.js',
+  viewport:
+    'minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover',
+  icons: [
+    { rel: 'apple-touch-icon', url: 'icons/512x512.png' },
+    { rel: 'icon', url: 'icons/512x512.png' },
+  ],
+};
 
 /**
  * Server component, which imports the Home component (client component that has 'use client' in it)

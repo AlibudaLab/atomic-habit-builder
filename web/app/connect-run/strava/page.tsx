@@ -65,9 +65,7 @@ export default function CallbackStrava() {
   }, [stravaAuthToken, updateVerifierAndSecret, originalUri]);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-4 pt-16">
-      <Header />
-
+    <main>
       {stravaAuthToken !== undefined && (
         <>
           {isPending ? (

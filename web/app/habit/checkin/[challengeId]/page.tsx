@@ -1,20 +1,14 @@
 import CheckIn from '../components/checkin';
 
-import Header from '../../components/Header';
 import { generateMetadata } from '@/utils/generateMetadata';
 
 export const metadata = generateMetadata({
   title: 'Check In',
-  description: 'Habit Builder for Happy Builders',
+  description: 'Submit proof of progress for the challenge!',
   images: 'themes.png',
   pathname: '',
 });
 
 export default function CheckInPage() {
-  return (
-    <main className="container mx-auto flex flex-col items-center px-4 pt-16">
-      <Header />
-      <CheckIn />
-    </main>
-  );
+  return <CheckIn />;
 }

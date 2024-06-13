@@ -15,7 +15,7 @@ export default function CheckIn() {
   const { challenge, loading } = useChallenge(Number(challengeId));
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex h-screen flex-col items-center">
       <p className="pb-4 text-center font-londrina text-xl font-bold">
         {' '}
         Happy Builder; Habit Builder!{' '}
@@ -34,8 +34,6 @@ export default function CheckIn() {
       ) : (
         <div className="text-center"> Challenge not found </div>
       )}
-
-      <NavbarFooter />
     </div>
   );
 }

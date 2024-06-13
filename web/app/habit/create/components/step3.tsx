@@ -21,7 +21,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
   const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
 
   return (
-    <div className="flex max-w-[500px] flex-col items-center justify-start px-8">
+    <div className="flex h-full w-full flex-col items-center justify-start px-8">
       <p className="text-bold px-4 py-4 text-center font-londrina text-2xl text-primary">
         Challenge Created!
       </p>

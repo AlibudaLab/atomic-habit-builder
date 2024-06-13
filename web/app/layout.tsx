@@ -1,3 +1,5 @@
+'use client';
+
 import './global.css';
 
 import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
@@ -5,19 +7,8 @@ import OnchainProviders from '@/OnchainProviders';
 import { initAnalytics } from '@/utils/analytics';
 import { roboto, londrina } from './fonts';
 import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Alibuda',
-  description: 'Build habits, track progress, and earn rewards',
-  manifest: '/manifest.json',
-  generator: 'Next.js',
-  viewport:
-    'minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover',
-  icons: [
-    { rel: 'apple-touch-icon', url: 'icons/512x512.png' },
-    { rel: 'icon', url: 'icons/512x512.png' },
-  ],
-};
+import NavbarFooter from './habit/components/NavbarFooter';
+import Header from './habit/components/Header';
 
 // Stat analytics before the App renders,
 // so we can track page views and early events
@@ -29,10 +20,13 @@ initAnalytics();
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
-      <body className="flex flex-1 flex-col items-center">
+      <body className="flex flex-1 flex-col items-center pb-[100px]">
         <OnchainProviders>
-          {/* pb: reserve space for the footer */}
-          <div className="max-w-[500px] pb-[72px]">{children}</div>
+          <div className="container mx-auto flex max-w-[500px] flex-col items-center bg-white pt-16 ">
+            <Header />
+            {children}
+            <NavbarFooter />
+          </div>
         </OnchainProviders>
       </body>
       <GoogleAnalytics />

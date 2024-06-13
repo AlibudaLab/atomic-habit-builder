@@ -1,20 +1,13 @@
 import { generateMetadata } from '@/utils/generateMetadata';
 import Create from './components/createContent';
-import Header from '../components/Header';
 
 export const metadata = generateMetadata({
   title: 'Create',
   description: 'Habit Builder for Happy Builders',
-  images: 'themes.png',
+  images: 'icons/512x512.png',
   pathname: '',
 });
 
 export default function CreatePage() {
-  return (
-    <main className="container mx-auto flex h-screen flex-col items-center pt-16">
-      <Header />
-
-      <Create />
-    </main>
-  );
+  return <Create />;
 }

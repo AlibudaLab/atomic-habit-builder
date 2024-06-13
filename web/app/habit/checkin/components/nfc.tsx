@@ -91,18 +91,18 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+        <div className="pb-2 text-xl font-bold text-dark"> Goal </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
       {/* checkIn description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+        <div className="pb-2 text-xl font-bold text-dark"> Check In </div>
         <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+        <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
         <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
       </div>
 

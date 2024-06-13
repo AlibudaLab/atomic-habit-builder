@@ -1,6 +1,5 @@
 import { generateMetadata } from '@/utils/generateMetadata';
 import ChallengeList from './components/challengeList';
-import Header from '../components/Header';
 
 export const metadata = generateMetadata({
   title: 'Challenges',
@@ -10,10 +9,5 @@ export const metadata = generateMetadata({
 });
 
 export default function ChallengeListPage() {
-  return (
-    <div className="pb-30 container mx-auto flex flex-col items-center px-8 pt-16">
-      <Header />
-      <ChallengeList />
-    </div>
-  );
+  return <ChallengeList />;
 }
