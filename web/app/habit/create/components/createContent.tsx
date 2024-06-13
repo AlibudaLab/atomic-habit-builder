@@ -49,7 +49,6 @@ export default function Create() {
     end: parseAbsoluteToLocal(defaultStart.add(1, 'week').toISOString()),
   });
 
-  const [endTimestamp, setEndTimestamp] = useState(moment().add(1, 'week').unix());
   const [stake, setStake] = useState(0);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
@@ -103,7 +102,7 @@ export default function Create() {
     totalTimes,
     moment.utc(duration.start.toAbsoluteString()).unix(),
     moment.utc(duration.end.toAbsoluteString()).unix(),
-    endTimestamp,
+    moment.utc(duration.end.toAbsoluteString()).unix(),
     donatioAddr,
     stakeInUSDC,
     onCreateSuccess,
