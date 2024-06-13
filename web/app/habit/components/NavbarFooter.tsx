@@ -92,6 +92,6 @@ export default function NavbarFooter() {
           </div>
         </button>
       </div>
-    ) : (<></>)
+    ) : (<div> {" "} </div>)
   );
 }
