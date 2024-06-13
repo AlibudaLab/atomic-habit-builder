@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Tab, Tabs } from '@nextui-org/react';
-import { Key, useEffect, useState } from 'react';
+/* eslint-disable jsx-a11y/control-has-associated-label */
+import { useEffect, useState } from 'react';
 import { IoIosHome, IoIosAddCircle, IoMdTrophy } from 'react-icons/io';
 import { FaList } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
@@ -45,6 +45,7 @@ export default function NavbarFooter() {
         key={TabKey.HOME}
         className={selected === TabKey.HOME ? 'opacity-100' : 'opacity-40'}
         onClick={() => router.push('/')}
+        type="button"
       >
         <div className="mx-2 flex items-center">
           <IoIosHome size={25} />
@@ -55,6 +56,7 @@ export default function NavbarFooter() {
         key={TabKey.LIST}
         className={selected === TabKey.LIST ? 'opacity-100' : 'opacity-40'}
         onClick={() => router.push('/habit/list')}
+        type="button"
       >
         <div className="mx-2 flex items-center">
           <FaList size={25} />
@@ -65,6 +67,7 @@ export default function NavbarFooter() {
         key={TabKey.CREATE}
         className={selected === TabKey.CREATE ? 'opacity-100' : 'opacity-40'}
         onClick={() => router.push('/habit/create')}
+        type="button"
       >
         <div className="mx-2 flex items-center">
           <IoIosAddCircle size={25} />
@@ -76,6 +79,7 @@ export default function NavbarFooter() {
         className="opacity-40"
         // disabled
         onClick={() => toast('Coming soon!')}
+        type="button"
       >
         <div className="mx-2 flex items-center">
           <IoMdTrophy size={25} />
