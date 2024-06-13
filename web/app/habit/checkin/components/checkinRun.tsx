@@ -17,7 +17,7 @@ import useFields from '@/hooks/useFields';
 import useCheckInRun, { CheckInFields } from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
-import useActivityUsage from '@/hooks/useUsedActivities';
+import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
