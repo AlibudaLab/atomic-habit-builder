@@ -26,7 +26,7 @@ function InstallPWA() {
   };
   if (!supportsPWA) {
     return (
-      <div className="text-dark flex items-center text-base">
+      <div className="flex items-center text-base text-dark">
         Click{' '}
         <span className="flex gap-1 p-2 font-bold">
           {' '}

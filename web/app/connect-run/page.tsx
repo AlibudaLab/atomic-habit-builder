@@ -8,6 +8,7 @@ import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Button } from '@nextui-org/button';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 const StravaImg = require('../../src/imgs/apps/strava.png') as string;
 
@@ -18,8 +19,6 @@ export default function ConnectRunDataSource() {
 
   const pathName = usePathname();
 
-  console.log('originalUri', originalPath);
-
   const onClickStrava = useCallback(() => {
     const redirectUri = window.origin + pathName + '/strava';
     const authUrl = stravaUtils.getAuthURL(redirectUri, originalPath);
@@ -27,10 +26,8 @@ export default function ConnectRunDataSource() {
   }, []);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-8 pt-16">
-      <Header />
-
-      <div className="py-4 text-lg font-bold">Link Run Data Source</div>
+    <>
+      <div className="py-4 text-lg font-bold">Link Run & Workout Data Source</div>
       <div>
         {/* {verifier === RunVerifier.None && ( */}
         <div className="gap-2 sm:flex">
@@ -45,8 +42,7 @@ export default function ConnectRunDataSource() {
             Link Strava
           </Button>
         </div>
-        {/* )} */}
       </div>
-    </main>
+    </>
   );
 }

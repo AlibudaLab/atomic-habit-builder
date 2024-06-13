@@ -143,9 +143,7 @@ export default function StakeChallenge() {
   };
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-4 pt-16 text-center">
-      <Header />
-
+    <main className="flex h-screen flex-col items-center px-4 text-center">
       <div className="flex max-w-96 flex-col items-center justify-center">
         <p className="pb-4 text-center font-londrina text-xl font-bold">
           {' '}
@@ -160,13 +158,13 @@ export default function StakeChallenge() {
               <>
                 {/* goal description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="text-dark pb-2 text-xl font-bold"> Goal </div>
+                  <div className="pb-2 text-xl font-bold text-dark"> Goal </div>
                   <div className="text-sm text-primary"> {challenge.description} </div>
                 </div>
 
                 {/* checkIn description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="text-dark pb-2 text-xl font-bold"> Check In </div>
+                  <div className="pb-2 text-xl font-bold text-dark"> Check In </div>
                   <div className="text-sm text-primary">
                     {' '}
                     {getCheckInDescription(challenge.type)}{' '}
@@ -174,7 +172,7 @@ export default function StakeChallenge() {
                 </div>
 
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="text-dark pb-2 text-xl font-bold"> Stake Amount </div>
+                  <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
                   <div className="text-sm text-primary">
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
@@ -188,7 +186,7 @@ export default function StakeChallenge() {
         {/* if no access, show text + button for access code */}
         {challenge && !hasAccess && (
           <div className="w-full justify-center p-6 py-2 text-center">
-            <div className="text-dark pb-2 text-xl font-bold"> Private Challenge </div>
+            <div className="pb-2 text-xl font-bold text-dark"> Private Challenge </div>
             <div className="pt-4 text-sm text-primary">
               This is a private challenge! Please enter the access code to join.
             </div>

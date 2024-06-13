@@ -33,7 +33,7 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
         </Link>
       ))}
 
-      <Link href="/habit/list" className="text-dark my-6 py-4">
+      <Link href="/habit/list" className="my-6 py-4 text-dark">
         <p className="text-md font-bold"> Join Other Challenges </p>
       </Link>
     </div>

@@ -36,6 +36,7 @@ const config: Config = {
         'boat-color-yellow-70': '#FFD200',
         'boat-gold': '#7b602f',
         primary: '#ff784f',
+        dark: '#3a3042',
       },
       fontFamily: {
         nunito: ['var(--font-nunito)'],

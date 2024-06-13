@@ -1,13 +1,11 @@
-import { generateMetadata } from '@/utils/generateMetadata';
+import { Metadata } from 'next';
 import StakeContent from '../components/stakeContent';
 
-export const metadata = generateMetadata({
+export const metadata: Metadata = {
   title: 'Join',
-  description: 'Habit Builder for Happy Builders',
-  images: 'themes.png',
-  pathname: '',
-});
+  description: 'Join a challenge to build a habit.',
+};
 
-export default function ChallengeListPage() {
+export default function StakePage() {
   return <StakeContent />;
 }

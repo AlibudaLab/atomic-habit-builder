@@ -8,13 +8,14 @@ import RunCheckIn from './checkinRun';
 import NFCCheckIn from './nfc';
 import useChallenge from '@/hooks/useChallenge';
 import Loading from 'app/habit/components/Loading';
+import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 export default function CheckIn() {
   const { challengeId } = useParams<{ challengeId: string }>();
   const { challenge, loading } = useChallenge(Number(challengeId));
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex h-screen flex-col items-center">
       <p className="pb-4 text-center font-londrina text-xl font-bold">
         {' '}
         Happy Builder; Habit Builder!{' '}

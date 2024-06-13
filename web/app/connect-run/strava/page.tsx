@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 
 import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
 
@@ -66,9 +65,7 @@ export default function CallbackStrava() {
   }, [stravaAuthToken, updateVerifierAndSecret, originalUri]);
 
   return (
-    <main className="container mx-auto flex flex-col items-center px-4 pt-16">
-      <Header />
-
+    <main>
       {stravaAuthToken !== undefined && (
         <>
           {isPending ? (

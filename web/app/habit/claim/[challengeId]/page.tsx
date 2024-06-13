@@ -1,15 +1,11 @@
-'use client';
-
 import Claim from '../components/claim';
+import { Metadata } from 'next';
 
-import Header from '../../components/Header';
+export const metadata: Metadata = {
+  title: 'Claim',
+  description: 'Habit Builder for Happy Builders',
+};
 
 export default function ClaimPage() {
-  return (
-    <main className="container mx-auto flex flex-col items-center px-4 pt-16">
-      <Header />
-
-      <Claim />
-    </main>
-  );
+  return <Claim />;
 }
