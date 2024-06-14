@@ -5,6 +5,9 @@ import { Snippet } from '@nextui-org/snippet';
 import { Select, SelectItem } from '@nextui-org/select';
 import { useAccount } from 'wagmi';
 
+import usdc from '@/imgs/coins/usdc.png';
+import Image from 'next/image';
+
 type DepositPopupProps = {
   onClose: () => void;
 };
@@ -42,7 +45,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
 
   const tokens = [
     // { key: 'eth', label: 'ETH' },
-    { key: 'usdc', label: 'USDC' },
+    { key: 'usdc', label: 'USDC', icon: usdc },
   ];
 
   const networks = [
@@ -66,7 +69,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
           onSelectionChange={handleTokenChange}
         >
           {tokens.map((token) => (
-            <SelectItem key={token.key}>{token.label}</SelectItem>
+            <SelectItem key={token.key} startContent={<Image src={token.icon} height={20} width={20} alt='token' />} >{token.label}</SelectItem>
           ))}
         </Select>
       </div>
