@@ -218,18 +218,30 @@ contract Tracker is EIP712 {
         );
     }
 
+    /**
+     * @notice Get the list of challenges that the user has joined
+     */
     function getUserChallenges(address user) external view returns (uint256[] memory) {
         return userChallenges[user];
     }
 
+    /**
+     * @notice Get the amount of check-ins that the user has done for a challenge
+     */
     function getUserCheckInCounts(uint256 challengeId, address user) external view returns (uint256) {
         return checkIns[challengeId][user].length;
     }
 
+    /**
+     * @notice Get the amount of users that have joined a challenge
+     */
     function getChallengeParticipantsCount(uint256 challengeId) external view returns (uint256) {
         return users[challengeId].length;
     }
 
+    /**
+     * @notice Get the amount of users that have succeeded in a challenge
+     */
     function getChallengeSucceedParticipantsCount(uint256 challengeId) external view returns (uint256) {
         return succeedUsers[challengeId].length;
     }
