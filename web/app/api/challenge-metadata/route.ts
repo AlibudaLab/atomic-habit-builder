@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, collection, getDocs, addDoc } from '../../../src/utils/firebase';
+import { db, collection, getDocsFromServer, addDoc } from '../../../src/utils/firebase';
 
 export async function GET(req: NextRequest): Promise<Response> {
   try {
-    const querySnapshot = await getDocs(collection(db, 'challenge-metadata'));
+    const querySnapshot = await getDocsFromServer(collection(db, 'challenge-metadata'));
     const challenges = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     return NextResponse.json(challenges, { status: 200 });
   } catch (error) {

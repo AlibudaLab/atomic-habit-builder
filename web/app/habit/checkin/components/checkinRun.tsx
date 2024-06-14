@@ -17,7 +17,7 @@ import useFields from '@/hooks/useFields';
 import useCheckInRun, { CheckInFields } from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
-import useUsedActivity from '@/hooks/useUsedActivities';
+import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
@@ -43,7 +43,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
   const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
-  const { activities: usedActivities, updateUsedActivities } = useUsedActivity();
+  const { activityMap, addToActivityMap } = useActivityUsage(address);
   const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
 
   const challengeStarted = useMemo(
@@ -64,7 +64,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     isPreparing: isCheckInPreparing,
     isLoading: isCheckInLoading,
   } = useCheckInRun(fields, () => {
-    if (fields.activityId) updateUsedActivities(fields.activityId.toString());
+    if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
     handleOpenCheckinPopup();
     resetFields();
   });
@@ -180,7 +180,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             onActivitySelect={handleActivitySelect}
             loading={stravaLoading}
             activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
-            usedActivities={usedActivities}
+            usedActivities={activityMap[challenge.id]}
           />
         </div>
       )}
