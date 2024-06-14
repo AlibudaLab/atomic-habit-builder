@@ -126,10 +126,10 @@ contract Tracker is EIP712 {
     }
 
     /**
-     *  @dev If the checkInJudge contract is specified by the challenge, checkInData would be passed with the call checkInJudge.judge(checkInData).
-     * checkInJudge.judge(checkInData) should implement what to check on and replay prevention.
+     * @dev If the checkInJudge contract is specified by the challenge, checkInJudge.judge(checkInData) will be called.
+     * checkInJudge.judge(checkInData) should custom checks in addition to tha main tracker checks.
      * The main tracker is only responsible for checking:
-     * 1. The signature signer matches the verifier address
+     * 1. The signature  is from the verifier
      * 2. The challenge ID is the ID included in the signing digest.
      * 3. The msg.sender is the user address included in the signing digest.
      * @param challengeId id of the challenge to check in, required to prevent replays from other challenges in case the same verifiers are used.
