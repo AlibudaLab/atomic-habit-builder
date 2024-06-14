@@ -121,7 +121,7 @@ export default function Create() {
       </p>
 
       <div
-        className={`h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-32 shadow-large ${
+        className={`h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
           loaded ? 'slide-up' : ''
         }`}
       >

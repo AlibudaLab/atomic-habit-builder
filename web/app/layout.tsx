@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
       <body className="flex flex-1 flex-col items-center pb-[100px]">
         <OnchainProviders>
-          <div className="container mx-auto flex max-w-[500px] flex-col items-center bg-white pt-16 ">
+          <div className="container mx-auto flex max-w-[500px] flex-col items-center bg-white pt-16">
             <Header />
             {children}
             <NavbarFooter />
