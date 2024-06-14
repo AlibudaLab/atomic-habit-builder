@@ -2,12 +2,14 @@
 'use client';
 
 import React from 'react';
-import moment from 'moment';
-import { DateRangePicker, DateValue } from '@nextui-org/react';
-import { ZonedDateTime, parseAbsoluteToLocal } from '@internationalized/date';
+import { DateRangePicker } from '@nextui-org/react';
+import { ZonedDateTime } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
 import { Switch } from '@nextui-org/switch';
+
+import usdcLogo from '@/imgs/coins/usdc.png';
+import Image from 'next/image';
 
 type Step1Props = {
   name: string;
@@ -94,8 +96,9 @@ export default function CreateStep1({
         onChange={(e) => setStake(Number(e.target.value))}
         placeholder="100"
         endContent={
-          <div className="pointer-events-none flex items-center">
+          <div className="pointer-events-none flex items-center justify-center gap-2">
             <span className="text-small text-default-400"> USDC </span>
+            <Image src={usdcLogo} alt="usdc" width={20} height={20} />
           </div>
         }
       />

@@ -23,6 +23,9 @@ import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserJoined from '@/hooks/useUserJoined';
 import { Button } from '@nextui-org/button';
+import Image from 'next/image';
+
+import usdcLogo from '@/imgs/coins/usdc.png';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -169,8 +172,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
-        <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
+        <div className="pb-2 text-xl font-bold text-dark"> Staked Amount </div>
+        <div className="flex text-sm text-primary">
+          {' '}
+          {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
+          <Image src={usdcLogo} alt="USDC" width={20} height={20} className="ml-2" />
+        </div>
       </div>
 
       {connected && (
@@ -200,7 +207,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           isDisabled={
             !challengeStarted || isCheckInLoading || isCheckInPreparing || fields.activityId === -1
           }
-          isLoading={isCheckInLoading}
+          isLoading={isCheckInLoading || isCheckInPreparing}
         >
           {' '}
           {challengeStarted ? 'Check In' : 'Not started yet'}{' '}
