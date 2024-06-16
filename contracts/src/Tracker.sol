@@ -15,6 +15,7 @@ struct Challenge {
     uint64 endTimestamp;
     address donateDestination;
     address checkInJudge;
+    address stakingAsset;
     uint256 stakePerUser;
     uint256 totalStake;
     bool settled;
@@ -23,8 +24,6 @@ struct Challenge {
 contract Tracker is EIP712 {
     using SafeERC20 for IERC20;
 
-    //FIXME: This should be included in struct Challenge
-    address public underlyingToken;
     uint256 public challengeCounter;
 
     mapping(uint256 challengeId => Challenge) public challenges;
@@ -47,15 +46,14 @@ contract Tracker is EIP712 {
         uint256 endTimestamp,
         uint256 minimumCheckIns,
         address donationDestination,
-        address checkInJudge
+        address checkInJudge,
+        address stakingAsset,
+        uint256 stakePerUser
     );
     event Join(address indexed user, uint256 indexed challengeId);
     event Settle(uint256 indexed challengeId);
 
-    constructor(address _underlyingToken, string memory name, string memory version) EIP712(name, version) {
-        //FIXME: This should be moved to register
-        underlyingToken = _underlyingToken;
-    }
+    constructor(string memory name, string memory version) EIP712(name, version) {}
 
     /**
      * @notice Register a new challenge
@@ -67,7 +65,8 @@ contract Tracker is EIP712 {
      * @param endTimestamp end timestamp of the challenge
      * @param donateDestination address to donate half of the failed user stake
      * @param checkInJudge address of the contract to judge the check in data
-     * @param stake stake amount required to join the challenge
+     * @param stakePerUser stake amount required to join the challenge
+     * @param stakingAsset staking asset accepted to pay for the stake when joining
      */
     function register(
         address verifier,
@@ -78,7 +77,8 @@ contract Tracker is EIP712 {
         uint64 endTimestamp,
         address donateDestination,
         address checkInJudge,
-        uint256 stake
+        address stakingAsset,
+        uint256 stakePerUser
     ) external {
         require(endTimestamp > startTimestamp, "end timestamp must be greater than start timestamp");
         require(joinDueTimestamp <= endTimestamp, "should not allow joining time larger than challenge ending time");
@@ -91,7 +91,8 @@ contract Tracker is EIP712 {
             endTimestamp,
             donateDestination,
             checkInJudge,
-            stake,
+            stakingAsset,
+            stakePerUser,
             0,
             false
         );
@@ -104,7 +105,9 @@ contract Tracker is EIP712 {
             endTimestamp,
             minimumCheckIns,
             donateDestination,
-            checkInJudge
+            checkInJudge,
+            stakingAsset,
+            stakePerUser
         );
     }
 
@@ -117,7 +120,9 @@ contract Tracker is EIP712 {
         require(!hasJoined[challengeId][msg.sender], "user already joined the challenge");
         require(block.timestamp < challenges[challengeId].joinDueTimestamp, "joining period has ended");
 
-        IERC20(underlyingToken).safeTransferFrom(msg.sender, address(this), challenges[challengeId].stakePerUser);
+        IERC20(challenges[challengeId].stakingAsset).safeTransferFrom(
+            msg.sender, address(this), challenges[challengeId].stakePerUser
+        );
         hasJoined[challengeId][msg.sender] = true;
         userChallenges[msg.sender].push(challengeId);
         users[challengeId].push(msg.sender);
@@ -181,7 +186,9 @@ contract Tracker is EIP712 {
         uint256 halfFailedUserStake =
             (challenges[challengeId].totalStake - (succeedUserCounts * challenges[challengeId].stakePerUser)) / 2;
         challenges[challengeId].totalStake -= halfFailedUserStake;
-        IERC20(underlyingToken).safeTransfer(challenges[challengeId].donateDestination, halfFailedUserStake);
+        IERC20(challenges[challengeId].stakingAsset).safeTransfer(
+            challenges[challengeId].donateDestination, halfFailedUserStake
+        );
     }
 
     function getClaimableAmount(uint256 challengeId, address user) public view returns (uint256) {
@@ -198,7 +205,7 @@ contract Tracker is EIP712 {
         require(challenges[challengeId].settled, "challenge not yet settled");
         uint256 amount = getClaimableAmount(challengeId, msg.sender);
         claimable[challengeId][msg.sender] = false;
-        IERC20(underlyingToken).safeTransfer(msg.sender, amount);
+        IERC20(challenges[challengeId].stakingAsset).safeTransfer(msg.sender, amount);
     }
 
     function getCheckInDigest(uint256 challengeId, address user, bytes memory checkInData)
