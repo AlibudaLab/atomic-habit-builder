@@ -31,8 +31,8 @@ contract Deploy is Script {
             uint64(block.timestamp + 10 days),
             official_verifier,
             address(0),
-            100 * 1e6,
-            _stakingAsset
+             _stakingAsset,
+            100 * 1e6
         );
         tracker.register(
             address(0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07),
@@ -43,8 +43,8 @@ contract Deploy is Script {
             uint64(block.timestamp + 60 days),
             official_verifier,
             address(0),
-            50 * 1e6,
-            _stakingAsset
+             _stakingAsset,
+            50 * 1e6
         );
         tracker.register(
             official_verifier,
@@ -55,8 +55,8 @@ contract Deploy is Script {
             1719676800, // June 30
             official_verifier,
             address(0),
-            25 * 1e6,
-            _stakingAsset
+             _stakingAsset,
+            25 * 1e6
         );
 
         tracker.register(
@@ -68,8 +68,8 @@ contract Deploy is Script {
             1719676800, // June 30
             official_verifier,
             address(0),
-            50 * 1e6,
-            _stakingAsset
+             _stakingAsset,
+            50 * 1e6
         );
 
         tracker.register(
@@ -81,8 +81,8 @@ contract Deploy is Script {
             1722355200, // July 31
             official_verifier,
             address(0),
-            25 * 1e6,
-            _stakingAsset
+             _stakingAsset,
+            25 * 1e6
         );
 
         tracker.register(
@@ -94,8 +94,8 @@ contract Deploy is Script {
             1722355200, // July 31
             official_verifier,
             address(0),
-            50 * 1e6,
-            _stakingAsset
+             _stakingAsset,
+            50 * 1e6
         );
     }
 

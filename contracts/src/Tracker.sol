@@ -77,8 +77,8 @@ contract Tracker is EIP712 {
         uint64 endTimestamp,
         address donateDestination,
         address checkInJudge,
-        uint256 stakePerUser,
-        address stakingAsset
+        address stakingAsset,
+        uint256 stakePerUser
     ) external {
         require(endTimestamp > startTimestamp, "end timestamp must be greater than start timestamp");
         require(joinDueTimestamp <= endTimestamp, "should not allow joining time larger than challenge ending time");

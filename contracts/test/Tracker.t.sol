@@ -34,8 +34,8 @@ contract TrackerTest is Test {
             uint64(block.timestamp + challengeEndDays * 1 days),
             address(this),
             address(0),
-            PER_USER_STAKE,
-            address(stakingAsset)
+            address(stakingAsset),
+            PER_USER_STAKE
         );
 
         stakingAsset.mint(address(this), PER_USER_STAKE);
