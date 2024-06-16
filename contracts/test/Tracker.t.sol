@@ -9,7 +9,7 @@ import "./mock/MockERC20.sol";
 import "../src/Tracker.sol";
 
 contract TrackerTest is Test {
-    MockERC20 underlying;
+    MockERC20 stakingAsset;
     Tracker tracker;
     address verifier;
     uint256 key;
@@ -21,8 +21,8 @@ contract TrackerTest is Test {
         challengeEndDays = 100;
         joinDueDays = 1;
 
-        underlying = new MockERC20("Alibuda", "ALI", 6);
-        tracker = new Tracker(address(underlying), "Alibuda Habit Builder", "1.0");
+        stakingAsset = new MockERC20("Alibuda", "ALI", 6);
+        tracker = new Tracker( "Alibuda Habit Builder", "1.0");
 
         (verifier, key) = makeAddrAndKey("test_verifier");
         tracker.register(
@@ -34,11 +34,12 @@ contract TrackerTest is Test {
             uint64(block.timestamp + challengeEndDays * 1 days),
             address(this),
             address(0),
-            PER_USER_STAKE
+            PER_USER_STAKE,
+            address(stakingAsset)
         );
 
-        underlying.mint(address(this), PER_USER_STAKE);
-        underlying.approve(address(tracker), PER_USER_STAKE);
+        stakingAsset.mint(address(this), PER_USER_STAKE);
+        stakingAsset.approve(address(tracker), PER_USER_STAKE);
     }
 
     function commonJoinAndCheckIn(uint256 timestamp) internal {
@@ -55,7 +56,7 @@ contract TrackerTest is Test {
     }
 
     function test_Register() public view {
-        (,, uint256 startTimestamp,,,,,,,) = tracker.challenges(1);
+        (,, uint256 startTimestamp,,,,,,,,) = tracker.challenges(1);
         assertNotEq(startTimestamp, 0, "Register failed");
     }
 
@@ -81,7 +82,7 @@ contract TrackerTest is Test {
 
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
         tracker.settle(1);
-        (,,,,,,,,, bool settled) = tracker.challenges(1);
+        (,,,,,,,,,, bool settled) = tracker.challenges(1);
 
         assertEq(settled, true, "Settle failed");
         assertEq(tracker.getClaimableAmount(1, address(this)), PER_USER_STAKE, "Settle failed");
@@ -93,17 +94,17 @@ contract TrackerTest is Test {
         commonJoinAndCheckIn(block.timestamp);
 
         vm.startPrank(failedUser);
-        underlying.mint(failedUser, PER_USER_STAKE);
-        underlying.approve(address(tracker), PER_USER_STAKE);
+        stakingAsset.mint(failedUser, PER_USER_STAKE);
+        stakingAsset.approve(address(tracker), PER_USER_STAKE);
         tracker.join(1);
         vm.stopPrank();
 
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
         tracker.settle(1);
 
-        uint256 beforeBalance = underlying.balanceOf(address(this));
+        uint256 beforeBalance = stakingAsset.balanceOf(address(this));
         tracker.withdraw(1);
-        uint256 afterBalance = underlying.balanceOf(address(this));
+        uint256 afterBalance = stakingAsset.balanceOf(address(this));
         assertEq(afterBalance - beforeBalance, PER_USER_STAKE + PER_USER_STAKE / 2, "testing withdraw failed");
     }
 
@@ -113,9 +114,9 @@ contract TrackerTest is Test {
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
         tracker.settle(1);
 
-        uint256 beforeBalance = underlying.balanceOf(address(this));
+        uint256 beforeBalance = stakingAsset.balanceOf(address(this));
         tracker.withdraw(1);
-        uint256 afterBalance = underlying.balanceOf(address(this));
+        uint256 afterBalance = stakingAsset.balanceOf(address(this));
         assertEq(afterBalance - beforeBalance, 0, "testing failed user withdraw failed");
     }
 }

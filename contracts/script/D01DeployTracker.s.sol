@@ -20,8 +20,8 @@ contract Deploy is Script {
     function preDeploy() public {}
 
     function deploy() public {
-        address _underlyingToken = vm.envAddress("TESTNET_TOKEN");
-        Tracker tracker = new Tracker(_underlyingToken, "Alibuda Habit Builder", "1.0");
+        address _stakingAsset = vm.envAddress("TESTNET_TOKEN");
+        Tracker tracker = new Tracker("Alibuda Habit Builder", "1.0");
         tracker.register(
             address(0x883167E6b5d489B82cB97bEf9C7967afe3A3D299),
             "NFC Challenge 1",
@@ -31,7 +31,8 @@ contract Deploy is Script {
             uint64(block.timestamp + 10 days),
             official_verifier,
             address(0),
-            100 * 1e6
+            100 * 1e6,
+            _stakingAsset
         );
         tracker.register(
             address(0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07),
@@ -42,7 +43,8 @@ contract Deploy is Script {
             uint64(block.timestamp + 60 days),
             official_verifier,
             address(0),
-            50 * 1e6
+            50 * 1e6,
+            _stakingAsset
         );
         tracker.register(
             official_verifier,
@@ -53,7 +55,8 @@ contract Deploy is Script {
             1719676800, // June 30
             official_verifier,
             address(0),
-            25 * 1e6
+            25 * 1e6,
+            _stakingAsset
         );
 
         tracker.register(
@@ -65,7 +68,8 @@ contract Deploy is Script {
             1719676800, // June 30
             official_verifier,
             address(0),
-            50 * 1e6
+            50 * 1e6,
+            _stakingAsset
         );
 
         tracker.register(
@@ -77,7 +81,8 @@ contract Deploy is Script {
             1722355200, // July 31
             official_verifier,
             address(0),
-            25 * 1e6
+            25 * 1e6,
+            _stakingAsset
         );
 
         tracker.register(
@@ -89,7 +94,8 @@ contract Deploy is Script {
             1722355200, // July 31
             official_verifier,
             address(0),
-            50 * 1e6
+            50 * 1e6,
+            _stakingAsset
         );
     }
 
