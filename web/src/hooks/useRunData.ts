@@ -77,8 +77,8 @@ const useRunData = () => {
       console.log('using accessToken', accessToken);
       try {
         const [newRunData, newWorkoutData] = await Promise.all([
-          stravaUtils.fetchRuns(accessToken),
-          stravaUtils.fetchWorkouts(accessToken),
+          stravaUtils.fetchActivities(accessToken, 'run') as Promise<stravaUtils.StravaRunData[]>,
+          stravaUtils.fetchActivities(accessToken, 'workout') as Promise<stravaUtils.StravaWorkoutData[]>,
         ]);
 
         if (!newRunData || !newWorkoutData) {
