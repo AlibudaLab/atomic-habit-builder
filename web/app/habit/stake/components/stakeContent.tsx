@@ -20,7 +20,6 @@ import useApproveERC20 from '@/hooks/transaction/useApproveERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
 import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { getCheckInDescription } from '@/utils/challenges';
-import Header from 'app/habit/components/Header';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
@@ -29,9 +28,6 @@ import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserJoined from '@/hooks/useUserJoined';
 import Link from 'next/link';
-import Image from 'next/image';
-
-import usdcLogo from '@/imgs/coins/usdc.png';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -179,7 +175,6 @@ export default function StakeChallenge() {
                   <div className="flex text-sm text-primary">
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
-                    <Image src={usdcLogo} alt="USDC" width={20} height={20} className="ml-2" />
                   </div>
                 </div>
               </>

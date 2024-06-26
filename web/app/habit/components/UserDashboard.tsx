@@ -11,7 +11,7 @@ type DashboardProps = {
 
 export default function Dashboard({ onGoingChallenges }: DashboardProps) {
   return (
-    <div className="flex flex-col items-center justify-start h-screen">
+    <div className="flex h-screen flex-col items-center justify-start">
       <div className="flex w-full items-center justify-center gap-6 text-center">
         {onGoingChallenges.length > 0 && (
           <p className="my-4 font-londrina text-xl font-bold"> Challenge List </p>

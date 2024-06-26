@@ -69,7 +69,12 @@ function DepositPopup({ onClose }: DepositPopupProps) {
           onSelectionChange={handleTokenChange}
         >
           {tokens.map((token) => (
-            <SelectItem key={token.key} startContent={<Image src={token.icon} height={20} width={20} alt='token' />} >{token.label}</SelectItem>
+            <SelectItem
+              key={token.key}
+              startContent={<Image src={token.icon} height={20} width={20} alt="token" />}
+            >
+              {token.label}
+            </SelectItem>
           ))}
         </Select>
       </div>
