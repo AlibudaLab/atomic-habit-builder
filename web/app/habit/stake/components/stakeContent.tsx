@@ -20,7 +20,6 @@ import useApproveERC20 from '@/hooks/transaction/useApproveERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
 import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { getCheckInDescription } from '@/utils/challenges';
-import Header from 'app/habit/components/Header';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
@@ -173,7 +172,7 @@ export default function StakeChallenge() {
 
                 <div className="w-full justify-start p-6 py-2 text-start">
                   <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
-                  <div className="text-sm text-primary">
+                  <div className="flex text-sm text-primary">
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
                   </div>
