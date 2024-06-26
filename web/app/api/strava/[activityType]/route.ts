@@ -5,8 +5,11 @@ import { activityTypeMap } from '../utils/mapping';
  * @param req
  * @param res
  */
-export async function GET(req: NextRequest): Promise<Response> {
-  const activityTypeKey = req.nextUrl.searchParams.get('activityType');
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { activityType: string } },
+): Promise<Response> {
+  const activityTypeKey = params.activityType;
   if (!activityTypeKey)
     return NextResponse.json({ error: 'activityType is required' }, { status: 400 });
 
@@ -17,9 +20,9 @@ export async function GET(req: NextRequest): Promise<Response> {
       req.nextUrl.searchParams.get('before') ?? Math.floor(new Date().getTime() / 1000);
     const after =
       req.nextUrl.searchParams.get('after') ??
-      Math.floor((new Date().getTime() - 86400000 * 20) / 1000);
+      Math.floor((new Date().getTime() - 86400000 * 30) / 1000);
     const page = req.nextUrl.searchParams.get('page') ?? 1;
-    const perPage = req.nextUrl.searchParams.get('perPage') ?? 10;
+    const perPage = req.nextUrl.searchParams.get('perPage') ?? 100;
     const accessToken = req.nextUrl.searchParams.get('accessToken');
     if (!accessToken) {
       return NextResponse.json({ error: 'accessToken is required' }, { status: 400 });
