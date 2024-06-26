@@ -9,8 +9,6 @@ const useActivityUsage = (user: Address | undefined) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log('activityMap', activityMap);
-
   useEffect(() => {
     if (!user) {
       setLoading(false);
@@ -19,9 +17,9 @@ const useActivityUsage = (user: Address | undefined) => {
 
     const fetchChallenges = async () => {
       try {
-        const response = await fetch(`/api/user?$address${user}`);
+        const response = await fetch(`/api/user?address=${user}`);
         const data = await response.json();
-        setActivityMap(data.activityMap as ActivityMap);
+        if (!data.error) setActivityMap(data.activityMap as ActivityMap);
       } catch (err: any) {
         setError(err);
       } finally {

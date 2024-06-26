@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, collection, getDocsFromServer, addDoc } from '../../../src/utils/firebase';
+import { db, collection, getDocsFromServer } from '../../../src/utils/firebase';
 
 export async function GET(req: NextRequest): Promise<Response> {
   try {

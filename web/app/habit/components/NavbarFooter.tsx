@@ -25,8 +25,6 @@ export default function NavbarFooter() {
 
   const { isConnected } = useAccount();
 
-  console.log('isConnected', isConnected);
-
   // detect url to see which is selected
   useEffect(() => {
     if (pathName.includes('list')) {
