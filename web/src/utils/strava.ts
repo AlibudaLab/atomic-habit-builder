@@ -57,8 +57,13 @@ export function joinSecret(accessToken: string, refreshToken: string) {
   return `${accessToken}${SEPERATOR}${refreshToken}`;
 }
 
-export async function fetchActivities(accessToken: string, activityType: string) {
-  const fetchURL = `/api/strava/${activityType}?accessToken=${accessToken}`;
+export async function fetchActivities(
+  accessToken: string,
+  activityType: string,
+  startTimestamp: number,
+  endTimestamp: number,
+) {
+  const fetchURL = `/api/strava/${activityType}?accessToken=${accessToken}&before=${endTimestamp}&after=${startTimestamp}`;
 
   const response = (await (
     await fetch(fetchURL, {
