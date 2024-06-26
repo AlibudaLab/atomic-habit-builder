@@ -1,4 +1,4 @@
 export const activityTypeMap: Record<string, string> = {
-  runs: 'Run',
+  run: 'Run',
   workout: 'WeightTraining',
 };
