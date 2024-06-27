@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
-import { RunVerifier } from '@/types';
+import { Challenge, RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
 
-const useRunData = () => {
+const useRunData = (challenge: Challenge) => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
@@ -77,8 +77,18 @@ const useRunData = () => {
       console.log('using accessToken', accessToken);
       try {
         const [newRunData, newWorkoutData] = await Promise.all([
-          stravaUtils.fetchRuns(accessToken),
-          stravaUtils.fetchWorkouts(accessToken),
+          stravaUtils.fetchActivities(
+            accessToken,
+            'run',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ) as Promise<stravaUtils.StravaRunData[]>,
+          stravaUtils.fetchActivities(
+            accessToken,
+            'workout',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ) as Promise<stravaUtils.StravaWorkoutData[]>,
         ]);
 
         if (!newRunData || !newWorkoutData) {

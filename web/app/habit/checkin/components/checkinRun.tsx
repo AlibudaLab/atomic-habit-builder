@@ -75,7 +75,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     workoutData,
     error: runDataError,
     loading: stravaLoading,
-  } = useRunData();
+  } = useRunData(challenge);
 
   const handleActivitySelect = (activityId: number) => {
     resetFields();

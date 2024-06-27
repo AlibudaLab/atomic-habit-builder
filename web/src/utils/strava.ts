@@ -57,8 +57,13 @@ export function joinSecret(accessToken: string, refreshToken: string) {
   return `${accessToken}${SEPERATOR}${refreshToken}`;
 }
 
-export async function fetchRuns(accessToken: string) {
-  const fetchURL = `/api/strava/runs?accessToken=${accessToken}`;
+export async function fetchActivities(
+  accessToken: string,
+  activityType: string,
+  startTimestamp: number,
+  endTimestamp: number,
+) {
+  const fetchURL = `/api/strava/${activityType}?accessToken=${accessToken}&before=${endTimestamp}&after=${startTimestamp}`;
 
   const response = (await (
     await fetch(fetchURL, {
@@ -67,24 +72,9 @@ export async function fetchRuns(accessToken: string) {
         'Content-Type': 'application/json',
       },
     })
-  ).json()) as { runData: StravaRunData[] };
+  ).json()) as { activities: (StravaRunData | StravaWorkoutData)[] };
 
-  return response.runData;
-}
-
-export async function fetchWorkouts(accessToken: string) {
-  const fetchURL = `/api/strava/workout?accessToken=${accessToken}`;
-
-  const response = (await (
-    await fetch(fetchURL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  ).json()) as { workouts: StravaWorkoutData[] };
-
-  return response.workouts;
+  return response.activities;
 }
 
 export async function refreshAccessToken(refreshToken: string) {
