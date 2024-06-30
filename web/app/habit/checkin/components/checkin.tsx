@@ -1,5 +1,5 @@
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
+ 
+ 
 'use client';
 
 import { useParams } from 'next/navigation';

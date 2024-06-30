@@ -11,7 +11,7 @@ export default function () {
     window.open(url, '_blank');
   };
 
-  const shareOnX = (text: string, url: string = fullPathShare, via: string = 'alibuda_builder') => {
+  const shareOnX = (text: string, url: string = fullPathShare, via = 'alibuda_builder') => {
     const shareUrl = new URL('https://twitter.com/intent/tweet');
     shareUrl.searchParams.set('text', text);
     shareUrl.searchParams.set('via', via);

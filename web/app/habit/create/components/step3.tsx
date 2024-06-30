@@ -40,7 +40,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
         Share it with your community and start the health challenge together!
       </p>
 
-      <div className="mt-4 flex justify-between gap-2">
+      <div className="mt-12 flex justify-between gap-2">
         <Button onClick={() => shareOnX(text, link)} endContent={<BsTwitterX />}>
           Share on
         </Button>
@@ -65,7 +65,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
       <Link
         href={`/habit/stake/${challengeId}?code=${accessCode}`}
-        className="mb-8 mt-32 w-full justify-center"
+        className="mb-8 mt-28 w-full justify-center"
       >
         <Button className="min-h-12 w-full" color="primary">
           Start Challenge
