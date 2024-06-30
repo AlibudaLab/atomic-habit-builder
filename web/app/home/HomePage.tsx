@@ -13,8 +13,8 @@ export default function DashboardPage() {
 
   const { data: challenges, loading } = useUserChallenges(address);
 
-  const allOngoing = challenges.filter((c) => c.endTimestamp > moment().unix());
-  const allPast = challenges.filter((c) => c.endTimestamp < moment().unix());
+  const allOngoing = challenges ? challenges.filter((c) => c.endTimestamp > moment().unix()) : [];
+  const allPast = challenges ? challenges.filter((c) => c.endTimestamp < moment().unix()) : [];
 
   return (
     <main className="container flex flex-col items-center">

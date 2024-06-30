@@ -6,6 +6,12 @@ import { useAccount } from 'wagmi';
 import { Challenge } from '@/types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
+import { Button } from '@nextui-org/button';
+import { BsTwitterX } from 'react-icons/bs';
+
+import farcasterLogo from '@/imgs/socials/farcaster.png';
+import Image from 'next/image';
+import useSocialShare from '@/hooks/useSocialShare';
 
 type CheckinPopupProps = {
   challenge: Challenge;
@@ -25,14 +31,40 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
 
   const title = "You've Successfully\nChecked in!";
 
+  const shareContent = `I've checked in ${checkedIn} times for the challenge ${challenge.name}!`;
+  const shareURL = window.origin + `/habit/stake/${challenge.id}`;
+
+  const { shareOnX, shareOnFarcaster } = useSocialShare();
+
   const content = (
     <div className="flex flex-col items-center text-left">
       <ul className="mb-4 list-disc pl-5">
         <li>
           Total Check in: {checkedIn} / {challenge.targetNum}
         </li>
-        <li>Remaining days: {remainingDays}</li>
+        <li> Remaining days: {remainingDays} </li>
       </ul>
+
+      {/* share */}
+      <div className="mt-4 flex flex-col text-center">
+        <p className="text-xs text-default-400">Share your progress with friends!</p>
+        <div className="flex gap-2 p-2">
+          <Button
+            className="w-full"
+            onClick={() => shareOnX(shareContent, shareURL)}
+            endContent={<BsTwitterX />}
+          >
+            Share on
+          </Button>
+          <Button
+            className="w-full"
+            onClick={() => shareOnFarcaster(shareContent, [shareURL])}
+            endContent={<Image src={farcasterLogo} alt="warp" height={25} width={25} />}
+          >
+            Share on
+          </Button>
+        </div>
+      </div>
     </div>
   );
 

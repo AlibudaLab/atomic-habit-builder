@@ -60,7 +60,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     [challengeStarted, challengeEnded],
   );
 
-  const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
+  const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(true);
 
   const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
   const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
