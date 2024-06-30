@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-pascal-case */
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -134,7 +133,6 @@ export default function Create() {
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 1 ? 'bg-dark text-white' : 'border border-solid border-dark'
               } `}
-              onClick={() => setStep(1)}
               type="button"
             >
               {' '}
@@ -144,7 +142,6 @@ export default function Create() {
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 2 ? 'bg-dark text-white' : 'border border-solid border-dark'
               } `}
-              onClick={() => setStep(2)}
               type="button"
             >
               {' '}
@@ -154,7 +151,6 @@ export default function Create() {
               className={`text-md m-2 flex h-6 w-6 items-center justify-center rounded-full p-1 text-center ${
                 step === 3 ? 'bg-dark text-white' : 'border border-solid border-dark'
               } `}
-              onClick={() => setStep(3)}
               type="button"
             >
               {' '}
@@ -172,16 +168,16 @@ export default function Create() {
             setTotalTimes={setTotalTimes}
             duration={duration}
             setDuration={setDuration}
-            stake={Number(stake)}
-            setStake={setStake}
+            challengeType={type}
+            setChallengeType={setType}
             setStep={setStep}
           />
         )}
 
         {step === 2 && (
           <CreateStep2
-            challengeType={type}
-            setChallengeType={setType}
+            stake={Number(stake)}
+            setStake={setStake}
             setDonationAddr={setDonationAddr}
             onClickCreate={onClickCreate}
             isCreating={isCreating}

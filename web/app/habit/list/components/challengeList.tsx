@@ -6,6 +6,7 @@ import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
 import useUserChallenges from '@/hooks/useUserChallenges';
 import Loading from '../../components/Loading';
+import moment from 'moment';
 
 export default function ChallengeList() {
   const { address } = useAccount();
@@ -26,7 +27,8 @@ export default function ChallengeList() {
         ) : (
           challenges.map((challenge) => {
             const isJoined = joined?.find((j) => j.id === challenge.id);
-            if (!isJoined)
+            const notEnded = challenge.endTimestamp > moment().unix();
+            if (!isJoined && notEnded)
               return (
                 <Link
                   className="w-full no-underline"

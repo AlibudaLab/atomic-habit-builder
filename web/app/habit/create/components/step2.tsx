@@ -3,38 +3,45 @@
 
 import React from 'react';
 import { Input } from '@nextui-org/input';
-import { ChallengeTypes } from '@/constants';
 import { Select, SelectItem } from '@nextui-org/select';
 import { donationDestinations } from '@/constants';
 import { Address } from 'viem';
 import { Button } from '@nextui-org/button';
+import Image from 'next/image';
+
+import usdcLogo from '@/imgs/coins/usdc.png';
 
 type Step2Props = {
-  challengeType: ChallengeTypes;
-  setChallengeType: (challengeType: ChallengeTypes) => void;
+  stake: number;
+  setStake: (stake: number) => void;
   setDonationAddr: (donationAddr: Address) => void;
   onClickCreate: () => void;
   isCreating: boolean;
 };
 
 export default function CreateStep2({
-  challengeType,
-  setChallengeType,
+  stake,
+  setStake,
   setDonationAddr,
   onClickCreate,
   isCreating,
 }: Step2Props) {
   return (
     <div className="flex w-full flex-grow flex-col items-center justify-start px-8">
-      <Select label="Challenge Type" className="my-4" value={challengeType}>
-        {Object.values(ChallengeTypes)
-          .filter((type: ChallengeTypes) => type !== ChallengeTypes.NFC_Chip)
-          .map((type: ChallengeTypes) => (
-            <SelectItem key={type} onClick={() => setChallengeType(type)}>
-              {type}
-            </SelectItem>
-          ))}
-      </Select>
+      <Input
+        type="number"
+        label="Stake"
+        className="my-4"
+        value={stake.toString()}
+        onChange={(e) => setStake(Number(e.target.value))}
+        placeholder="100"
+        endContent={
+          <div className="pointer-events-none flex items-center justify-center gap-2">
+            <span className="text-small text-default-400"> USDC </span>
+            <Image src={usdcLogo} alt="usdc" width={20} height={20} />
+          </div>
+        }
+      />
 
       <Input
         type="text"

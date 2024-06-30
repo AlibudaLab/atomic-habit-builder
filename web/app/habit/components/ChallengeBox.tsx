@@ -1,12 +1,17 @@
 import { Challenge } from '@/types';
 import { challengeToEmoji } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
+import moment from 'moment';
 
 export function ChallengeBox({ challenge }: { challenge: Challenge }) {
+  const isPast = challenge.endTimestamp < moment().unix();
+
   return (
     <button
       type="button"
-      className="wrapped m-2 w-full transition-transform duration-300 focus:scale-105"
+      className={`wrapped m-2 w-full transition-transform duration-300 focus:scale-105 ${
+        isPast && 'opacity-50'
+      }`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
@@ -30,8 +35,10 @@ export function ChallengeBoxFilled({
   challenge: Challenge;
   checkedIn?: number;
 }) {
+  const isPast = challenge.endTimestamp < moment().unix();
+
   return (
-    <div className="wrapped-filled m-2 w-full p-2">
+    <div className={`wrapped-filled m-2 w-full p-2 ${isPast && 'opacity-50'}`}>
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">

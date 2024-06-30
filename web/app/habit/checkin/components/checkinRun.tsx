@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
@@ -49,6 +48,16 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
     [challenge.startTimestamp],
+  );
+
+  const challengeEnded = useMemo(
+    () => moment().unix() > challenge.endTimestamp,
+    [challenge.endTimestamp],
+  );
+
+  const canCheckInNow = useMemo(
+    () => challengeStarted && !challengeEnded,
+    [challengeStarted, challengeEnded],
   );
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
@@ -175,7 +184,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       </div>
 
-      {connected && (
+      {/* middle section: if timestamp is not valid, show warning message */}
+
+      {connected && canCheckInNow && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
             fields={fields}
@@ -187,25 +198,39 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       )}
 
-      {checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.id}`}>
-          <Button type="button" color="primary" className="mt-12 min-h-12 w-3/4 max-w-56">
-            Finish
-          </Button>
-        </Link>
+      {!canCheckInNow ? (
+        checkedIn >= challenge.targetNum ? (
+          <Link href={`/habit/claim/${challenge.id}`}>
+            <Button type="button" color="primary" className="mt-12 min-h-12 w-3/4 max-w-56">
+              Finish
+            </Button>
+          </Link>
+        ) : (
+          <div className="flex w-full flex-col items-center justify-center gap-2">
+            <Button
+              className="mt-12 min-h-12 w-3/4 max-w-56"
+              color="primary"
+              variant="flat"
+              onClick={handleChallengeListClick}
+            >
+              Back to List
+            </Button>
+            <div className="text-center text-xs text-default-400">
+              {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
+            </div>
+          </div>
+        )
       ) : connected && !runDataError ? (
         <Button
           type="button"
           color="primary"
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={onClickCheckIn}
-          isDisabled={
-            !challengeStarted || isCheckInLoading || isCheckInPreparing || fields.activityId === -1
-          }
+          isDisabled={isCheckInLoading || isCheckInPreparing || fields.activityId === -1}
           isLoading={isCheckInLoading || isCheckInPreparing}
         >
           {' '}
-          {challengeStarted ? 'Check In' : 'Not started yet'}{' '}
+          {'Check In'}{' '}
         </Button>
       ) : (
         <Button
