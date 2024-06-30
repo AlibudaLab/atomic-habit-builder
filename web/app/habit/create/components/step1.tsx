@@ -2,14 +2,13 @@
 'use client';
 
 import React from 'react';
-import { DateRangePicker } from '@nextui-org/react';
+import { DateRangePicker, Select, SelectItem } from '@nextui-org/react';
 import { ZonedDateTime } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
 import { Switch } from '@nextui-org/switch';
 
-import usdcLogo from '@/imgs/coins/usdc.png';
-import Image from 'next/image';
+import { ChallengeTypes } from '@/constants';
 
 type Step1Props = {
   name: string;
@@ -20,8 +19,8 @@ type Step1Props = {
   setTotalTimes: (totalTimes: number) => void;
   duration: { start: ZonedDateTime; end: ZonedDateTime };
   setDuration: (duration: { start: ZonedDateTime; end: ZonedDateTime }) => void;
-  stake: number;
-  setStake: (stake: number) => void;
+  challengeType: ChallengeTypes;
+  setChallengeType: (challengeType: ChallengeTypes) => void;
   setStep: (step: number) => void;
 };
 
@@ -34,23 +33,13 @@ export default function CreateStep1({
   setTotalTimes,
   duration,
   setDuration,
-  stake,
-  setStake,
+  challengeType,
+  setChallengeType,
   setStep,
 }: Step1Props) {
   return (
     <div className="flex w-full flex-col items-center justify-start px-8">
       {/* todo: add public challenge later */}
-
-      <Input
-        type="text"
-        label="Challenge Name"
-        placeholder="Enter name of the challenge"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="my-4"
-        required
-      />
       <Switch
         isDisabled
         defaultSelected
@@ -63,12 +52,32 @@ export default function CreateStep1({
       </Switch>
 
       <Input
+        type="text"
+        label="Challenge Name"
+        placeholder="Enter name of the challenge"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="my-4"
+        required
+      />
+
+      <Input
         label="Description"
         placeholder="Describe your challenge here!"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         className="my-4"
       />
+
+      <Select label="Challenge Type" className="my-4" defaultSelectedKeys={[ChallengeTypes.Run]}>
+        {Object.values(ChallengeTypes)
+          .filter((type: ChallengeTypes) => type !== ChallengeTypes.NFC_Chip)
+          .map((type: ChallengeTypes) => (
+            <SelectItem key={type} onClick={() => setChallengeType(type)}>
+              {type}
+            </SelectItem>
+          ))}
+      </Select>
 
       <Input
         type="number"
@@ -86,21 +95,6 @@ export default function CreateStep1({
         granularity="day"
         value={duration}
         onChange={setDuration}
-      />
-
-      <Input
-        type="number"
-        label="Stake"
-        className="my-4"
-        value={stake.toString()}
-        onChange={(e) => setStake(Number(e.target.value))}
-        placeholder="100"
-        endContent={
-          <div className="pointer-events-none flex items-center justify-center gap-2">
-            <span className="text-small text-default-400"> USDC </span>
-            <Image src={usdcLogo} alt="usdc" width={20} height={20} />
-          </div>
-        }
       />
 
       <Button onClick={() => setStep(2)} className="mt-8 min-h-12 w-full" color="primary">
