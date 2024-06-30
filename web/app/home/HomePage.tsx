@@ -6,11 +6,15 @@ import Dashboard from '../habit/components/UserDashboard';
 import { useAccount } from 'wagmi';
 import Loading from 'app/habit/components/Loading';
 import ChallengeList from 'app/habit/list/components/challengeList';
+import moment from 'moment';
 
 export default function DashboardPage() {
   const { address } = useAccount();
 
   const { data: challenges, loading } = useUserChallenges(address);
+
+  const allOngoing = challenges.filter((c) => c.endTimestamp > moment().unix());
+  const allPast = challenges.filter((c) => c.endTimestamp < moment().unix());
 
   return (
     <main className="container flex flex-col items-center">
@@ -21,7 +25,7 @@ export default function DashboardPage() {
       ) : challenges.length === 0 ? (
         <ChallengeList />
       ) : (
-        <Dashboard onGoingChallenges={challenges} />
+        <Dashboard onGoingChallenges={allOngoing} pastChallenges={allPast} />
       )}
     </main>
   );

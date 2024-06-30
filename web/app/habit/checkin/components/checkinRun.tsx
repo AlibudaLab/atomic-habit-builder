@@ -198,21 +198,28 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       )}
 
-      {!canCheckInNow ? checkedIn >= challenge.targetNum ? (
-        <Link href={`/habit/claim/${challenge.id}`}>
-          <Button type="button" color="primary" className="mt-12 min-h-12 w-3/4 max-w-56">
-            Finish
-          </Button>
-        </Link>
-      ) : (
-        <div className="flex w-full flex-col items-center justify-center gap-2">
-          <Button className="mt-12 min-h-12 w-3/4 max-w-56" color="primary" variant="flat" onClick={handleChallengeListClick}>
-            Back to List
-          </Button>
-          <div className="text-center text-xs text-default-400">
-            {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
+      {!canCheckInNow ? (
+        checkedIn >= challenge.targetNum ? (
+          <Link href={`/habit/claim/${challenge.id}`}>
+            <Button type="button" color="primary" className="mt-12 min-h-12 w-3/4 max-w-56">
+              Finish
+            </Button>
+          </Link>
+        ) : (
+          <div className="flex w-full flex-col items-center justify-center gap-2">
+            <Button
+              className="mt-12 min-h-12 w-3/4 max-w-56"
+              color="primary"
+              variant="flat"
+              onClick={handleChallengeListClick}
+            >
+              Back to List
+            </Button>
+            <div className="text-center text-xs text-default-400">
+              {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
+            </div>
           </div>
-        </div>
+        )
       ) : connected && !runDataError ? (
         <Button
           type="button"

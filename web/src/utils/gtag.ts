@@ -5,7 +5,6 @@ export const GOOGLE_ANALYTICS_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID ?
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
-     
     gtag: any;
   }
 }
