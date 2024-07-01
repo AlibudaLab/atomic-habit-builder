@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { activityTypeMap } from '../utils/mapping';
+import { activityToStravaTypes } from '../utils';
 
 /**
  * @param req
@@ -13,7 +13,7 @@ export async function GET(
   if (!activityTypeKey)
     return NextResponse.json({ error: 'activityType is required' }, { status: 400 });
 
-  const activityType = activityTypeMap[activityTypeKey];
+  const activityTypes = activityToStravaTypes[activityTypeKey];
 
   try {
     const before =
@@ -32,7 +32,7 @@ export async function GET(
 
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
     const activities = (await response.json()).filter(
-      (activity: any) => activity.type === activityType,
+      (activity: any) => activityTypes.includes(activity.type),
     );
 
     if (activityTypeKey === 'workout') {
