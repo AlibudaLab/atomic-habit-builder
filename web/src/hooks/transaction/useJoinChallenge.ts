@@ -37,6 +37,9 @@ const useJoinChallenge = (challengeId: bigint, approveAmt?: bigint, onSuccess?: 
 
       onSuccess?.();
     },
+    onSent: () => {
+      toast.loading('Transaction sent...');
+    },
   });
 };
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import processViemContractError from '@/utils/processViemContractError';
 import { Abi, DecodeEventLogReturnType, TransactionReceipt, decodeEventLog } from 'viem';
 import {
@@ -34,7 +34,9 @@ const getEvents = (
  * @param contractCallConfig is the typicall write contract config
  * @param options.setContext
  * @param options.customErrorsMap convert contract custon errors to human readable messages
- * @param options.onSuccess
+ *
+ * @param options.onSent successfully submit the transaction
+ * @param options.onSuccess tx confirmed
  * @param options.onError
  * @returns
  * @description This file was learned in https://github.com/guildxyz/guild.xyz/blob/3b150b2b9b9c3bf816cf0bc915753df432274399/src/hooks/useSubmitTransaction.ts
@@ -52,9 +54,12 @@ const useSubmitTransaction = (
       transactionReceipt: TransactionReceipt,
       events: DecodeEventLogReturnType[],
     ) => void;
+    onSent?: () => void;
     onError?: (errorMessage: string, rawError: any) => void;
   },
 ) => {
+  const [loading, setIsLoading] = useState(false);
+
   const { error: simulateContractError, isLoading: isSimulateContractLoading } =
     useSimulateContract({
       query: { enabled: contractCallConfig.query?.enabled ?? true },
@@ -103,6 +108,7 @@ const useSubmitTransaction = (
 
   const isError = isBatchWriteContractError || isWaitForTransactionError;
   const { onSuccess, onError } = options ?? {};
+
   useEffect(() => {
     if (!transactionReceipt && !isSuccess && !isError) return;
 
@@ -114,11 +120,13 @@ const useSubmitTransaction = (
           transactionReceipt as TransactionReceipt,
           events as unknown as DecodeEventLogReturnType[],
         );
+        setIsLoading(false);
       }
     }
 
     if (error) {
       onError?.(error, rawError);
+      setIsLoading(false);
       resetBatchWriteContract();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,17 +134,28 @@ const useSubmitTransaction = (
 
   return {
     onSubmitTransaction: () => {
-      writeContracts?.({
-        contracts: contractCallConfig.contracts || [contractCallConfig],
-        capabilities: {
-          paymasterService: {
-            url: ZERODEV_PAYMASTER_URL,
+      setIsLoading(true);
+      writeContracts?.(
+        {
+          contracts: contractCallConfig.contracts || [contractCallConfig],
+          capabilities: {
+            paymasterService: {
+              url: ZERODEV_PAYMASTER_URL,
+            },
           },
         },
-      });
+        {
+          // tx successfully sent to the bundler
+          onSuccess: () => {
+            if (typeof options?.onSent === 'function') {
+              options.onSent();
+            }
+          },
+        },
+      );
     },
     isPreparing: isSimulateContractLoading,
-    isLoading: isWaitForTransactionLoading || isBatchWriteContractLoading,
+    isLoading: isWaitForTransactionLoading || isBatchWriteContractLoading || loading,
     error,
   };
 };

@@ -7,16 +7,13 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance, useConnect } from 'wagmi';
 import { Input } from '@nextui-org/input';
 
 import * as testTokenContract from '@/contracts/testToken';
-import * as trackerContract from '@/contracts/tracker';
 import useChallenge from '@/hooks/useChallenge';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
-import useApproveERC20 from '@/hooks/transaction/useApproveERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
-import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
@@ -31,6 +28,8 @@ export default function StakeChallenge() {
   const { push } = useRouter();
 
   const { challengeId } = useParams<{ challengeId: string }>();
+  const { address } = useAccount();
+  const { connect, connectors } = useConnect();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';
@@ -166,24 +165,29 @@ export default function StakeChallenge() {
           </div>
         )}
 
-        {/**
-         * Disable button when challenge hasn't selected or when not enough balance
-         * If support batch tx -> Join with Batch Tx (Approve -> Join)
-         * If doesn't support batch tx, has enough balance, has enough allowance -> Stake Tx
-         * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
-         */}
-        {/* //TODO @ryanycw: There is some error after minting test token */}
-        {hasAccess && !joined && challenge && (
+        {challenge && !address ? (
           <Button
-            color="primary"
             type="button"
             className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={onJoinButtonClick}
-            isDisabled={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
-            isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+            onClick={() => connect({ connector: connectors[0] })}
           >
-            {hasEnoughBalance ? `Join This Challenge` : `Add funds`}
+            Connect
           </Button>
+        ) : (
+          hasAccess &&
+          !joined &&
+          challenge && (
+            <Button
+              color="primary"
+              type="button"
+              className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+              onClick={onJoinButtonClick}
+              isDisabled={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+              isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+            >
+              Join This Challenge
+            </Button>
+          )
         )}
 
         {joined && (
