@@ -57,13 +57,6 @@ export default function StakeChallenge() {
     testTokenBalance &&
     Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
 
-  const { data: allowance } = useReadErc20Allowance({
-    address: testTokenContract.address,
-    args: [smartWallet as `0x${string}`, trackerContract.address],
-  });
-
-  const hasEnoughAllowance = allowance ? challenge && allowance >= challenge.stake : false;
-
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
   const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
   const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
@@ -92,21 +85,6 @@ export default function StakeChallenge() {
   const onMintTestTokenClick = async () => {
     if (!challenge) return;
     onMintTx();
-  };
-
-  const {
-    onSubmitTransaction: onApproveTx,
-    isPreparing: isApprovePreparing,
-    isLoading: isApproveLoading,
-  } = useApproveERC20(
-    testTokenContract.address as `0x${string}`,
-    trackerContract.address,
-    challenge?.stake ?? BigInt(0),
-  );
-
-  const onApproveTestTokenClick = async () => {
-    if (!challenge) return;
-    onApproveTx();
   };
 
   const {
@@ -200,30 +178,11 @@ export default function StakeChallenge() {
             color="primary"
             type="button"
             className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={hasEnoughAllowance ? onJoinButtonClick : onApproveTestTokenClick}
-            isDisabled={
-              isJoinPreparing ||
-              isMintPreparing ||
-              isApprovePreparing ||
-              isJoinLoading ||
-              isMintLoading ||
-              isApproveLoading
-            }
-            isLoading={
-              isJoinPreparing ||
-              isMintPreparing ||
-              isApprovePreparing ||
-              isJoinLoading ||
-              isMintLoading ||
-              isApproveLoading
-            }
+            onClick={onJoinButtonClick}
+            isDisabled={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+            isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
           >
-            {/**
-             * Display only when challenge is selected
-             * If doesn't have enough balance -> Display Approve
-             * If has enough allowance -> Display Stake
-             */}
-            {hasEnoughAllowance || `Join This Challenge`}
+            {hasEnoughBalance ? `Join This Challenge` : `Add funds`}
           </Button>
         )}
 
