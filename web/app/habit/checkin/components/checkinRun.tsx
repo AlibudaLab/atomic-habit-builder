@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import moment from 'moment';
 import { formatUnits } from 'viem';
-import { useAccount } from 'wagmi';
+import { useAccount, useConnect } from 'wagmi';
 import { Challenge } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
@@ -39,6 +39,7 @@ const initFields: CheckInFields = {
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
+  const { connect, connectors } = useConnect();
   const { address } = useAccount();
   const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
@@ -79,7 +80,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   });
 
   const {
-    connected,
+    connected: verifierConnected,
     runData,
     workoutData,
     error: runDataError,
@@ -89,6 +90,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const handleActivitySelect = (activityId: number) => {
     resetFields();
     const now = moment().unix();
+
+    if (!address) return;
 
     const fetchURL =
       activityId !== undefined
@@ -114,8 +117,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
     fetchSignature()
       .then((_signature) => {
-        console.log('Signature:', _signature);
-        console.log('Timestamp:', now);
         setField({
           v: _signature.v,
           r: _signature.r,
@@ -131,11 +132,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   };
 
   const onClickCheckIn = async () => {
-    if (!address) {
-      toast.error('Please connect your wallet first');
-      return;
-    }
-
     if (fields.activityId === -1) {
       toast.error('Please select an activity');
       return;
@@ -186,7 +182,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* middle section: if timestamp is not valid, show warning message */}
 
-      {connected && canCheckInNow && (
+      {verifierConnected && canCheckInNow && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
             fields={fields}
@@ -220,7 +216,16 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             </div>
           </div>
         )
-      ) : connected && !runDataError ? (
+      ) : !address ? (
+        <Button
+          type="button"
+          color="primary"
+          className="mt-12 min-h-12 w-3/4 max-w-56"
+          onClick={() => connect({ connector: connectors[0] })}
+        >
+          Connect Wallet
+        </Button>
+      ) : verifierConnected && !runDataError ? (
         <Button
           type="button"
           color="primary"
@@ -229,8 +234,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           isDisabled={isCheckInLoading || isCheckInPreparing || fields.activityId === -1}
           isLoading={isCheckInLoading || isCheckInPreparing}
         >
-          {' '}
-          {'Check In'}{' '}
+          {'Check In'}
         </Button>
       ) : (
         <Button
