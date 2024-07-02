@@ -9884,7 +9884,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zerodev/passkey-validator@npm:5.3.3, @zerodev/passkey-validator@npm:^5.3.3":
+"@zerodev/passkey-validator@npm:5.3.3":
   version: 5.3.3
   resolution: "@zerodev/passkey-validator@npm:5.3.3"
   dependencies:
@@ -9912,7 +9912,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zerodev/sdk@npm:5.3.2, @zerodev/sdk@npm:^5.3.2":
+"@zerodev/sdk@npm:5.3.2":
   version: 5.3.2
   resolution: "@zerodev/sdk@npm:5.3.2"
   dependencies:
@@ -20464,8 +20464,6 @@ __metadata:
     "@typescript-eslint/types": "npm:^5.54.1"
     "@typescript-eslint/utils": "npm:^5.54.1"
     "@wagmi/cli": "npm:2.1.4"
-    "@zerodev/passkey-validator": "npm:^5.3.3"
-    "@zerodev/sdk": "npm:^5.3.2"
     "@zerodev/wallet": "npm:^0.1.1"
     abitype: "npm:^0.10.3"
     autoprefixer: "npm:^10.4.16"

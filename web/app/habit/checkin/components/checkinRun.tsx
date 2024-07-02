@@ -234,7 +234,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           isDisabled={isCheckInLoading || isCheckInPreparing || fields.activityId === -1}
           isLoading={isCheckInLoading || isCheckInPreparing}
         >
-          {'Check In'}
+          Check In
         </Button>
       ) : (
         <Button
