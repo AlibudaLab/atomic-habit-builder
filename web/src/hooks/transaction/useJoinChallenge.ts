@@ -9,38 +9,25 @@ import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
  * useShowErrorToast and useToast was removed
  */
 
-const useJoinChallenge = (
-  challengeId: bigint,
-  batchTx?: boolean,
-  approveAmt?: bigint,
-  onSuccess?: () => void,
-) => {
-  const txConfig = batchTx
-    ? {
-        contracts: [
-          {
-            address: testTokenContract.address,
-            abi: testTokenContract.abi,
-            functionName: 'approve',
-            args: [trackerContract.address, approveAmt],
-          },
-          {
-            address: trackerContract.address,
-            abi: trackerContract.abi,
-            functionName: 'join',
-            args: [challengeId],
-          },
-        ],
-      }
-    : {
+const useJoinChallenge = (challengeId: bigint, approveAmt?: bigint, onSuccess?: () => void) => {
+  const txConfig = {
+    contracts: [
+      {
+        address: testTokenContract.address,
+        abi: testTokenContract.abi,
+        functionName: 'approve',
+        args: [trackerContract.address, approveAmt],
+      },
+      {
         address: trackerContract.address,
         abi: trackerContract.abi,
         functionName: 'join',
         args: [challengeId],
-      };
+      },
+    ],
+  };
 
   return useSubmitTransaction(txConfig, {
-    batchTx,
     onError: () => {
       toast.error('Error joining the challenge. Please try again');
     },

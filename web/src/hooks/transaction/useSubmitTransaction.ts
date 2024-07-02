@@ -5,9 +5,11 @@ import {
   UseSimulateContractParameters,
   useSimulateContract,
   useWaitForTransactionReceipt,
-  useWriteContract,
 } from 'wagmi';
 import { useWriteContracts, useCallsStatus } from 'wagmi/experimental';
+
+const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY;
+const ZERODEV_PAYMASTER_URL = `https://rpc.zerodev.app/api/v3/paymaster/${zerodevApiKey}`;
 
 const getEvents = (
   contractCallConfig: UseSimulateContractParameters,
@@ -46,7 +48,6 @@ const useSubmitTransaction = (
   contractCallConfig: any,
   options?: {
     customErrorsMap?: Record<string, string>;
-    batchTx?: boolean;
     onSuccess?: (
       transactionReceipt: TransactionReceipt,
       events: DecodeEventLogReturnType[],
@@ -61,20 +62,13 @@ const useSubmitTransaction = (
     });
 
   const {
-    writeContract,
-    data: writeHash,
-    error: writeContractError,
-    isError: isWriteContractError,
-    isPending: isWriteContractLoading,
-    reset: resetWriteContract,
-  } = useWriteContract();
-
-  const {
     writeContracts,
     data: batchHash,
     error: batchWriteContractError,
     isError: isBatchWriteContractError,
     isPending: isBatchWriteContractLoading,
+    isSuccess: isBatchWriteContractSuccess,
+
     reset: resetBatchWriteContract,
   } = useWriteContracts();
 
@@ -87,19 +81,6 @@ const useSubmitTransaction = (
     },
   });
 
-  const writeContractToUse = options?.batchTx ? writeContracts : writeContract;
-  const hashToUse = options?.batchTx
-    ? (callsStatus?.receipts?.[0]?.transactionHash as `0x${string}`)
-    : writeHash;
-  const contractWriteErrorToUse = options?.batchTx ? batchWriteContractError : writeContractError;
-  const isContractWriteErrorToUse = options?.batchTx
-    ? isBatchWriteContractError
-    : isWriteContractError;
-  const isContractWriteLoadingToUse = options?.batchTx
-    ? isBatchWriteContractLoading
-    : isWriteContractLoading;
-  const resetToUse = options?.batchTx ? resetBatchWriteContract : resetWriteContract;
-
   const {
     data: transactionReceipt,
     error: waitForTransactionError,
@@ -107,10 +88,10 @@ const useSubmitTransaction = (
     isError: isWaitForTransactionError,
     isLoading: isWaitForTransactionLoading,
   } = useWaitForTransactionReceipt({
-    hash: hashToUse as `0x${string}`,
+    hash: callsStatus?.receipts?.[0]?.transactionHash as `0x${string}`,
   });
 
-  const rawError = waitForTransactionError ?? contractWriteErrorToUse ?? simulateContractError;
+  const rawError = waitForTransactionError ?? batchWriteContractError ?? simulateContractError;
 
   const error = rawError
     ? processViemContractError(rawError, (errorName) => {
@@ -120,7 +101,7 @@ const useSubmitTransaction = (
       })
     : undefined;
 
-  const isError = isContractWriteErrorToUse || isWaitForTransactionError;
+  const isError = isBatchWriteContractError || isWaitForTransactionError;
   const { onSuccess, onError } = options ?? {};
   useEffect(() => {
     if (!transactionReceipt && !isSuccess && !isError) return;
@@ -138,26 +119,24 @@ const useSubmitTransaction = (
 
     if (error) {
       onError?.(error, rawError);
-      resetToUse();
+      resetBatchWriteContract();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactionReceipt, isSuccess, isError]);
 
   return {
     onSubmitTransaction: () => {
-      if (!writeContractToUse && error) {
-        onError?.(error, rawError);
-        return;
-      }
-
-      if (options?.batchTx) {
-        writeContracts?.(contractCallConfig);
-      } else {
-        writeContract?.(contractCallConfig);
-      }
+      writeContracts?.({
+        contracts: contractCallConfig.contracts || [contractCallConfig],
+        capabilities: {
+          paymasterService: {
+            url: ZERODEV_PAYMASTER_URL,
+          },
+        },
+      });
     },
     isPreparing: isSimulateContractLoading,
-    isLoading: isWaitForTransactionLoading || isContractWriteLoadingToUse,
+    isLoading: isWaitForTransactionLoading || isBatchWriteContractLoading,
     error,
   };
 };

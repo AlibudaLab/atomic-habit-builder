@@ -1,6 +1,8 @@
 import { createConfig, http } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
-import { coinbaseWallet } from 'wagmi/connectors';
+import { passkeyConnector } from '@zerodev/wallet';
+
+const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY as string;
 
 export function createWagmiConfig(rpcUrl: string) {
   const baseUrl = rpcUrl.replace(/\/v1\/(.+?)\//, '/v1/base/');
@@ -8,13 +10,8 @@ export function createWagmiConfig(rpcUrl: string) {
 
   return createConfig({
     chains: [baseSepolia],
-    connectors: [
-      coinbaseWallet({
-        appName: 'Alibuda',
-        preference: 'smartWalletOnly',
-      }),
-    ],
-    ssr: true,
+    connectors: [passkeyConnector(zerodevApiKey, baseSepolia, 'v3', 'alibuda')],
+
     transports: {
       [baseSepolia.id]: http(baseSepoliaUrl),
       [base.id]: http(baseUrl),

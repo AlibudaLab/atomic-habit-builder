@@ -17,7 +17,8 @@ const useMintERC20 = (token: `0x${string}`, receiver: `0x${string}`, amount: big
       args: [receiver, amount],
     },
     {
-      onError: () => {
+      onError: (e) => {
+        if (e) console.log(e);
         toast.error('Error minting test token. Please try again');
       },
       onSuccess: () => {

@@ -8,7 +8,6 @@ import { WagmiProvider } from 'wagmi';
 import { createWagmiConfig } from '@/store/createWagmiConfig';
 
 type Props = { children: ReactNode };
-
 const queryClient = new QueryClient();
 
 const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? '';
@@ -26,9 +25,7 @@ const wagmiConfig = createWagmiConfig(rpcUrl);
 function OnchainProviders({ children }: Props) {
   return (
     <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider chain={baseSepolia}>{children}</OnchainKitProvider>
-      </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </WagmiProvider>
   );
 }

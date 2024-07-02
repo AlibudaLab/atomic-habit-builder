@@ -8,10 +8,8 @@ import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
-import { useCapabilities } from 'wagmi/experimental';
 import { Input } from '@nextui-org/input';
 
-import { EXPECTED_CHAIN } from '@/constants';
 import * as testTokenContract from '@/contracts/testToken';
 import * as trackerContract from '@/contracts/tracker';
 import useChallenge from '@/hooks/useChallenge';
@@ -48,11 +46,6 @@ export default function StakeChallenge() {
     () => challenge?.public === true || challenge?.accessCode === inputAccessCode || joined,
     [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
   );
-
-  const { data: capabilities } = useCapabilities();
-  const currentChainSupportBatchTx =
-    capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
-      ?.atomicBatch.supported;
 
   const { data: testTokenBalance } = useBalance({
     address: smartWallet,
@@ -120,14 +113,9 @@ export default function StakeChallenge() {
     onSubmitTransaction: onJoinTx,
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
-  } = useJoinChallenge(
-    BigInt(challenge?.id ?? 0),
-    currentChainSupportBatchTx,
-    challenge?.stake ?? BigInt(0),
-    () => {
-      handleOpenCheckinPopup(); // trigger pop up window
-    },
-  );
+  } = useJoinChallenge(BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
+    handleOpenCheckinPopup(); // trigger pop up window
+  });
 
   const onJoinButtonClick = () => {
     if (!challenge) {
@@ -212,11 +200,7 @@ export default function StakeChallenge() {
             color="primary"
             type="button"
             className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={
-              currentChainSupportBatchTx || hasEnoughAllowance
-                ? onJoinButtonClick
-                : onApproveTestTokenClick
-            }
+            onClick={hasEnoughAllowance ? onJoinButtonClick : onApproveTestTokenClick}
             isDisabled={
               isJoinPreparing ||
               isMintPreparing ||
@@ -239,7 +223,7 @@ export default function StakeChallenge() {
              * If doesn't have enough balance -> Display Approve
              * If has enough allowance -> Display Stake
              */}
-            {hasEnoughAllowance || currentChainSupportBatchTx ? `Join This Challenge` : 'Approve'}
+            {hasEnoughAllowance || `Join This Challenge`}
           </Button>
         )}
 
