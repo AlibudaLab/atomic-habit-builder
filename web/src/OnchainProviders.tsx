@@ -1,9 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { OnchainKitProvider } from '@coinbase/onchainkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { baseSepolia } from 'viem/chains';
 import { WagmiProvider } from 'wagmi';
 import { createWagmiConfig } from '@/store/createWagmiConfig';
 
@@ -11,13 +9,14 @@ type Props = { children: ReactNode };
 const queryClient = new QueryClient();
 
 const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL ?? '';
-if (!rpcUrl) {
+const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY ?? '';
+
+if (!rpcUrl || !zerodevApiKey) {
   const rpcErrMessage =
-    'To connect to the blockchain you need to provide a NEXT_PUBLIC_RPC_URL env variable';
+    'Missing RPC URL or ZeroDev API Key. Please check your environment variables.';
   throw new Error(rpcErrMessage);
 }
-
-const wagmiConfig = createWagmiConfig(rpcUrl);
+const wagmiConfig = createWagmiConfig(rpcUrl, zerodevApiKey);
 
 /**
  * TODO Docs ~~~

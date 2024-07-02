@@ -2,9 +2,7 @@ import { createConfig, http } from 'wagmi';
 import { base, baseSepolia } from 'wagmi/chains';
 import { passkeyConnector } from '@zerodev/wallet';
 
-const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY as string;
-
-export function createWagmiConfig(rpcUrl: string) {
+export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
   const baseUrl = rpcUrl.replace(/\/v1\/(.+?)\//, '/v1/base/');
   const baseSepoliaUrl = rpcUrl.replace(/\/v1\/(.+?)\//, '/v1/base-sepolia/');
 
