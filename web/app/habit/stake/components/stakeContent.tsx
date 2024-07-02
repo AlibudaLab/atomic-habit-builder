@@ -22,7 +22,6 @@ import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserJoined from '@/hooks/useUserJoined';
-import Link from 'next/link';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -224,11 +223,10 @@ export default function StakeChallenge() {
           challenge === null && (
             <div className="p-4 text-sm">
               <p>Challenge not found</p>
-              <Link href="/" type="button">
-                <Button color="default" className="mt-4">
-                  Back
-                </Button>
-              </Link>
+
+              <Button color="default" className="mt-4" onClick={() => push('/')}>
+                Back
+              </Button>
             </div>
           )
         )}

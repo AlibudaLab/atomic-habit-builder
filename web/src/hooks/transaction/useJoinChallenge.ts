@@ -33,6 +33,7 @@ const useJoinChallenge = (challengeId: bigint, approveAmt?: bigint, onSuccess?: 
     },
     onSuccess: () => {
       //In the orginal file they refetch after success refetch();
+      toast.dismiss();
       toast.success('Joined! Directing to checkIn!');
 
       onSuccess?.();

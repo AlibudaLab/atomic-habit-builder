@@ -1,12 +1,12 @@
 'use client';
 
 import useAllChallenges from '@/hooks/useAllChallenges';
-import Link from 'next/link';
 import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
 import useUserChallenges from '@/hooks/useUserChallenges';
 import Loading from '../../components/Loading';
 import moment from 'moment';
+import { useRouter } from 'next/navigation';
 
 export default function ChallengeList() {
   const { address } = useAccount();
@@ -15,6 +15,8 @@ export default function ChallengeList() {
   const { challenges, loading: loadingAllChallenges } = useAllChallenges(true);
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
+
+  const { push } = useRouter();
 
   return (
     <main className="container flex flex-col items-center px-4 text-center">
@@ -30,13 +32,14 @@ export default function ChallengeList() {
             const notEnded = challenge.endTimestamp > moment().unix();
             if (!isJoined && notEnded)
               return (
-                <Link
+                <button
+                  type='button'
                   className="w-full no-underline"
                   key={challenge.id.toString()}
-                  href={`/habit/stake/${challenge.id}`}
+                  onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >
                   <ChallengeBox challenge={challenge} />
-                </Link>
+                </button>
               );
           })
         )}

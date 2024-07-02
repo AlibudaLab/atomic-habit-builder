@@ -196,11 +196,14 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {!canCheckInNow ? (
         checkedIn >= challenge.targetNum ? (
-          <Link href={`/habit/claim/${challenge.id}`}>
-            <Button type="button" color="primary" className="mt-12 min-h-12 w-3/4 max-w-56">
-              Finish
-            </Button>
-          </Link>
+          <Button
+            type="button"
+            color="primary"
+            className="mt-12 min-h-12 w-3/4 max-w-56"
+            onClick={() => push(`/habit/claim/${challenge.id}`)}
+          >
+            Finish
+          </Button>
         ) : (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button

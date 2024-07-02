@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { Divider } from '@nextui-org/divider';
 
 import farcasterLogo from '@/imgs/socials/farcaster.png';
+import { useRouter } from 'next/navigation';
 
 type Step3Props = {
   accessCode: string;
@@ -22,6 +23,8 @@ type Step3Props = {
 };
 
 export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
+  const router = useRouter();
+
   const origin = window.location.origin;
 
   const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
@@ -63,14 +66,13 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
         <span> Copy Invite Link </span>
       </Snippet>
 
-      <Link
-        href={`/habit/stake/${challengeId}?code=${accessCode}`}
-        className="mb-8 mt-28 w-full justify-center"
+      <Button
+        className="min-h-12 w-full"
+        color="primary"
+        onClick={() => router.push(`/habit/stake/${challengeId}?code=${accessCode}`)}
       >
-        <Button className="min-h-12 w-full" color="primary">
-          Start Challenge
-        </Button>
-      </Link>
+        Start Challenge
+      </Button>
     </div>
   );
 }

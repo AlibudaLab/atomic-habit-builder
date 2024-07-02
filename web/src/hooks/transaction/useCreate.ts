@@ -40,7 +40,7 @@ const useCreateChallenge = (
         toast.success('Successfully created!! 🥳🥳🥳');
         onSuccess?.(reciept, events);
       },
-      onSubmitTransaction: () => {
+      onSent: () => {
         toast.loading('Transaction sent...');
       },
     },
