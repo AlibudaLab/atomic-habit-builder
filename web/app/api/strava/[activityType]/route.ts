@@ -15,15 +15,15 @@ export async function GET(
 
   const activityTypes = activityToStravaTypes[activityTypeKey];
 
+  const before = req.nextUrl.searchParams.get('before') ?? Math.floor(new Date().getTime() / 1000);
+  const after =
+    req.nextUrl.searchParams.get('after') ??
+    Math.floor((new Date().getTime() - 86400000 * 30) / 1000);
+  const page = req.nextUrl.searchParams.get('page') ?? 1;
+  const perPage = req.nextUrl.searchParams.get('perPage') ?? 100;
+  const accessToken = req.nextUrl.searchParams.get('accessToken');
+
   try {
-    const before =
-      req.nextUrl.searchParams.get('before') ?? Math.floor(new Date().getTime() / 1000);
-    const after =
-      req.nextUrl.searchParams.get('after') ??
-      Math.floor((new Date().getTime() - 86400000 * 30) / 1000);
-    const page = req.nextUrl.searchParams.get('page') ?? 1;
-    const perPage = req.nextUrl.searchParams.get('perPage') ?? 100;
-    const accessToken = req.nextUrl.searchParams.get('accessToken');
     if (!accessToken) {
       return NextResponse.json({ error: 'accessToken is required' }, { status: 400 });
     }

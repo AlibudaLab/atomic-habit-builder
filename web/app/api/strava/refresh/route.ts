@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
  * @param res
  */
 export async function POST(req: NextRequest): Promise<Response> {
+  const refreshToken = req.nextUrl.searchParams.get('refreshToken');
   try {
-    const refreshToken = req.nextUrl.searchParams.get('refreshToken');
     if (!refreshToken) {
       return NextResponse.json({ error: 'refreshToken is required' }, { status: 400 });
     }

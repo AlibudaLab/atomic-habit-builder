@@ -1,10 +1,9 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { ChallengeTypes } from '@/constants';
 import { Button } from '@nextui-org/button';
-import Link from 'next/link';
 import { Snippet } from '@nextui-org/snippet';
 import useSocialShare from '@/hooks/useSocialShare';
 import { BsTwitterX } from 'react-icons/bs';
@@ -25,7 +24,12 @@ type Step3Props = {
 export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
   const router = useRouter();
 
-  const origin = window.location.origin;
+  const [origin, setOrigin] = useState('');
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
 

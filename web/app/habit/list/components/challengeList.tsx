@@ -33,7 +33,7 @@ export default function ChallengeList() {
             if (!isJoined && notEnded)
               return (
                 <button
-                  type='button'
+                  type="button"
                   className="w-full no-underline"
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}

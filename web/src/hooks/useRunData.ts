@@ -107,7 +107,14 @@ const useRunData = (challenge: Challenge) => {
     };
 
     fetchData().catch(setError);
-  }, [secret, verifier, updateVerifierAndSecret, expired]);
+  }, [
+    secret,
+    verifier,
+    updateVerifierAndSecret,
+    expired,
+    challenge.startTimestamp,
+    challenge.endTimestamp,
+  ]);
 
   return { loading, runData, workoutData, error, connected };
 };
