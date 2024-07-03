@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 
 import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
 
@@ -26,6 +27,8 @@ export default function CallbackStrava() {
   const { updateVerifierAndSecret } = useRunVerifier();
 
   const [isPending, setIsPending] = useState<boolean>(false);
+
+  const router = useRouter();
 
   // Upon receiving the ath token, try get the access token!
   useEffect(() => {
@@ -54,7 +57,7 @@ export default function CallbackStrava() {
         toast('Successfully connected with Strava', { icon: '🚀' });
 
         // Redirect to the original page
-        if (originalUri) window.location.href = originalUri;
+        if (originalUri) router.push(originalUri).catch((e) => console.log(e));
       } finally {
         setIsPending(false); // Always set loading state to false after the operation
       }
