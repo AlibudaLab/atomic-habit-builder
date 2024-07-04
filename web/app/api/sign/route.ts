@@ -27,24 +27,20 @@ const types = {
  */
 export async function GET(req: NextRequest): Promise<Response> {
   // Your code to handle authentication to Strava goes here
+  const address = req.nextUrl.searchParams.get('address');
+  const activityId = req.nextUrl.searchParams.get('activityId');
+  const timestamp = req.nextUrl.searchParams.get('timestamp');
+  const challengeId = req.nextUrl.searchParams.get('challengeId');
   try {
-    const address = req.nextUrl.searchParams.get('address');
     if (!address) {
       return NextResponse.json({ error: 'address is required' }, { status: 400 });
     }
-
-    // todo: make sure cannot re-submit
-    const activityId = req.nextUrl.searchParams.get('activityId');
     if (!activityId) {
       return NextResponse.json({ error: 'activityId is required' }, { status: 400 });
     }
-
-    const timestamp = req.nextUrl.searchParams.get('timestamp');
     if (!timestamp) {
       return NextResponse.json({ error: 'timestamp is required' }, { status: 400 });
     }
-
-    const challengeId = req.nextUrl.searchParams.get('challengeId');
     if (!challengeId) {
       return NextResponse.json({ error: 'challengeId is required' }, { status: 400 });
     }

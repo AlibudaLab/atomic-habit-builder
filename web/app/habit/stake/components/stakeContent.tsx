@@ -7,18 +7,13 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
-import { useAccount, useBalance } from 'wagmi';
-import { useCapabilities } from 'wagmi/experimental';
+import { useAccount, useBalance, useConnect } from 'wagmi';
 import { Input } from '@nextui-org/input';
 
-import { EXPECTED_CHAIN } from '@/constants';
 import * as testTokenContract from '@/contracts/testToken';
-import * as trackerContract from '@/contracts/tracker';
 import useChallenge from '@/hooks/useChallenge';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
-import useApproveERC20 from '@/hooks/transaction/useApproveERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
-import { useReadErc20Allowance } from '@/hooks/ERC20Hooks';
 import { getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
@@ -27,12 +22,13 @@ import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserJoined from '@/hooks/useUserJoined';
-import Link from 'next/link';
 
 export default function StakeChallenge() {
   const { push } = useRouter();
 
   const { challengeId } = useParams<{ challengeId: string }>();
+  const { address } = useAccount();
+  const { connect, connectors } = useConnect();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';
@@ -49,11 +45,6 @@ export default function StakeChallenge() {
     [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
   );
 
-  const { data: capabilities } = useCapabilities();
-  const currentChainSupportBatchTx =
-    capabilities?.[EXPECTED_CHAIN.id.toString() as unknown as keyof typeof capabilities]
-      ?.atomicBatch.supported;
-
   const { data: testTokenBalance } = useBalance({
     address: smartWallet,
     token: testTokenContract.address,
@@ -63,13 +54,6 @@ export default function StakeChallenge() {
     challenge &&
     testTokenBalance &&
     Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
-
-  const { data: allowance } = useReadErc20Allowance({
-    address: testTokenContract.address,
-    args: [smartWallet as `0x${string}`, trackerContract.address],
-  });
-
-  const hasEnoughAllowance = allowance ? challenge && allowance >= challenge.stake : false;
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
   const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
@@ -102,32 +86,12 @@ export default function StakeChallenge() {
   };
 
   const {
-    onSubmitTransaction: onApproveTx,
-    isPreparing: isApprovePreparing,
-    isLoading: isApproveLoading,
-  } = useApproveERC20(
-    testTokenContract.address as `0x${string}`,
-    trackerContract.address,
-    challenge?.stake ?? BigInt(0),
-  );
-
-  const onApproveTestTokenClick = async () => {
-    if (!challenge) return;
-    onApproveTx();
-  };
-
-  const {
     onSubmitTransaction: onJoinTx,
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
-  } = useJoinChallenge(
-    BigInt(challenge?.id ?? 0),
-    currentChainSupportBatchTx,
-    challenge?.stake ?? BigInt(0),
-    () => {
-      handleOpenCheckinPopup(); // trigger pop up window
-    },
-  );
+  } = useJoinChallenge(BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
+    handleOpenCheckinPopup(); // trigger pop up window
+  });
 
   const onJoinButtonClick = () => {
     if (!challenge) {
@@ -200,47 +164,29 @@ export default function StakeChallenge() {
           </div>
         )}
 
-        {/**
-         * Disable button when challenge hasn't selected or when not enough balance
-         * If support batch tx -> Join with Batch Tx (Approve -> Join)
-         * If doesn't support batch tx, has enough balance, has enough allowance -> Stake Tx
-         * If doesn't support batch tx, has enough balance, not enough allowance -> Approve Tx
-         */}
-        {/* //TODO @ryanycw: There is some error after minting test token */}
-        {hasAccess && !joined && challenge && (
+        {challenge && !address ? (
           <Button
-            color="primary"
             type="button"
             className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={
-              currentChainSupportBatchTx || hasEnoughAllowance
-                ? onJoinButtonClick
-                : onApproveTestTokenClick
-            }
-            isDisabled={
-              isJoinPreparing ||
-              isMintPreparing ||
-              isApprovePreparing ||
-              isJoinLoading ||
-              isMintLoading ||
-              isApproveLoading
-            }
-            isLoading={
-              isJoinPreparing ||
-              isMintPreparing ||
-              isApprovePreparing ||
-              isJoinLoading ||
-              isMintLoading ||
-              isApproveLoading
-            }
+            onClick={() => connect({ connector: connectors[0] })}
           >
-            {/**
-             * Display only when challenge is selected
-             * If doesn't have enough balance -> Display Approve
-             * If has enough allowance -> Display Stake
-             */}
-            {hasEnoughAllowance || currentChainSupportBatchTx ? `Join This Challenge` : 'Approve'}
+            Connect
           </Button>
+        ) : (
+          hasAccess &&
+          !joined &&
+          challenge && (
+            <Button
+              color="primary"
+              type="button"
+              className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+              onClick={onJoinButtonClick}
+              isDisabled={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+              isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+            >
+              Join This Challenge
+            </Button>
+          )
         )}
 
         {joined && (
@@ -277,11 +223,10 @@ export default function StakeChallenge() {
           challenge === null && (
             <div className="p-4 text-sm">
               <p>Challenge not found</p>
-              <Link href="/" type="button">
-                <Button color="default" className="mt-4">
-                  Back
-                </Button>
-              </Link>
+
+              <Button color="default" className="mt-4" onClick={() => push('/')}>
+                Back
+              </Button>
             </div>
           )
         )}

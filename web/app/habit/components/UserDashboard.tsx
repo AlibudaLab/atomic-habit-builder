@@ -2,9 +2,9 @@
 'use client';
 
 import { ChallengeWithCheckIns } from '@/types';
-import Link from 'next/link';
 import { ChallengeBoxFilled } from './ChallengeBox';
 import { Divider } from '@nextui-org/react';
+import { useRouter } from 'next/navigation';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -12,6 +12,8 @@ type DashboardProps = {
 };
 
 export default function Dashboard({ onGoingChallenges, pastChallenges }: DashboardProps) {
+  const { push } = useRouter();
+
   return (
     <div className="flex h-screen flex-col items-center justify-start">
       <div className="flex w-full items-center justify-center">
@@ -22,9 +24,10 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
 
       {/* map challenges to list of buttons */}
       {onGoingChallenges.map((challenge, idx) => (
-        <Link
+        <button
+          type="button"
           key={`link-${idx}`}
-          href={`/habit/checkin/${challenge.id}`}
+          onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline"
         >
           <ChallengeBoxFilled
@@ -32,7 +35,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
             challenge={challenge}
             checkedIn={challenge.checkedIn}
           />
-        </Link>
+        </button>
       ))}
 
       <div className="flex w-full items-center justify-center">
@@ -45,9 +48,9 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
         )}
       </div>
       {pastChallenges.map((challenge, idx) => (
-        <Link
+        <button
           key={`link-${idx}`}
-          href={`/habit/checkin/${challenge.id}`}
+          onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline"
         >
           <ChallengeBoxFilled
@@ -55,12 +58,12 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
             challenge={challenge}
             checkedIn={challenge.checkedIn}
           />
-        </Link>
+        </button>
       ))}
 
-      <Link href="/habit/list" className="my-6 py-4 text-dark">
+      <button onClick={() => push('/habit/list')} className="my-6 py-4 text-dark">
         <p className="text-md font-bold"> Join Other Challenges </p>
-      </Link>
+      </button>
     </div>
   );
 }

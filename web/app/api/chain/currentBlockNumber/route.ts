@@ -8,9 +8,9 @@ import { getRpcProviderForChain } from '@/utils/provider';
  * @param res
  */
 export async function GET(req: NextRequest): Promise<Response> {
+  const chainId = req.nextUrl.searchParams.get('chainId');
   try {
     // Get the Chain Id from the request
-    const chainId = req.nextUrl.searchParams.get('chainId');
     if (!chainId) {
       return NextResponse.json({ error: 'chainid is required' }, { status: 400 });
     }

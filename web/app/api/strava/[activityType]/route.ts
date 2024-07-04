@@ -15,15 +15,15 @@ export async function GET(
 
   const activityTypes = activityToStravaTypes[activityTypeKey];
 
+  const before = req.nextUrl.searchParams.get('before') ?? Math.floor(new Date().getTime() / 1000);
+  const after =
+    req.nextUrl.searchParams.get('after') ??
+    Math.floor((new Date().getTime() - 86400000 * 30) / 1000);
+  const page = req.nextUrl.searchParams.get('page') ?? 1;
+  const perPage = req.nextUrl.searchParams.get('perPage') ?? 100;
+  const accessToken = req.nextUrl.searchParams.get('accessToken');
+
   try {
-    const before =
-      req.nextUrl.searchParams.get('before') ?? Math.floor(new Date().getTime() / 1000);
-    const after =
-      req.nextUrl.searchParams.get('after') ??
-      Math.floor((new Date().getTime() - 86400000 * 30) / 1000);
-    const page = req.nextUrl.searchParams.get('page') ?? 1;
-    const perPage = req.nextUrl.searchParams.get('perPage') ?? 100;
-    const accessToken = req.nextUrl.searchParams.get('accessToken');
     if (!accessToken) {
       return NextResponse.json({ error: 'accessToken is required' }, { status: 400 });
     }
@@ -31,8 +31,8 @@ export async function GET(
     const url = `https://www.strava.com/api/v3/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${perPage}`;
 
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
-    const activities = (await response.json()).filter(
-      (activity: any) => activityTypes.includes(activity.type),
+    const activities = (await response.json()).filter((activity: any) =>
+      activityTypes.includes(activity.type),
     );
 
     if (activityTypeKey === 'workout') {

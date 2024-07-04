@@ -10,6 +10,7 @@ import { Button } from '@nextui-org/button';
 import Image from 'next/image';
 
 import usdcLogo from '@/imgs/coins/usdc.png';
+import { useAccount, useConnect } from 'wagmi';
 
 type Step2Props = {
   stake: number;
@@ -26,6 +27,9 @@ export default function CreateStep2({
   onClickCreate,
   isCreating,
 }: Step2Props) {
+  const { connect, connectors } = useConnect();
+  const { address } = useAccount();
+
   return (
     <div className="flex w-full flex-grow flex-col items-center justify-start px-8">
       <Input
@@ -76,14 +80,24 @@ export default function CreateStep2({
         ))}
       </Select>
 
-      <Button
-        isLoading={isCreating}
-        onClick={onClickCreate}
-        className="mt-2 min-h-12 w-full"
-        color="primary"
-      >
-        Create
-      </Button>
+      {address ? (
+        <Button
+          isLoading={isCreating}
+          onClick={onClickCreate}
+          className="mt-2 min-h-12 w-full"
+          color="primary"
+        >
+          Create
+        </Button>
+      ) : (
+        <Button
+          onClick={() => connect({ connector: connectors[0] })}
+          className="mt-2 min-h-12 w-full"
+          // color="primary"
+        >
+          Connect Wallet
+        </Button>
+      )}
     </div>
   );
 }

@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
  * @param res
  */
 export async function POST(req: NextRequest): Promise<Response> {
+  const authToken = req.nextUrl.searchParams.get('authToken');
   try {
-    const authToken = req.nextUrl.searchParams.get('authToken');
     if (!authToken) {
       return NextResponse.json({ error: 'authToken is required' }, { status: 400 });
     }

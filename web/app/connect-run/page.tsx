@@ -1,13 +1,11 @@
 'use client';
 
-import Header from '../habit/components/Header';
 import Image from 'next/image';
 
 import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Button } from '@nextui-org/button';
-import NavbarFooter from 'app/habit/components/NavbarFooter';
 
 const StravaImg = require('../../src/imgs/apps/strava.png') as string;
 
@@ -19,10 +17,11 @@ export default function ConnectRunDataSource() {
   const pathName = usePathname();
 
   const onClickStrava = useCallback(() => {
-    const redirectUri = window.origin + pathName + '/strava';
+    if (typeof window !== 'undefined') return;
+    const redirectUri = ((window as any).origin as string) + pathName + '/strava';
     const authUrl = stravaUtils.getAuthURL(redirectUri, originalPath);
-    window.location = authUrl as any;
-  }, []);
+    (window as any).location = authUrl as any;
+  }, [originalPath]);
 
   return (
     <>
