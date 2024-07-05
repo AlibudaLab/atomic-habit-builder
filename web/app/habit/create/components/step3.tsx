@@ -1,10 +1,9 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { ChallengeTypes } from '@/constants';
 import { Button } from '@nextui-org/button';
-import Link from 'next/link';
 import { Snippet } from '@nextui-org/snippet';
 import useSocialShare from '@/hooks/useSocialShare';
 import { BsTwitterX } from 'react-icons/bs';
@@ -12,6 +11,7 @@ import Image from 'next/image';
 import { Divider } from '@nextui-org/divider';
 
 import farcasterLogo from '@/imgs/socials/farcaster.png';
+import { useRouter } from 'next/navigation';
 
 type Step3Props = {
   accessCode: string;
@@ -22,7 +22,14 @@ type Step3Props = {
 };
 
 export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
-  const origin = window.location.origin;
+  const router = useRouter();
+
+  const [origin, setOrigin] = useState('');
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
 
@@ -63,14 +70,13 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
         <span> Copy Invite Link </span>
       </Snippet>
 
-      <Link
-        href={`/habit/stake/${challengeId}?code=${accessCode}`}
-        className="mb-8 mt-28 w-full justify-center"
+      <Button
+        className="min-h-12 w-full"
+        color="primary"
+        onClick={() => router.push(`/habit/stake/${challengeId}?code=${accessCode}`)}
       >
-        <Button className="min-h-12 w-full" color="primary">
-          Start Challenge
-        </Button>
-      </Link>
+        Start Challenge
+      </Button>
     </div>
   );
 }

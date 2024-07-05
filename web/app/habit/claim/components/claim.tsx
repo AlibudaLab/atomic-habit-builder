@@ -24,14 +24,13 @@ export default function Claim() {
     push('/');
   };
 
-  const {
-    onSubmitTransaction: onWithdrawTx,
-    isPreparing: isWithdrawPreparing,
-    isLoading: isWithdrawLoading,
-  } = useWithdraw(BigInt(challenge?.id ?? 0), () => {
-    setIsSuccess(true);
-    handleOpenClaimedPopup();
-  });
+  const { onSubmitTransaction: onWithdrawTx, isLoading: isWithdrawLoading } = useWithdraw(
+    BigInt(challenge?.id ?? 0),
+    () => {
+      setIsSuccess(true);
+      handleOpenClaimedPopup();
+    },
+  );
 
   return (
     <div className="flex flex-col items-center justify-center">

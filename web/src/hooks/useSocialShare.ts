@@ -1,11 +1,17 @@
-import { usePathname } from 'next/navigation';
+'use client';
 
-const chain = 'base';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function () {
   const path = usePathname();
 
-  const fullPathShare = `${window.location.origin}${path}`;
+  const [fullPathShare, setFullPathShare] = useState<string>('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setFullPathShare(`${window.location.origin}${path}`);
+  });
 
   const open = (url: string) => {
     window.open(url, '_blank');

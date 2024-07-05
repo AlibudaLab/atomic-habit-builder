@@ -17,12 +17,17 @@ const useMintERC20 = (token: `0x${string}`, receiver: `0x${string}`, amount: big
       args: [receiver, amount],
     },
     {
-      onError: () => {
+      onError: (e) => {
+        if (e) console.log('Error while Minting:', e);
         toast.error('Error minting test token. Please try again');
       },
       onSuccess: () => {
-        //In the orginal file they refetch after success refetch();
-        toast.success('Minted! Your test token is on the way!');
+        //In the original file they refetch after success refetch();
+        toast.dismiss();
+        toast.success('USDC Minted!');
+      },
+      onSent: () => {
+        toast.loading('Minting...');
       },
     },
   );

@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { DateValue } from '@nextui-org/react';
 import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
@@ -48,7 +47,7 @@ export default function Create() {
     end: parseAbsoluteToLocal(defaultStart.add(1, 'week').toISOString()),
   });
 
-  const [stake, setStake] = useState(0);
+  const [stake, setStake] = useState(5);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
 

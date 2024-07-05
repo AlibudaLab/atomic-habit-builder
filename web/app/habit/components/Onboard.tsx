@@ -17,7 +17,7 @@ export default function Onboard() {
         color="primary"
         onClick={() => connect({ connector })}
       >
-        Use Base Smart Wallet
+        Login with Passkey
       </Button>
     </div>
   );

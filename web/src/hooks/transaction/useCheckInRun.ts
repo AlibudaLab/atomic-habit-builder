@@ -41,6 +41,9 @@ const useCheckInRun = (fields: CheckInFields, onSuccess?: () => void) => {
 
         onSuccess?.();
       },
+      onSent: () => {
+        toast.loading('Transaction sent...');
+      },
     },
   );
 };

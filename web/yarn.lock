@@ -5253,7 +5253,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.4.0, @noble/curves@npm:^1.0.0, @noble/curves@npm:~1.4.0":
+"@noble/curves@npm:1.4.0, @noble/curves@npm:^1.0.0, @noble/curves@npm:^1.3.0, @noble/curves@npm:~1.4.0":
   version: 1.4.0
   resolution: "@noble/curves@npm:1.4.0"
   dependencies:
@@ -8254,6 +8254,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@simplewebauthn/browser@npm:^8.3.4":
+  version: 8.3.7
+  resolution: "@simplewebauthn/browser@npm:8.3.7"
+  dependencies:
+    "@simplewebauthn/typescript-types": "npm:^8.3.4"
+  checksum: 10c0/99e66f7cb6c9dc6c1891aa4a94161bf09ec239e1e4f27157d35658d797878220590bd82deb6b37c0a5b90d043d89655613f7e6bc8f938aaf0114c99f2c430796
+  languageName: node
+  linkType: hard
+
 "@simplewebauthn/browser@npm:^9.0.1":
   version: 9.0.1
   resolution: "@simplewebauthn/browser@npm:9.0.1"
@@ -8267,6 +8276,13 @@ __metadata:
   version: 9.0.1
   resolution: "@simplewebauthn/types@npm:9.0.1"
   checksum: 10c0/397f079ac029ada1413d6001850e3b49f99297a9933822758bdca9c47c36d6558e1dc81682725e0b03c501551c94fea040cead76883dcd2bb3a34b32984900f5
+  languageName: node
+  linkType: hard
+
+"@simplewebauthn/typescript-types@npm:^8.3.4":
+  version: 8.3.4
+  resolution: "@simplewebauthn/typescript-types@npm:8.3.4"
+  checksum: 10c0/763384ad35c78d10b50b9108c3aee5e471cd4bf0d8ba3efb4a581901b57c1b5d3d425c2c86eb3f88823b4a86fd9d3d7d5bbb4d757c4eb8eeea427a4eb517a472
   languageName: node
   linkType: hard
 
@@ -9857,6 +9873,73 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@zerodev/ecdsa-validator@npm:5.3.1":
+  version: 5.3.1
+  resolution: "@zerodev/ecdsa-validator@npm:5.3.1"
+  peerDependencies:
+    "@zerodev/sdk": ^5.2.1
+    permissionless: ^0.1.18
+    viem: ^2.16.3
+  checksum: 10c0/628574dc7ac0d636a1281107f1fe7685c5e761a45af89e35021f1529f9c228b6dc1a4d803fffb40855d8eea0a86ed6d254f13ecba1981d9f413bb4af372e61cf
+  languageName: node
+  linkType: hard
+
+"@zerodev/passkey-validator@npm:5.3.3":
+  version: 5.3.3
+  resolution: "@zerodev/passkey-validator@npm:5.3.3"
+  dependencies:
+    "@noble/curves": "npm:^1.3.0"
+    "@simplewebauthn/browser": "npm:^8.3.4"
+  peerDependencies:
+    "@zerodev/sdk": ^5.2.1
+    permissionless: ^0.1.18
+    viem: ^2.16.3
+  checksum: 10c0/8aadde4fade3cf5aae6fab42e0110e37b1fe4885626078f96e360297b56fab8a08c0e16318f406ac0cedb07d914d185704b48bf35d1c98098d30b88b0f5f378c
+  languageName: node
+  linkType: hard
+
+"@zerodev/permissions@npm:5.3.1":
+  version: 5.3.1
+  resolution: "@zerodev/permissions@npm:5.3.1"
+  dependencies:
+    "@simplewebauthn/browser": "npm:^9.0.1"
+    merkletreejs: "npm:^0.3.11"
+  peerDependencies:
+    "@zerodev/sdk": ^5.2.13
+    permissionless: ^0.1.18
+    viem: ^2.16.3
+  checksum: 10c0/ce0afb18ee1b5b20eafdac19c9855aeba3f50f4bd4dbc06319201025b2c385d6bfa62a208defbe0a2ff2bb820ae6e1bc5346c326738665a1108df2c8b0e4650f
+  languageName: node
+  linkType: hard
+
+"@zerodev/sdk@npm:5.3.2":
+  version: 5.3.2
+  resolution: "@zerodev/sdk@npm:5.3.2"
+  dependencies:
+    semver: "npm:^7.6.0"
+  peerDependencies:
+    permissionless: ^0.1.18
+    viem: ^2.16.3
+  checksum: 10c0/6ae90df1e32db26229511054d6bc67201ab0b79d161ecac28c72e2474b987cdf2bd768b298d072d50ee8b6bcc04faa3629c98e9a363d844c47dd40b80f64f6a8
+  languageName: node
+  linkType: hard
+
+"@zerodev/wallet@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@zerodev/wallet@npm:0.1.1"
+  dependencies:
+    "@zerodev/ecdsa-validator": "npm:5.3.1"
+    "@zerodev/passkey-validator": "npm:5.3.3"
+    "@zerodev/permissions": "npm:5.3.1"
+    "@zerodev/sdk": "npm:5.3.2"
+  peerDependencies:
+    permissionless: ^0.1.29
+    viem: ^2.16.3
+    wagmi: ^2.9.0
+  checksum: 10c0/05006fa30658d2ca3da67cd390fc13de0513da9b9be70104b31b8cce7bb5d8d4c4cc4f06630b54931d69c434ba4f3a379a4ff0d44318881278af95cf9ff88b47
+  languageName: node
+  linkType: hard
+
 "abab@npm:^2.0.6":
   version: 2.0.6
   resolution: "abab@npm:2.0.6"
@@ -10633,7 +10716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.0.1":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 10c0/e17786545433f3110b868725c449fa9625366a6e675cd70eb39b60938d6adbd0158cb4b3ad4f306ce817165d37e63f4aa3098ba4110db1d9a3b9f66abfbaf10d
@@ -10849,6 +10932,13 @@ __metadata:
   version: 1.1.2
   resolution: "buffer-from@npm:1.1.2"
   checksum: 10c0/124fff9d66d691a86d3b062eff4663fe437a9d9ee4b47b1b9e97f5a5d14f6d5399345db80f796827be7c95e70a8e765dd404b7c3ff3b3324f98e9b0c8826cc34
+  languageName: node
+  linkType: hard
+
+"buffer-reverse@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "buffer-reverse@npm:1.0.1"
+  checksum: 10c0/72f05072a72dc1ec0574693b8358e6d3882abe8d0a7daa875ed145b360d68ea3b95eb1b5fd435bf1f38a80d85021ecdf670bbb57694926cc1a02ea56cbbf4468
   languageName: node
   linkType: hard
 
@@ -11676,6 +11766,13 @@ __metadata:
     randombytes: "npm:^2.0.0"
     randomfill: "npm:^1.0.3"
   checksum: 10c0/0c20198886576050a6aa5ba6ae42f2b82778bfba1753d80c5e7a090836890dc372bdc780986b2568b4fb8ed2a91c958e61db1f0b6b1cc96af4bd03ffc298ba92
+  languageName: node
+  linkType: hard
+
+"crypto-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: 10c0/8fbdf9d56f47aea0794ab87b0eb9833baf80b01a7c5c1b0edc7faf25f662fb69ab18dc2199e2afcac54670ff0cd9607a9045a3f7a80336cccd18d77a55b9fdf0
   languageName: node
   linkType: hard
 
@@ -17125,6 +17222,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"merkletreejs@npm:^0.3.11":
+  version: 0.3.11
+  resolution: "merkletreejs@npm:0.3.11"
+  dependencies:
+    bignumber.js: "npm:^9.0.1"
+    buffer-reverse: "npm:^1.0.1"
+    crypto-js: "npm:^4.2.0"
+    treeify: "npm:^1.1.0"
+    web3-utils: "npm:^1.3.4"
+  checksum: 10c0/0863dd30ff992c49ae3026d67b6c917e46a1748d0bd574e3cc76cbdfc5f15dc3839be67edd0037f867531fceb7b8f3957854dad3700c82001cab1bff7dac17f0
+  languageName: node
+  linkType: hard
+
 "micro-ftch@npm:^0.3.1":
   version: 0.3.1
   resolution: "micro-ftch@npm:0.3.1"
@@ -18514,12 +18624,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"permissionless@npm:^0.0.36":
-  version: 0.0.36
-  resolution: "permissionless@npm:0.0.36"
+"permissionless@npm:^0.1.31":
+  version: 0.1.34
+  resolution: "permissionless@npm:0.1.34"
   peerDependencies:
-    viem: ^2.0.0
-  checksum: 10c0/047fbc18f4d14b4fe89ae6fd3396b565f793b8caa1c00b3e1a58775677c9a0ccd3d480020f6163b373c75064da61e9b0668fbaf701ff9b3a3ba0d4e2a5e17904
+    viem: ^2.14.1
+  checksum: 10c0/ef8323a8cba5e7270d64e5b38f0beda87eb7888de10e2b0ddb09a87a24dd093fb91197b3b6500eb3d93acac6b3a3fc297683501b62fab8d7519214056a782034
   languageName: node
   linkType: hard
 
@@ -20093,7 +20203,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
+"semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
   version: 7.6.2
   resolution: "semver@npm:7.6.2"
   bin:
@@ -20354,6 +20464,7 @@ __metadata:
     "@typescript-eslint/types": "npm:^5.54.1"
     "@typescript-eslint/utils": "npm:^5.54.1"
     "@wagmi/cli": "npm:2.1.4"
+    "@zerodev/wallet": "npm:^0.1.1"
     abitype: "npm:^0.10.3"
     autoprefixer: "npm:^10.4.16"
     babel-jest: "npm:^29.7.0"
@@ -20393,7 +20504,7 @@ __metadata:
     next: "npm:13.5.6"
     next-pwa: "npm:5.6.0"
     perfume.js: "npm:9.2.0"
-    permissionless: "npm:^0.0.36"
+    permissionless: "npm:^0.1.31"
     pino-pretty: "npm:^10.3.1"
     postcss: "npm:^8.4.32"
     prettier: "npm:3.0.3"
@@ -20421,7 +20532,7 @@ __metadata:
     ts-jest: "npm:^29.1.1"
     typescript: "npm:~5.3.3"
     unified: "npm:^11.0.4"
-    viem: "npm:2.x"
+    viem: "npm:2.13.1"
     wagmi: "npm:2.9.2"
     workbox-webpack-plugin: "npm:^7.0.0"
   languageName: unknown
@@ -21435,6 +21546,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"treeify@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "treeify@npm:1.1.0"
+  checksum: 10c0/2f0dea9e89328b8a42296a3963d341ab19897a05b723d6b0bced6b28701a340d2a7b03241aef807844198e46009aaf3755139274eb082cfce6fdc1935cbd69dd
+  languageName: node
+  linkType: hard
+
 "trim-lines@npm:^3.0.0":
   version: 3.0.1
   resolution: "trim-lines@npm:3.0.1"
@@ -22245,7 +22363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.*, viem@npm:2.x":
+"viem@npm:2.*":
   version: 2.13.7
   resolution: "viem@npm:2.13.7"
   dependencies:
@@ -22263,6 +22381,27 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/b287a93153a12faf918f1d833dba6397b25788fb7f6035a7606fffbb4b6b37c9198df4ddfbc1b2d006b3b6b1d8bcaf19370b7922d404b15c39faf101eafbcbc2
+  languageName: node
+  linkType: hard
+
+"viem@npm:2.13.1":
+  version: 2.13.1
+  resolution: "viem@npm:2.13.1"
+  dependencies:
+    "@adraffy/ens-normalize": "npm:1.10.0"
+    "@noble/curves": "npm:1.2.0"
+    "@noble/hashes": "npm:1.3.2"
+    "@scure/bip32": "npm:1.3.2"
+    "@scure/bip39": "npm:1.2.1"
+    abitype: "npm:1.0.0"
+    isows: "npm:1.0.4"
+    ws: "npm:8.13.0"
+  peerDependencies:
+    typescript: ">=5.0.4"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/215510e3e2a5c40df4b569adfb8c25694009bc09e43ef937cc53e89bcf83f898f0e115a9ebc5ffdf9715479c81d194599da05496008bbfbb327bdf75cac925d7
   languageName: node
   linkType: hard
 
@@ -22470,7 +22609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-utils@npm:1.10.4":
+"web3-utils@npm:1.10.4, web3-utils@npm:^1.3.4":
   version: 1.10.4
   resolution: "web3-utils@npm:1.10.4"
   dependencies:
