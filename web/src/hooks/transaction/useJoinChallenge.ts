@@ -28,7 +28,8 @@ const useJoinChallenge = (challengeId: bigint, approveAmt?: bigint, onSuccess?: 
   };
 
   return useSubmitTransaction(txConfig, {
-    onError: () => {
+    onError: (e) => {
+      if (e) console.log('Error while Joining Challenge:', e);
       toast.error('Error joining the challenge. Please try again');
     },
     onSuccess: () => {

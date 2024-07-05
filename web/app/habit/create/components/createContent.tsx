@@ -32,7 +32,7 @@ export default function Create() {
   }, []);
 
   // 3 steps: input, review, success
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(1);
 
   // generate a random char and number string, 6 chars
   const accessCode = useMemo(() => Math.random().toString(36).substring(2, 8).toUpperCase(), []);

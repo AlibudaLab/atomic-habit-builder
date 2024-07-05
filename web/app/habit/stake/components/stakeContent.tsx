@@ -50,8 +50,13 @@ export default function StakeChallenge() {
     token: testTokenContract.address,
     query: {
       enabled: !!smartWallet && !!challenge,
-      refetchInterval: (data: any) => (challenge && data.value && (Number(data.value.toString()) > Number(challenge.stake.toString())) ? false : 2000),
-    }
+      refetchInterval: (data: any) =>
+        challenge &&
+        data.value &&
+        Number(data.value.toString()) > Number(challenge.stake.toString())
+          ? 10000
+          : 2000,
+    },
   });
 
   const hasEnoughBalance =
