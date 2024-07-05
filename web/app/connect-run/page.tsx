@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-
 import * as stravaUtils from '@/utils/strava';
 import { useCallback } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';

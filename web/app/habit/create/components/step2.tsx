@@ -93,7 +93,6 @@ export default function CreateStep2({
         <Button
           onClick={() => connect({ connector: connectors[0] })}
           className="mt-2 min-h-12 w-full"
-          // color="primary"
         >
           Connect Wallet
         </Button>
