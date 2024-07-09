@@ -40,6 +40,15 @@ const useAllChallenges = (publicOnly: boolean) => {
           })),
         });
 
+        const participantsRes = (await publicClient.multicall({
+          contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
+            address: trackerContract.address,
+            abi: trackerContract.abi,
+            functionName: 'getChallengeParticipantsCount',
+            args: [i + 1],
+          })),
+        })) as { result: bigint }[];
+
         const newData: Challenge[] = result
           .map((raw, idx) => {
             const res = raw.result as any as [
@@ -49,10 +58,13 @@ const useAllChallenges = (publicOnly: boolean) => {
               number, // join due
               number, // end
               Address, // donation
+              Address, // check in judge
+              Address, // underlying
               bigint, // stake
               bigint, // total staked
               boolean,
             ];
+
             return {
               id: BigInt(idx + 1),
               verifier: res[0],
@@ -61,7 +73,8 @@ const useAllChallenges = (publicOnly: boolean) => {
               joinDueTimestamp: Number(res[3].toString()),
               endTimestamp: Number(res[4].toString()),
               donationDestination: res[5],
-              stake: res[6],
+              stake: res[8],
+              participants: Number(participantsRes[idx].result.toString()),
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))

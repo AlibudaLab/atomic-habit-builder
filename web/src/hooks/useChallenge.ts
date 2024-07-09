@@ -23,15 +23,29 @@ const useChallenge = (id: number) => {
       try {
         setLoading(true);
 
-        const res = await publicClient.readContract({
-          address: trackerContract.address,
-          abi: trackerContract.abi,
-          functionName: 'challenges',
-          args: [BigInt(id.toString())],
+        const [challengeRes, participantCount] = await publicClient.multicall({
+          contracts: [
+            {
+              address: trackerContract.address,
+              abi: trackerContract.abi,
+              functionName: 'challenges',
+              args: [BigInt(id.toString())],
+            },
+            {
+              address: trackerContract.address,
+              abi: trackerContract.abi,
+              functionName: 'getChallengeParticipantsCount',
+              args: [BigInt(id.toString())],
+            },
+          ],
         });
+
+        console.log('participantCount', participantCount);
 
         const metaData = challengesMetaDatas.find((c) => c.id.toString() === id.toString());
         if (!metaData) return;
+        const res = challengeRes.result;
+        if (!res || participantCount.error) return;
 
         const data = {
           verifier: res[0],
@@ -40,7 +54,8 @@ const useChallenge = (id: number) => {
           joinDueTimestamp: Number(res[3].toString()),
           endTimestamp: Number(res[4].toString()),
           donationDestination: res[5],
-          stake: res[6],
+          participants: Number(participantCount.result.toString()),
+          stake: res[8],
           ...metaData,
         };
 

@@ -42,7 +42,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         <li>
           Total Check in: {checkedIn} / {challenge.targetNum}
         </li>
-        <li> Remaining days: {remainingDays} </li>
+        <li> Remaining: {remainingDays} days </li>
       </ul>
 
       {/* share */}

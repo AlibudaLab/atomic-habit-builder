@@ -25,11 +25,8 @@ import { Button } from '@nextui-org/button';
 
 const initFields: CheckInFields = {
   challengeId: 0,
-  timestamp: 0,
-  v: 0,
-  r: '',
-  s: '',
-  activityId: -1,
+  signature: '0x',
+  activityId: 0,
 };
 
 /**
@@ -45,6 +42,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
+  const [isSigning, setIsSigning] = useState(false);
 
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
@@ -71,7 +69,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const {
     onSubmitTransaction: onCheckInTx,
-    isPreparing: isCheckInPreparing,
+    // isPreparing: isCheckInPreparing,
     isLoading: isCheckInLoading,
   } = useCheckInRun(fields, () => {
     if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
@@ -89,7 +87,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const handleActivitySelect = (activityId: number) => {
     resetFields();
-    const now = moment().unix();
 
     if (!address) return;
 
@@ -99,12 +96,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           new URLSearchParams({
             address: address as string,
             activityId: activityId.toString(),
-            timestamp: now.toString(),
             challengeId: challenge.id.toString(),
           }).toString()
         : '';
 
-    const fetchSignature = async (): Promise<{ v: number; r: string; s: string }> => {
+    const fetchSignature = async (): Promise<{ signature: `0x${string}` }> => {
       const response = await fetch(fetchURL, {
         method: 'GET',
         headers: {
@@ -114,25 +110,26 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       const data = await response.json();
       return data;
     };
+    setIsSigning(true);
 
     fetchSignature()
-      .then((_signature) => {
+      .then((res) => {
         setField({
-          v: _signature.v,
-          r: _signature.r,
-          s: _signature.s,
+          signature: res.signature,
           challengeId: challenge.id,
           activityId: activityId,
-          timestamp: now,
         });
       })
       .catch((error) => {
         console.error('Error fetching the signature:', error);
+      })
+      .finally(() => {
+        setIsSigning(false);
       });
   };
 
   const onClickCheckIn = async () => {
-    if (fields.activityId === -1) {
+    if (fields.activityId === 0) {
       toast.error('Please select an activity');
       return;
     }
@@ -234,8 +231,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           color="primary"
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={onClickCheckIn}
-          isDisabled={isCheckInLoading || isCheckInPreparing || fields.activityId === -1}
-          isLoading={isCheckInLoading || isCheckInPreparing}
+          isDisabled={isCheckInLoading || isSigning || fields.activityId === 0}
+          isLoading={isCheckInLoading || isSigning}
         >
           Check In
         </Button>
