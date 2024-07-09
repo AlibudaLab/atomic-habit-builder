@@ -40,14 +40,14 @@ const useAllChallenges = (publicOnly: boolean) => {
           })),
         });
 
-        const participantsRes = await publicClient.multicall({
+        const participantsRes = (await publicClient.multicall({
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
             address: trackerContract.address,
             abi: trackerContract.abi,
             functionName: 'getChallengeParticipantsCount',
             args: [i + 1],
           })),
-        }) as { result: bigint }[];
+        })) as { result: bigint }[];
 
         const newData: Challenge[] = result
           .map((raw, idx) => {

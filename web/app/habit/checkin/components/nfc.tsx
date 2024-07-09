@@ -55,7 +55,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         args: [
           BigInt(challenge.id),
           zeroAddress, // todo: use a value that can distinguish checkins
-          (signature.raw.v + signature.raw.r + signature.raw.s) as `0x${string}`, // todo: make sure this works
+          (signature.raw.v.toString() + signature.raw.r + signature.raw.s) as `0x${string}`, // todo: make sure this works
         ],
       });
     } catch (err) {

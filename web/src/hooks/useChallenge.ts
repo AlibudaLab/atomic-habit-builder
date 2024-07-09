@@ -30,19 +30,21 @@ const useChallenge = (id: number) => {
               abi: trackerContract.abi,
               functionName: 'challenges',
               args: [BigInt(id.toString())],
-            }, {
+            },
+            {
               address: trackerContract.address,
               abi: trackerContract.abi,
               functionName: 'getChallengeParticipantsCount',
               args: [BigInt(id.toString())],
-            }
-          ]});
+            },
+          ],
+        });
 
-        console.log('participantCount', participantCount)
+        console.log('participantCount', participantCount);
 
         const metaData = challengesMetaDatas.find((c) => c.id.toString() === id.toString());
         if (!metaData) return;
-        const res = challengeRes.result
+        const res = challengeRes.result;
         if (!res || participantCount.error) return;
 
         const data = {
