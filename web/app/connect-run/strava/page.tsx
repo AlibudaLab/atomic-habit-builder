@@ -9,15 +9,8 @@ import { useEffect, useState } from 'react';
 
 import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 import { useRouter } from 'next/navigation';
-=======
-import { useRouter } from 'next/router';
->>>>>>> fc00e78 (feat: zerodev passkey wallet (#65))
-=======
-import { useRouter } from 'next/navigation';
->>>>>>> 03e5498 (fix: review comment + callback (#68))
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
 
@@ -65,15 +58,7 @@ export default function CallbackStrava() {
         toast('Successfully connected with Strava', { icon: '🚀' });
 
         // Redirect to the original page
-<<<<<<< HEAD
-<<<<<<< HEAD
         if (originalUri) router.push(originalUri);
-=======
-        if (originalUri) router.push(originalUri).catch((e) => console.log(e));
->>>>>>> fc00e78 (feat: zerodev passkey wallet (#65))
-=======
-        if (originalUri) router.push(originalUri);
->>>>>>> 03e5498 (fix: review comment + callback (#68))
       } finally {
         setIsPending(false); // Always set loading state to false after the operation
       }

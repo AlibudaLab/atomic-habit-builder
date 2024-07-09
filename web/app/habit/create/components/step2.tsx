@@ -93,13 +93,6 @@ export default function CreateStep2({
         <Button
           onClick={() => connect({ connector: connectors[0] })}
           className="mt-2 min-h-12 w-full"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-          // color="primary"
->>>>>>> fc00e78 (feat: zerodev passkey wallet (#65))
-=======
->>>>>>> 03e5498 (fix: review comment + callback (#68))
         >
           Connect Wallet
         </Button>
