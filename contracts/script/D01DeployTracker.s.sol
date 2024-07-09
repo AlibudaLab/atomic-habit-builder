@@ -20,55 +20,31 @@ contract Deploy is Script {
     function preDeploy() public {}
 
     function deploy() public {
-        address _stakingAsset = vm.envAddress("TESTNET_TOKEN");
+        address underlying = vm.envAddress("TESTNET_TOKEN");
         Tracker tracker = new Tracker("Alibuda Habit Builder", "1.0");
         tracker.register(
-            address(0x883167E6b5d489B82cB97bEf9C7967afe3A3D299),
-            "NFC Challenge 1",
-            10,
-            uint64(block.timestamp),
-            uint64(block.timestamp + 1 days),
-            uint64(block.timestamp + 10 days),
+            official_verifier,
+            "ETHCC Running Challenge",
+            3,
+            1720418400, // July 8
+            1720828800, // July 13 0:00
+            1720828800, // July 13 0:00
             official_verifier,
             address(0),
-             _stakingAsset,
-            100 * 1e6
-        );
-        tracker.register(
-            address(0xcAb2459DE5C9109B82c3fAc92B5c80209FA53C07),
-            "NFC Challenge 2",
-            5,
-            uint64(block.timestamp + 1 days),
-            uint64(block.timestamp + 2 days),
-            uint64(block.timestamp + 60 days),
-            official_verifier,
-            address(0),
-             _stakingAsset,
+            underlying,
             50 * 1e6
-        );
-        tracker.register(
-            official_verifier,
-            "Running Challenge June",
-            10,
-            1717171200, // June 1
-            1719676800, // June 30
-            1719676800, // June 30
-            official_verifier,
-            address(0),
-             _stakingAsset,
-            25 * 1e6
         );
 
         tracker.register(
             official_verifier,
-            "Workout Challenge June",
+            "Workout Challenge",
             12,
-            1717171200, // June 1
-            1719676800, // June 30
-            1719676800, // June 30
+            1720396800, // 7/8
+            1723075200, // 8/8
+            1723075200, // 8/8
             official_verifier,
             address(0),
-             _stakingAsset,
+            underlying,
             50 * 1e6
         );
 
@@ -81,21 +57,8 @@ contract Deploy is Script {
             1722355200, // July 31
             official_verifier,
             address(0),
-             _stakingAsset,
+            underlying,
             25 * 1e6
-        );
-
-        tracker.register(
-            official_verifier,
-            "Workout Challenge July",
-            12,
-            1719763200, // July 1
-            1722355200, // July 31
-            1722355200, // July 31
-            official_verifier,
-            address(0),
-             _stakingAsset,
-            50 * 1e6
         );
     }
 

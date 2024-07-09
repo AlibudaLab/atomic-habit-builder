@@ -2,7 +2,7 @@ import toast from 'react-hot-toast';
 
 import * as trackerContract from '@/contracts/tracker';
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
-import { Address, DecodeEventLogReturnType } from 'viem';
+import { Address, DecodeEventLogReturnType, zeroAddress } from 'viem';
 
 const useCreateChallenge = (
   verifier: Address,
@@ -12,6 +12,7 @@ const useCreateChallenge = (
   joinDueTimestamp: number,
   endTimestamp: number,
   donateDestination: Address,
+  underlying: Address,
   stake: bigint,
   onSuccess?: (receipt: any, events: DecodeEventLogReturnType[]) => void,
 ) => {
@@ -28,6 +29,8 @@ const useCreateChallenge = (
         joinDueTimestamp,
         endTimestamp,
         donateDestination,
+        zeroAddress, // checkin-Judge
+        underlying,
         stake,
       ],
     },

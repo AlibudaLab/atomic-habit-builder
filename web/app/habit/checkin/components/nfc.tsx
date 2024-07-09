@@ -13,7 +13,7 @@ import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
-import { formatUnits } from 'viem';
+import { formatUnits, toBytes, zeroAddress } from 'viem';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
@@ -54,10 +54,8 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         functionName: 'checkIn',
         args: [
           BigInt(challenge.id),
-          BigInt(timestamp),
-          signature.raw.v,
-          ('0x' + signature.raw.r) as `0x${string}`,
-          ('0x' + signature.raw.s) as `0x${string}`,
+          zeroAddress, // todo: use a value that can distinguish checkins
+          (signature.raw.v + signature.raw.r + signature.raw.s) as `0x${string}`, // todo: make sure this works
         ],
       });
     } catch (err) {

@@ -40,7 +40,7 @@ const useChallenge = (id: number) => {
           joinDueTimestamp: Number(res[3].toString()),
           endTimestamp: Number(res[4].toString()),
           donationDestination: res[5],
-          stake: res[6],
+          stake: res[8],
           ...metaData,
         };
 

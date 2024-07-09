@@ -49,10 +49,13 @@ const useAllChallenges = (publicOnly: boolean) => {
               number, // join due
               number, // end
               Address, // donation
+              Address, // check in judge
+              Address, // underlying
               bigint, // stake
               bigint, // total staked
               boolean,
             ];
+            console.log('raw.result', raw.result);
             return {
               id: BigInt(idx + 1),
               verifier: res[0],
@@ -61,7 +64,7 @@ const useAllChallenges = (publicOnly: boolean) => {
               joinDueTimestamp: Number(res[3].toString()),
               endTimestamp: Number(res[4].toString()),
               donationDestination: res[5],
-              stake: res[6],
+              stake: res[8],
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))

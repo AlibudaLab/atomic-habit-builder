@@ -219,7 +219,7 @@ contract Tracker is EIP712 {
                     keccak256("checkInSigningMessage(uint256 challengeId,address user,bytes checkInData)"),
                     challengeId,
                     user,
-                    checkInData
+                    keccak256(checkInData)
                 )
             )
         );

@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { privateKeyToAccount } from 'viem/accounts';
 import { secp256k1 } from '@noble/curves/secp256k1';
-import { domainSeparator, hashTypedData, hexToNumber } from 'viem';
+import {
+  domainSeparator,
+  getTypesForEIP712Domain,
+  hashTypedData,
+  hexToNumber,
+  numberToHex,
+} from 'viem';
 
 import { baseSepolia } from 'viem/chains';
 import { address as trackerAddr } from '@/contracts/tracker';
@@ -16,8 +22,8 @@ const domain = {
 const types = {
   checkInSigningMessage: [
     { name: 'challengeId', type: 'uint256' },
-    { name: 'timestamp', type: 'uint256' },
     { name: 'user', type: 'address' },
+    { name: 'checkInData', type: 'bytes' },
   ],
 };
 
@@ -29,7 +35,6 @@ export async function GET(req: NextRequest): Promise<Response> {
   // Your code to handle authentication to Strava goes here
   const address = req.nextUrl.searchParams.get('address');
   const activityId = req.nextUrl.searchParams.get('activityId');
-  const timestamp = req.nextUrl.searchParams.get('timestamp');
   const challengeId = req.nextUrl.searchParams.get('challengeId');
   try {
     if (!address) {
@@ -38,14 +43,12 @@ export async function GET(req: NextRequest): Promise<Response> {
     if (!activityId) {
       return NextResponse.json({ error: 'activityId is required' }, { status: 400 });
     }
-    if (!timestamp) {
-      return NextResponse.json({ error: 'timestamp is required' }, { status: 400 });
-    }
+
     if (!challengeId) {
       return NextResponse.json({ error: 'challengeId is required' }, { status: 400 });
     }
 
-    console.log('Signing:', { address, activityId, timestamp, challengeId });
+    console.log('Signing:', { address, activityId, challengeId, });
 
     const verifier = privateKeyToAccount(`0x${process.env.FAUCET_PRIVATE_KEY}`);
 
@@ -55,16 +58,12 @@ export async function GET(req: NextRequest): Promise<Response> {
       primaryType: 'checkInSigningMessage',
       message: {
         challengeId: challengeId,
-        timestamp: timestamp,
         user: address,
+        checkInData: numberToHex(Number(activityId)).padEnd(32, '0'),
       },
     });
 
-    // todo: change contract to accept bytes directly
-    const { r, s } = secp256k1.Signature.fromCompact(sig.slice(2, 130));
-    const v = hexToNumber(`0x${sig.slice(130)}`);
-
-    return NextResponse.json({ v, r: r.toString(16), s: s.toString(16) }, { status: 200 });
+    return NextResponse.json({ signature: sig }, { status: 200 });
   } catch (error) {
     console.error('Error Signing:', error);
     return NextResponse.json({}, { status: 500, statusText: 'Internal Server Error' });
