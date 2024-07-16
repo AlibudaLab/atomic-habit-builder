@@ -30,10 +30,6 @@ const useCheckInRun = (fields: CheckInFields, onSuccess?: () => void) => {
     {
       onError: () => {
         toast.error('Error checking in.');
-        console.log(
-          'numberToHex(fields.activityId).padEnd(32)',
-          numberToHex(fields.activityId).padEnd(32),
-        );
       },
       onSuccess: () => {
         toast.dismiss();
