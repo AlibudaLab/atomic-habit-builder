@@ -66,7 +66,7 @@ export async function GET(
         },
         { status: 200 },
       );
-    } else if (activityTypeKey === 'cycling') { 
+    } else if (activityTypeKey === 'cycling') {
       return NextResponse.json(
         {
           activities: activities.map((activity: any) => {
@@ -79,9 +79,8 @@ export async function GET(
             };
           }),
         },
-        { status: 200
-        }
-      )
+        { status: 200 },
+      );
     } else {
       return NextResponse.json({ error: 'Invalid activity type' }, { status: 400 });
     }

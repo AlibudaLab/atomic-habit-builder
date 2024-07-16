@@ -61,7 +61,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
       <Divider className="mx-8 my-4" />
 
       <Snippet
-        className="rounded-xl p-2 px-4 mb-12"
+        className="mb-12 rounded-xl p-2 px-4"
         size="sm"
         hideSymbol
         color="default"

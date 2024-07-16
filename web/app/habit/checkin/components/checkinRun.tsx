@@ -38,12 +38,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { connect, connectors, isPending: connecting } = useConnect();
   const { address } = useAccount();
   const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
-  const [ chosenActivityId, setChosenActivityId ] = useState<number>(0);
+  const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
   const [isSigning, setIsSigning] = useState(false);
-  
+
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
     [challenge.startTimestamp],
@@ -89,12 +89,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   useEffect(() => {
     if (!address || chosenActivityId === 0) return;
 
-    const fetchURL = '/api/sign?' +
-          new URLSearchParams({
-            address: address as string,
-            activityId: chosenActivityId.toString(),
-            challengeId: challenge.id.toString(),
-          }).toString()
+    const fetchURL =
+      '/api/sign?' +
+      new URLSearchParams({
+        address: address as string,
+        activityId: chosenActivityId.toString(),
+        challengeId: challenge.id.toString(),
+      }).toString();
 
     const fetchSignature = async (): Promise<{ signature: `0x${string}` }> => {
       const response = await fetch(fetchURL, {
@@ -124,7 +125,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       });
   }, [address, chosenActivityId]);
 
-
   const onClickCheckIn = async () => {
     if (fields.activityId === 0) {
       toast.error('Please select an activity');
@@ -150,9 +150,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     }
   }, [joined, loadingJoined, challenge.id, push]);
 
-  const activitiesToUse = challenge.type === ChallengeTypes.Run ? runData 
-    : challenge.type === ChallengeTypes.Cycling ? cyclingData 
-    : workoutData;
+  const activitiesToUse =
+    challenge.type === ChallengeTypes.Run
+      ? runData
+      : challenge.type === ChallengeTypes.Cycling
+      ? cyclingData
+      : workoutData;
 
   return (
     <div className="flex max-w-96 flex-col items-center justify-center">
