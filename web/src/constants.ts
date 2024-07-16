@@ -6,6 +6,7 @@ export const EXPECTED_CHAIN = baseSepolia;
 export enum ChallengeTypes {
   Run = 'Run',
   Workout = 'Workout',
+  Cycling = 'Cycling',
   NFC_Chip = 'NFC Chip',
 }
 
