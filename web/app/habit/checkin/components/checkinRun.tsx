@@ -1,7 +1,6 @@
 /* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -36,14 +35,15 @@ const initFields: CheckInFields = {
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
-  const { connect, connectors } = useConnect();
+  const { connect, connectors, isPending: connecting } = useConnect();
   const { address } = useAccount();
   const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
+  const [ chosenActivityId, setChosenActivityId ] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
   const [isSigning, setIsSigning] = useState(false);
-
+  
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
     [challenge.startTimestamp],
@@ -80,24 +80,21 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     connected: verifierConnected,
     runData,
     workoutData,
+    cyclingData,
     error: runDataError,
     loading: stravaLoading,
   } = useRunData(challenge);
 
-  const handleActivitySelect = (activityId: number) => {
-    resetFields();
+  // sign when address and activityId are ready (chosen)
+  useEffect(() => {
+    if (!address || chosenActivityId === 0) return;
 
-    if (!address) return;
-
-    const fetchURL =
-      activityId !== undefined
-        ? '/api/sign?' +
+    const fetchURL = '/api/sign?' +
           new URLSearchParams({
             address: address as string,
-            activityId: activityId.toString(),
+            activityId: chosenActivityId.toString(),
             challengeId: challenge.id.toString(),
           }).toString()
-        : '';
 
     const fetchSignature = async (): Promise<{ signature: `0x${string}` }> => {
       const response = await fetch(fetchURL, {
@@ -116,7 +113,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         setField({
           signature: res.signature,
           challengeId: challenge.id,
-          activityId: activityId,
+          activityId: chosenActivityId,
         });
       })
       .catch((error) => {
@@ -125,7 +122,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       .finally(() => {
         setIsSigning(false);
       });
-  };
+  }, [address, chosenActivityId]);
+
 
   const onClickCheckIn = async () => {
     if (fields.activityId === 0) {
@@ -151,6 +149,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       push(`/habit/stake/${challenge.id}`);
     }
   }, [joined, loadingJoined, challenge.id, push]);
+
+  const activitiesToUse = challenge.type === ChallengeTypes.Run ? runData 
+    : challenge.type === ChallengeTypes.Cycling ? cyclingData 
+    : workoutData;
 
   return (
     <div className="flex max-w-96 flex-col items-center justify-center">
@@ -181,10 +183,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {verifierConnected && canCheckInNow && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
+            isDisabled={!address}
             fields={fields}
-            onActivitySelect={handleActivitySelect}
+            onActivitySelect={setChosenActivityId}
             loading={stravaLoading}
-            activities={challenge.type === ChallengeTypes.Run ? runData : workoutData}
+            activities={activitiesToUse}
             usedActivities={activityMap[challenge.id]}
           />
         </div>
@@ -221,6 +224,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           color="primary"
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={() => connect({ connector: connectors[0] })}
+          isLoading={connecting}
         >
           Connect Wallet
         </Button>
@@ -230,7 +234,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           color="primary"
           className="mt-12 min-h-12 w-3/4 max-w-56"
           onClick={onClickCheckIn}
-          isDisabled={isCheckInLoading || isSigning || fields.activityId === 0}
+          isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
           isLoading={isCheckInLoading || isSigning}
         >
           Check In

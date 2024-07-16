@@ -22,7 +22,11 @@ export default function CheckIn() {
         <Loading />
       ) : challenge ? (
         <>
-          {(challenge.type === ChallengeTypes.Run || challenge.type === ChallengeTypes.Workout) && (
+          {(
+            challenge.type === ChallengeTypes.Run || 
+            challenge.type === ChallengeTypes.Workout ||
+            challenge.type === ChallengeTypes.Cycling
+          ) && (
             <RunCheckIn challenge={challenge} />
           )}
 

@@ -66,6 +66,22 @@ export async function GET(
         },
         { status: 200 },
       );
+    } else if (activityTypeKey === 'cycling') { 
+      return NextResponse.json(
+        {
+          activities: activities.map((activity: any) => {
+            return {
+              id: activity.id,
+              name: activity.name,
+              distance: activity.distance,
+              moving_time: activity.moving_time,
+              timestamp: activity.start_date,
+            };
+          }),
+        },
+        { status: 200
+        }
+      )
     } else {
       return NextResponse.json({ error: 'Invalid activity type' }, { status: 400 });
     }

@@ -15,6 +15,9 @@ const useRunData = (challenge: Challenge) => {
   // TODO: move this to a separate hook when we have more sources for workout data / run data
   const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
 
+  // TODO:
+  const [cyclingData, setCyclingData] = useState<stravaUtils.StravaCyclingData[]>([]);
+
   const [error, setError] = useState<unknown | null>(null);
 
   const connected = verifier !== RunVerifier.None;
@@ -76,7 +79,7 @@ const useRunData = (challenge: Challenge) => {
       const { accessToken } = stravaUtils.splitSecret(secret);
       console.log('using accessToken', accessToken);
       try {
-        const [newRunData, newWorkoutData] = await Promise.all([
+        const [newRunData, newWorkoutData, newCyclingData] = await Promise.all([
           stravaUtils.fetchActivities(
             accessToken,
             'run',
@@ -89,15 +92,22 @@ const useRunData = (challenge: Challenge) => {
             challenge.startTimestamp,
             challenge.endTimestamp,
           ) as Promise<stravaUtils.StravaWorkoutData[]>,
+          stravaUtils.fetchActivities(
+            accessToken,
+            'cycling',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ) as Promise<stravaUtils.StravaCyclingData[]>,
         ]);
 
-        if (!newRunData || !newWorkoutData) {
+        if (!newRunData || !newWorkoutData || !newCyclingData) {
           setError('No data found');
           return;
         }
 
         setRunData(newRunData);
         setWorkoutData(newWorkoutData);
+        setCyclingData(newCyclingData);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -116,7 +126,7 @@ const useRunData = (challenge: Challenge) => {
     challenge.endTimestamp,
   ]);
 
-  return { loading, runData, workoutData, error, connected };
+  return { loading, runData, workoutData, cyclingData, error, connected };
 };
 
 export default useRunData;

@@ -28,7 +28,7 @@ const useActivityUsage = (user: Address | undefined) => {
     };
 
     fetchChallenges().then(console.log).catch(console.error);
-  }, []);
+  }, [user]);
 
   const addToActivityMap = (challengeId: number, activityId: string) => {
     setActivityMap((prev) => {
