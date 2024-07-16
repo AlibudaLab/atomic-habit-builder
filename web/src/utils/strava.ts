@@ -16,6 +16,16 @@ export type StravaWorkoutData = {
   moving_time: number;
 };
 
+export type StravaCyclingData = {
+  id: number;
+  name: string;
+  timestamp: string;
+  distance: number;
+  moving_time: number;
+};
+
+export type StravaData = StravaRunData | StravaWorkoutData | StravaCyclingData;
+
 export function getAuthURL(redirectURL: string, original_path?: string | null) {
   const stravaAuthUrl = 'https://www.strava.com/oauth/authorize';
   const clientId = process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID;

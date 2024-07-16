@@ -22,9 +22,9 @@ export default function CheckIn() {
         <Loading />
       ) : challenge ? (
         <>
-          {(challenge.type === ChallengeTypes.Run || challenge.type === ChallengeTypes.Workout) && (
-            <RunCheckIn challenge={challenge} />
-          )}
+          {(challenge.type === ChallengeTypes.Run ||
+            challenge.type === ChallengeTypes.Workout ||
+            challenge.type === ChallengeTypes.Cycling) && <RunCheckIn challenge={challenge} />}
 
           {challenge.type === ChallengeTypes.NFC_Chip && <NFCCheckIn challenge={challenge} />}
         </>

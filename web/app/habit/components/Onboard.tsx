@@ -4,7 +4,7 @@ import { Button } from '@nextui-org/button';
 import { useConnect } from 'wagmi';
 
 export default function Onboard() {
-  const { connectors, connect } = useConnect();
+  const { connectors, connect, isPending } = useConnect();
   const connector = connectors[0];
 
   return (
@@ -15,6 +15,7 @@ export default function Onboard() {
         type="button"
         className="mt-4 p-6"
         color="primary"
+        isLoading={isPending}
         onClick={() => connect({ connector })}
       >
         Login with Passkey
