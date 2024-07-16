@@ -67,15 +67,14 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     push('/');
   };
 
-  const {
-    onSubmitTransaction: onCheckInTx,
-    // isPreparing: isCheckInPreparing,
-    isLoading: isCheckInLoading,
-  } = useCheckInRun(fields, () => {
-    if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
-    handleOpenCheckinPopup();
-    resetFields();
-  });
+  const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
+    fields,
+    () => {
+      if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
+      handleOpenCheckinPopup();
+      resetFields();
+    },
+  );
 
   const {
     connected: verifierConnected,

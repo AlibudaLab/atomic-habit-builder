@@ -40,8 +40,6 @@ const useChallenge = (id: number) => {
           ],
         });
 
-        console.log('participantCount', participantCount);
-
         const metaData = challengesMetaDatas.find((c) => c.id.toString() === id.toString());
         if (!metaData) return;
         const res = challengeRes.result;

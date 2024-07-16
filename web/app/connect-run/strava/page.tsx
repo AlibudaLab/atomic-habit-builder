@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 
 import * as stravaUtils from '@/utils/strava';
 import toast from 'react-hot-toast';
-
 import { useRouter } from 'next/navigation';
 
 const StravaImg = require('@/imgs/apps/strava.png') as string;
