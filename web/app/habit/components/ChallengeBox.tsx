@@ -20,7 +20,7 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
             {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
           </p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
-          <p className="text-sm"> 5 joined </p>
+          <p className="text-sm"> {challenge.participants} joined </p>
         </div>
         <div className="ml-auto p-2 text-sm font-bold">{challenge.targetNum} times</div>
       </div>
@@ -46,7 +46,7 @@ export function ChallengeBoxFilled({
             {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
           </p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
-          <p className="text-sm"> 5 joined </p>
+          <p className="text-sm"> {challenge.participants} joined </p>
         </div>
         {
           // if checkedIn is defined, show the checkedIn number, otherwise show the target number

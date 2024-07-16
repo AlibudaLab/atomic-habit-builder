@@ -21,6 +21,7 @@ export type ChallengeDetail = {
   stake: bigint;
   targetNum: number;
   donationDestination: Address;
+  participants: number;
 };
 
 // Defined by us, off-chain
