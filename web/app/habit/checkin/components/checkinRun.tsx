@@ -21,6 +21,8 @@ import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserJoined from '@/hooks/useUserJoined';
 import { Button } from '@nextui-org/button';
+import { Snippet } from '@nextui-org/snippet';
+import InviteLink from 'app/habit/components/InviteLink';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -180,6 +182,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
         </div>
       </div>
+
+      { (!challenge.public && challenge.accessCode) && <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="pb-2 text-xl font-bold text-dark"> Invite Others  </div>
+        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} showCode={false}/>
+      </div>}
 
       {/* middle section: if timestamp is not valid, show warning message */}
 

@@ -38,7 +38,7 @@ export function ChallengeBoxFilled({
   const isPast = challenge.endTimestamp < moment().unix();
 
   return (
-    <div className={`wrapped-filled m-2 w-full p-2 ${isPast && 'opacity-50'}`}>
+    <div className={`wrapped-filled m-2 p-2 ${isPast && 'opacity-50'}`}>
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
@@ -51,7 +51,7 @@ export function ChallengeBoxFilled({
         {
           // if checkedIn is defined, show the checkedIn number, otherwise show the target number
           checkedIn !== undefined ? (
-            <div className="ml-auto p-2 text-lg">
+            <div className="ml-auto p-2 text-lg min-w-[64px] ">
               {checkedIn} / {challenge.targetNum}
             </div>
           ) : (
