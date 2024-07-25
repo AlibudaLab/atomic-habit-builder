@@ -10,8 +10,13 @@ const useChallengeMetaDatas = () => {
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        const response = await fetch('/api/challenge-metadata');
+        const response = await fetch('/api/challenge-metadata', {
+          next: {
+            tags: ['fetch'],
+          }
+        });
         const data = await response.json();
+        console.log('data', data)
         setChallengeMetaDatas(data as ChallengeMetaData[]);
       } catch (err: any) {
         setError(err);
