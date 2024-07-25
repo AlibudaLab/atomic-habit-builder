@@ -16,7 +16,6 @@ const useChallengeMetaDatas = () => {
           }
         });
         const data = await response.json();
-        console.log('data', data)
         setChallengeMetaDatas(data as ChallengeMetaData[]);
       } catch (err: any) {
         setError(err);

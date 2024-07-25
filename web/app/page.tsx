@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { NextUIProvider } from '@nextui-org/system';
 import HomePage from './home/HomePage';
 
 export const metadata: Metadata = {
@@ -23,8 +22,6 @@ export const metadata: Metadata = {
  */
 export default function Page() {
   return (
-    <NextUIProvider>
       <HomePage />
-    </NextUIProvider>
   );
 }

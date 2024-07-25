@@ -206,7 +206,7 @@ export default function StakeChallenge() {
             onClick={handleCheckInPageClick}
             aria-description="You already joined the challenge"
           >
-            Check In
+            Next
           </Button>
         )}
 

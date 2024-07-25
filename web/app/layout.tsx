@@ -4,6 +4,7 @@ import './global.css';
 
 import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
 import OnchainProviders from '@/OnchainProviders';
+import { NextUIProvider } from '@nextui-org/system';
 import { initAnalytics } from '@/utils/analytics';
 import { roboto, londrina } from './fonts';
 import NavbarFooter from './habit/components/NavbarFooter';
@@ -21,11 +22,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${roboto.className} ${londrina.variable} ${roboto.variable}`}>
       <body className="flex flex-1 flex-col items-center pb-[100px]">
         <OnchainProviders>
-          <div className="container mx-auto flex max-w-[500px] flex-col items-center bg-white pt-16">
-            <Header />
-            {children}
-            <NavbarFooter />
-          </div>
+          <NextUIProvider>
+            <div className="container mx-auto flex max-w-[500px] flex-col items-center bg-white pt-16">
+              <Header />
+              {children}
+              <NavbarFooter />
+            </div>
+          </NextUIProvider>
         </OnchainProviders>
       </body>
       <GoogleAnalytics />

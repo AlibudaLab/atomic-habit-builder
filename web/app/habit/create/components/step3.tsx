@@ -9,6 +9,7 @@ import useSocialShare from '@/hooks/useSocialShare';
 import { BsTwitterX } from 'react-icons/bs';
 import Image from 'next/image';
 import { Divider } from '@nextui-org/divider';
+import InviteLink from 'app/habit/components/InviteLink';
 
 import farcasterLogo from '@/imgs/socials/farcaster.png';
 import { useRouter } from 'next/navigation';
@@ -60,15 +61,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
       </div>
       <Divider className="mx-8 my-4" />
 
-      <Snippet
-        className="mb-12 rounded-xl p-2 px-4"
-        size="sm"
-        hideSymbol
-        color="default"
-        codeString={link}
-      >
-        <span> Copy Invite Link </span>
-      </Snippet>
+      <InviteLink accessCode={accessCode} challengeId={challengeId} />
 
       <Button
         className="min-h-12 w-full"
