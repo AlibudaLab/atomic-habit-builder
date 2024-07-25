@@ -21,7 +21,6 @@ import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserJoined from '@/hooks/useUserJoined';
 import { Button } from '@nextui-org/button';
-import { Snippet } from '@nextui-org/snippet';
 import InviteLink from 'app/habit/components/InviteLink';
 
 const initFields: CheckInFields = {
