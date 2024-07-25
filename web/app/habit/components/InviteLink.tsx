@@ -6,11 +6,10 @@ import { Snippet } from '@nextui-org/snippet';
 
 type InviteLinkProps = {
   accessCode: string;
-  showCode: boolean;
   challengeId: number;
 };
 
-export default function InviteLink({ accessCode, challengeId, showCode }: InviteLinkProps) {
+export default function InviteLink({ accessCode, challengeId }: InviteLinkProps) {
   const [origin, setOrigin] = useState('');
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -27,7 +26,7 @@ export default function InviteLink({ accessCode, challengeId, showCode }: Invite
       color="default"
       codeString={link}
     >
-      <span> {showCode ? accessCode : 'Copy Invite Link'} </span>
+      <span> Copy Invite Link </span>
     </Snippet>
   );
 }

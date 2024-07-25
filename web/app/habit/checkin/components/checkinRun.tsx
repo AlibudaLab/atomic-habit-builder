@@ -184,7 +184,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       { (!challenge.public && challenge.accessCode) && <div className="w-full justify-start p-6 py-2 text-start">
         <div className="pb-2 text-xl font-bold text-dark"> Invite Others  </div>
-        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} showCode={false}/>
+        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id}/>
       </div>}
 
       {/* middle section: if timestamp is not valid, show warning message */}
