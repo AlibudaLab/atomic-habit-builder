@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react';
 import { IoIosHome, IoIosAddCircle, IoMdTrophy } from 'react-icons/io';
 import { FaList } from 'react-icons/fa';
