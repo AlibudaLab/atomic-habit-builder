@@ -40,7 +40,6 @@ export function ActivityDropDown({
           return (
             <SelectItem
               key={activity.id.toString()}
-              // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
               onClick={() => {
                 onActivitySelect(activity.id);
               }}

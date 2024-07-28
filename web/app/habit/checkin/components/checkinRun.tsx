@@ -1,4 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -124,7 +123,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       .finally(() => {
         setIsSigning(false);
       });
-  }, [address, chosenActivityId]);
+  }, [address, chosenActivityId, challenge.id, setField]);
 
   const onClickCheckIn = async () => {
     if (fields.activityId === 0) {
@@ -159,9 +158,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       : workoutData;
 
   return (
-    <div className="flex max-w-96 flex-col items-center justify-center">
+    <div className="flex w-full max-w-96 flex-col items-center justify-center">
       {/* overview   */}
-      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
+      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} fullWidth />
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
@@ -182,10 +181,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       </div>
 
-      { (!challenge.public && challenge.accessCode) && <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="pb-2 text-xl font-bold text-dark"> Invite Others  </div>
-        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id}/>
-      </div>}
+      {!challenge.public && challenge.accessCode && (
+        <div className="w-full justify-start p-6 py-2 text-start">
+          <div className="pb-2 text-xl font-bold text-dark"> Invite Others </div>
+          <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
+        </div>
+      )}
 
       {/* middle section: if timestamp is not valid, show warning message */}
 

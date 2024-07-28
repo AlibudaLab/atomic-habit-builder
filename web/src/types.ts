@@ -38,6 +38,7 @@ export type Challenge = ChallengeDetail & ChallengeMetaData;
 
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
+  claimable: bigint;
 };
 
 export type DonationDest = {
