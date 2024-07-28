@@ -64,7 +64,7 @@ export default function CallbackStrava() {
     };
 
     updateAccessTokenAndRefreshToken().catch(console.log);
-  }, [stravaAuthToken, updateVerifierAndSecret, originalUri]);
+  }, [stravaAuthToken, updateVerifierAndSecret, originalUri, router]);
 
   return (
     <main className="flex flex-col items-center">

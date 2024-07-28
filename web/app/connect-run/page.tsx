@@ -20,7 +20,7 @@ export default function ConnectRunDataSource() {
     const redirectUri = ((window as any).origin as string) + pathName + '/strava';
     const authUrl = stravaUtils.getAuthURL(redirectUri, originalPath);
     (window as any).location = authUrl as any;
-  }, [originalPath]);
+  }, [originalPath, pathName]);
 
   return (
     <>

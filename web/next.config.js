@@ -2,18 +2,7 @@
  * @type {import('next').NextConfig}
  */
 
-/**
- * For workbox configurations:
- * https://developer.chrome.com/docs/workbox/reference/workbox-webpack-plugin/
- */
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-});
-
-const nextConfig = withPWA({
+const nextConfig = {
   reactStrictMode: false,
   swcMinify: true, // Enable SWC minification for improved performance
   images: {
@@ -24,6 +13,6 @@ const nextConfig = withPWA({
       },
     ],
   },
-});
+};
 
 module.exports = nextConfig;

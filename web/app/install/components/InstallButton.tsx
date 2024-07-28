@@ -16,7 +16,6 @@ function InstallPWA() {
     return () => window.removeEventListener('transitionend', handler);
   }, []);
 
-  // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
   const onClick = (evt: any) => {
     evt.preventDefault();
     if (!promptInstall) {
@@ -26,7 +25,7 @@ function InstallPWA() {
   };
   if (!supportsPWA) {
     return (
-      <div className="flex items-center text-base text-dark">
+      <div className="flex flex-col items-center text-base text-dark">
         Click{' '}
         <span className="flex gap-1 p-2 font-bold">
           {' '}

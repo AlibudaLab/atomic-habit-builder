@@ -47,10 +47,24 @@ const useUserChallenges = (address: string | undefined) => {
           }),
         );
 
-        console.log('checkedIns', checkedIns);
+        const claimables = await Promise.all(
+          knownChallenges.map(async (c) => {
+            const stake = (await readContract(config, {
+              abi: trackerContract.abi,
+              address: trackerContract.address,
+              functionName: 'getClaimableAmount',
+              args: [BigInt(c.id), address as `0x${string}`],
+            })) as unknown as bigint;
+            return stake;
+          }),
+        );
 
         const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
-          return { ...c, checkedIn: Number(checkedIns[idx].toString()) };
+          return {
+            ...c,
+            checkedIn: Number(checkedIns[idx].toString()),
+            claimable: claimables[idx],
+          };
         });
 
         setData(challengesWithCheckIns);

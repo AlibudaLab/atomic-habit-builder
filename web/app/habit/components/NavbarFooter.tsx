@@ -1,5 +1,8 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { IoIosHome, IoIosAddCircle, IoMdTrophy } from 'react-icons/io';
+import { IoIosHome, IoIosAddCircle } from 'react-icons/io';
+import { CgProfile } from 'react-icons/cg';
 import { FaList } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
@@ -11,7 +14,7 @@ enum TabKey {
   HOME = 'home',
   LIST = 'list',
   CREATE = 'create',
-  TROPHY = 'trophy',
+  PROFILE = 'profile',
 }
 
 export default function NavbarFooter() {
@@ -29,6 +32,8 @@ export default function NavbarFooter() {
       setSelected(TabKey.LIST);
     } else if (pathName.includes('create')) {
       setSelected(TabKey.CREATE);
+    } else if (pathName.includes('profile')) {
+      setSelected(TabKey.PROFILE);
     } else if (pathName === '/') {
       setSelected(TabKey.HOME);
     } else {
@@ -76,14 +81,13 @@ export default function NavbarFooter() {
       </button>
 
       <button
-        key={TabKey.TROPHY}
-        className="opacity-40"
-        // disabled
-        onClick={() => toast('Coming soon!')}
+        key={TabKey.PROFILE}
+        className={selected === TabKey.PROFILE ? 'opacity-100' : 'opacity-40'}
+        onClick={() => router.push('/profile')}
         type="button"
       >
         <div className="mx-2 flex items-center">
-          <IoMdTrophy size={25} />
+          <CgProfile size={25} />
         </div>
       </button>
     </div>
