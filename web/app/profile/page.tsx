@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Profile from './components/ProfileContent';
+import ProfileContent from './components/ProfileContent';
 
 export const metadata: Metadata = {
   title: 'Profile',
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
   manifest: 'public/manifest.json',
 };
 
-export default function CreatePage() {
-  return <Profile />;
+export default function ProfilePage() {
+  return <ProfileContent />;
 }

@@ -1,9 +1,9 @@
-import { base, baseSepolia } from "viem/chains";
+import { base, baseSepolia } from 'viem/chains';
 
 /**
  * getSlicedAddress returns the first 5 and last 4 characters of an address.
  */
-export const getSlicedAddress = (address: `0x${string}` | undefined, chars=4) => {
+export const getSlicedAddress = (address: `0x${string}` | undefined, chars = 4) => {
   if (!address) {
     return '';
   }
@@ -21,4 +21,4 @@ export const getExplorerLink = (address: `0x${string}` | undefined, chainId: num
     return `https://basescan.io/address/${address}`;
   }
   return '';
-}
+};

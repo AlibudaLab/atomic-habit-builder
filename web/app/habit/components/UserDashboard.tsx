@@ -15,7 +15,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
   const { push } = useRouter();
 
   return (
-    <div className="flex h-screen flex-col items-center justify-start w-full">
+    <div className="flex h-screen w-full flex-col items-center justify-start">
       <div className="flex w-full items-center justify-center">
         {onGoingChallenges.length > 0 && (
           <p className="my-4 font-londrina text-xl font-bold"> Challenge List </p>

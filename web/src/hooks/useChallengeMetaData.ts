@@ -13,7 +13,7 @@ const useChallengeMetaDatas = () => {
         const response = await fetch('/api/challenge-metadata', {
           next: {
             tags: ['fetch'],
-          }
+          },
         });
         const data = await response.json();
         setChallengeMetaDatas(data as ChallengeMetaData[]);

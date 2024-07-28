@@ -40,7 +40,6 @@ export function ActivityDropDown({
           return (
             <SelectItem
               key={activity.id.toString()}
-               
               onClick={() => {
                 onActivitySelect(activity.id);
               }}

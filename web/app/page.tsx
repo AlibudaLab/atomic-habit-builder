@@ -1,8 +1,6 @@
 import { Metadata } from 'next';
 import HomePage from './home/HomePage';
 
-
-
 /**
  * Server component, which imports the Home component (client component that has 'use client' in it)
  * https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts
@@ -10,7 +8,5 @@ import HomePage from './home/HomePage';
  * https://nextjs.org/docs/app/building-your-application/rendering/client-components
  */
 export default function Page() {
-  return (
-      <HomePage />
-  );
+  return <HomePage />;
 }

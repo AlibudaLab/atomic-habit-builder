@@ -31,7 +31,7 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
 export function ChallengeBoxFilled({
   challenge,
   checkedIn,
-  fullWidth
+  fullWidth,
 }: {
   challenge: Challenge;
   checkedIn?: number;
@@ -53,7 +53,7 @@ export function ChallengeBoxFilled({
         {
           // if checkedIn is defined, show the checkedIn number, otherwise show the target number
           checkedIn !== undefined ? (
-            <div className="ml-auto p-2 text-lg min-w-[64px] ">
+            <div className="ml-auto min-w-[64px] p-2 text-lg ">
               {checkedIn} / {challenge.targetNum}
             </div>
           ) : (

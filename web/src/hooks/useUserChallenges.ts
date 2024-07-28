@@ -60,7 +60,8 @@ const useUserChallenges = (address: string | undefined) => {
         );
 
         const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
-          return { ...c, 
+          return {
+            ...c,
             checkedIn: Number(checkedIns[idx].toString()),
             claimable: claimables[idx],
           };

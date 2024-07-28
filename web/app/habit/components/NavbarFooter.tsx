@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
 import { useEffect, useState } from 'react';
 import { IoIosHome, IoIosAddCircle } from 'react-icons/io';
-import { CgProfile } from "react-icons/cg";
+import { CgProfile } from 'react-icons/cg';
 import { FaList } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
