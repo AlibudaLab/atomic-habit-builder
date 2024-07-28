@@ -31,14 +31,16 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
 export function ChallengeBoxFilled({
   challenge,
   checkedIn,
+  fullWidth
 }: {
   challenge: Challenge;
   checkedIn?: number;
+  fullWidth?: boolean;
 }) {
   const isPast = challenge.endTimestamp < moment().unix();
 
   return (
-    <div className={`wrapped-filled m-2 p-2 ${isPast && 'opacity-50'}`}>
+    <div className={`wrapped-filled m-2 p-2 ${isPast && 'opacity-50'} ${fullWidth && 'w-full'}`}>
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">

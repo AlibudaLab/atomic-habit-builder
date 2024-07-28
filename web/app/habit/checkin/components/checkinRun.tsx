@@ -159,9 +159,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       : workoutData;
 
   return (
-    <div className="flex max-w-96 flex-col items-center justify-center">
+    <div className="flex max-w-96 flex-col items-center justify-center w-full">
       {/* overview   */}
-      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
+      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} fullWidth />
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
