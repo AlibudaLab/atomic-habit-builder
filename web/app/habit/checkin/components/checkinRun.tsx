@@ -1,4 +1,4 @@
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
+ 
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -124,7 +124,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       .finally(() => {
         setIsSigning(false);
       });
-  }, [address, chosenActivityId]);
+  }, [address, chosenActivityId, challenge.id, setField]);
 
   const onClickCheckIn = async () => {
     if (fields.activityId === 0) {

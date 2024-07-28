@@ -16,7 +16,7 @@ function InstallPWA() {
     return () => window.removeEventListener('transitionend', handler);
   }, []);
 
-  // eslint-disable-next-line react-perf/jsx-no-new-function-as-prop
+   
   const onClick = (evt: any) => {
     evt.preventDefault();
     if (!promptInstall) {

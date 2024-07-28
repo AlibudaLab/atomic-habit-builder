@@ -11,7 +11,7 @@ export default function () {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     setFullPathShare(`${window.location.origin}${path}`);
-  });
+  }, []);
 
   const open = (url: string) => {
     window.open(url, '_blank');

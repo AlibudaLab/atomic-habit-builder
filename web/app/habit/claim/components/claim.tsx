@@ -1,4 +1,4 @@
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
+ 
 'use client';
 
 import { useState } from 'react';

@@ -1,7 +1,7 @@
-/* eslint-disable */
+ 
 'use client';
 
-import { useAccount, useBalance, useClient } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import * as testToken from '@/contracts/testToken';
 import { formatUnits } from 'viem';
 import Onboard from 'app/habit/components/Onboard';
@@ -13,7 +13,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { base } from 'viem/chains';
 import useUserChallenges from '@/hooks/useUserChallenges';
-import moment from 'moment';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
