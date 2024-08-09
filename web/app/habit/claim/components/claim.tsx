@@ -47,8 +47,6 @@ export default function Claim() {
     },
   });
 
-  console.log('data', data);
-
   const claimable = data?.[0].result;
   const totalFinishedParticipants = data?.[1].result;
 
