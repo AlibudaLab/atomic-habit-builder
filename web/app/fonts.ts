@@ -7,7 +7,7 @@ export const londrina = Londrina_Solid({
   variable: '--font-londrina',
 });
 
-export const roboto = Nunito({
+export const nunito = Nunito({
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '700'],

@@ -72,12 +72,12 @@ export default function Claim() {
 
           {/* details about what to claim */}
           {claimable !== undefined && totalFinishedParticipants !== undefined && (
-            <div className="my-8 w-full mx-4">
-              <div className="text-md font-roboto flex items-center justify-between p-4">
+            <div className="mx-4 my-8 w-full">
+              <div className="text-md flex items-center justify-between p-4 font-nunito">
                 <p>Claimable</p>
                 <p>{formatUnits(claimable, 6)} USDC</p>
               </div>
-              <div className="text-md font-roboto flex items-center justify-between px-4 pb-4">
+              <div className="text-md flex items-center justify-between px-4 pb-4 font-nunito">
                 <p>Total Finished</p>
                 <p>{totalFinishedParticipants.toString()}</p>
               </div>
