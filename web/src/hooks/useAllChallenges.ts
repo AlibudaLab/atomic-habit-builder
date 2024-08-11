@@ -75,6 +75,7 @@ const useAllChallenges = (publicOnly: boolean) => {
               donationDestination: res[5],
               stake: res[8],
               participants: Number(participantsRes[idx].result.toString()),
+              totalStaked: res[9],
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))

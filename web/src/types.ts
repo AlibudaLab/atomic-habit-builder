@@ -22,6 +22,7 @@ export type ChallengeDetail = {
   targetNum: number;
   donationDestination: Address;
   participants: number;
+  totalStaked: bigint;
 };
 
 // Defined by us, off-chain
@@ -39,6 +40,7 @@ export type Challenge = ChallengeDetail & ChallengeMetaData;
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
   claimable: bigint;
+  totalSucceeded: bigint;
 };
 
 export type DonationDest = {

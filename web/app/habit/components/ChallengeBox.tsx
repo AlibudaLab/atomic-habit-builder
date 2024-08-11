@@ -9,7 +9,7 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
   return (
     <button
       type="button"
-      className={`wrapped m-2 w-full transition-transform duration-300 focus:scale-105 ${
+      className={`wrapped m-2 transition-transform duration-300 focus:scale-105 ${
         isPast && 'opacity-50'
       }`}
     >
