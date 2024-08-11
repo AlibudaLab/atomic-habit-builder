@@ -47,6 +47,19 @@ const useUserChallenges = (address: string | undefined) => {
           }),
         );
 
+        // TODO: remove this once we have a better view function to get winner's stake
+        const totalSucceededCounts = await Promise.all(
+          knownChallenges.map(async (c) => {
+            const succeeded = (await readContract(config, {
+              abi: trackerContract.abi,
+              address: trackerContract.address,
+              functionName: 'getChallengeSucceedParticipantsCount',
+              args: [BigInt(c.id)],
+            })) as unknown as bigint;
+            return succeeded;
+          }),
+        );
+
         const claimables = await Promise.all(
           knownChallenges.map(async (c) => {
             const stake = (await readContract(config, {
@@ -64,6 +77,7 @@ const useUserChallenges = (address: string | undefined) => {
             ...c,
             checkedIn: Number(checkedIns[idx].toString()),
             claimable: claimables[idx],
+            totalSucceeded: totalSucceededCounts[idx],
           };
         });
 
