@@ -54,6 +54,7 @@ const useChallenge = (id: number) => {
           donationDestination: res[5],
           participants: Number(participantCount.result.toString()),
           stake: res[8],
+          totalStaked: res[9],
           ...metaData,
         };
 
