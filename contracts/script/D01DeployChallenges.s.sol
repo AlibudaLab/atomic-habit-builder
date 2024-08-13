@@ -8,6 +8,7 @@ import {Challenges} from "../src/Challenges.sol";
 contract Deploy is Script {
     address initGovernance = 0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897;
     address officialVerifier = 0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897;
+    uint128 minDonationBPS = 1_000;
 
     function setUp() public {}
 
@@ -23,19 +24,22 @@ contract Deploy is Script {
 
     function deploy() public {
         address underlying = vm.envAddress("TESTNET_TOKEN");
-        Challenges challenges = new Challenges("Habit Builder", "1.0", initGovernance);
+        Challenges challenges = new Challenges("Habit Builder", "1.0", initGovernance, minDonationBPS);
+
+        challenges.setDonationOrgEnabled(officialVerifier, true);
+
         challenges.create(
             IChallenges.Challenge(
                 officialVerifier,
                 3,
-                1720418400, // July 8
-                1720828800, // July 13 0:00
-                1720828800, // July 13 0:00
+                1722470400, // August 1 0:00
+                1725148798, // August 31 23:59
+                1725148799, // August 31 23:59
                 officialVerifier,
                 address(0),
                 underlying,
                 5_000,
-                50 * 1e6
+                1 * 1e6
             )
         );
 
@@ -43,14 +47,14 @@ contract Deploy is Script {
             IChallenges.Challenge(
                 officialVerifier,
                 12,
-                1720396800, // 7/8
-                1723075200, // 8/8
-                1723075200, // 8/8
+                1722470400, // August 1 0:00
+                1725148798, // August 31 23:59
+                1725148799, //  August 31 23:59
                 officialVerifier,
                 address(0),
                 underlying,
                 5_000,
-                50 * 1e6
+                3 * 1e6
             )
         );
 
@@ -58,14 +62,14 @@ contract Deploy is Script {
             IChallenges.Challenge(
                 officialVerifier,
                 10,
-                1719763200, // July 1
-                1722355200, // July 31
-                1722355200, // July 31
+                1722470400, // August 1 0:00
+                1725148798, // August 31 23:59
+                1725148799, // August 31 23:59
                 officialVerifier,
                 address(0),
                 underlying,
                 5_000,
-                25 * 1e6
+                2 * 1e6
             )
         );
     }
