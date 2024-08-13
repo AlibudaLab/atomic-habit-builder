@@ -12,8 +12,9 @@ import "../src/interfaces/IChallenges.sol";
 contract ChallengesTest is Test {
     MockERC20 stakingAsset;
     Challenges challenges;
-    address treasury;
     address governance;
+    uint128 initMinDonationBPS = 1_000;
+    address treasury;
     address verifier;
     uint256 key;
     uint64 joinDueDays;
@@ -29,13 +30,17 @@ contract ChallengesTest is Test {
         governance = makeAddr("test_governance");
 
         stakingAsset = new MockERC20("USDC", "USDC", 6);
-        challenges = new Challenges("Alibuda Habit Builder", "1.0", governance);
+        challenges = new Challenges("Alibuda Habit Builder", "1.0", governance, initMinDonationBPS);
 
         stakingAsset.mint(address(this), PER_USER_STAKE);
         stakingAsset.approve(address(challenges), PER_USER_STAKE);
     }
 
-    function createChallenge() internal {
+    function _expectRevertNonOwner(address _sender) internal {
+        vm.expectRevert(abi.encodeWithSelector(Ownable.OwnableUnauthorizedAccount.selector, _sender));
+    }
+
+    function _createChallenge() internal {
         vm.prank(governance);
         challenges.setDonationOrgEnabled(treasury, true);
         challenges.create(
@@ -54,7 +59,7 @@ contract ChallengesTest is Test {
         );
     }
 
-    function commonJoinAndCheckIn(bytes calldata checkInData) internal {
+    function _joinAndCheckIn(bytes calldata checkInData) internal {
         vm.warp(block.timestamp);
 
         challenges.join(1);
@@ -66,13 +71,13 @@ contract ChallengesTest is Test {
     }
 
     function test_CreateChallenge() public {
-        createChallenge();
+        _createChallenge();
         IChallenges.Challenge memory _challenge = challenges.getChallenge(1);
         assertNotEq(_challenge.startTimestamp, 0, "Create failed");
     }
 
     function test_Join() public {
-        createChallenge();
+        _createChallenge();
         challenges.join(1);
         assertEq(
             uint256(challenges.userStatus(1, address(this))), uint256(IChallenges.UserStatus.Joined), "Join failed"
@@ -80,21 +85,21 @@ contract ChallengesTest is Test {
     }
 
     function test_RevertWhen_JoinPeriodEnded() public {
-        createChallenge();
+        _createChallenge();
         vm.warp(block.timestamp + 2 days);
         vm.expectRevert(IChallenges.InvalidTimestamp.selector);
         challenges.join(1);
     }
 
     function test_CheckIn(bytes calldata checkInData) public {
-        createChallenge();
-        commonJoinAndCheckIn(checkInData);
+        _createChallenge();
+        _joinAndCheckIn(checkInData);
         assertEq(challenges.checkIns(1, address(this), 0), checkInData, "Check in failed");
     }
 
     function test_Settle(bytes calldata checkInData) public {
-        createChallenge();
-        commonJoinAndCheckIn(checkInData);
+        _createChallenge();
+        _joinAndCheckIn(checkInData);
 
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
         challenges.settle(1);
@@ -104,7 +109,7 @@ contract ChallengesTest is Test {
     }
 
     function test_Settle_WhenAllUserFailed() public {
-        createChallenge();
+        _createChallenge();
         challenges.join(1);
 
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
@@ -117,8 +122,8 @@ contract ChallengesTest is Test {
 
     function test_Withdraw(address failedUser, bytes calldata checkInData) public {
         vm.assume(failedUser != address(0));
-        createChallenge();
-        commonJoinAndCheckIn(checkInData);
+        _createChallenge();
+        _joinAndCheckIn(checkInData);
 
         vm.startPrank(failedUser);
         stakingAsset.mint(failedUser, PER_USER_STAKE);
@@ -143,7 +148,7 @@ contract ChallengesTest is Test {
     }
 
     function test_FailedUserWithdraw() public {
-        createChallenge();
+        _createChallenge();
         challenges.join(1);
 
         vm.warp(block.timestamp + (challengeEndDays + 1) * 1 days);
@@ -153,18 +158,6 @@ contract ChallengesTest is Test {
         challenges.withdraw(1);
     }
 
-    function test_UpdateGovernance(address newGovernance) public {
-        vm.startPrank(governance);
-        vm.assume(newGovernance != address(0));
-        challenges.setGovernance(newGovernance);
-        assertEq(challenges.governance(), newGovernance, "updateGovernance failed");
-    }
-
-    function test_RevertWhen_UpdateGovernance_WithInvalidPermission(address newGovernance) public {
-        vm.expectRevert(IChallenges.InvalidPermission.selector);
-        challenges.setGovernance(newGovernance);
-    }
-
     function test_UpdateDonationOrgStatus(address donationOrg) public {
         vm.startPrank(governance);
         challenges.setDonationOrgEnabled(donationOrg, true);
@@ -172,7 +165,7 @@ contract ChallengesTest is Test {
     }
 
     function test_RevertWhen_UpdateDonationOrgStatus_WithInvalidPermission(address donationOrg) public {
-        vm.expectRevert(IChallenges.InvalidPermission.selector);
+        _expectRevertNonOwner(address(this));
         challenges.setDonationOrgEnabled(donationOrg, true);
     }
 
@@ -202,7 +195,7 @@ contract ChallengesTest is Test {
     }
 
     function test_RevertWhen_SetMinDonationBP_WithInvalidPermission(uint128 minDonationBPS) public {
-        vm.expectRevert(IChallenges.InvalidPermission.selector);
+        _expectRevertNonOwner(address(this));
         challenges.setMinDonationBPS(minDonationBPS);
     }
 

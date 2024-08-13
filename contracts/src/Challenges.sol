@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.25;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
@@ -8,11 +9,11 @@ import "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol";
 import "./interfaces/IChallenges.sol";
 import "./interfaces/ICheckInJudge.sol";
 
-contract Challenges is IChallenges, EIP712 {
+contract Challenges is IChallenges, EIP712, Ownable {
     using SafeERC20 for IERC20;
 
-    /// @dev Governance address to set procotol parameters
-    address public governance;
+    /// @dev Maximum basis points
+    uint128 constant MAX_BPS = 10_000;
 
     /// @dev Minimum donation basis points
     uint128 public minDonationBPS;
@@ -49,14 +50,12 @@ contract Challenges is IChallenges, EIP712 {
         _;
     }
 
-    modifier onlyGovernance() {
-        if (msg.sender != governance) revert InvalidPermission();
-        _;
-    }
-
-    constructor(string memory name, string memory version, address initGovernance) EIP712(name, version) {
-        if (initGovernance == address(0)) revert ZeroAddress();
-        governance = initGovernance;
+    constructor(string memory name, string memory version, address initGovernance, uint128 initMinDonationBPS)
+        EIP712(name, version)
+        Ownable(initGovernance)
+    {
+        if (initMinDonationBPS > MAX_BPS) revert InvalidBPS();
+        minDonationBPS = initMinDonationBPS;
     }
 
     /**
@@ -70,7 +69,7 @@ contract Challenges is IChallenges, EIP712 {
         if (challenge.startTimestamp >= challenge.joinDueTimestamp) revert InvalidTimestamp();
         if (challenge.donateDestination == address(0) || challenge.verifier == address(0)) revert ZeroAddress();
         if (!donationOrgsEnabled[challenge.donateDestination]) revert InvalidPermission();
-        if (challenge.donationBPS > 10_000 || challenge.donationBPS < minDonationBPS) revert InvalidBPS();
+        if (challenge.donationBPS > MAX_BPS || challenge.donationBPS < minDonationBPS) revert InvalidBPS();
 
         uint256 challengeId = ++challengeCounter;
         challenges[challengeId] = challenge;
@@ -148,9 +147,9 @@ contract Challenges is IChallenges, EIP712 {
         if (challengeStatus[challengeId] == ChallengeStatus.Settled) revert ChallengeSettled();
 
         uint128 succeedUserCount = totalSucceedUsers[challengeId];
-        uint128 donationBPS = succeedUserCount == 0 ? 10_000 : challenges[challengeId].donationBPS;
+        uint128 donationBPS = succeedUserCount == 0 ? MAX_BPS : challenges[challengeId].donationBPS;
         uint256 amountToTransfer =
-            (totalUsers[challengeId] - succeedUserCount) * challenges[challengeId].stakePerUser * donationBPS / 10_000;
+            (totalUsers[challengeId] - succeedUserCount) * challenges[challengeId].stakePerUser * donationBPS / MAX_BPS;
 
         IERC20(challenges[challengeId].asset).safeTransfer(challenges[challengeId].donateDestination, amountToTransfer);
         challengeStatus[challengeId] = ChallengeStatus.Settled;
@@ -217,7 +216,7 @@ contract Challenges is IChallenges, EIP712 {
 
         uint128 totalStake = totalUsersCount * stakePerUser;
         uint128 donation =
-            (totalUsersCount - succeedUserCount) * stakePerUser * challenges[challengeId].donationBPS / 10_000;
+            (totalUsersCount - succeedUserCount) * stakePerUser * challenges[challengeId].donationBPS / MAX_BPS;
 
         return (totalStake - donation) / succeedUserCount;
     }
@@ -251,21 +250,12 @@ contract Challenges is IChallenges, EIP712 {
     }
 
     /**
-     * @notice Set the governance address
-     * @param _governance Address of the governance
-     */
-    function setGovernance(address _governance) external onlyGovernance {
-        if (_governance == address(0)) revert ZeroAddress();
-        governance = _governance;
-        emit GovernanceTransferred(_governance);
-    }
-
-    /**
      * @notice Enable or disable the donation org
      * @param donationOrg Address of the donation org
      * @param enabled Whether to enable or disable the donation org
      */
-    function setDonationOrgEnabled(address donationOrg, bool enabled) external onlyGovernance {
+    function setDonationOrgEnabled(address donationOrg, bool enabled) external onlyOwner {
+        if (donationOrg == address(0)) revert ZeroAddress();
         donationOrgsEnabled[donationOrg] = enabled;
         emit DonationOrgSet(donationOrg, enabled);
     }
@@ -274,7 +264,8 @@ contract Challenges is IChallenges, EIP712 {
      * @notice Set the minimum donation basis points
      * @param _minDonationBPS Minimum donation basis points
      */
-    function setMinDonationBPS(uint128 _minDonationBPS) external onlyGovernance {
+    function setMinDonationBPS(uint128 _minDonationBPS) external onlyOwner {
+        if (_minDonationBPS > MAX_BPS) revert InvalidBPS();
         minDonationBPS = _minDonationBPS;
         emit ProtocolParameterSet("minDonationBPS", _minDonationBPS);
     }
