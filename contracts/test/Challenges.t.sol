@@ -159,6 +159,7 @@ contract ChallengesTest is Test {
     }
 
     function test_UpdateDonationOrgStatus(address donationOrg) public {
+        vm.assume(donationOrg != address(0));
         vm.startPrank(governance);
         challenges.setDonationOrgEnabled(donationOrg, true);
         assertEq(challenges.donationOrgsEnabled(donationOrg), true, "updateDonationOrgStatus failed");
@@ -189,6 +190,7 @@ contract ChallengesTest is Test {
     }
 
     function test_setMinDonationBPS(uint128 minDonationBPS) public {
+        vm.assume(minDonationBPS < challenges.MAX_BPS());
         vm.startPrank(governance);
         challenges.setMinDonationBPS(minDonationBPS);
         assertEq(challenges.minDonationBPS(), minDonationBPS, "setMinDonationBPS failed");
@@ -200,7 +202,7 @@ contract ChallengesTest is Test {
     }
 
     function test_RevertWhen_CreateChallenge_WithBPSTooLow(uint128 minDonationBPS, uint128 donationBPS) public {
-        vm.assume(minDonationBPS > donationBPS);
+        vm.assume(minDonationBPS < challenges.MAX_BPS() && minDonationBPS > donationBPS);
         vm.startPrank(governance);
         challenges.setDonationOrgEnabled(treasury, true);
         challenges.setMinDonationBPS(minDonationBPS);

@@ -78,10 +78,9 @@ interface IChallenges {
     /// @param status Enabled status of the donation organization
     event DonationOrgSet(address donationOrg, bool status);
 
-    /// @notice Emitted when a protocol parameter is set
-    /// @param key Key of the protocol parameter
-    /// @param value Value of the protocol parameter
-    event ProtocolParameterSet(string indexed key, uint256 value);
+    /// @notice Emitted when the minimum donation basis points is set
+    /// @param newMinDonationBPS New minimum donation basis points
+    event MinDonationBPSSet(uint256 newMinDonationBPS);
 
     // Errors
     /// @dev Error when the amount is zero
@@ -155,13 +154,8 @@ interface IChallenges {
     /// @return amount Amount of winning stake per user
     function getWinningStakePerUser(uint256 challengeId) external view returns (uint128);
 
-    /// @notice Get the amount of users that have joined a challenge
+    /// @notice Get the check in counts of a user in a challenge
     /// @param challengeId Id of the challenge
-    /// @return totalUsers Amount of users that have joined the challenge
-    function getChallengeParticipantsCount(uint256 challengeId) external view returns (uint256);
-
-    /// @notice Get the amount of users that have succeeded in a challenge
-    /// @param challengeId Id of the challenge
-    /// @return totalSucceedUsers Amount of users that have succeeded in the challenge
-    function getChallengeSucceedParticipantsCount(uint256 challengeId) external view returns (uint256);
+    /// @param user Address of the user
+    function getUserCheckInCounts(uint256 challengeId, address user) external view returns (uint256);
 }

@@ -13,7 +13,7 @@ contract Challenges is IChallenges, EIP712, Ownable {
     using SafeERC20 for IERC20;
 
     /// @dev Maximum basis points
-    uint128 constant MAX_BPS = 10_000;
+    uint128 public constant MAX_BPS = 10_000;
 
     /// @dev Minimum donation basis points
     uint128 public minDonationBPS;
@@ -232,24 +232,6 @@ contract Challenges is IChallenges, EIP712, Ownable {
     }
 
     /**
-     * @notice Get the amount of users that have joined a challenge
-     * @param challengeId Id of the challenge
-     * @return totalUsers Amount of users that have joined the challenge
-     */
-    function getChallengeParticipantsCount(uint256 challengeId) external view returns (uint256) {
-        return totalUsers[challengeId];
-    }
-
-    /**
-     * @notice Get the amount of users that have succeeded in a challenge
-     * @param challengeId Id of the challenge
-     * @return totalSucceedUsers Amount of users that have succeeded in the challenge
-     */
-    function getChallengeSucceedParticipantsCount(uint256 challengeId) external view returns (uint256) {
-        return totalSucceedUsers[challengeId];
-    }
-
-    /**
      * @notice Enable or disable the donation org
      * @param donationOrg Address of the donation org
      * @param enabled Whether to enable or disable the donation org
@@ -267,6 +249,6 @@ contract Challenges is IChallenges, EIP712, Ownable {
     function setMinDonationBPS(uint128 _minDonationBPS) external onlyOwner {
         if (_minDonationBPS > MAX_BPS) revert InvalidBPS();
         minDonationBPS = _minDonationBPS;
-        emit ProtocolParameterSet("minDonationBPS", _minDonationBPS);
+        emit MinDonationBPSSet(_minDonationBPS);
     }
 }
