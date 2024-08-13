@@ -36,9 +36,9 @@ interface IChallenges {
         uint64 joinDueTimestamp;
         uint64 endTimestamp;
         address donateDestination;
-        uint128 donationBPS;
         address checkInJudge;
         address asset;
+        uint128 donationBPS;
         uint128 stakePerUser;
     }
 
@@ -69,12 +69,29 @@ interface IChallenges {
     /// @param amount Amount claimed by the user
     event Claim(address indexed user, uint256 indexed challengeId, uint256 amount);
 
+    /// @notice Emitted when the governance is transferred
+    /// @param newGovernance Address of the new governance
+    event GovernanceTransferred(address indexed newGovernance);
+
+    /// @notice Emitted when the donation organization is set
+    /// @param donationOrg Address of the donation organization
+    /// @param status Enabled status of the donation organization
+    event DonationOrgSet(address donationOrg, bool status);
+
+    /// @notice Emitted when a protocol parameter is set
+    /// @param key Key of the protocol parameter
+    /// @param value Value of the protocol parameter
+    event ProtocolParameterSet(string indexed key, uint256 value);
+
     // Errors
     /// @dev Error when the amount is zero
     error ZeroAmount();
 
     /// @dev Error when the address is zero
     error ZeroAddress();
+
+    /// @dev Error when the permission level is invalid
+    error InvalidPermission();
 
     /// @dev Error when the basis points is invalid
     error InvalidBPS();

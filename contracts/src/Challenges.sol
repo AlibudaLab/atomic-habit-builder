@@ -11,6 +11,12 @@ import "./interfaces/ICheckInJudge.sol";
 contract Challenges is IChallenges, EIP712 {
     using SafeERC20 for IERC20;
 
+    /// @dev Governance address to set procotol parameters
+    address public governance;
+
+    /// @dev Minimum donation basis points
+    uint128 public minDonationBPS;
+
     /// @dev Counter for the challenge id, starts from 1
     uint256 public challengeCounter;
 
@@ -35,12 +41,23 @@ contract Challenges is IChallenges, EIP712 {
     /// @dev Mapping of challenge id to user check ins data
     mapping(uint256 challengeId => mapping(address user => bytes[])) public checkIns;
 
+    /// @dev Mapping of donation org to whether it is enabled
+    mapping(address donationOrg => bool) public donationOrgsEnabled;
+
     modifier challengeExist(uint256 challengeId) {
         if (challengeStatus[challengeId] == ChallengeStatus.NotExist) revert ChallengeNotExist();
         _;
     }
 
-    constructor(string memory name, string memory version) EIP712(name, version) {}
+    modifier onlyGovernance() {
+        if (msg.sender != governance) revert InvalidPermission();
+        _;
+    }
+
+    constructor(string memory name, string memory version, address initGovernance) EIP712(name, version) {
+        if (initGovernance == address(0)) revert ZeroAddress();
+        governance = initGovernance;
+    }
 
     /**
      * @notice Create a new challenge
@@ -52,10 +69,12 @@ contract Challenges is IChallenges, EIP712 {
         if (challenge.joinDueTimestamp >= challenge.endTimestamp) revert InvalidTimestamp();
         if (challenge.startTimestamp >= challenge.joinDueTimestamp) revert InvalidTimestamp();
         if (challenge.donateDestination == address(0) || challenge.verifier == address(0)) revert ZeroAddress();
-        if (challenge.donationBPS > 10_000) revert InvalidBPS();
+        if (!donationOrgsEnabled[challenge.donateDestination]) revert InvalidPermission();
+        if (challenge.donationBPS > 10_000 || challenge.donationBPS < minDonationBPS) revert InvalidBPS();
 
-        challenges[++challengeCounter] = challenge;
-        challengeStatus[challengeCounter] = ChallengeStatus.Created;
+        uint256 challengeId = ++challengeCounter;
+        challenges[challengeId] = challenge;
+        challengeStatus[challengeId] = ChallengeStatus.Created;
 
         emit Create(challengeCounter, challenge);
     }
@@ -121,6 +140,7 @@ contract Challenges is IChallenges, EIP712 {
 
     /**
      * @notice Settle the challenge, transfer half of the failed user stake to the donateDestination address
+     * If no user has finished the challenge, the donation amount will be 100% of the failed user stake
      * @param challengeId Id of the challenge to settle
      */
     function settle(uint256 challengeId) external challengeExist(challengeId) {
@@ -128,10 +148,11 @@ contract Challenges is IChallenges, EIP712 {
         if (challengeStatus[challengeId] == ChallengeStatus.Settled) revert ChallengeSettled();
 
         uint128 succeedUserCount = totalSucceedUsers[challengeId];
-        uint128 failedUserStake = (totalUsers[challengeId] - succeedUserCount) * challenges[challengeId].stakePerUser;
-        IERC20(challenges[challengeId].asset).safeTransfer(
-            challenges[challengeId].donateDestination, failedUserStake * challenges[challengeId].donationBPS / 10_000
-        );
+        uint128 donationBPS = succeedUserCount == 0 ? 10_000 : challenges[challengeId].donationBPS;
+        uint256 amountToTransfer =
+            (totalUsers[challengeId] - succeedUserCount) * challenges[challengeId].stakePerUser * donationBPS / 10_000;
+
+        IERC20(challenges[challengeId].asset).safeTransfer(challenges[challengeId].donateDestination, amountToTransfer);
         challengeStatus[challengeId] = ChallengeStatus.Settled;
 
         emit Settle(challengeId);
@@ -192,7 +213,7 @@ contract Challenges is IChallenges, EIP712 {
         uint128 succeedUserCount = totalSucceedUsers[challengeId];
         uint128 stakePerUser = challenges[challengeId].stakePerUser;
 
-        if (challengeStatus[challengeId] != ChallengeStatus.Settled) return 0;
+        if (challengeStatus[challengeId] != ChallengeStatus.Settled || succeedUserCount == 0) return 0;
 
         uint128 totalStake = totalUsersCount * stakePerUser;
         uint128 donation =
@@ -227,5 +248,34 @@ contract Challenges is IChallenges, EIP712 {
      */
     function getChallengeSucceedParticipantsCount(uint256 challengeId) external view returns (uint256) {
         return totalSucceedUsers[challengeId];
+    }
+
+    /**
+     * @notice Set the governance address
+     * @param _governance Address of the governance
+     */
+    function setGovernance(address _governance) external onlyGovernance {
+        if (_governance == address(0)) revert ZeroAddress();
+        governance = _governance;
+        emit GovernanceTransferred(_governance);
+    }
+
+    /**
+     * @notice Enable or disable the donation org
+     * @param donationOrg Address of the donation org
+     * @param enabled Whether to enable or disable the donation org
+     */
+    function setDonationOrgEnabled(address donationOrg, bool enabled) external onlyGovernance {
+        donationOrgsEnabled[donationOrg] = enabled;
+        emit DonationOrgSet(donationOrg, enabled);
+    }
+
+    /**
+     * @notice Set the minimum donation basis points
+     * @param _minDonationBPS Minimum donation basis points
+     */
+    function setMinDonationBPS(uint128 _minDonationBPS) external onlyGovernance {
+        minDonationBPS = _minDonationBPS;
+        emit ProtocolParameterSet("minDonationBPS", _minDonationBPS);
     }
 }
