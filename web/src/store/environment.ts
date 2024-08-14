@@ -4,10 +4,9 @@
  * based on the environment.
  */
 export enum Environment {
-  localhost = 'localhost', // Local Environment
-  development = 'development', // Development & Testing Environment
-  staging = 'staging', // Staging Environment which should mimic production
-  production = 'production', // Production Environment
+  localhost = 'localhost', // Development & Testing Environment
+  testnet = 'testnet', // Testnet env
+  mainnet = 'mainnet', // Mainnet
 }
 
 export enum EnvironmentKeys {
@@ -18,7 +17,7 @@ export function getCurrentEnvironment(): Environment {
   const stage: string | undefined = process.env[EnvironmentKeys.environment];
 
   if (stage === undefined) {
-    return Environment.localhost;
+    return Environment.testnet;
   }
 
   // Convert string to ReleaseStage enum value

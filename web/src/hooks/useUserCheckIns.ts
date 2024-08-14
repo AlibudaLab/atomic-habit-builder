@@ -1,7 +1,8 @@
 import { readContract } from '@wagmi/core';
-import * as trackerContract from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
+import { challengeAddr } from '@/constants';
 
 const useUserChallengeCheckIns = (address: string | undefined, challengeId: bigint) => {
   const [loading, setLoading] = useState(true);
@@ -16,8 +17,8 @@ const useUserChallengeCheckIns = (address: string | undefined, challengeId: bigi
         setLoading(true);
 
         const achieved = (await readContract(config, {
-          abi: trackerContract.abi,
-          address: trackerContract.address,
+          abi: abi,
+          address: challengeAddr,
           functionName: 'getUserCheckInCounts',
           args: [challengeId, address as `0x${string}`],
         })) as unknown as bigint;

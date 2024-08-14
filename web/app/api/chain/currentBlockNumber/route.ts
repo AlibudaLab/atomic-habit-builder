@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getChainById } from '@/store/supportedChains';
 import { getRpcProviderForChain } from '@/utils/provider';
+import { getChainsForEnvironment } from '@/store/supportedChains';
+
+const expectedChain = getChainsForEnvironment();
 
 /**
  * Handler for the /api/chain/blockNumber route, this route will return the current block number
@@ -14,11 +16,10 @@ export async function GET(req: NextRequest): Promise<Response> {
     if (!chainId) {
       return NextResponse.json({ error: 'chainid is required' }, { status: 400 });
     }
-    const chain = getChainById(chainId);
-    if (!chain) {
+    if (chainId !== expectedChain.id.toString()) {
       return NextResponse.json({ error: 'chain not supported' }, { status: 400 });
     }
-    const provider = getRpcProviderForChain(chain);
+    const provider = getRpcProviderForChain(expectedChain);
     const block = await provider.getBlockNumber();
     return NextResponse.json({ block: block.toString() }, { status: 200 });
   } catch (error) {

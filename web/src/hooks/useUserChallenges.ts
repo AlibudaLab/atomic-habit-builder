@@ -1,9 +1,10 @@
 import { readContract } from '@wagmi/core';
-import * as trackerContract from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import useAllChallenges from './useAllChallenges';
 import { ChallengeWithCheckIns } from '@/types';
+import { challengeAddr } from '@/constants';
 
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
@@ -34,8 +35,8 @@ const useUserChallenges = (address: string | undefined) => {
         const checkedIns = await Promise.all(
           knownChallenges.map(async (c) => {
             const checkedIn = (await readContract(config, {
-              abi: trackerContract.abi,
-              address: trackerContract.address,
+              abi,
+              address: challengeAddr,
               functionName: 'getUserCheckInCounts',
               args: [BigInt(c.id), address as `0x${string}`],
             })) as unknown as bigint;
@@ -47,8 +48,8 @@ const useUserChallenges = (address: string | undefined) => {
         const totalSucceededCounts = await Promise.all(
           knownChallenges.map(async (c) => {
             const succeeded = (await readContract(config, {
-              abi: trackerContract.abi,
-              address: trackerContract.address,
+              abi,
+              address: challengeAddr,
               functionName: 'totalSucceedUsers',
               args: [BigInt(c.id)],
             })) as unknown as bigint;
@@ -59,8 +60,8 @@ const useUserChallenges = (address: string | undefined) => {
         const claimables = await Promise.all(
           knownChallenges.map(async (c) => {
             const stake = (await readContract(config, {
-              abi: trackerContract.abi,
-              address: trackerContract.address,
+              abi,
+              address: challengeAddr,
               functionName: 'getWinningStakePerUser',
               args: [BigInt(c.id)],
             })) as unknown as bigint;

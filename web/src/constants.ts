@@ -1,7 +1,9 @@
-import { baseSepolia } from 'viem/chains';
-import { ChallengeMetaData, DonationDest } from './types';
+import { base, baseSepolia } from 'viem/chains';
+import { DonationDest } from './types';
+import { Address, getChainContractAddress, zeroAddress } from 'viem';
+import { getChainsForEnvironment } from './store/supportedChains';
 
-export const EXPECTED_CHAIN = baseSepolia;
+const currentChainId = getChainsForEnvironment().id;
 
 export enum ChallengeTypes {
   Run = 'Run',
@@ -22,3 +24,17 @@ export const donationDestinations: DonationDest[] = [
 ];
 
 export const defaultVerifier = '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897';
+
+const usdcContractAddrs: Record<number, Address> = {
+  [baseSepolia.id]: '0xCb5c7C676D8CcE531ceDd0fe2b4159b59607910F',
+  [base.id]: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+};
+
+const challengeContractAddrs: Record<number, Address> = {
+  [baseSepolia.id]: '0x7d1981603530aa76db92186da40092c5394b7635',
+  [base.id]: zeroAddress,
+};
+
+export const challengeAddr = challengeContractAddrs[currentChainId];
+
+export const usdcAddr = usdcContractAddrs[currentChainId];

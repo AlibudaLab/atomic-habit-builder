@@ -1,11 +1,12 @@
 import { readContract } from '@wagmi/core';
-import * as trackerContract from '@/contracts/tracker';
+import { abi as challengeAbi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Address } from 'viem';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
+import { challengeAddr } from '@/constants';
 
 const useAllChallenges = (publicOnly: boolean) => {
   const publicClient = usePublicClient({ config });
@@ -26,15 +27,15 @@ const useAllChallenges = (publicOnly: boolean) => {
         setLoading(true);
 
         const challengeCount = await readContract(config, {
-          abi: trackerContract.abi,
-          address: trackerContract.address,
+          abi: challengeAbi,
+          address: challengeAddr,
           functionName: 'challengeCounter',
         });
 
         const result = await publicClient.multicall({
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
-            address: trackerContract.address,
-            abi: trackerContract.abi,
+            address: challengeAddr,
+            abi: challengeAbi,
             functionName: 'getChallenge',
             args: [i + 1],
           })),
@@ -42,8 +43,8 @@ const useAllChallenges = (publicOnly: boolean) => {
 
         const participantsRes = (await publicClient.multicall({
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
-            address: trackerContract.address,
-            abi: trackerContract.abi,
+            address: challengeAddr,
+            abi: challengeAbi,
             functionName: 'totalUsers',
             args: [i + 1],
           })),

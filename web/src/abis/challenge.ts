@@ -1,5 +1,3 @@
-export const address = '0x7d1981603530aa76db92186da40092c5394b7635' as `0x${string}`;
-
 export const abi = [
   {
     inputs: [

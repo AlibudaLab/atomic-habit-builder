@@ -6,7 +6,8 @@ import useChallenge from '@/hooks/useChallenge';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import ClaimedPopup from './ClaimedPopup';
 import { Button } from '@nextui-org/button';
-import { abi, address } from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
+import { challengeAddr } from '@/constants';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { UserStatus } from '@/types';
@@ -32,19 +33,19 @@ export default function Claim() {
     contracts: [
       {
         abi,
-        address,
+        address: challengeAddr,
         functionName: 'getWinningStakePerUser',
         args: [BigInt(challengeId)],
       },
       {
         abi,
-        address,
+        address: challengeAddr,
         functionName: 'totalSucceedUsers',
         args: [BigInt(challengeId)],
       },
       {
         abi,
-        address,
+        address: challengeAddr,
         functionName: 'userStatus',
         args: [BigInt(challengeId), account ?? zeroAddress],
       },

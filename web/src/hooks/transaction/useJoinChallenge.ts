@@ -1,9 +1,10 @@
 import toast from 'react-hot-toast';
 
-import * as testTokenContract from '@/contracts/testToken';
-import * as trackerContract from '@/contracts/tracker';
+import { abi as usdcAbi } from '@/abis/usdc';
+import { abi as challengeAbi } from '@/abis/challenge';
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
 import { Address } from 'viem';
+import { usdcAddr, challengeAddr } from '@/constants';
 
 /**
  * @description This fill was learned in https://github.com/guildxyz/guild.xyz/blob/3b150b2b9b9c3bf816cf0bc915753df432274399/src/requirements/Payment/components/WithdrawButton/hooks/useWithdraw.ts
@@ -19,14 +20,14 @@ const useJoinChallenge = (
   const txConfig = {
     contracts: [
       {
-        address: testTokenContract.address,
-        abi: testTokenContract.abi,
+        address: usdcAddr,
+        abi: usdcAbi,
         functionName: 'approve',
-        args: [trackerContract.address, approveAmt],
+        args: [challengeAddr, approveAmt],
       },
       {
-        address: trackerContract.address,
-        abi: trackerContract.abi,
+        address: challengeAddr,
+        abi: challengeAbi,
         functionName: 'join',
         args: [challengeId],
       },

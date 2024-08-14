@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { privateKeyToAccount } from 'viem/accounts';
 import { numberToHex } from 'viem';
 
-import { baseSepolia } from 'viem/chains';
-import { address as trackerAddr } from '@/contracts/tracker';
+import { challengeAddr } from '@/constants';
+import { getChainsForEnvironment } from '@/store/supportedChains';
+
+const currentChain = getChainsForEnvironment();
 
 const domain = {
   name: 'Habit Builder',
   version: '1.0',
-  chainId: baseSepolia.id,
-  verifyingContract: trackerAddr,
+  chainId: currentChain.id,
+  verifyingContract: challengeAddr,
 };
 
 const types = {
