@@ -12,7 +12,7 @@ export default function CheckIn() {
   const { challenge, loading } = useChallenge(Number(challengeId));
 
   return (
-    <div className="flex h-screen flex-col items-center px-8">
+    <div className="flex h-screen flex-col items-center px-2">
       <p className="pb-4 text-center font-londrina text-xl font-bold">
         {' '}
         Happy Builder; Habit Builder!{' '}
