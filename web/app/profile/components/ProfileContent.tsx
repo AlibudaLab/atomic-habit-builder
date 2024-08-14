@@ -28,8 +28,13 @@ export default function ProfileContent() {
 
   // assume all in USDC
   const totalStaked = challenges.reduce((acc, challenge) => {
+    // include all staked amount if challenge is still ongoing
     if (challenge.endTimestamp > Date.now() / 1000) return acc + challenge.stake;
-    return acc + challenge.claimable;
+
+    // only get the claimable if user succeed
+    if (challenge.checkedIn < challenge.targetNum) return acc;
+
+    return acc + challenge.succeedClaimable;
   }, BigInt(0));
 
   const finishedChallenges = challenges.filter(

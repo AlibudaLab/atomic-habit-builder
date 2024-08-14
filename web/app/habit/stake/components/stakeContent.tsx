@@ -97,7 +97,7 @@ export default function StakeChallenge() {
     onSubmitTransaction: onJoinTx,
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
-  } = useJoinChallenge(BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
+  } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
     handleOpenCheckinPopup(); // trigger pop up window
   });
 

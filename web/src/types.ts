@@ -39,7 +39,7 @@ export type Challenge = ChallengeDetail & ChallengeMetaData;
 
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
-  claimable: bigint;
+  succeedClaimable: bigint;
   totalSucceeded: bigint;
 };
 
@@ -50,3 +50,10 @@ export type DonationDest = {
 };
 
 export type ActivityMap = Record<string, string[]>;
+
+export enum UserStatus {
+  NotExist,
+  Joined,
+  Claimable,
+  Claimed,
+}

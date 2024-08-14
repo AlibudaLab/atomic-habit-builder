@@ -60,7 +60,7 @@ export default function Create() {
 
   const onCreateSuccess = useCallback(
     (receipt: any, events: DecodeEventLogReturnType[]) => {
-      const targetEvent = events.find((e) => e.eventName === 'Register');
+      const targetEvent = events.find((e) => e.eventName === 'Create');
       if (!targetEvent) {
         return toast.error('Error Creating a Challenge.');
       }
@@ -84,13 +84,12 @@ export default function Create() {
         }),
       })
         .then((res) => {
-          console.log('api response', res);
           setCreatedChallengeId(challengeId);
           setStep(3);
         })
         .catch((error) => {
           console.error('Error adding challenge:', error);
-          toast.error('Error Creating a Challenge.');
+          toast.error('Error adding Challenge to DB.');
         });
     },
     [name, description, type, accessCode, address],
@@ -98,10 +97,9 @@ export default function Create() {
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
     defaultVerifier,
-    name,
     totalTimes,
     moment.utc(duration.start.toAbsoluteString()).unix(),
-    moment.utc(duration.end.toAbsoluteString()).unix(),
+    moment.utc(duration.end.toAbsoluteString()).unix() - 1,
     moment.utc(duration.end.toAbsoluteString()).unix(),
     donatioAddr,
     testTokenContract.address,

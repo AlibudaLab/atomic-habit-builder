@@ -10,7 +10,7 @@ export function convertBigIntTimestampToDate(timestamp: bigint): Date {
 }
 
 export function formatTime(timestamp: number): string {
-  return moment.unix(Number(timestamp.toString())).format('MMMM DD');
+  return moment.unix(Number(timestamp.toString())).format('MMM DD');
 }
 
 export function formatDuration(start: number, end: number): string {

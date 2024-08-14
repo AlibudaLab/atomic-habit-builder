@@ -22,18 +22,14 @@ const useUserChallenges = (address: string | undefined) => {
       try {
         setLoading(true);
 
-        const userChallenges = await readContract(config, {
-          abi: trackerContract.abi,
-          address: trackerContract.address,
-          functionName: 'getUserChallenges',
-          args: [address as `0x${string}`],
-        });
+        const response = await fetch(`/api/user?address=${address}`);
+        const res = await response.json();
 
-        // fetch user activities from rpc
-        const userRegisteredIds = userChallenges as bigint[];
+        const joinedChallenges = res.joinedChallenges ?? ([] as number[]);
+        console.log('joinedChallenges', joinedChallenges);
 
         // all challenges that user participants in
-        let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(BigInt(c.id)));
+        let knownChallenges = challenges.filter((c) => joinedChallenges.includes(c.id));
 
         const checkedIns = await Promise.all(
           knownChallenges.map(async (c) => {
@@ -53,7 +49,7 @@ const useUserChallenges = (address: string | undefined) => {
             const succeeded = (await readContract(config, {
               abi: trackerContract.abi,
               address: trackerContract.address,
-              functionName: 'getChallengeSucceedParticipantsCount',
+              functionName: 'totalSucceedUsers',
               args: [BigInt(c.id)],
             })) as unknown as bigint;
             return succeeded;
@@ -65,8 +61,8 @@ const useUserChallenges = (address: string | undefined) => {
             const stake = (await readContract(config, {
               abi: trackerContract.abi,
               address: trackerContract.address,
-              functionName: 'getClaimableAmount',
-              args: [BigInt(c.id), address as `0x${string}`],
+              functionName: 'getWinningStakePerUser',
+              args: [BigInt(c.id)],
             })) as unknown as bigint;
             return stake;
           }),
@@ -76,7 +72,7 @@ const useUserChallenges = (address: string | undefined) => {
           return {
             ...c,
             checkedIn: Number(checkedIns[idx].toString()),
-            claimable: claimables[idx],
+            succeedClaimable: claimables[idx],
             totalSucceeded: totalSucceededCounts[idx],
           };
         });

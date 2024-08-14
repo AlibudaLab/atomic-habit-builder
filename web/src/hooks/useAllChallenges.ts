@@ -35,7 +35,7 @@ const useAllChallenges = (publicOnly: boolean) => {
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
             address: trackerContract.address,
             abi: trackerContract.abi,
-            functionName: 'challenges',
+            functionName: 'getChallenge',
             args: [i + 1],
           })),
         });
@@ -44,38 +44,36 @@ const useAllChallenges = (publicOnly: boolean) => {
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
             address: trackerContract.address,
             abi: trackerContract.abi,
-            functionName: 'getChallengeParticipantsCount',
+            functionName: 'totalUsers',
             args: [i + 1],
           })),
         })) as { result: bigint }[];
 
         const newData: Challenge[] = result
           .map((raw, idx) => {
-            const res = raw.result as any as [
-              Address,
-              number, // checkins
-              number, // start
-              number, // join due
-              number, // end
-              Address, // donation
-              Address, // check in judge
-              Address, // underlying
-              bigint, // stake
-              bigint, // total staked
-              boolean,
-            ];
+            const res = raw.result as any as {
+              verifier: Address;
+              minimumCheckIns: bigint;
+              startTimestamp: bigint;
+              joinDueTimestamp: bigint;
+              endTimestamp: bigint;
+              donateDestination: Address;
+              stakePerUser: bigint;
+            };
+
+            const participants = participantsRes[idx].result;
 
             return {
               id: BigInt(idx + 1),
-              verifier: res[0],
-              targetNum: Number(res[1].toString()),
-              startTimestamp: Number(res[2].toString()),
-              joinDueTimestamp: Number(res[3].toString()),
-              endTimestamp: Number(res[4].toString()),
-              donationDestination: res[5],
-              stake: res[8],
-              participants: Number(participantsRes[idx].result.toString()),
-              totalStaked: res[9],
+              verifier: res.verifier,
+              targetNum: Number(res.minimumCheckIns.toString()),
+              startTimestamp: Number(res.startTimestamp.toString()),
+              joinDueTimestamp: Number(res.joinDueTimestamp.toString()),
+              endTimestamp: Number(res.endTimestamp.toString()),
+              donationDestination: res.donateDestination,
+              stake: res.stakePerUser,
+              participants: Number(participants.toString()),
+              totalStaked: res.stakePerUser * participants,
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))
