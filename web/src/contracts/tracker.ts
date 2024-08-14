@@ -1,4 +1,13 @@
-export const address = '0x7d1981603530aa76db92186da40092c5394b7635' as `0x${string}`;
+import { getChainsForEnvironment } from '@/store/supportedChains';
+import { Address, zeroAddress } from 'viem';
+import { base, baseSepolia } from 'viem/chains';
+
+const addresses: Record<number, Address> = {
+  [baseSepolia.id]: '0x7d1981603530aa76db92186da40092c5394b7635',
+  [base.id]: zeroAddress,
+};
+
+export const address = addresses[getChainsForEnvironment().id];
 
 export const abi = [
   {

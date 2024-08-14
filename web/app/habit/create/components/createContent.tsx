@@ -16,7 +16,7 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 
 const defaultDonationDest = donationDestinations[0];
 
-import * as testTokenContract from '@/contracts/testToken';
+import * as usdc from '@/contracts/usdc';
 
 const defaultStart = moment().hour(0).minutes(0).seconds(0).milliseconds(0).add(1, 'day');
 
@@ -102,7 +102,7 @@ export default function Create() {
     moment.utc(duration.end.toAbsoluteString()).unix() - 1,
     moment.utc(duration.end.toAbsoluteString()).unix(),
     donatioAddr,
-    testTokenContract.address,
+    usdc.address,
     stakeInUSDC,
     onCreateSuccess,
   );

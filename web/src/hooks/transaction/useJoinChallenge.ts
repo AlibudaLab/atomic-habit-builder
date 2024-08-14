@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-import * as testTokenContract from '@/contracts/testToken';
+import * as usdc from '@/contracts/usdc';
 import * as trackerContract from '@/contracts/tracker';
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
 import { Address } from 'viem';
@@ -19,8 +19,8 @@ const useJoinChallenge = (
   const txConfig = {
     contracts: [
       {
-        address: testTokenContract.address,
-        abi: testTokenContract.abi,
+        address: usdc.address,
+        abi: usdc.abi,
         functionName: 'approve',
         args: [trackerContract.address, approveAmt],
       },

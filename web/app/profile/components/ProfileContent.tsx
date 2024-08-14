@@ -1,7 +1,7 @@
 'use client';
 
 import { useAccount, useBalance } from 'wagmi';
-import * as testToken from '@/contracts/testToken';
+import * as usdc from '@/contracts/usdc';
 import { formatUnits } from 'viem';
 import Onboard from 'app/habit/components/Onboard';
 import { getSlicedAddress, getExplorerLink } from '@/utils/address';
@@ -18,7 +18,7 @@ export default function ProfileContent() {
 
   const { data: tokenBalance } = useBalance({
     address,
-    token: testToken.address,
+    token: usdc.address,
     query: {
       enabled: !!address,
     },

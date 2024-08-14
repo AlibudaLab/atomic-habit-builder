@@ -9,7 +9,7 @@ import { formatUnits } from 'viem';
 import { useAccount, useBalance, useConnect } from 'wagmi';
 import { Input } from '@nextui-org/input';
 
-import * as testTokenContract from '@/contracts/testToken';
+import * as usdc from '@/contracts/usdc';
 import useChallenge from '@/hooks/useChallenge';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
@@ -21,6 +21,9 @@ import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserJoined from '@/hooks/useUserJoined';
+import { Environment, getCurrentEnvironment } from '@/store/environment';
+
+const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -44,9 +47,9 @@ export default function StakeChallenge() {
     [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
   );
 
-  const { data: testTokenBalance } = useBalance({
+  const { data: tokenBalance } = useBalance({
     address: smartWallet,
-    token: testTokenContract.address,
+    token: usdc.address,
     query: {
       enabled: !!smartWallet && !!challenge,
       refetchInterval: (data: any) =>
@@ -60,8 +63,8 @@ export default function StakeChallenge() {
 
   const hasEnoughBalance =
     challenge &&
-    testTokenBalance &&
-    Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
+    tokenBalance &&
+    Number(tokenBalance.value.toString()) >= Number(challenge.stake.toString());
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
   const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
@@ -83,7 +86,7 @@ export default function StakeChallenge() {
     isPreparing: isMintPreparing,
     isLoading: isMintLoading,
   } = useMintERC20(
-    testTokenContract.address as `0x${string}`,
+    usdc.address,
     smartWallet as `0x${string}`,
     500_000000n, // mint 500 USDC
   );
@@ -245,21 +248,27 @@ export default function StakeChallenge() {
          */}
         {hasAccess && (
           <div className="p-4 text-xs">
-            {testTokenBalance && !hasEnoughBalance ? (
+            {tokenBalance && !hasEnoughBalance ? (
               <p>
                 {' '}
-                🚨 Insufficient Balance:{' '}
-                {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC.{' '}
-                <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
-                  {' '}
-                  Mint Test Token now{' '}
-                </span>{' '}
+                🚨 Insufficient Balance: {tokenBalance
+                  ? formatUnits(tokenBalance.value, 6)
+                  : 0}{' '}
+                USDC.{' '}
+                {isTestnet && (
+                  <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
+                    {' '}
+                    Mint Test Token now{' '}
+                  </span>
+                )}
               </p>
             ) : (
               <p>
                 {' '}
-                💰 Smart Wallet Balance:{' '}
-                {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC{' '}
+                💰 Smart Wallet Balance: {tokenBalance
+                  ? formatUnits(tokenBalance.value, 6)
+                  : 0}{' '}
+                USDC{' '}
               </p>
             )}
           </div>
