@@ -33,6 +33,7 @@ export type ChallengeMetaData = {
   description?: string;
   public: boolean;
   accessCode?: string; // only for private challenges
+  creator?: Address;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;

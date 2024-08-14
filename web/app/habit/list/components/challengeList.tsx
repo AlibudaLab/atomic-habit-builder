@@ -12,7 +12,7 @@ export default function ChallengeList() {
   const { address } = useAccount();
 
   // only fetch public challenges
-  const { challenges, loading: loadingAllChallenges } = useAllChallenges(true);
+  const { challenges, loading: loadingAllChallenges } = useAllChallenges(true, address);
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
@@ -38,7 +38,7 @@ export default function ChallengeList() {
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >
-                  <ChallengeBox challenge={challenge} />
+                  <ChallengeBox challenge={challenge} fullWidth />
                 </button>
               );
           })

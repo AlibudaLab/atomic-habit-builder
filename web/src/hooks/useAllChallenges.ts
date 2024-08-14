@@ -8,7 +8,7 @@ import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
 import { challengeAddr } from '@/constants';
 
-const useAllChallenges = (publicOnly: boolean) => {
+const useAllChallenges = (publicOnly: boolean, connectedUser: string | undefined) => {
   const publicClient = usePublicClient({ config });
 
   const [loading, setLoading] = useState(true);
@@ -87,7 +87,14 @@ const useAllChallenges = (publicOnly: boolean) => {
             return { ...c, ...matchingMetaData };
           })
           .filter((c) => c !== undefined)
-          .filter((c) => !publicOnly || c?.public) as Challenge[];
+          // if publicOnly is true: only show public challenges, or if private challenge is created by the connected user
+          .filter((c) => {
+            if (publicOnly) {
+              return c?.public || c?.creator === connectedUser;
+            } else {
+              return true;
+            }
+          }) as Challenge[];
 
         setChallenges(newData);
 
