@@ -1,9 +1,10 @@
-import * as trackerContract from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
+import { challengeAddr } from '@/constants';
 
 const useChallenge = (id: number) => {
   const publicClient = usePublicClient({ config });
@@ -26,14 +27,14 @@ const useChallenge = (id: number) => {
         const [challengeRes, participantCount] = await publicClient.multicall({
           contracts: [
             {
-              address: trackerContract.address,
-              abi: trackerContract.abi,
+              address: challengeAddr,
+              abi,
               functionName: 'getChallenge',
               args: [BigInt(id.toString())],
             },
             {
-              address: trackerContract.address,
-              abi: trackerContract.abi,
+              address: challengeAddr,
+              abi,
               functionName: 'totalUsers',
               args: [BigInt(id.toString())],
             },

@@ -9,7 +9,7 @@ import { formatUnits } from 'viem';
 import { useAccount, useBalance, useConnect } from 'wagmi';
 import { Input } from '@nextui-org/input';
 
-import * as usdc from '@/contracts/usdc';
+import { usdcAddr } from '@/constants';
 import useChallenge from '@/hooks/useChallenge';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
@@ -49,7 +49,7 @@ export default function StakeChallenge() {
 
   const { data: tokenBalance } = useBalance({
     address: smartWallet,
-    token: usdc.address,
+    token: usdcAddr,
     query: {
       enabled: !!smartWallet && !!challenge,
       refetchInterval: (data: any) =>
@@ -86,7 +86,7 @@ export default function StakeChallenge() {
     isPreparing: isMintPreparing,
     isLoading: isMintLoading,
   } = useMintERC20(
-    usdc.address,
+    usdcAddr,
     smartWallet as `0x${string}`,
     500_000000n, // mint 500 USDC
   );

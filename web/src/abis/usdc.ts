@@ -1,14 +1,3 @@
-import { getChainsForEnvironment } from '@/store/supportedChains';
-import { Address } from 'viem';
-import { base, baseSepolia } from 'viem/chains';
-
-const addresses: Record<number, Address> = {
-  [baseSepolia.id]: '0xCb5c7C676D8CcE531ceDd0fe2b4159b59607910F',
-  [base.id]: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-};
-
-export const address = addresses[getChainsForEnvironment().id];
-
 export const abi = [
   {
     type: 'constructor',
