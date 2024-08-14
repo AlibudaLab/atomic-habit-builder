@@ -31,7 +31,7 @@ export function generateContractHook<T extends Abi>({ abi, ...spec }: Spec<T>) {
     const chain =
       accountChain ??
       supportedChains.find((supportedChain) =>
-        getChainsForEnvironment().some((envChain) => supportedChain.id === envChain.id),
+        (getChainsForEnvironment().id === supportedChain.id)
       );
 
     if (chain && chain.id in spec) {

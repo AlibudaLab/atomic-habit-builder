@@ -2,7 +2,7 @@ import { createConfig, http } from 'wagmi';
 import { passkeyConnector } from '@zerodev/wallet';
 import { getChainsForEnvironment } from './supportedChains';
 
-const chain = getChainsForEnvironment()[0];
+const chain = getChainsForEnvironment();
 
 export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
   return createConfig({
