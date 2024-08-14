@@ -61,8 +61,6 @@ const useAllChallenges = (publicOnly: boolean) => {
               stakePerUser: bigint;
             };
 
-            console.log('res', res);
-
             const participants = participantsRes[idx].result;
 
             return {

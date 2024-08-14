@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { privateKeyToAccount } from 'viem/accounts';
-import {
-  numberToHex,
-} from 'viem';
+import { numberToHex } from 'viem';
 
 import { baseSepolia } from 'viem/chains';
 import { address as trackerAddr } from '@/contracts/tracker';

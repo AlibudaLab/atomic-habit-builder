@@ -52,8 +52,8 @@ export type DonationDest = {
 export type ActivityMap = Record<string, string[]>;
 
 export enum UserStatus {
-  NotExist = 0,
-  Joined = 1,
-  Claimable = 2,
-  Claimed = 3,
+  NotExist,
+  Joined,
+  Claimable,
+  Claimed,
 }

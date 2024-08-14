@@ -54,9 +54,11 @@ const useJoinChallenge = (
           challengeId: Number(challengeId.toString()),
           isJoin: true,
         }),
-      }).catch((e) => {
-        toast.error('Error updating user challenges, please contact us');
-      }).then(() => {});
+      })
+        .catch((e) => {
+          toast.error('Error updating user challenges, please contact us');
+        })
+        .then(() => {});
 
       onSuccess?.();
     },

@@ -16,7 +16,7 @@ export default function Claim() {
   const { challengeId } = useParams<{ challengeId: string }>();
   const { connect, connectors, isPending: connecting } = useConnect();
   const { challenge, loading } = useChallenge(Number(challengeId));
-  const [claimSuccess, setIsSuccess] = useState(false);
+  const [claimSuccess, setClaimSuccess] = useState(false);
 
   const [isClaimedPopupOpen, setIsClaimedPopupOpen] = useState(false);
 
@@ -61,7 +61,7 @@ export default function Claim() {
   const { onSubmitTransaction: onWithdrawTx, isLoading: isWithdrawLoading } = useWithdraw(
     BigInt(challenge?.id ?? 0),
     () => {
-      setIsSuccess(true);
+      setClaimSuccess(true);
       handleOpenClaimedPopup();
     },
   );
