@@ -87,9 +87,11 @@ const useAllChallenges = (publicOnly: boolean, connectedUser: string | undefined
             return { ...c, ...matchingMetaData };
           })
           .filter((c) => c !== undefined)
-          // if publicOnly is true: only show public challenges, or if private challenge is created by the connected user
+          // if publicOnly is true
+          // only show public challenges, or if private challenge is created by the connected user
           .filter((c) => {
             if (publicOnly) {
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
               return c?.public || c?.creator === connectedUser;
             } else {
               return true;
