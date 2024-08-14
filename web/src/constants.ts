@@ -11,10 +11,10 @@ export enum ChallengeTypes {
 }
 
 export const donationDestinations: DonationDest[] = [
-  {
-    name: 'Protocol Guild',
-    address: '0x32e3C7fD24e175701A35c224f2238d18439C7dBC',
-  },
+  // {
+  //   name: 'Protocol Guild',
+  //   address: '0x32e3C7fD24e175701A35c224f2238d18439C7dBC',
+  // },
   {
     name: 'Alibuda',
     address: '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897',
