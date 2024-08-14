@@ -9,13 +9,14 @@ import { Button } from '@nextui-org/button';
 import { abi, address } from '@/contracts/tracker';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
+import { UserStatus } from '@/types';
 
 export default function Claim() {
   const { push } = useRouter();
   const { challengeId } = useParams<{ challengeId: string }>();
   const { connect, connectors, isPending: connecting } = useConnect();
   const { challenge, loading } = useChallenge(Number(challengeId));
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [claimSuccess, setIsSuccess] = useState(false);
 
   const [isClaimedPopupOpen, setIsClaimedPopupOpen] = useState(false);
 
@@ -32,14 +33,20 @@ export default function Claim() {
       {
         abi,
         address,
-        functionName: 'getClaimableAmount',
-        args: [BigInt(challengeId), account ?? zeroAddress],
+        functionName: 'getWinningStakePerUser',
+        args: [BigInt(challengeId)],
       },
       {
         abi,
         address,
-        functionName: 'getChallengeSucceedParticipantsCount',
+        functionName: 'totalSucceedUsers',
         args: [BigInt(challengeId)],
+      },
+      {
+        abi,
+        address,
+        functionName: 'userStatus',
+        args: [BigInt(challengeId), account ?? zeroAddress],
       },
     ],
     query: {
@@ -48,7 +55,8 @@ export default function Claim() {
   });
 
   const claimable = data?.[0].result;
-  const totalFinishedParticipants = data?.[1].result;
+  const totalFinishedUsers = data?.[1].result;
+  const userStatus = data?.[2].result;
 
   const { onSubmitTransaction: onWithdrawTx, isLoading: isWithdrawLoading } = useWithdraw(
     BigInt(challenge?.id ?? 0),
@@ -57,6 +65,9 @@ export default function Claim() {
       handleOpenClaimedPopup();
     },
   );
+
+  const canClaim = userStatus === UserStatus.Claimable && !!claimable && !!totalFinishedUsers;
+  const claimed = userStatus === UserStatus.Claimed && !!claimable && !!totalFinishedUsers;
 
   return (
     <div className="mx-8 flex flex-col items-center justify-center">
@@ -71,7 +82,7 @@ export default function Claim() {
           </div>
 
           {/* details about what to claim */}
-          {claimable !== undefined && totalFinishedParticipants !== undefined && (
+          {canClaim && (
             <div className="mx-4 my-8 w-full">
               <div className="text-md flex items-center justify-between p-4 font-nunito">
                 <p>Claimable</p>
@@ -79,7 +90,14 @@ export default function Claim() {
               </div>
               <div className="text-md flex items-center justify-between px-4 pb-4 font-nunito">
                 <p>Total Finished</p>
-                <p>{totalFinishedParticipants.toString()}</p>
+                <p>{totalFinishedUsers.toString()}</p>
+              </div>
+            </div>
+          )}
+          {claimed && (
+            <div className="mx-4 my-8 w-full">
+              <div className="text-md flex items-center justify-between p-4 font-nunito">
+                <p>{formatUnits(claimable, 6)} USDC Claimed</p>
               </div>
             </div>
           )}
@@ -92,7 +110,7 @@ export default function Claim() {
             >
               Connect Wallet
             </Button>
-          ) : isSuccess ? (
+          ) : claimed || claimSuccess ? (
             <Button
               type="button"
               color="primary"

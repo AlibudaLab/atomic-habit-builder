@@ -21,6 +21,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     } else {
       return NextResponse.json({
         activityMap: {},
+        joinedChallenges: [],
       });
     }
   } catch (error) {

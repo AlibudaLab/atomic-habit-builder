@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-import * as trackerContract from '@/contracts/tracker';
+import * as challengeContract from '@/contracts/tracker';
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
 import { Address, DecodeEventLogReturnType, zeroAddress } from 'viem';
 
@@ -18,9 +18,9 @@ const useCreateChallenge = (
 ) => {
   return useSubmitTransaction(
     {
-      address: trackerContract.address,
-      abi: trackerContract.abi,
-      functionName: 'register',
+      address: challengeContract.address,
+      abi: challengeContract.abi,
+      functionName: 'create',
       args: [
         verifier,
         extraData,
@@ -31,6 +31,7 @@ const useCreateChallenge = (
         donateDestination,
         zeroAddress, // checkin-Judge
         underlying,
+        5000, // 50% BPS
         stake,
       ],
     },
