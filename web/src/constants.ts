@@ -1,7 +1,4 @@
-import { baseSepolia } from 'viem/chains';
-import { ChallengeMetaData, DonationDest } from './types';
-
-export const EXPECTED_CHAIN = baseSepolia;
+import { DonationDest } from './types';
 
 export enum ChallengeTypes {
   Run = 'Run',
