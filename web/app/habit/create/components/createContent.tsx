@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
 import CreateStep3 from './step3';
-import moment from 'moment';
+import moment, { now } from 'moment';
 import './create.css';
 
 import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constants';
@@ -17,7 +17,7 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
 
-const defaultStart = moment().hour(0).minutes(0).seconds(0).milliseconds(0).add(1, 'day');
+const defaultStart = moment().startOf('day');
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -42,6 +42,7 @@ export default function Create() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [totalTimes, setTotalTimes] = useState(5);
+  const [isPublic, setIsPublic] = useState(false);
 
   const [duration, setDuration] = useState({
     start: parseAbsoluteToLocal(defaultStart.toISOString()),
@@ -76,7 +77,7 @@ export default function Create() {
           name,
           description,
           type,
-          public: false,
+          public: isPublic,
           challengeId,
           accessCode: accessCode,
           user: address,
@@ -91,7 +92,7 @@ export default function Create() {
           toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address],
+    [name, description, type, accessCode, address, isPublic],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
@@ -168,6 +169,8 @@ export default function Create() {
             duration={duration}
             setDuration={setDuration}
             challengeType={type}
+            isPublic={isPublic}
+            setIsPublic={setIsPublic}
             setChallengeType={setType}
             setStep={setStep}
           />

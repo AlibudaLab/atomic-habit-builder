@@ -15,6 +15,8 @@ type Step1Props = {
   description: string;
   setDescription: (description: string) => void;
   totalTimes: number;
+  setIsPublic: (isPublic: boolean) => void;
+  isPublic: boolean;
   setTotalTimes: (totalTimes: number) => void;
   duration: { start: ZonedDateTime; end: ZonedDateTime };
   setDuration: (duration: { start: ZonedDateTime; end: ZonedDateTime }) => void;
@@ -32,7 +34,8 @@ export default function CreateStep1({
   setTotalTimes,
   duration,
   setDuration,
-  challengeType,
+  setIsPublic,
+  isPublic,
   setChallengeType,
   setStep,
 }: Step1Props) {
@@ -40,14 +43,13 @@ export default function CreateStep1({
     <div className="flex w-full flex-col items-center justify-start px-8">
       {/* todo: add public challenge later */}
       <Switch
-        isDisabled
         defaultSelected
         size="sm"
         className="my-2"
-        // description="Public challenges are visible to everyone"
+        isSelected={isPublic}
+        onValueChange={(value) => setIsPublic(value)}
       >
-        {' '}
-        <p className="text-sm"> Private </p>{' '}
+        <p className="text-sm"> Public </p>{' '}
       </Switch>
 
       <Input
