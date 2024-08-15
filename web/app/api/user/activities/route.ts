@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   try {
     const payload = await req.json();
 
-    if (!payload.user || !payload.challengeId || !payload.activityId) {
+    if (!payload.user || !payload.challengeId || (!payload.activityId && !payload.isJoin)) {
       return NextResponse.json({ error: 'Missing Args' }, { status: 400 });
     }
     const user = payload.user.toLowerCase();
@@ -26,21 +26,35 @@ export async function POST(req: NextRequest): Promise<Response> {
     if (userDoc.exists) {
       const data = userDoc.data();
       const activityMap = data ? data.activityMap || {} : {};
+      const joinedChallenges = data ? data.joinedChallenges || [] : [];
 
-      if (activityMap[challengeId]) {
-        activityMap[challengeId].push(activityId);
-      } else {
-        activityMap[challengeId] = [activityId];
+      // update joined array
+      if (payload.isJoin) {
+        joinedChallenges.push(challengeId);
       }
 
-      await userRef.update({ activityMap });
+      // update the activity id map
+      if (payload.activityId) {
+        if (activityMap[challengeId]) {
+          activityMap[challengeId].push(activityId);
+        } else {
+          activityMap[challengeId] = [activityId];
+        }
+      }
+
+      await userRef.update({ activityMap, joinedChallenges });
     } else {
       // if user doc does not exist, create a new doc with activityMap
-      const activityMap = {
-        [challengeId]: [payload.activityId],
-      };
+      if (payload.isJoin) {
+        await userRef.set({ joinedChallenges: [challengeId], activityMap: {} });
+      }
 
-      await userRef.set({ activityMap });
+      if (payload.activityId) {
+        const activityMap = {
+          [challengeId]: [payload.activityId],
+        };
+        await userRef.set({ activityMap, joinedChallenges: [] });
+      }
     }
 
     return NextResponse.json({ status: 200 });

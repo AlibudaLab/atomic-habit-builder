@@ -1,12 +1,16 @@
 import { readContract } from '@wagmi/core';
-import * as trackerContract from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
+import { UserStatus } from '@/types';
+import { challengeAddr } from '@/constants';
 
-const useUserJoined = (address: string | undefined, challengeId: bigint) => {
+const useUserStatus = (address: string | undefined, challengeId: bigint) => {
   const [loading, setLoading] = useState(true);
-  const [joined, setJoined] = useState<boolean>(false);
+  const [status, setUserStatus] = useState<UserStatus>(UserStatus.NotExist);
   const [error, setError] = useState<unknown | null>(null);
+
+  const joined = status >= UserStatus.Joined;
 
   useEffect(() => {
     if (!address) return;
@@ -15,13 +19,13 @@ const useUserJoined = (address: string | undefined, challengeId: bigint) => {
       try {
         setLoading(true);
 
-        const hasJoined = await readContract(config, {
-          abi: trackerContract.abi,
-          address: trackerContract.address,
-          functionName: 'hasJoined',
+        const newStatus = await readContract(config, {
+          abi: abi,
+          address: challengeAddr,
+          functionName: 'userStatus',
           args: [challengeId, address as `0x${string}`],
         });
-        setJoined(hasJoined);
+        setUserStatus(newStatus as UserStatus);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -35,7 +39,7 @@ const useUserJoined = (address: string | undefined, challengeId: bigint) => {
     setInterval(fetchData, 5000);
   }, [address, challengeId]);
 
-  return { loading, joined, error };
+  return { loading, joined, error, status };
 };
 
-export default useUserJoined;
+export default useUserStatus;

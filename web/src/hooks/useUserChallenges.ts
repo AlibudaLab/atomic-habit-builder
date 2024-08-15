@@ -1,15 +1,16 @@
 import { readContract } from '@wagmi/core';
-import * as trackerContract from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import useAllChallenges from './useAllChallenges';
 import { ChallengeWithCheckIns } from '@/types';
+import { challengeAddr } from '@/constants';
 
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
 
   // fetch both public and private challenges
-  const { challenges } = useAllChallenges(false);
+  const { challenges } = useAllChallenges(false, address);
 
   const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
@@ -22,24 +23,20 @@ const useUserChallenges = (address: string | undefined) => {
       try {
         setLoading(true);
 
-        const userChallenges = await readContract(config, {
-          abi: trackerContract.abi,
-          address: trackerContract.address,
-          functionName: 'getUserChallenges',
-          args: [address as `0x${string}`],
-        });
+        const response = await fetch(`/api/user?address=${address}`);
+        const res = await response.json();
 
-        // fetch user activities from rpc
-        const userRegisteredIds = userChallenges as bigint[];
+        const joinedChallenges = res.joinedChallenges ?? ([] as number[]);
+        console.log('joinedChallenges', joinedChallenges);
 
         // all challenges that user participants in
-        let knownChallenges = challenges.filter((c) => userRegisteredIds.includes(BigInt(c.id)));
+        let knownChallenges = challenges.filter((c) => joinedChallenges.includes(c.id));
 
         const checkedIns = await Promise.all(
           knownChallenges.map(async (c) => {
             const checkedIn = (await readContract(config, {
-              abi: trackerContract.abi,
-              address: trackerContract.address,
+              abi,
+              address: challengeAddr,
               functionName: 'getUserCheckInCounts',
               args: [BigInt(c.id), address as `0x${string}`],
             })) as unknown as bigint;
@@ -47,13 +44,26 @@ const useUserChallenges = (address: string | undefined) => {
           }),
         );
 
+        // TODO: remove this once we have a better view function to get winner's stake
+        const totalSucceededCounts = await Promise.all(
+          knownChallenges.map(async (c) => {
+            const succeeded = (await readContract(config, {
+              abi,
+              address: challengeAddr,
+              functionName: 'totalSucceedUsers',
+              args: [BigInt(c.id)],
+            })) as unknown as bigint;
+            return succeeded;
+          }),
+        );
+
         const claimables = await Promise.all(
           knownChallenges.map(async (c) => {
             const stake = (await readContract(config, {
-              abi: trackerContract.abi,
-              address: trackerContract.address,
-              functionName: 'getClaimableAmount',
-              args: [BigInt(c.id), address as `0x${string}`],
+              abi,
+              address: challengeAddr,
+              functionName: 'getWinningStakePerUser',
+              args: [BigInt(c.id)],
             })) as unknown as bigint;
             return stake;
           }),
@@ -63,7 +73,8 @@ const useUserChallenges = (address: string | undefined) => {
           return {
             ...c,
             checkedIn: Number(checkedIns[idx].toString()),
-            claimable: claimables[idx],
+            succeedClaimable: claimables[idx],
+            totalSucceeded: totalSucceededCounts[idx],
           };
         });
 

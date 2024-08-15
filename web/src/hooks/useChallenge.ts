@@ -1,9 +1,10 @@
-import * as trackerContract from '@/contracts/tracker';
+import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
+import { challengeAddr } from '@/constants';
 
 const useChallenge = (id: number) => {
   const publicClient = usePublicClient({ config });
@@ -26,15 +27,15 @@ const useChallenge = (id: number) => {
         const [challengeRes, participantCount] = await publicClient.multicall({
           contracts: [
             {
-              address: trackerContract.address,
-              abi: trackerContract.abi,
-              functionName: 'challenges',
+              address: challengeAddr,
+              abi,
+              functionName: 'getChallenge',
               args: [BigInt(id.toString())],
             },
             {
-              address: trackerContract.address,
-              abi: trackerContract.abi,
-              functionName: 'getChallengeParticipantsCount',
+              address: challengeAddr,
+              abi,
+              functionName: 'totalUsers',
               args: [BigInt(id.toString())],
             },
           ],
@@ -46,14 +47,15 @@ const useChallenge = (id: number) => {
         if (!res || participantCount.error) return;
 
         const data = {
-          verifier: res[0],
-          targetNum: Number(res[1].toString()),
-          startTimestamp: Number(res[2].toString()),
-          joinDueTimestamp: Number(res[3].toString()),
-          endTimestamp: Number(res[4].toString()),
-          donationDestination: res[5],
+          verifier: res.verifier,
+          targetNum: Number(res.minimumCheckIns),
+          startTimestamp: Number(res.startTimestamp),
+          joinDueTimestamp: Number(res.joinDueTimestamp),
+          endTimestamp: Number(res.endTimestamp),
+          donationDestination: res.donateDestination,
           participants: Number(participantCount.result.toString()),
-          stake: res[8],
+          stake: res.stakePerUser,
+          totalStaked: res.stakePerUser * participantCount.result,
           ...metaData,
         };
 

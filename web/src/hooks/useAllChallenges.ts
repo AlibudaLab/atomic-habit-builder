@@ -1,13 +1,14 @@
 import { readContract } from '@wagmi/core';
-import * as trackerContract from '@/contracts/tracker';
+import { abi as challengeAbi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Address } from 'viem';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaData';
+import { challengeAddr } from '@/constants';
 
-const useAllChallenges = (publicOnly: boolean) => {
+const useAllChallenges = (publicOnly: boolean, connectedUser: string | undefined) => {
   const publicClient = usePublicClient({ config });
 
   const [loading, setLoading] = useState(true);
@@ -26,55 +27,54 @@ const useAllChallenges = (publicOnly: boolean) => {
         setLoading(true);
 
         const challengeCount = await readContract(config, {
-          abi: trackerContract.abi,
-          address: trackerContract.address,
+          abi: challengeAbi,
+          address: challengeAddr,
           functionName: 'challengeCounter',
         });
 
         const result = await publicClient.multicall({
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
-            address: trackerContract.address,
-            abi: trackerContract.abi,
-            functionName: 'challenges',
+            address: challengeAddr,
+            abi: challengeAbi,
+            functionName: 'getChallenge',
             args: [i + 1],
           })),
         });
 
         const participantsRes = (await publicClient.multicall({
           contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
-            address: trackerContract.address,
-            abi: trackerContract.abi,
-            functionName: 'getChallengeParticipantsCount',
+            address: challengeAddr,
+            abi: challengeAbi,
+            functionName: 'totalUsers',
             args: [i + 1],
           })),
         })) as { result: bigint }[];
 
         const newData: Challenge[] = result
           .map((raw, idx) => {
-            const res = raw.result as any as [
-              Address,
-              number, // checkins
-              number, // start
-              number, // join due
-              number, // end
-              Address, // donation
-              Address, // check in judge
-              Address, // underlying
-              bigint, // stake
-              bigint, // total staked
-              boolean,
-            ];
+            const res = raw.result as any as {
+              verifier: Address;
+              minimumCheckIns: bigint;
+              startTimestamp: bigint;
+              joinDueTimestamp: bigint;
+              endTimestamp: bigint;
+              donateDestination: Address;
+              stakePerUser: bigint;
+            };
+
+            const participants = participantsRes[idx].result;
 
             return {
               id: BigInt(idx + 1),
-              verifier: res[0],
-              targetNum: Number(res[1].toString()),
-              startTimestamp: Number(res[2].toString()),
-              joinDueTimestamp: Number(res[3].toString()),
-              endTimestamp: Number(res[4].toString()),
-              donationDestination: res[5],
-              stake: res[8],
-              participants: Number(participantsRes[idx].result.toString()),
+              verifier: res.verifier,
+              targetNum: Number(res.minimumCheckIns.toString()),
+              startTimestamp: Number(res.startTimestamp.toString()),
+              joinDueTimestamp: Number(res.joinDueTimestamp.toString()),
+              endTimestamp: Number(res.endTimestamp.toString()),
+              donationDestination: res.donateDestination,
+              stake: res.stakePerUser,
+              participants: Number(participants.toString()),
+              totalStaked: res.stakePerUser * participants,
             };
           })
           .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))
@@ -87,7 +87,16 @@ const useAllChallenges = (publicOnly: boolean) => {
             return { ...c, ...matchingMetaData };
           })
           .filter((c) => c !== undefined)
-          .filter((c) => !publicOnly || c?.public) as Challenge[];
+          // if publicOnly is true
+          // only show public challenges, or if private challenge is created by the connected user
+          .filter((c) => {
+            if (publicOnly) {
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              return c?.public || c?.creator === connectedUser;
+            } else {
+              return true;
+            }
+          }) as Challenge[];
 
         setChallenges(newData);
 

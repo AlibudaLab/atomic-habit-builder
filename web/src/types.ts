@@ -22,6 +22,7 @@ export type ChallengeDetail = {
   targetNum: number;
   donationDestination: Address;
   participants: number;
+  totalStaked: bigint;
 };
 
 // Defined by us, off-chain
@@ -32,13 +33,15 @@ export type ChallengeMetaData = {
   description?: string;
   public: boolean;
   accessCode?: string; // only for private challenges
+  creator?: Address;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;
 
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
-  claimable: bigint;
+  succeedClaimable: bigint;
+  totalSucceeded: bigint;
 };
 
 export type DonationDest = {
@@ -48,3 +51,16 @@ export type DonationDest = {
 };
 
 export type ActivityMap = Record<string, string[]>;
+
+export enum UserStatus {
+  NotExist,
+  Joined,
+  Claimable,
+  Claimed,
+}
+
+export enum ChallengeStatus {
+  NotExist,
+  Created,
+  Settled,
+}

@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { privateKeyToAccount } from 'viem/accounts';
-import { secp256k1 } from '@noble/curves/secp256k1';
-import {
-  domainSeparator,
-  getTypesForEIP712Domain,
-  hashTypedData,
-  hexToNumber,
-  numberToHex,
-} from 'viem';
+import { numberToHex } from 'viem';
 
-import { baseSepolia } from 'viem/chains';
-import { address as trackerAddr } from '@/contracts/tracker';
+import { challengeAddr } from '@/constants';
+import { getChainsForEnvironment } from '@/store/supportedChains';
+
+const currentChain = getChainsForEnvironment();
 
 const domain = {
-  name: 'Alibuda Habit Builder',
+  name: 'Habit Builder',
   version: '1.0',
-  chainId: baseSepolia.id,
-  verifyingContract: trackerAddr,
+  chainId: currentChain.id,
+  verifyingContract: challengeAddr,
 };
 
 const types = {

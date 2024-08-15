@@ -1,26 +1,33 @@
 import toast from 'react-hot-toast';
 
-import * as testTokenContract from '@/contracts/testToken';
-import * as trackerContract from '@/contracts/tracker';
+import { abi as usdcAbi } from '@/abis/usdc';
+import { abi as challengeAbi } from '@/abis/challenge';
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
+import { Address } from 'viem';
+import { usdcAddr, challengeAddr } from '@/constants';
 
 /**
  * @description This fill was learned in https://github.com/guildxyz/guild.xyz/blob/3b150b2b9b9c3bf816cf0bc915753df432274399/src/requirements/Payment/components/WithdrawButton/hooks/useWithdraw.ts
  * useShowErrorToast and useToast was removed
  */
 
-const useJoinChallenge = (challengeId: bigint, approveAmt?: bigint, onSuccess?: () => void) => {
+const useJoinChallenge = (
+  address: Address | undefined,
+  challengeId: bigint,
+  approveAmt?: bigint,
+  onSuccess?: () => void,
+) => {
   const txConfig = {
     contracts: [
       {
-        address: testTokenContract.address,
-        abi: testTokenContract.abi,
+        address: usdcAddr,
+        abi: usdcAbi,
         functionName: 'approve',
-        args: [trackerContract.address, approveAmt],
+        args: [challengeAddr, approveAmt],
       },
       {
-        address: trackerContract.address,
-        abi: trackerContract.abi,
+        address: challengeAddr,
+        abi: challengeAbi,
         functionName: 'join',
         args: [challengeId],
       },
@@ -36,11 +43,28 @@ const useJoinChallenge = (challengeId: bigint, approveAmt?: bigint, onSuccess?: 
       //In the orginal file they refetch after success refetch();
       toast.dismiss();
       toast.success('Joined! Directing to checkIn!');
-
       onSuccess?.();
     },
     onSent: () => {
       toast.loading('Transaction sent...');
+
+      // update DB to reflect the user has joined the challenge
+      // do this before it's confirmed, so if user refresh, we still get the correct state
+      void fetch('/api/user/activities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: address,
+          challengeId: Number(challengeId.toString()),
+          isJoin: true,
+        }),
+      })
+        .catch((e) => {
+          toast.error('Error updating user challenges, please contact us');
+        })
+        .then(() => {});
     },
   });
 };

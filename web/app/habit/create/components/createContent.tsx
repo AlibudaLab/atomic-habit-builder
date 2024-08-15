@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
 import CreateStep3 from './step3';
-import moment from 'moment';
+import moment, { now } from 'moment';
 import './create.css';
 
 import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constants';
@@ -15,10 +15,9 @@ import toast from 'react-hot-toast';
 import { parseAbsoluteToLocal } from '@internationalized/date';
 
 const defaultDonationDest = donationDestinations[0];
+import { usdcAddr } from '@/constants';
 
-import * as testTokenContract from '@/contracts/testToken';
-
-const defaultStart = moment().hour(0).minutes(0).seconds(0).milliseconds(0).add(1, 'day');
+const defaultStart = moment().startOf('day');
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -43,6 +42,7 @@ export default function Create() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [totalTimes, setTotalTimes] = useState(5);
+  const [isPublic, setIsPublic] = useState(false);
 
   const [duration, setDuration] = useState({
     start: parseAbsoluteToLocal(defaultStart.toISOString()),
@@ -60,7 +60,7 @@ export default function Create() {
 
   const onCreateSuccess = useCallback(
     (receipt: any, events: DecodeEventLogReturnType[]) => {
-      const targetEvent = events.find((e) => e.eventName === 'Register');
+      const targetEvent = events.find((e) => e.eventName === 'Create');
       if (!targetEvent) {
         return toast.error('Error Creating a Challenge.');
       }
@@ -77,34 +77,32 @@ export default function Create() {
           name,
           description,
           type,
-          public: false,
+          public: isPublic,
           challengeId,
           accessCode: accessCode,
           user: address,
         }),
       })
         .then((res) => {
-          console.log('api response', res);
           setCreatedChallengeId(challengeId);
           setStep(3);
         })
         .catch((error) => {
           console.error('Error adding challenge:', error);
-          toast.error('Error Creating a Challenge.');
+          toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address],
+    [name, description, type, accessCode, address, isPublic],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
     defaultVerifier,
-    name,
     totalTimes,
     moment.utc(duration.start.toAbsoluteString()).unix(),
-    moment.utc(duration.end.toAbsoluteString()).unix(),
+    moment.utc(duration.end.toAbsoluteString()).unix() - 1,
     moment.utc(duration.end.toAbsoluteString()).unix(),
     donatioAddr,
-    testTokenContract.address,
+    usdcAddr,
     stakeInUSDC,
     onCreateSuccess,
   );
@@ -171,6 +169,8 @@ export default function Create() {
             duration={duration}
             setDuration={setDuration}
             challengeType={type}
+            isPublic={isPublic}
+            setIsPublic={setIsPublic}
             setChallengeType={setType}
             setStep={setStep}
           />

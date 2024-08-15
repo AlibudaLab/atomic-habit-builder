@@ -1,4 +1,3 @@
-import { baseSepolia } from 'viem/chains';
 import { useAccount, useChainId, useConnect, useDisconnect } from 'wagmi';
 import { AccountDropdown } from './AccountDropdown';
 import { AccountInfoPanel } from './AccountInfoPanel';
@@ -43,7 +42,7 @@ function AccountConnect() {
           );
         }
 
-        if (account.status === 'connected' && chainId !== baseSepolia.id) {
+        if (account.status === 'connected') {
           return (
             <button onClick={() => disconnect()} type="button">
               Wrong network

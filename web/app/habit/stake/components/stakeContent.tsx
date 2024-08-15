@@ -9,7 +9,7 @@ import { formatUnits } from 'viem';
 import { useAccount, useBalance, useConnect } from 'wagmi';
 import { Input } from '@nextui-org/input';
 
-import * as testTokenContract from '@/contracts/testToken';
+import { usdcAddr } from '@/constants';
 import useChallenge from '@/hooks/useChallenge';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
@@ -20,7 +20,10 @@ import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
-import useUserJoined from '@/hooks/useUserJoined';
+import useUserStatus from '@/hooks/useUserStatus';
+import { Environment, getCurrentEnvironment } from '@/store/environment';
+
+const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
 export default function StakeChallenge() {
   const { push } = useRouter();
@@ -37,16 +40,20 @@ export default function StakeChallenge() {
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
-  const { joined } = useUserJoined(smartWallet, BigInt(challengeId));
+  const { joined } = useUserStatus(smartWallet, BigInt(challengeId));
 
   const hasAccess = useMemo(
-    () => challenge?.public === true || challenge?.accessCode === inputAccessCode || joined,
+    () =>
+      challenge?.public === true ||
+      challenge?.creator === address ||
+      challenge?.accessCode === inputAccessCode ||
+      joined,
     [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
   );
 
-  const { data: testTokenBalance } = useBalance({
+  const { data: tokenBalance } = useBalance({
     address: smartWallet,
-    token: testTokenContract.address,
+    token: usdcAddr,
     query: {
       enabled: !!smartWallet && !!challenge,
       refetchInterval: (data: any) =>
@@ -60,8 +67,8 @@ export default function StakeChallenge() {
 
   const hasEnoughBalance =
     challenge &&
-    testTokenBalance &&
-    Number(testTokenBalance.value.toString()) >= Number(challenge.stake.toString());
+    tokenBalance &&
+    Number(tokenBalance.value.toString()) >= Number(challenge.stake.toString());
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
   const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
@@ -83,7 +90,7 @@ export default function StakeChallenge() {
     isPreparing: isMintPreparing,
     isLoading: isMintLoading,
   } = useMintERC20(
-    testTokenContract.address as `0x${string}`,
+    usdcAddr,
     smartWallet as `0x${string}`,
     500_000000n, // mint 500 USDC
   );
@@ -97,7 +104,7 @@ export default function StakeChallenge() {
     onSubmitTransaction: onJoinTx,
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
-  } = useJoinChallenge(BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
+  } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
     handleOpenCheckinPopup(); // trigger pop up window
   });
 
@@ -245,21 +252,27 @@ export default function StakeChallenge() {
          */}
         {hasAccess && (
           <div className="p-4 text-xs">
-            {testTokenBalance && !hasEnoughBalance ? (
+            {tokenBalance && !hasEnoughBalance ? (
               <p>
                 {' '}
-                🚨 Insufficient Balance:{' '}
-                {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC.{' '}
-                <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
-                  {' '}
-                  Mint Test Token now{' '}
-                </span>{' '}
+                🚨 Insufficient Balance: {tokenBalance
+                  ? formatUnits(tokenBalance.value, 6)
+                  : 0}{' '}
+                USDC.{' '}
+                {isTestnet && (
+                  <span className="font-bold hover:underline" onClick={onMintTestTokenClick}>
+                    {' '}
+                    Mint Test Token now{' '}
+                  </span>
+                )}
               </p>
             ) : (
               <p>
                 {' '}
-                💰 Smart Wallet Balance:{' '}
-                {testTokenBalance ? formatUnits(testTokenBalance.value, 6) : 0} USDC{' '}
+                💰 Smart Wallet Balance: {tokenBalance
+                  ? formatUnits(tokenBalance.value, 6)
+                  : 0}{' '}
+                USDC{' '}
               </p>
             )}
           </div>

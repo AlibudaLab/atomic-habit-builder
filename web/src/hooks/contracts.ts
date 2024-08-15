@@ -30,9 +30,7 @@ export function generateContractHook<T extends Abi>({ abi, ...spec }: Spec<T>) {
     // use a supported chain available in current env as fallback
     const chain =
       accountChain ??
-      supportedChains.find((supportedChain) =>
-        getChainsForEnvironment().some((envChain) => supportedChain.id === envChain.id),
-      );
+      supportedChains.find((supportedChain) => getChainsForEnvironment().id === supportedChain.id);
 
     if (chain && chain.id in spec) {
       if (spec[chain.id].deactivated) {

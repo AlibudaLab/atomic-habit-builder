@@ -2,11 +2,10 @@ import { baseSepolia, Chain, base } from 'viem/chains';
 import { Environment, getCurrentEnvironment } from './environment';
 
 // The list of supported Chains for a given environment
-export const SUPPORTED_CHAINS: Record<Environment, [Chain, ...Chain[]]> = {
-  [Environment.localhost]: [baseSepolia],
-  [Environment.development]: [baseSepolia],
-  [Environment.staging]: [base, baseSepolia],
-  [Environment.production]: [base, baseSepolia],
+export const SUPPORTED_CHAIN: Record<Environment, Chain> = {
+  [Environment.localhost]: baseSepolia,
+  [Environment.testnet]: baseSepolia,
+  [Environment.mainnet]: base,
 };
 
 /**
@@ -18,10 +17,5 @@ export function getChainsForEnvironment(env?: Environment) {
   if (!env) {
     env = getCurrentEnvironment();
   }
-  return SUPPORTED_CHAINS[env];
-}
-
-export function getChainById(chainId: string) {
-  const chains = getChainsForEnvironment();
-  return chains?.find((c: Chain) => c.id === Number(chainId)) ?? null;
+  return SUPPORTED_CHAIN[env];
 }

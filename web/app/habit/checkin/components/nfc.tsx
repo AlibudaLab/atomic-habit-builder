@@ -5,7 +5,7 @@ import { useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
-import * as trackerContract from '@/contracts/tracker';
+import { abi as challengeAbi } from '@/abis/challenge';
 import { Challenge } from '@/types';
 import moment from 'moment';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
 import { formatUnits, toBytes, zeroAddress } from 'viem';
+import { challengeAddr } from '@/constants';
 
 export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { address } = useAccount();
@@ -48,8 +49,8 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
       txPendingToastId = toast.loading('Check in successful!! 🥳🥳🥳 Sending transaction...');
 
       writeContract({
-        address: trackerContract.address,
-        abi: trackerContract.abi,
+        address: challengeAddr,
+        abi: challengeAbi,
         functionName: 'checkIn',
         args: [
           BigInt(challenge.id),
