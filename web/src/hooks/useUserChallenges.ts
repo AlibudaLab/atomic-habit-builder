@@ -27,7 +27,6 @@ const useUserChallenges = (address: string | undefined) => {
         const res = await response.json();
 
         const joinedChallenges = res.joinedChallenges ?? ([] as number[]);
-        console.log('joinedChallenges', joinedChallenges);
 
         // all challenges that user participants in
         let knownChallenges = challenges.filter((c) => joinedChallenges.includes(c.id));
