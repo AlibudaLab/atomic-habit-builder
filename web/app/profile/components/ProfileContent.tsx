@@ -12,6 +12,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { base } from 'viem/chains';
 import useUserChallenges from '@/hooks/useUserChallenges';
+import { CopyIcon } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
@@ -63,7 +65,15 @@ export default function ProfileContent() {
               <div className="flex w-full items-center justify-between">
                 <p className="text-sm"> {getSlicedAddress(address, 6)} </p>
               </div>
-              <div>
+              <div className="flex justify-center gap-2">
+                <CopyIcon
+                  size={15}
+                  onClick={() => {
+                    void navigator.clipboard.writeText(address);
+                    toast.success('Copied to clipboard');
+                  }}
+                />
+
                 <Link href={getExplorerLink(address, chainId ?? base.id)} target="_blank">
                   <ExternalLinkIcon />
                 </Link>
