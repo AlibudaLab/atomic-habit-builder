@@ -170,7 +170,7 @@ d05c97897,2,1722470400,1723708801,1723708802,0x29C3d6b54E2F8Ae641Fc331cF2143B6d0
 cast send 0x7D1981603530aa76db92186DA40092c5394B7635 "settle(uint256)" "9" --private-key $PRIVATE_KEY --rpc-url base_sepolia
 ```
 
-### Enabled Donation Organization
+### Enabled Donation Org Address
 
 [Notice] Please adjust the parameters accordingly.
 
