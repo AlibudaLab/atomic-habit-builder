@@ -23,7 +23,7 @@ const useUserJoined = (address: string | undefined, challengeId: bigint) => {
           functionName: 'userStatus',
           args: [challengeId, address as `0x${string}`],
         });
-        setJoined(status === UserStatus.Joined);
+        setJoined(status >= UserStatus.Joined);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
