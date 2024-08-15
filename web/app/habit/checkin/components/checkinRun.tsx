@@ -37,7 +37,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
   const { connect, connectors, isPending: connecting } = useConnect();
   const { address } = useAccount();
-  const { status: userStatus, joined, loading: loadingJoined } = useUserStatus(address, BigInt(challenge.id));
+  const {
+    status: userStatus,
+    joined,
+    loading: loadingJoined,
+  } = useUserStatus(address, BigInt(challenge.id));
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
@@ -204,19 +208,20 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       )}
 
       {/* if user already finish, always allow going to the claim page */}
-      {(userStatus === UserStatus.Claimable) && (
-          <Button
-            type="button"
-            color="primary"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
-            onClick={() => push(`/habit/claim/${challenge.id}`)}
-          >
-            Finish 🎉
-          </Button>
-        )}
+      {userStatus === UserStatus.Claimable && (
+        <Button
+          type="button"
+          color="primary"
+          className="mt-12 min-h-12 w-3/4 max-w-56"
+          onClick={() => push(`/habit/claim/${challenge.id}`)}
+        >
+          Finish 🎉
+        </Button>
+      )}
 
       {/* challenge is not finished yet */}
-      {(userStatus === UserStatus.Joined) && (!canCheckInNow ? (
+      {userStatus === UserStatus.Joined &&
+        (!canCheckInNow ? (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button
               className="mt-12 min-h-12 w-3/4 max-w-56"
@@ -231,36 +236,36 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
             </div>
           </div>
         ) : !address ? (
-        <Button
-          type="button"
-          color="primary"
-          className="mt-12 min-h-12 w-3/4 max-w-56"
-          onClick={() => connect({ connector: connectors[0] })}
-          isLoading={connecting}
-        >
-          Connect Wallet
-        </Button>
-      ) : verifierConnected && !runDataError ? (
-        <Button
-          type="button"
-          color="primary"
-          className="mt-12 min-h-12 w-3/4 max-w-56"
-          onClick={onClickCheckIn}
-          isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
-          isLoading={isCheckInLoading || isSigning}
-        >
-          Check In
-        </Button>
-      ) : (
-        <Button
-          type="button"
-          color="primary"
-          className="mt-12 min-h-12 w-3/4 max-w-56"
-          onClick={onClickConnectStrava}
-        >
-          Connect with Strava
-        </Button>
-      ))}
+          <Button
+            type="button"
+            color="primary"
+            className="mt-12 min-h-12 w-3/4 max-w-56"
+            onClick={() => connect({ connector: connectors[0] })}
+            isLoading={connecting}
+          >
+            Connect Wallet
+          </Button>
+        ) : verifierConnected && !runDataError ? (
+          <Button
+            type="button"
+            color="primary"
+            className="mt-12 min-h-12 w-3/4 max-w-56"
+            onClick={onClickCheckIn}
+            isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
+            isLoading={isCheckInLoading || isSigning}
+          >
+            Check In
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            color="primary"
+            className="mt-12 min-h-12 w-3/4 max-w-56"
+            onClick={onClickConnectStrava}
+          >
+            Connect with Strava
+          </Button>
+        ))}
 
       {isCheckinPopupOpen && (
         <CheckinPopup

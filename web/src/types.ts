@@ -58,3 +58,9 @@ export enum UserStatus {
   Claimable,
   Claimed,
 }
+
+export enum ChallengeStatus {
+  NotExist,
+  Created,
+  Settled,
+}
