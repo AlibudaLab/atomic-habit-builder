@@ -43,7 +43,11 @@ export default function StakeChallenge() {
   const { joined } = useUserStatus(smartWallet, BigInt(challengeId));
 
   const hasAccess = useMemo(
-    () => challenge?.public === true || challenge?.accessCode === inputAccessCode || joined,
+    () =>
+      challenge?.public === true ||
+      challenge?.creator === address ||
+      challenge?.accessCode === inputAccessCode ||
+      joined,
     [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
   );
 
