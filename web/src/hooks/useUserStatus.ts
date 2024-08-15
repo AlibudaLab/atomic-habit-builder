@@ -19,13 +19,13 @@ const useUserStatus = (address: string | undefined, challengeId: bigint) => {
       try {
         setLoading(true);
 
-        const status = await readContract(config, {
+        const newStatus = await readContract(config, {
           abi: abi,
           address: challengeAddr,
           functionName: 'userStatus',
           args: [challengeId, address as `0x${string}`],
         });
-        setUserStatus(status as UserStatus);
+        setUserStatus(newStatus as UserStatus);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
