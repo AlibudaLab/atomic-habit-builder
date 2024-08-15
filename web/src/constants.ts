@@ -32,7 +32,7 @@ const usdcContractAddrs: Record<number, Address> = {
 
 const challengeContractAddrs: Record<number, Address> = {
   [baseSepolia.id]: '0x7d1981603530aa76db92186da40092c5394b7635',
-  [base.id]: zeroAddress,
+  [base.id]: '0xd909e5ed3bb25f6680505fb88434166d05a52aaa',
 };
 
 export const challengeAddr = challengeContractAddrs[currentChainId];
