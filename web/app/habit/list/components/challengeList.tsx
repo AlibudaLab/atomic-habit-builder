@@ -20,7 +20,7 @@ export default function ChallengeList() {
 
   return (
     <main className="container flex flex-col items-center px-4 text-center">
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex w-full flex-col items-center justify-center">
         <p className="pb-8 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 
         {/* Challenge List */}
@@ -38,7 +38,7 @@ export default function ChallengeList() {
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >
-                  <ChallengeBox challenge={challenge} fullWidth />
+                  <ChallengeBox challenge={challenge} fullWidth={true} />
                 </button>
               );
           })

@@ -37,16 +37,15 @@ const useJoinChallenge = (
   return useSubmitTransaction(txConfig, {
     onError: (e) => {
       if (e) console.log('Error while Joining Challenge:', e);
-      toast.error('Error joining the challenge. Please try again');
+      toast.error('Error joining the challenge. Please try again', { id: 'join-challenge' });
     },
     onSuccess: () => {
       //In the orginal file they refetch after success refetch();
-      toast.dismiss();
-      toast.success('Joined! Directing to checkIn!');
+      toast.success('Joined! Directing to checkIn!', { id: 'join-challenge' });
       onSuccess?.();
     },
     onSent: () => {
-      toast.loading('Transaction sent...');
+      toast.loading('Transaction sent...', { id: 'join-challenge' });
 
       // update DB to reflect the user has joined the challenge
       // do this before it's confirmed, so if user refresh, we still get the correct state
@@ -62,7 +61,9 @@ const useJoinChallenge = (
         }),
       })
         .catch((e) => {
-          toast.error('Error updating user challenges, please contact us');
+          toast.error('Error updating user challenges, please contact us', {
+            id: 'join-challenge',
+          });
         })
         .then(() => {});
     },
