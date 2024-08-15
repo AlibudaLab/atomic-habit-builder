@@ -71,6 +71,7 @@ export default function CreateStep2({
         label="Donation organization"
         className="my-4"
         description="Half of forfeiture stake goes to this org."
+        defaultSelectedKeys={[donationDestinations[0].address]}
       >
         {donationDestinations.map((org) => (
           <SelectItem key={org.address} onClick={() => setDonationAddr(org.address)}>

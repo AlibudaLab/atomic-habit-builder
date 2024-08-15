@@ -17,8 +17,6 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
 
-const defaultStart = moment().startOf('day');
-
 /**
  * TEMP: Workout & Running activity check-in
  * @param param0
@@ -31,6 +29,8 @@ export default function Create() {
   useEffect(() => {
     setLoaded(true);
   }, []);
+
+  const defaultStart = useMemo(() => moment().startOf('day'), []) 
 
   // 3 steps: input, review, success
   const [step, setStep] = useState(1);
