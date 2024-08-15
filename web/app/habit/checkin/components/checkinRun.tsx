@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import moment from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount, useConnect } from 'wagmi';
-import { Challenge } from '@/types';
+import { Challenge, UserStatus } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
@@ -18,7 +18,7 @@ import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
-import useUserJoined from '@/hooks/useUserJoined';
+import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
 
@@ -37,7 +37,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   const { push } = useRouter();
   const { connect, connectors, isPending: connecting } = useConnect();
   const { address } = useAccount();
-  const { joined, loading: loadingJoined } = useUserJoined(address, BigInt(challenge.id));
+  const { status: userStatus, joined, loading: loadingJoined } = useUserStatus(address, BigInt(challenge.id));
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
@@ -158,7 +158,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       : workoutData;
 
   return (
-    <div className="flex w-full max-w-96 flex-col items-center justify-center">
+    <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
       {/* overview   */}
       <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} fullWidth />
 
@@ -190,7 +190,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* middle section: if timestamp is not valid, show warning message */}
 
-      {verifierConnected && canCheckInNow && (
+      {userStatus === UserStatus.Joined && verifierConnected && canCheckInNow && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
             isDisabled={!address}
@@ -203,17 +203,20 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       )}
 
-      {!canCheckInNow ? (
-        checkedIn >= challenge.targetNum ? (
+      {/* if user already finish, always allow going to the claim page */}
+      {(userStatus === UserStatus.Claimable) && (
           <Button
             type="button"
             color="primary"
             className="mt-12 min-h-12 w-3/4 max-w-56"
             onClick={() => push(`/habit/claim/${challenge.id}`)}
           >
-            Finish
+            Finish 🎉
           </Button>
-        ) : (
+        )}
+
+      {/* challenge is not finished yet */}
+      {(userStatus === UserStatus.Joined) && (!canCheckInNow ? (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button
               className="mt-12 min-h-12 w-3/4 max-w-56"
@@ -227,8 +230,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
               {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
             </div>
           </div>
-        )
-      ) : !address ? (
+        ) : !address ? (
         <Button
           type="button"
           color="primary"
@@ -258,7 +260,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         >
           Connect with Strava
         </Button>
-      )}
+      ))}
 
       {isCheckinPopupOpen && (
         <CheckinPopup
