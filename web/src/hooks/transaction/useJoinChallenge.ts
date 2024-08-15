@@ -43,8 +43,13 @@ const useJoinChallenge = (
       //In the orginal file they refetch after success refetch();
       toast.dismiss();
       toast.success('Joined! Directing to checkIn!');
+      onSuccess?.();
+    },
+    onSent: () => {
+      toast.loading('Transaction sent...');
 
       // update DB to reflect the user has joined the challenge
+      // do this before it's confirmed, so if user refresh, we still get the correct state
       void fetch('/api/user/activities', {
         method: 'POST',
         headers: {
@@ -60,11 +65,6 @@ const useJoinChallenge = (
           toast.error('Error updating user challenges, please contact us');
         })
         .then(() => {});
-
-      onSuccess?.();
-    },
-    onSent: () => {
-      toast.loading('Transaction sent...');
     },
   });
 };
