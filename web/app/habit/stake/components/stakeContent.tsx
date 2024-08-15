@@ -20,7 +20,7 @@ import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
-import useUserJoined from '@/hooks/useUserJoined';
+import useUserStatus from '@/hooks/useUserStatus';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
@@ -40,7 +40,7 @@ export default function StakeChallenge() {
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
-  const { joined } = useUserJoined(smartWallet, BigInt(challengeId));
+  const { joined } = useUserStatus(smartWallet, BigInt(challengeId));
 
   const hasAccess = useMemo(
     () => challenge?.public === true || challenge?.accessCode === inputAccessCode || joined,

@@ -10,7 +10,8 @@ import { abi } from '@/abis/challenge';
 import { challengeAddr } from '@/constants';
 import { useAccount, useConnect, useReadContracts } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
-import { UserStatus } from '@/types';
+import { ChallengeStatus, UserStatus } from '@/types';
+import moment from 'moment';
 
 export default function Claim() {
   const { push } = useRouter();
@@ -49,15 +50,22 @@ export default function Claim() {
         functionName: 'userStatus',
         args: [BigInt(challengeId), account ?? zeroAddress],
       },
+      {
+        abi,
+        address: challengeAddr,
+        functionName: 'challengeStatus',
+        args: [BigInt(challengeId)],
+      },
     ],
     query: {
       enabled: !!account,
     },
   });
 
-  const claimable = data?.[0].result;
+  const winningStakePerUser = data?.[0].result;
   const totalFinishedUsers = data?.[1].result;
   const userStatus = data?.[2].result;
+  const challengeStatus = data?.[3].result as ChallengeStatus;
 
   const { onSubmitTransaction: onWithdrawTx, isLoading: isWithdrawLoading } = useWithdraw(
     BigInt(challenge?.id ?? 0),
@@ -67,8 +75,16 @@ export default function Claim() {
     },
   );
 
-  const canClaim = userStatus === UserStatus.Claimable && !!claimable && !!totalFinishedUsers;
-  const claimed = userStatus === UserStatus.Claimed && !!claimable && !!totalFinishedUsers;
+  const challengeHasEnded = challenge?.endTimestamp && Date.now() > challenge.endTimestamp * 1000;
+  const userCanClaim =
+    userStatus === UserStatus.Claimable &&
+    winningStakePerUser !== undefined &&
+    !!totalFinishedUsers;
+
+  const claimed =
+    userStatus === UserStatus.Claimed && !!winningStakePerUser && !!totalFinishedUsers;
+
+  const canClaimNow = userCanClaim && challengeStatus === ChallengeStatus.Settled;
 
   return (
     <div className="mx-8 flex flex-col items-center justify-center">
@@ -83,22 +99,32 @@ export default function Claim() {
           </div>
 
           {/* details about what to claim */}
-          {canClaim && (
+          {userCanClaim && (
             <div className="mx-4 my-8 w-full">
-              <div className="text-md flex items-center justify-between p-4 font-nunito">
+              <div className="flex items-center justify-between p-4 font-nunito text-sm">
                 <p>Claimable</p>
-                <p>{formatUnits(claimable, 6)} USDC</p>
+                {challengeHasEnded ? (
+                  <p> {formatUnits(winningStakePerUser, 6)} USDC</p>
+                ) : (
+                  <p> {formatUnits(challenge.stake, 6)}+ USDC</p>
+                )}
               </div>
-              <div className="text-md flex items-center justify-between px-4 pb-4 font-nunito">
+              <div className="flex items-center justify-between px-4 pb-4 font-nunito text-sm">
                 <p>Total Finished</p>
                 <p>{totalFinishedUsers.toString()}</p>
               </div>
+              {!challengeHasEnded && (
+                <div className="flex items-center justify-between px-4 pb-4 font-nunito text-sm">
+                  <p>Challenge Ends</p>
+                  <p>{moment.unix(challenge.endTimestamp).fromNow()}</p>
+                </div>
+              )}
             </div>
           )}
           {claimed && (
             <div className="mx-4 my-8 w-full">
               <div className="text-md flex items-center justify-between p-4 font-nunito">
-                <p>{formatUnits(claimable, 6)} USDC Claimed</p>
+                <p>{formatUnits(winningStakePerUser, 6)} USDC Claimed</p>
               </div>
             </div>
           )}
@@ -124,6 +150,8 @@ export default function Claim() {
             </Button>
           ) : (
             <Button
+              // if unsettled, disable the button
+              isDisabled={!canClaimNow}
               type="button"
               className="mt-4 min-h-12 w-3/4 max-w-56"
               color="primary"
@@ -138,6 +166,11 @@ export default function Claim() {
         <div> Loading...</div>
       ) : (
         <div>Invalid Challenge Id</div>
+      )}
+
+      {/* wait for settle message */}
+      {userCanClaim && !canClaimNow && (
+        <div className="mt-2 text-xs text-default-400">Please wait for the challenge to settle</div>
       )}
 
       {isClaimedPopupOpen && (
