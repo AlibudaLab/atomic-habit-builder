@@ -38,7 +38,7 @@ export default function ChallengeList() {
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >
-                  <ChallengeBox challenge={challenge} fullWidth={true} />
+                  <ChallengeBox challenge={challenge} fullWidth />
                 </button>
               );
           })
