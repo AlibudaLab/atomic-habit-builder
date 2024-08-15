@@ -145,13 +145,38 @@ forge script script/D00DeployToken.s.sol --private-key $PRIVATE_KEY --broadcast 
 forge script script/D01DeployTracker.s.sol --private-key $PRIVATE_KEY --broadcast --verify --rpc-url base_sepolia
 ```
 
-<b>Note: The above command will print the address of your contract and a link to the block explorer. Click on the block explorer link to verify whether your contract has been deployed or not </b>
+<b> Note: The above command will print the address of your contract and a link to the block explorer. Click on the block explorer link to verify whether your contract has been deployed or not </b>
 
 ![Deployment](./assets/deployment.png)
 
 ![Verified](./assets/verified.png)
 
 Forge runs your solidity script. In that script it tries to broadcast the transaction. It writes it back into the broadcast folder in a `run-latest.json` file.
+
+### Add A New Challenge
+
+[Notice] Please adjust the parameters accordingly.
+
+```bash
+cast send 0x7D1981603530aa76db92186DA40092c5394B7635 "create((address,uint64,uint64,uint64,uint64,address,address,address,uint128,uint128))" "(0x29C3d6b54E2F8Ae641Fc331cF2143B6
+d05c97897,2,1722470400,1723708801,1723708802,0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897,0x0000000000000000000000000000000000000000,0xCb5c7C676D8CcE531ceDd0fe2b4159b59607910F,5000,1000000)" --private-key $PRIVATE_KEY --rpc-url base_sepolia
+```
+
+### Settle A Challenge
+
+[Notice] Please adjust the parameters accordingly.
+
+```bash
+cast send 0x7D1981603530aa76db92186DA40092c5394B7635 "settle(uint256)" "9" --private-key $PRIVATE_KEY --rpc-url base_sepolia
+```
+
+### Enabled Donation Org Address
+
+[Notice] Please adjust the parameters accordingly.
+
+```bash
+cast send 0x7D1981603530aa76db92186DA40092c5394B7635 "setDonationOrgEnabled(address,bool)" "0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897" "true" --private-key $PRIVATE_KEY --rpc-url base_sepolia
+```
 
 ### ABI
 
