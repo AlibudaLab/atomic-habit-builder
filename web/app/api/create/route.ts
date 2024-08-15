@@ -23,13 +23,6 @@ export async function POST(req: NextRequest): Promise<Response> {
           { status: 400 },
         );
       }
-
-      if (payload.user === undefined) {
-        return NextResponse.json(
-          { error: 'User is required for private challenges' },
-          { status: 400 },
-        );
-      }
     }
 
     // add metadata to challenge-metadata collection
@@ -40,6 +33,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       public: payload.public,
       accessCode: payload.accessCode,
       id: payload.challengeId,
+      creator: payload.user,
     });
 
     console.log('Document challenge-metadata written with ID: ', docRef.id);

@@ -10,7 +10,7 @@ const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
 
   // fetch both public and private challenges
-  const { challenges } = useAllChallenges(false);
+  const { challenges } = useAllChallenges(false, address);
 
   const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);

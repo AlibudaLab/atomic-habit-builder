@@ -3,7 +3,13 @@ import { challengeToEmoji } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import moment from 'moment';
 
-export function ChallengeBox({ challenge }: { challenge: Challenge }) {
+export function ChallengeBox({
+  challenge,
+  fullWidth,
+}: {
+  challenge: Challenge;
+  fullWidth?: boolean;
+}) {
   const isPast = challenge.endTimestamp < moment().unix();
 
   return (
@@ -11,7 +17,7 @@ export function ChallengeBox({ challenge }: { challenge: Challenge }) {
       type="button"
       className={`wrapped m-2 transition-transform duration-300 focus:scale-105 ${
         isPast && 'opacity-50'
-      }`}
+      } ${fullWidth && 'w-full'}`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
