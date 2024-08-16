@@ -194,6 +194,19 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* middle section: if timestamp is not valid, show warning message */}
 
+      {/* no address detected: ask user to connect */}
+      {!address && (
+        <Button
+          type="button"
+          color="primary"
+          className="mt-12 min-h-12 w-3/4 max-w-56"
+          onClick={() => connect({ connector: connectors[0] })}
+          isLoading={connecting}
+        >
+          Connect Wallet
+        </Button>
+      )}
+
       {userStatus === UserStatus.Joined && verifierConnected && canCheckInNow && (
         <div className="flex w-full justify-center px-2 pt-4">
           <ActivityDropDown
@@ -235,16 +248,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
               {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
             </div>
           </div>
-        ) : !address ? (
-          <Button
-            type="button"
-            color="primary"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
-            onClick={() => connect({ connector: connectors[0] })}
-            isLoading={connecting}
-          >
-            Connect Wallet
-          </Button>
         ) : verifierConnected && !runDataError ? (
           <Button
             type="button"

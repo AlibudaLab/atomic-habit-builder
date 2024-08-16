@@ -28,7 +28,7 @@ export function ActivityDropDown({
   return (
     <div className="m-2 flex min-h-16 w-full max-w-80 p-2">
       <Select
-        label={noActivities ? 'No activities' : 'Select an activity'}
+        label={noActivities ? 'No matched record' : 'Select an activity'}
         className="max-w-xs"
         value={fields.activityId}
         disabledKeys={usedActivities}
