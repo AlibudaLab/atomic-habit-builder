@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance, useDisconnect } from 'wagmi';
 import { usdcAddr } from '@/constants';
 import { formatUnits } from 'viem';
 import Onboard from 'app/habit/components/Onboard';
@@ -14,9 +14,12 @@ import { base } from 'viem/chains';
 import useUserChallenges from '@/hooks/useUserChallenges';
 import { CopyIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Button } from '@nextui-org/button';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
+
+  const { disconnect } = useDisconnect();
 
   const { data: tokenBalance } = useBalance({
     address,
@@ -133,6 +136,19 @@ export default function ProfileContent() {
                 <p> Staked </p>
               </div>
             </div>
+          </div>
+
+          {/* disconnect button */}
+          <div className="mt-12 flex items-center justify-center">
+            <Button
+              type="button"
+              className="mt-4 min-h-12 w-1/2"
+              onClick={() => {
+                void disconnect();
+              }}
+            >
+              Log out
+            </Button>
           </div>
         </div>
       )}

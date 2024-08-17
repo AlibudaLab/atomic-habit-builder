@@ -18,6 +18,7 @@
     "test:coverage:open": "yarn test:coverage && open coverage/lcov-report/index.html"
   },
   "dependencies": {
+    "@alibuda/zerodev-wallet": "0.1.4",
     "@arx-research/libhalo": "^1.2.30",
     "@coinbase/onchainkit": "0.16.10",
     "@coinbase/wallet-sdk": "4.0.2",
@@ -41,6 +42,7 @@
     "@react-spring/web": "^9.7.3",
     "@sentry/nextjs": "^8.26.0",
     "@tanstack/react-query": "^5.20.1",
+    "@zerodev/passkey-validator": "^5.4.0",
     "@zerodev/wallet": "^0.1.1",
     "abitype": "^0.10.3",
     "clipboard-copy": "^4.0.1",

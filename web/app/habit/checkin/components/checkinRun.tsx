@@ -21,6 +21,7 @@ import CheckinPopup from './CheckinPopup';
 import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
+import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -34,8 +35,10 @@ const initFields: CheckInFields = {
  * @returns
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
+  const { login, isPending: connecting } = usePasskeyConnection();
+
   const { push } = useRouter();
-  const { connect, connectors, isPending: connecting } = useConnect();
+  // const { connect, connectors, isPending: connecting } = useConnect();
   const { address } = useAccount();
   const {
     status: userStatus,
@@ -200,7 +203,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           type="button"
           color="primary"
           className="mt-12 min-h-12 w-3/4 max-w-56"
-          onClick={() => connect({ connector: connectors[0] })}
+          onClick={login}
           isLoading={connecting}
         >
           Connect Wallet

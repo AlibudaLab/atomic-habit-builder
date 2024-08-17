@@ -10,6 +10,7 @@ import Image from 'next/image';
 
 import usdcLogo from '@/imgs/coins/usdc.png';
 import { useAccount, useConnect } from 'wagmi';
+import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 
 type Step2Props = {
   stake: number;
@@ -26,7 +27,7 @@ export default function CreateStep2({
   onClickCreate,
   isCreating,
 }: Step2Props) {
-  const { connect, connectors } = useConnect();
+  const { login, isPending: connecting } = usePasskeyConnection();
   const { address } = useAccount();
 
   return (
@@ -90,10 +91,7 @@ export default function CreateStep2({
           Create
         </Button>
       ) : (
-        <Button
-          onClick={() => connect({ connector: connectors[0] })}
-          className="mt-2 min-h-12 w-full"
-        >
+        <Button onClick={login} className="mt-2 min-h-12 w-full" isLoading={connecting}>
           Connect Wallet
         </Button>
       )}

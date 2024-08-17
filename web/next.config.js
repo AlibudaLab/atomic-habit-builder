@@ -1,4 +1,4 @@
-const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require('@sentry/nextjs');
 
 /**
  * @type {import('next').NextConfig}
@@ -18,8 +18,8 @@ const nextConfig = {
 };
 
 module.exports = withSentryConfig(nextConfig, {
-  org: "alibuda",
-  project: "javascript-nextjs",
+  org: 'alibuda',
+  project: 'javascript-nextjs',
 
   // An auth token is required for uploading source maps.
   authToken: process.env.SENTRY_AUTH_TOKEN,
