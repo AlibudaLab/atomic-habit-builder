@@ -18,7 +18,7 @@ export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
         'alibuda',
         zerodevUrl,
         'register' as WebAuthnMode,
-      ), // connector[0] for register
+      ), // connector[0] for register only
       passkeyConnector(zerodevApiKey, chain, 'v3', 'alibuda', zerodevUrl, 'login' as WebAuthnMode), // connector[1] for login
     ],
 
