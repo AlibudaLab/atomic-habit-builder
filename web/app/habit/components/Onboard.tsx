@@ -20,9 +20,10 @@ export default function Onboard() {
         {signedInBefore ? 'Sign in with Passkey' : 'Register an account'}
       </Button>
 
-      <a onClick={signedInBefore ? register : login} className="text-sm text-gray-500">
+      {/* secondary login option: show as text */}
+      <button onClick={signedInBefore ? register : login} className="text-sm text-gray-500 underline">
         {signedInBefore ? 'Register a new account' : 'Log in with existing passkey'}
-      </a>
+      </button>
     </div>
   );
 }
