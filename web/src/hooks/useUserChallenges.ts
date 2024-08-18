@@ -68,7 +68,7 @@ const useUserChallenges = (address: string | undefined) => {
           }),
         );
 
-        const status = await Promise.all(
+        const statuses = await Promise.all(
           knownChallenges.map(async (c) => {
             const status = (await readContract(config, {
               abi,
@@ -86,7 +86,7 @@ const useUserChallenges = (address: string | undefined) => {
             checkedIn: Number(checkedIns[idx].toString()),
             succeedClaimable: claimables[idx],
             totalSucceeded: totalSucceededCounts[idx],
-            status: status[idx],
+            status: statuses[idx],
           };
         });
 

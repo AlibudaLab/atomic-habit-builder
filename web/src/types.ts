@@ -42,7 +42,7 @@ export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
   succeedClaimable: bigint;
   totalSucceeded: bigint;
-  status: UserStatus
+  status: UserStatus;
 };
 
 export type DonationDest = {
