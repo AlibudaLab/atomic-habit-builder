@@ -2,36 +2,28 @@
 
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { Button } from '@nextui-org/button';
-import { useConnect } from 'wagmi';
 
 export default function Onboard() {
-  const { login, register, isPending } = usePasskeyConnection();
+  const { login, register, isPending, signedInBefore } = usePasskeyConnection();
 
   return (
     <div className="flex flex-col items-center justify-center">
       <p className="pb-4 text-center font-londrina text-xl font-bold"> Please Sign in First </p>
 
-      <div className="flex gap-4">
-        <Button
-          type="button"
-          className="mt-4 p-6"
-          color="primary"
-          isLoading={isPending}
-          onClick={login}
-        >
-          Login
-        </Button>
+      <Button
+        type="button"
+        className="m-4 mt-8 w-48 p-6 font-londrina"
+        color="primary"
+        isLoading={isPending}
+        onClick={signedInBefore ? login : register}
+      >
+        {signedInBefore ? 'Sign in with Passkey' : 'Register an account'}
+      </Button>
 
-        <Button
-          type="button"
-          className="mt-4 p-6"
-          color="primary"
-          isLoading={isPending}
-          onClick={register}
-        >
-          Register
-        </Button>
-      </div>
+      {/* secondary login option: show as text */}
+      <button type="button" onClick={signedInBefore ? register : login} className="text-sm text-gray-500 underline">
+        {signedInBefore ? 'Register a new account' : 'Log in with existing passkey'}
+      </button>
     </div>
   );
 }

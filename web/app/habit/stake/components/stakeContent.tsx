@@ -218,7 +218,7 @@ export default function StakeChallenge() {
           </Button>
         )}
 
-        {isCheckinPopupOpen && hasEnoughBalance && (
+        {isCheckinPopupOpen && challenge && (
           <JoinedPopup
             challenge={challenge}
             onClose={handleCloseCheckinPopup}
