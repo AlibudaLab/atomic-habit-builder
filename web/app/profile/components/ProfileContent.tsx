@@ -15,6 +15,7 @@ import useUserChallenges from '@/hooks/useUserChallenges';
 import { CopyIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
+import { UserStatus } from '@/types';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
@@ -38,6 +39,8 @@ export default function ProfileContent() {
 
     // only get the claimable if user succeed
     if (challenge.checkedIn < challenge.targetNum) return acc;
+
+    if (challenge.status === UserStatus.Claimed) return acc;
 
     return acc + challenge.succeedClaimable;
   }, BigInt(0));

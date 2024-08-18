@@ -3,7 +3,7 @@ import { abi } from '@/abis/challenge';
 import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import useAllChallenges from './useAllChallenges';
-import { ChallengeWithCheckIns } from '@/types';
+import { ChallengeWithCheckIns, UserStatus } from '@/types';
 import { challengeAddr } from '@/constants';
 
 const useUserChallenges = (address: string | undefined) => {
@@ -68,12 +68,25 @@ const useUserChallenges = (address: string | undefined) => {
           }),
         );
 
+        const status = await Promise.all(
+          knownChallenges.map(async (c) => {
+            const status = (await readContract(config, {
+              abi,
+              address: challengeAddr,
+              functionName: 'userStatus',
+              args: [BigInt(c.id), address as `0x${string}`],
+            })) as unknown as UserStatus;
+            return status;
+          }),
+        );
+
         const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
           return {
             ...c,
             checkedIn: Number(checkedIns[idx].toString()),
             succeedClaimable: claimables[idx],
             totalSucceeded: totalSucceededCounts[idx],
+            status: status[idx],
           };
         });
 
