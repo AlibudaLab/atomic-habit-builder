@@ -12,11 +12,12 @@ import { useAccount, useConnect, useReadContracts } from 'wagmi';
 import { formatUnits, zeroAddress } from 'viem';
 import { ChallengeStatus, UserStatus } from '@/types';
 import moment from 'moment';
+import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 
 export default function Claim() {
   const { push } = useRouter();
   const { challengeId } = useParams<{ challengeId: string }>();
-  const { connect, connectors, isPending: connecting } = useConnect();
+  const { login, isPending: connecting } = usePasskeyConnection();
   const { challenge, loading } = useChallenge(Number(challengeId));
   const [claimSuccess, setClaimSuccess] = useState(false);
 
@@ -130,11 +131,7 @@ export default function Claim() {
           )}
 
           {account === undefined ? (
-            <Button
-              onClick={() => connect({ connector: connectors[0] })}
-              className="mt-2 min-h-12 w-full"
-              isLoading={connecting}
-            >
+            <Button onClick={login} className="mt-2 min-h-12 w-full" isLoading={connecting}>
               Connect Wallet
             </Button>
           ) : claimed || claimSuccess ? (

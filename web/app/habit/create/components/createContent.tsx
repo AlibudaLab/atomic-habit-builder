@@ -30,7 +30,7 @@ export default function Create() {
     setLoaded(true);
   }, []);
 
-  const defaultStart = useMemo(() => moment().startOf('day'), []) 
+  const defaultStart = useMemo(() => moment().startOf('day'), []);
 
   // 3 steps: input, review, success
   const [step, setStep] = useState(1);

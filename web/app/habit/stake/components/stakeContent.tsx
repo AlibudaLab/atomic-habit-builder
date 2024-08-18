@@ -22,6 +22,7 @@ import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserStatus from '@/hooks/useUserStatus';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
+import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -30,7 +31,7 @@ export default function StakeChallenge() {
 
   const { challengeId } = useParams<{ challengeId: string }>();
   const { address } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { login, isPending: connecting } = usePasskeyConnection();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';
@@ -183,7 +184,8 @@ export default function StakeChallenge() {
           <Button
             type="button"
             className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={() => connect({ connector: connectors[0] })}
+            onClick={login}
+            isLoading={connecting}
           >
             Connect
           </Button>
@@ -216,7 +218,7 @@ export default function StakeChallenge() {
           </Button>
         )}
 
-        {isCheckinPopupOpen && hasEnoughBalance && (
+        {isCheckinPopupOpen && challenge && (
           <JoinedPopup
             challenge={challenge}
             onClose={handleCloseCheckinPopup}
