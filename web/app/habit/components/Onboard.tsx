@@ -4,7 +4,7 @@ import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { Button } from '@nextui-org/button';
 
 export default function Onboard() {
-  const { login, register, isPending, signedInBefore } = usePasskeyConnection();
+  const { login, register, isPending, signedInBefore, initializing } = usePasskeyConnection();
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -14,10 +14,10 @@ export default function Onboard() {
         type="button"
         className="m-4 mt-8 w-48 p-6 font-londrina"
         color="primary"
-        isLoading={isPending}
+        isLoading={isPending || initializing}
         onClick={signedInBefore ? login : register}
       >
-        {signedInBefore ? 'Sign in with Passkey' : 'Register an account'}
+        {initializing ? '  ' : signedInBefore ? 'Sign in with Passkey' : 'Register an account'}
       </Button>
 
       {/* secondary login option: show as text */}
