@@ -28,18 +28,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
     setSelectedNetwork(selectedKey);
   }, []);
 
-  const buttons = useMemo(
-    () => [
-      {
-        id: 'depositViaBinance',
-        label: 'Deposit via Binance',
-        onClick: onClose,
-        disabled: true,
-        isPrimary: true,
-      },
-    ],
-    [onClose],
-  );
+  const buttons = useMemo(() => [], []);
 
   const title = 'Deposit';
 
