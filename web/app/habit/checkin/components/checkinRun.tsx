@@ -81,8 +81,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
-      refetchCheckIns();
-      refetchStatus();
+      void refetchCheckIns();
+      void refetchStatus();
     },
   );
 
