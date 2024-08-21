@@ -44,11 +44,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     status: userStatus,
     joined,
     loading: loadingJoined,
-  } = useUserStatus(address, BigInt(challenge.id));
+    refetch: refetchStatus
+  } = useUserStatus(address, challenge.id);
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
-  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
+  const { checkedIn, refetch: refetchCheckIns } = useUserChallengeCheckIns(address, challenge.id);
   const [isSigning, setIsSigning] = useState(false);
 
   const challengeStarted = useMemo(
@@ -80,6 +81,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
+      refetchCheckIns();
+      refetchStatus();
     },
   );
 

@@ -41,7 +41,7 @@ export default function StakeChallenge() {
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
-  const { joined } = useUserStatus(smartWallet, BigInt(challengeId));
+  const { joined } = useUserStatus(smartWallet, Number(challengeId));
 
   const hasAccess = useMemo(
     () =>
@@ -131,7 +131,7 @@ export default function StakeChallenge() {
 
         {challenge && (
           <>
-            <ChallengeBoxFilled challenge={challenge} />
+            <ChallengeBoxFilled challenge={challenge} fullWidth />
 
             {hasAccess && (
               <>

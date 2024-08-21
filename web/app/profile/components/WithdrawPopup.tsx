@@ -42,8 +42,7 @@ function WithdrawPopup({ onClose, maxAmount }: WithdrawalProps) {
   const content = (
     <div className="text-left">
       <div className="m-4 font-nunito text-sm">
-        Enter recipient address on <span className="font-bold"> Base </span> to withdraw your
-        funds.
+        Enter recipient address on <span className="font-bold"> Base </span> to withdraw your funds.
       </div>
       <div className="mb-4">
         <Input
