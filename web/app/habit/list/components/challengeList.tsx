@@ -1,6 +1,6 @@
 'use client';
 
-import useAllChallenges from '@/hooks/useAllChallenges';
+import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
 import useUserChallenges from '@/hooks/useUserChallenges';
@@ -12,7 +12,7 @@ export default function ChallengeList() {
   const { address } = useAccount();
 
   // only fetch public challenges
-  const { challenges, loading: loadingAllChallenges } = useAllChallenges(true, address);
+  const { challenges, loading: loadingAllChallenges } = useAllChallenges();
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
