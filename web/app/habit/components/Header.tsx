@@ -7,7 +7,7 @@ export default function Header() {
       <Toaster />
 
       <div className="container w-full pb-6 text-center font-londrina text-3xl font-bold text-primary">
-        Progress{' '}
+        Atomic{' '}
       </div>
     </main>
   );
