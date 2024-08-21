@@ -3,7 +3,7 @@ import { Challenge } from '@/types';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 
 const useFilteredChallenges = (publicOnly: boolean, connectedUser: string | undefined) => {
-  const { challenges } = useAllChallenges();
+  const { challenges, loading } = useAllChallenges();
 
   const filteredChallenges = useMemo(
     () =>
@@ -14,10 +14,10 @@ const useFilteredChallenges = (publicOnly: boolean, connectedUser: string | unde
           return true;
         }
       }),
-    [challenges],
+    [challenges, connectedUser],
   );
 
-  return { filteredChallenges };
+  return { filteredChallenges, loading };
 };
 
 export default useFilteredChallenges;
