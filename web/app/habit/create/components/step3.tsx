@@ -33,7 +33,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
   const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
 
-  const text = 'Join my new challenge on Progress';
+  const text = 'Join my new challenge on Atomic';
 
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
