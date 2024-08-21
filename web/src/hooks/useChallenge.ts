@@ -8,7 +8,6 @@ import { challengeAddr } from '@/constants';
 
 const useChallenge = (id: number) => {
   const publicClient = usePublicClient({ config });
-
   const [loading, setLoading] = useState(true);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [error, setError] = useState<unknown | null>(null);

@@ -1,4 +1,13 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useMemo,
+  useCallback,
+} from 'react';
 import { readContract } from '@wagmi/core';
 import { abi as challengeAbi } from '@/abis/challenge';
 import { wagmiConfig as config } from '@/OnchainProviders';
@@ -12,6 +21,7 @@ type AllChallengesContextType = {
   loading: boolean;
   challenges: Challenge[];
   error: unknown | null;
+  refetch: () => void;
 };
 
 const AllChallengesContext = createContext<AllChallengesContextType | undefined>(undefined);
@@ -31,11 +41,21 @@ type AllChallengesProviderProps = {
 export function AllChallengesProvider({ children }: AllChallengesProviderProps) {
   const publicClient = usePublicClient({ config });
 
+  const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(true);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [error, setError] = useState<unknown | null>(null);
 
-  const { challengesMetaDatas, loading: loadingMetaData } = useChallengeMetaDatas();
+  const {
+    challengesMetaDatas,
+    loading: loadingMetaData,
+    refetch: refetchMetaData,
+  } = useChallengeMetaDatas();
+
+  const refetch = useCallback(() => {
+    refetchMetaData();
+    setCounter((c) => c + 1);
+  }, []);
 
   useEffect(() => {
     if (!publicClient?.multicall) return;
@@ -43,7 +63,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
 
     const fetchData = async () => {
       try {
-        console.log('start fetching');
+        console.log('fetch challenges counter', counter);
         setLoading(true);
 
         const challengeCount = await readContract(config, {
@@ -117,13 +137,14 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
     };
 
     fetchData().catch(console.error);
-  }, [publicClient, loadingMetaData, challengesMetaDatas]);
+  }, [publicClient, loadingMetaData, challengesMetaDatas, counter]);
 
   const contextValue = useMemo(
     () => ({
       loading,
       challenges,
       error,
+      refetch,
     }),
     [loading, challenges, error],
   );

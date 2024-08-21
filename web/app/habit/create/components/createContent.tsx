@@ -16,6 +16,7 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 
 const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
+import { useAllChallenges } from '@/providers/ChallengesProvider';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -37,6 +38,8 @@ export default function Create() {
 
   // generate a random char and number string, 6 chars
   const accessCode = useMemo(() => Math.random().toString(36).substring(2, 8).toUpperCase(), []);
+
+  const { refetch } = useAllChallenges();
 
   // all inputs
   const [name, setName] = useState('');
@@ -84,6 +87,8 @@ export default function Create() {
         }),
       })
         .then((res) => {
+          toast.success('Successfully created!! 🥳🥳🥳', { id: 'create' });
+          void refetch();
           setCreatedChallengeId(challengeId);
           setStep(3);
         })
