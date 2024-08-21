@@ -7,12 +7,16 @@ import useUserChallenges from '@/hooks/useUserChallenges';
 import Loading from '../../components/Loading';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
+import useFilteredChallenges from '@/hooks/useFilteredChallenges';
 
 export default function ChallengeList() {
   const { address } = useAccount();
 
   // only fetch public challenges
-  const { challenges, loading: loadingAllChallenges } = useAllChallenges();
+  const { filteredChallenges: challenges, loading: loadingChallenges } = useFilteredChallenges(
+    true,
+    address,
+  );
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
@@ -24,7 +28,7 @@ export default function ChallengeList() {
         <p className="pb-8 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 
         {/* Challenge List */}
-        {loadingUserData || loadingAllChallenges ? (
+        {loadingUserData || loadingChallenges ? (
           <Loading />
         ) : (
           challenges.map((challenge) => {

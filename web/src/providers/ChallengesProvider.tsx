@@ -35,6 +35,8 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [error, setError] = useState<unknown | null>(null);
 
+  console.log('challenges', challenges);
+
   const { challengesMetaDatas, loading: loadingMetaData } = useChallengeMetaDatas();
 
   useEffect(() => {
