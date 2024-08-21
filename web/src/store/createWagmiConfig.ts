@@ -15,19 +15,12 @@ export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
         zerodevApiKey,
         chain,
         'v3',
-        'progress',
+        'zerodev',
         zerodevUrl,
         'register' as WebAuthnMode,
       ), // connector[0] for register only
 
-      passkeyConnector(
-        zerodevApiKey,
-        chain,
-        'v3',
-        'progress',
-        zerodevUrl,
-        'login' as WebAuthnMode,
-      ), // connector[1] for login
+      passkeyConnector(zerodevApiKey, chain, 'v3', 'zerodev', zerodevUrl, 'login' as WebAuthnMode), // connector[1] for login
     ],
 
     transports: {
