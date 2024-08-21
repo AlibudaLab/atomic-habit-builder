@@ -12,15 +12,21 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { base } from 'viem/chains';
 import useUserChallenges from '@/hooks/useUserChallenges';
-import { CopyIcon } from 'lucide-react';
+import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
 import { UserStatus } from '@/types';
+import { useState } from 'react';
+import DepositPopup from 'app/habit/stake/components/DepositPopup';
+import WithdrawPopup from './WithdrawPopup';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
 
   const { disconnect } = useDisconnect();
+
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   const { data: tokenBalance } = useBalance({
     address,
@@ -62,6 +68,14 @@ export default function ProfileContent() {
         <Onboard />
       ) : (
         <div className="m-2 w-full items-center">
+          {isDepositModalOpen && <DepositPopup onClose={() => setIsDepositModalOpen(false)} />}
+          {isWithdrawModalOpen && (
+            <WithdrawPopup
+              onClose={() => setIsWithdrawModalOpen(false)}
+              maxAmount={tokenBalance?.value}
+            />
+          )}
+
           <p className="my-4 text-center font-londrina text-xl font-bold"> User Profile </p>
 
           {/* account */}
@@ -86,6 +100,8 @@ export default function ProfileContent() {
               </div>
             </div>
           </div>
+
+          {/* Wallet Balance */}
           <div className="mt-4 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
             <div className="text-xs text-gray-500"> Wallet Balance </div>
             <div className="flex w-full items-center justify-start no-underline">
@@ -97,11 +113,29 @@ export default function ProfileContent() {
                     : 'pending'}{' '}
                 </p>
               </div>
-              <div>
-                <Image src={usdcIcon} alt="USDC" width={24} height={24} />
+              <div className="mr-2">
+                <Image src={usdcIcon} alt="USDC" width={26} height={26} />
               </div>
+              {/* deposit */}
+              <Button
+                isIconOnly
+                className="bg-slate-100"
+                onClick={() => setIsDepositModalOpen(true)}
+              >
+                <PlusCircleIcon size={20} />
+              </Button>
+
+              {/* withdraw */}
+              <Button
+                isIconOnly
+                className="bg-slate-100"
+                onClick={() => setIsWithdrawModalOpen(true)}
+              >
+                <MinusCircleIcon size={20} />
+              </Button>
             </div>
           </div>
+          {/* Deposit and withdraw */}
 
           {/* challenge completed */}
           <div className="mt-4 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
