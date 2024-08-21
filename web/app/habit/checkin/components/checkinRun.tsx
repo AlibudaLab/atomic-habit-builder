@@ -44,7 +44,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     status: userStatus,
     joined,
     loading: loadingJoined,
-    refetch: refetchStatus
+    refetch: refetchStatus,
   } = useUserStatus(address, challenge.id);
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);

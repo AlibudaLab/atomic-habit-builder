@@ -5,14 +5,18 @@ import { challengeAddr } from '@/constants';
 import { useReadContract } from 'wagmi';
 
 const useUserStatus = (address: string | undefined, challengeId: number) => {
-  const { data: status, status: queryStatus, refetch } = useReadContract({
+  const {
+    data: status,
+    status: queryStatus,
+    refetch,
+  } = useReadContract({
     abi,
     address: challengeAddr,
     functionName: 'userStatus',
     args: [BigInt(challengeId), address as `0x${string}`],
   });
 
-  const joined = status && status >= UserStatus.Joined;
+  const joined = status ? status >= UserStatus.Joined : false;
 
   const loading = useMemo(() => queryStatus === 'pending', [queryStatus]);
   const error = useMemo(() => queryStatus === 'error', [queryStatus]);
