@@ -5,8 +5,8 @@ import Onboard from '../habit/components/Onboard';
 import Dashboard from '../habit/components/UserDashboard';
 import { useAccount } from 'wagmi';
 import Loading from 'app/habit/components/Loading';
-import ChallengeList from 'app/habit/list/components/challengeList';
 import moment from 'moment';
+import NewUser from './_components/NewUser';
 
 export default function DashboardPage() {
   const { address } = useAccount();
@@ -23,7 +23,7 @@ export default function DashboardPage() {
       ) : loading ? (
         <Loading />
       ) : challenges.length === 0 ? (
-        <ChallengeList />
+        <NewUser />
       ) : (
         <Dashboard onGoingChallenges={allOngoing} pastChallenges={allPast} />
       )}
