@@ -7,7 +7,8 @@ import { challengeAddr } from '@/constants';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 
 const useUserChallenges = (address: string | undefined) => {
-  const [loading, setLoading] = useState(true);
+  // when address is undefined, loading is false
+  const [loading, setLoading] = useState(address !== undefined);
 
   const { challenges } = useAllChallenges();
 
