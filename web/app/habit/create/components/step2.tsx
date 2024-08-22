@@ -11,6 +11,7 @@ import Image from 'next/image';
 import usdcLogo from '@/imgs/coins/usdc.png';
 import { useAccount, useConnect } from 'wagmi';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
+import { ArrowLeftCircleIcon } from 'lucide-react';
 
 type Step2Props = {
   stake: number;
@@ -18,6 +19,7 @@ type Step2Props = {
   setDonationAddr: (donationAddr: Address) => void;
   onClickCreate: () => void;
   isCreating: boolean;
+  setStep: (step: number) => void;
 };
 
 export default function CreateStep2({
@@ -26,6 +28,7 @@ export default function CreateStep2({
   setDonationAddr,
   onClickCreate,
   isCreating,
+  setStep,
 }: Step2Props) {
   const { login, isPending: connecting } = usePasskeyConnection();
   const { address } = useAccount();
@@ -82,14 +85,19 @@ export default function CreateStep2({
       </Select>
 
       {address ? (
-        <Button
-          isLoading={isCreating}
-          onClick={onClickCreate}
-          className="mt-2 min-h-12 w-full"
-          color="primary"
-        >
-          Create
-        </Button>
+        <div className="mb-4 flex w-full justify-center gap-2">
+          <Button className="mt-2 min-h-12 w-1/2" color="default" onClick={() => setStep(1)}>
+            Back
+          </Button>
+          <Button
+            isLoading={isCreating}
+            onClick={onClickCreate}
+            className="mt-2 min-h-12 w-1/2"
+            color="primary"
+          >
+            Create
+          </Button>
+        </div>
       ) : (
         <Button onClick={login} className="mt-2 min-h-12 w-full" isLoading={connecting}>
           Connect Wallet

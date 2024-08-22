@@ -42,7 +42,7 @@ export default function StakeChallenge() {
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
-  const { joined } = useUserStatus(smartWallet, Number(challengeId));
+  const { joined, refetch } = useUserStatus(smartWallet, Number(challengeId));
 
   const hasAccess = useMemo(
     () =>
@@ -107,6 +107,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
+    refetch().catch((e) => console.log('refetch error', e))
     handleOpenCheckinPopup(); // trigger pop up window
   });
 
