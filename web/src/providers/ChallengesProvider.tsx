@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { readContract } from '@wagmi/core';
 import { abi as challengeAbi } from '@/abis/challenge';
 import { wagmiConfig as config } from '@/OnchainProviders';
@@ -108,10 +108,10 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
           .filter((c) => c !== undefined) as Challenge[];
 
         setChallenges(newData);
-        setLoading(false);
       } catch (_error) {
         console.log('error', _error);
         setError(_error);
+      } finally {
         setLoading(false);
       }
     };

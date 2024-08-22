@@ -1,16 +1,15 @@
 import { readContract } from '@wagmi/core';
 import { abi } from '@/abis/challenge';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
-import useFilteredChallenges from './useFilteredChallenges';
 import { ChallengeWithCheckIns, UserStatus } from '@/types';
 import { challengeAddr } from '@/constants';
+import { useAllChallenges } from '@/providers/ChallengesProvider';
 
 const useUserChallenges = (address: string | undefined) => {
   const [loading, setLoading] = useState(true);
 
-  // fetch both public and private challenges
-  const { filteredChallenges: challenges } = useFilteredChallenges(false, address);
+  const { challenges } = useAllChallenges();
 
   const [data, setData] = useState<ChallengeWithCheckIns[] | []>([]);
   const [error, setError] = useState<unknown | null>(null);
