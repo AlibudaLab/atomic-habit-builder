@@ -18,15 +18,15 @@ export default function NewUser() {
 
         {/* two buttons  */}
         <div className="flex w-full gap-2 pt-8">
+          <Button className="w-1/2 no-underline" onClick={() => push('/habit/create')}>
+            <div className="my-4 rounded-lg p-4">Create</div>
+          </Button>
           <Button
             color="primary"
             className="w-1/2 no-underline"
             onClick={() => push('/habit/list')}
           >
             <div className="my-4 rounded-lg p-4">Explore</div>
-          </Button>
-          <Button className="w-1/2 no-underline" onClick={() => push('/habit/create')}>
-            <div className="my-4 rounded-lg p-4">Create</div>
           </Button>
         </div>
       </div>
