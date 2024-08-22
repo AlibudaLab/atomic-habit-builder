@@ -18,7 +18,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
     <div className="flex h-screen w-full flex-col items-center justify-start">
       <div className="flex w-full items-center justify-center">
         {onGoingChallenges.length > 0 && (
-          <p className="my-4 font-londrina text-xl font-bold"> Challenge List </p>
+          <p className="my-4 font-londrina text-xl font-bold"> My Challenge </p>
         )}
       </div>
 

@@ -15,9 +15,9 @@ export function ChallengeBox({
   return (
     <button
       type="button"
-      className={`wrapped m-2 transition-transform duration-300 focus:scale-105 ${
+      className={`wrapped transition-transform duration-300 focus:scale-105 ${
         isPast && 'opacity-50'
-      } ${fullWidth ? 'w-full' : ''}`}
+      } ${fullWidth ? 'w-full' : 'm-2'}`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
@@ -47,9 +47,7 @@ export function ChallengeBoxFilled({
 
   return (
     <div
-      className={`wrapped-filled m-2 p-2 ${isPast ? 'opacity-50' : ''} ${
-        fullWidth ? 'w-full' : ''
-      }`}
+      className={`wrapped-filled p-2 ${isPast ? 'opacity-50' : ''} ${fullWidth ? 'w-full' : 'm-2'}`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>

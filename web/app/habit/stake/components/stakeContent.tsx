@@ -131,7 +131,9 @@ export default function StakeChallenge() {
 
         {challenge && (
           <>
-            <ChallengeBoxFilled challenge={challenge} fullWidth />
+            <div className="m-2 mb-4 w-full">
+              <ChallengeBoxFilled challenge={challenge} fullWidth />
+            </div>
 
             {hasAccess && (
               <>

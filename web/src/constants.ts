@@ -18,7 +18,7 @@ export const donationDestinations: DonationDest[] = [
   //   address: '0x32e3C7fD24e175701A35c224f2238d18439C7dBC',
   // },
   {
-    name: 'Alibuda',
+    name: 'Alibuda Labs',
     address: '0x21a4175FdF0BC084eaA63d277212790ee6a07789',
   },
 ];

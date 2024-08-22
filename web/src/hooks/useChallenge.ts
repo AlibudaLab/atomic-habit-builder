@@ -3,12 +3,11 @@ import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Challenge } from '@/types';
-import useChallengeMetaDatas from './useChallengeMetaData';
+import useChallengeMetaDatas from './useChallengeMetaDatas';
 import { challengeAddr } from '@/constants';
 
 const useChallenge = (id: number) => {
   const publicClient = usePublicClient({ config });
-
   const [loading, setLoading] = useState(true);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [error, setError] = useState<unknown | null>(null);

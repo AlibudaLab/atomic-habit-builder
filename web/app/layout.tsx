@@ -13,7 +13,7 @@ import { Metadata } from 'next';
 initAnalytics();
 
 export const metadata: Metadata = {
-  title: 'Alibuda',
+  title: 'Atomic',
   description: 'Build habits, track progress, and earn rewards',
   manifest: '/manifest.json',
   generator: 'Next.js',
