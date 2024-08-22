@@ -81,8 +81,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
-      void refetchCheckIns();
-      void refetchStatus();
+      Promise.all([refetchCheckIns(), refetchStatus()])
+      .catch(error => {
+        console.error('Error refetching data:', error);
+        // Optionally, handle the error more specifically here
+      });
     },
   );
 
@@ -170,6 +173,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   return (
     <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
       {/* overview   */}
+
       <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} fullWidth />
 
       {/* goal description */}
