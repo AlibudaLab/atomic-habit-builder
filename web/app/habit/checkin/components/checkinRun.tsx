@@ -81,8 +81,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
-      Promise.all([refetchCheckIns(), refetchStatus()])
-      .catch(error => {
+      Promise.all([refetchCheckIns(), refetchStatus()]).catch((error) => {
         console.error('Error refetching data:', error);
         // Optionally, handle the error more specifically here
       });
@@ -174,9 +173,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
       {/* overview   */}
       <div className="m-2 mb-4 w-full">
-        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn}  />
+        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn} />
       </div>
-
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
@@ -188,6 +186,14 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="pb-2 text-xl font-bold text-dark"> Check In </div>
         <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
+      </div>
+
+      <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="pb-2 text-xl font-bold text-dark"> Deadline </div>
+        <div className="flex text-sm text-primary">
+          {' '}
+          {moment.unix(challenge.endTimestamp).fromNow()}{' '}
+        </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
