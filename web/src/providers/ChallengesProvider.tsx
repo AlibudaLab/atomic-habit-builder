@@ -14,7 +14,7 @@ import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Address } from 'viem';
 import { Challenge } from '@/types';
-import useChallengeMetaDatas from '../hooks/useChallengeMetaData';
+import useChallengeMetaDatas from '../hooks/useChallengeMetaDatas';
 import { challengeAddr } from '@/constants';
 
 type AllChallengesContextType = {

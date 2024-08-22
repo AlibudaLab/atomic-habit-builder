@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { wagmiConfig as config } from '@/OnchainProviders';
 import { usePublicClient } from 'wagmi';
 import { Challenge } from '@/types';
-import useChallengeMetaDatas from './useChallengeMetaData';
+import useChallengeMetaDatas from './useChallengeMetaDatas';
 import { challengeAddr } from '@/constants';
 
 const useChallenge = (id: number) => {

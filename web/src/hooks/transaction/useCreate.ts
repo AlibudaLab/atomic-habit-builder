@@ -31,7 +31,7 @@ const useCreateChallenge = (
           donateDestination: donateDestination,
           checkInJudge: zeroAddress, // checkin-Judge
           asset: underlying,
-          donationBPS: 5000, // 50% BPS
+          donationBPS: 2000, // 20% in BPS
           stakePerUser: stake,
         },
       ],

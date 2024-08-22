@@ -17,6 +17,7 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
+import { CornerDownLeft } from 'lucide-react';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -88,7 +89,7 @@ export default function Create() {
       })
         .then((res) => {
           toast.success('Successfully created!! 🥳🥳🥳', { id: 'create' });
-          void refetch();
+          refetch()
           setCreatedChallengeId(challengeId);
           setStep(3);
         })
