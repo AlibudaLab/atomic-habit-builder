@@ -6,8 +6,9 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
-import { useAccount, useBalance, useConnect } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import { Input } from '@nextui-org/input';
+import moment, { now } from 'moment';
 
 import { usdcAddr } from '@/constants';
 import useChallenge from '@/hooks/useChallenge';
@@ -41,7 +42,7 @@ export default function StakeChallenge() {
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
   const { address: smartWallet } = useAccount();
-  const { joined } = useUserStatus(smartWallet, BigInt(challengeId));
+  const { joined, refetch } = useUserStatus(smartWallet, Number(challengeId));
 
   const hasAccess = useMemo(
     () =>
@@ -106,6 +107,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
+    refetch().catch((e) => console.log('refetch error', e))
     handleOpenCheckinPopup(); // trigger pop up window
   });
 
@@ -131,7 +133,9 @@ export default function StakeChallenge() {
 
         {challenge && (
           <>
-            <ChallengeBoxFilled challenge={challenge} />
+            <div className="m-2 mb-4 w-full">
+              <ChallengeBoxFilled challenge={challenge} fullWidth />
+            </div>
 
             {hasAccess && (
               <>
@@ -156,6 +160,11 @@ export default function StakeChallenge() {
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
                   </div>
+                </div>
+
+                <div className="m-4 mt-8 text-center font-londrina text-base">
+                  ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
+                  {moment.unix(challenge.endTimestamp).fromNow()}
                 </div>
               </>
             )}

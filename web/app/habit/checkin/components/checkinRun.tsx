@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import moment from 'moment';
+import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount, useConnect } from 'wagmi';
 import { Challenge, UserStatus } from '@/types';
@@ -44,11 +44,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     status: userStatus,
     joined,
     loading: loadingJoined,
-  } = useUserStatus(address, BigInt(challenge.id));
+    refetch: refetchStatus,
+  } = useUserStatus(address, challenge.id);
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
-  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
+  const { checkedIn, refetch: refetchCheckIns } = useUserChallengeCheckIns(address, challenge.id);
   const [isSigning, setIsSigning] = useState(false);
 
   const challengeStarted = useMemo(
@@ -80,6 +81,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
+      Promise.all([refetchCheckIns(), refetchStatus()]).catch((error) => {
+        console.error('Error refetching data:', error);
+        // Optionally, handle the error more specifically here
+      });
     },
   );
 
@@ -167,7 +172,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   return (
     <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
       {/* overview   */}
-      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} fullWidth />
+      <div className="m-2 mb-4 w-full">
+        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn} />
+      </div>
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
@@ -188,12 +195,15 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       </div>
 
-      {!challenge.public && challenge.accessCode && (
-        <div className="w-full justify-start p-6 py-2 text-start">
-          <div className="pb-2 text-xl font-bold text-dark"> Invite Others </div>
-          <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
-        </div>
-      )}
+      <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="pb-2 text-xl font-bold text-dark"> Invite Others </div>
+        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
+      </div>
+
+      <div className="m-4 mt-8 text-center font-londrina text-base">
+        ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
+        {moment.unix(challenge.endTimestamp).fromNow()}
+      </div>
 
       {/* middle section: if timestamp is not valid, show warning message */}
 

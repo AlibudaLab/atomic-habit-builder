@@ -22,12 +22,7 @@ type CheckinPopupProps = {
 function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupProps) {
   const { address } = useAccount();
 
-  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
-
-  const remainingDays = Math.max(
-    0,
-    Math.ceil((challenge.endTimestamp - moment().unix()) / (60 * 60 * 24)),
-  );
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const title = "You've Successfully\nChecked in!";
 
@@ -42,7 +37,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick }: CheckinPopupPr
         <li>
           Total Check in: {checkedIn} / {challenge.targetNum}
         </li>
-        <li> Remaining: {remainingDays} days </li>
+        <li> Challenge Ends: {moment.unix(challenge.endTimestamp).fromNow()}</li>
       </ul>
 
       {/* share */}

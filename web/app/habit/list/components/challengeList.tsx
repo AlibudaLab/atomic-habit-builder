@@ -1,18 +1,22 @@
 'use client';
 
-import useAllChallenges from '@/hooks/useAllChallenges';
+import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
 import useUserChallenges from '@/hooks/useUserChallenges';
 import Loading from '../../components/Loading';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 
 export default function ChallengeList() {
   const { address } = useAccount();
 
-  // only fetch public challenges
-  const { challenges, loading: loadingAllChallenges } = useAllChallenges(true, address);
+  const { challenges: allChallenges, loading: loadingChallenges } = useAllChallenges();
+  const challenges = useMemo(
+    () => allChallenges.filter((c) => c?.public || c?.creator === address),
+    [allChallenges],
+  );
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
@@ -24,7 +28,7 @@ export default function ChallengeList() {
         <p className="pb-8 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
 
         {/* Challenge List */}
-        {loadingUserData || loadingAllChallenges ? (
+        {loadingUserData || loadingChallenges ? (
           <Loading />
         ) : (
           challenges.map((challenge) => {
@@ -34,7 +38,7 @@ export default function ChallengeList() {
               return (
                 <button
                   type="button"
-                  className="w-full no-underline"
+                  className="m-2 w-full no-underline"
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >

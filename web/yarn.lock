@@ -19,9 +19,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@alibuda/zerodev-wallet@npm:0.1.6":
-  version: 0.1.6
-  resolution: "@alibuda/zerodev-wallet@npm:0.1.6"
+"@alibuda/zerodev-wallet@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@alibuda/zerodev-wallet@npm:0.2.0"
   dependencies:
     "@zerodev/ecdsa-validator": "npm:5.3.1"
     "@zerodev/passkey-validator": "npm:5.3.4"
@@ -31,7 +31,7 @@ __metadata:
     permissionless: ^0.1.29
     viem: ^2.16.3
     wagmi: ^2.9.0
-  checksum: 10c0/d9645b07bb68b823eaf69257af9414b5af40b53d1c5fa122331bbd077abcb39fecd67c100fe0fe87097f3294372ba1cbb2d16ccb2e44c5ca47c741d3e607d299
+  checksum: 10c0/7ae599aa0bc17d8910627065657f81ca6b8d2c5b63b1697beb7dbc0205e79584142477c0e731677248fb4c6e640f84fdd16cc678debdff53c9df444660d052d2
   languageName: node
   linkType: hard
 
@@ -21724,7 +21724,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "smart-health@workspace:."
   dependencies:
-    "@alibuda/zerodev-wallet": "npm:0.1.6"
+    "@alibuda/zerodev-wallet": "npm:0.2.0"
     "@arx-research/libhalo": "npm:^1.2.30"
     "@babel/preset-env": "npm:^7.23.5"
     "@babel/preset-react": "npm:^7.23.3"

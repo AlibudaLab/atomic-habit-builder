@@ -29,7 +29,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
     hash: dataHash,
   });
 
-  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
+  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;

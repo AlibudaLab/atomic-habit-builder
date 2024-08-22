@@ -71,7 +71,7 @@ export default function CallbackStrava() {
       {stravaAuthToken !== undefined && (
         <>
           {isPending ? (
-            <div className="py-4 text-lg font-bold"> Connecting Strava with Alibuda ... </div>
+            <div className="py-4 text-lg font-bold"> Connecting Strava ... </div>
           ) : (
             <div className="py-4 text-lg font-bold"> Connected with Strava! </div>
           )}

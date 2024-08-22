@@ -31,7 +31,7 @@ const useCreateChallenge = (
           donateDestination: donateDestination,
           checkInJudge: zeroAddress, // checkin-Judge
           asset: underlying,
-          donationBPS: 5000, // 50% BPS
+          donationBPS: 2000, // 20% in BPS
           stakePerUser: stake,
         },
       ],
@@ -39,15 +39,14 @@ const useCreateChallenge = (
     {
       onError: (e) => {
         console.log('e', e);
-        toast.error('Error Creating a Challenge.');
+        toast.error('Error Creating a Challenge.', { id: 'create' });
       },
       onSuccess: (reciept, events) => {
-        toast.dismiss();
-        toast.success('Successfully created!! 🥳🥳🥳');
+        toast.loading('Writing to DB...', { id: 'create' });
         onSuccess?.(reciept, events);
       },
       onSent: () => {
-        toast.loading('Transaction sent...');
+        toast.loading('Transaction sent...', { id: 'create' });
       },
     },
   );

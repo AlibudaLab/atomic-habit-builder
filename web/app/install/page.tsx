@@ -1,6 +1,5 @@
 'use client';
 
-import { useAccount } from 'wagmi';
 import InstallPWA from './components/InstallButton';
 
 export default function DashboardPage() {

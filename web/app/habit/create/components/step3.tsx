@@ -33,7 +33,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
 
   const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
 
-  const text = 'Join my new challenge on Alibuda';
+  const text = 'Join my new challenge on Atomic';
 
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
@@ -63,7 +63,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
       <InviteLink accessCode={accessCode} challengeId={challengeId} />
 
       <Button
-        className="min-h-12 w-full"
+        className="mt-8 min-h-12 w-full"
         color="primary"
         onClick={() => router.push(`/habit/stake/${challengeId}?code=${accessCode}`)}
       >
