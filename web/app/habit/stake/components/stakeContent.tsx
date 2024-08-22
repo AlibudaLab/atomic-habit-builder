@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { Input } from '@nextui-org/input';
-import moment from 'moment';
+import moment, { now } from 'moment';
 
 import { usdcAddr } from '@/constants';
 import useChallenge from '@/hooks/useChallenge';
@@ -154,19 +154,16 @@ export default function StakeChallenge() {
                 </div>
 
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Deadline </div>
-                  <div className="flex text-sm text-primary">
-                    {' '}
-                    {moment.unix(challenge.endTimestamp).fromNow()}{' '}
-                  </div>
-                </div>
-
-                <div className="w-full justify-start p-6 py-2 text-start">
                   <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
                   <div className="flex text-sm text-primary">
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
                   </div>
+                </div>
+
+                <div className="m-4 mt-8 text-center font-londrina text-base">
+                  ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
+                  {moment.unix(challenge.endTimestamp).fromNow()}
                 </div>
               </>
             )}
