@@ -15,7 +15,7 @@ export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
         zerodevApiKey,
         chain,
         'v3.1',
-        'zerodev',
+        'atomic',
         zerodevUrl,
         'register' as WebAuthnMode,
       ), // connector[0] for register only
@@ -24,7 +24,7 @@ export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
         zerodevApiKey,
         chain,
         'v3.1',
-        'zerodev',
+        'atomic',
         zerodevUrl,
         'login' as WebAuthnMode,
       ), // connector[1] for login
