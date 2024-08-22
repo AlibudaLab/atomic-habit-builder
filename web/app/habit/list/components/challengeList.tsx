@@ -12,7 +12,8 @@ export default function ChallengeList() {
   const { address } = useAccount();
 
   // only fetch public challenges
-  const { challenges, loading: loadingAllChallenges } = useAllChallenges();
+  const { challenges: allChallenges, loading: loadingAllChallenges } = useAllChallenges();
+  const challenges = allChallenges.filter((c) => (c.public === true || c.creator === address));
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);
 
