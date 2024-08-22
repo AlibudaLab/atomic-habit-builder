@@ -44,11 +44,12 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     status: userStatus,
     joined,
     loading: loadingJoined,
-  } = useUserStatus(address, BigInt(challenge.id));
+    refetch: refetchStatus,
+  } = useUserStatus(address, challenge.id);
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
-  const { checkedIn } = useUserChallengeCheckIns(address, BigInt(challenge.id));
+  const { checkedIn, refetch: refetchCheckIns } = useUserChallengeCheckIns(address, challenge.id);
   const [isSigning, setIsSigning] = useState(false);
 
   const challengeStarted = useMemo(
@@ -80,6 +81,11 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
+      Promise.all([refetchCheckIns(), refetchStatus()])
+      .catch(error => {
+        console.error('Error refetching data:', error);
+        // Optionally, handle the error more specifically here
+      });
     },
   );
 
@@ -167,6 +173,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
   return (
     <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
       {/* overview   */}
+
       <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} fullWidth />
 
       {/* goal description */}

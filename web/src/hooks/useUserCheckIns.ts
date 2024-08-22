@@ -1,45 +1,26 @@
-import { readContract } from '@wagmi/core';
 import { abi } from '@/abis/challenge';
-import { useState, useEffect } from 'react';
-import { wagmiConfig as config } from '@/OnchainProviders';
+import { useMemo } from 'react';
 import { challengeAddr } from '@/constants';
+import { useReadContract } from 'wagmi';
 
-const useUserChallengeCheckIns = (address: string | undefined, challengeId: bigint) => {
-  const [loading, setLoading] = useState(true);
-  const [checkedIn, setCheckedIn] = useState<number>(0);
-  const [error, setError] = useState<unknown | null>(null);
+const useUserCheckIns = (address: string | undefined, challengeId: number) => {
+  const {
+    data,
+    status: queryStatus,
+    refetch,
+  } = useReadContract({
+    abi,
+    address: challengeAddr,
+    functionName: 'getUserCheckInCounts',
+    args: [BigInt(challengeId), address as `0x${string}`],
+  });
 
-  useEffect(() => {
-    if (!address) return;
+  const loading = useMemo(() => queryStatus === 'pending', [queryStatus]);
+  const error = useMemo(() => queryStatus === 'error', [queryStatus]);
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  const checkedIn = useMemo(() => (data === undefined ? 0 : Number(data)), [data]);
 
-        const achieved = (await readContract(config, {
-          abi: abi,
-          address: challengeAddr,
-          functionName: 'getUserCheckInCounts',
-          args: [challengeId, address as `0x${string}`],
-        })) as unknown as bigint;
-
-        const checked = Number(achieved.toString());
-        setCheckedIn(checked);
-
-        setLoading(false);
-      } catch (_error) {
-        console.log('error', _error);
-        setError(_error);
-        setLoading(false);
-      }
-    };
-
-    fetchData().catch(console.error);
-
-    setInterval(fetchData, 5000);
-  }, [address, challengeId]);
-
-  return { loading, checkedIn, error };
+  return { loading, checkedIn, error, refetch };
 };
 
-export default useUserChallengeCheckIns;
+export default useUserCheckIns;

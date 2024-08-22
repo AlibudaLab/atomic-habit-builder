@@ -1,45 +1,27 @@
-import { readContract } from '@wagmi/core';
 import { abi } from '@/abis/challenge';
-import { useState, useEffect } from 'react';
-import { wagmiConfig as config } from '@/OnchainProviders';
+import { useMemo } from 'react';
 import { UserStatus } from '@/types';
 import { challengeAddr } from '@/constants';
+import { useReadContract } from 'wagmi';
 
-const useUserStatus = (address: string | undefined, challengeId: bigint) => {
-  const [loading, setLoading] = useState(true);
-  const [status, setUserStatus] = useState<UserStatus>(UserStatus.NotExist);
-  const [error, setError] = useState<unknown | null>(null);
+const useUserStatus = (address: string | undefined, challengeId: number) => {
+  const {
+    data: status,
+    status: queryStatus,
+    refetch,
+  } = useReadContract({
+    abi,
+    address: challengeAddr,
+    functionName: 'userStatus',
+    args: [BigInt(challengeId), address as `0x${string}`],
+  });
 
-  const joined = status >= UserStatus.Joined;
+  const joined = status ? status >= UserStatus.Joined : false;
 
-  useEffect(() => {
-    if (!address) return;
+  const loading = useMemo(() => queryStatus === 'pending', [queryStatus]);
+  const error = useMemo(() => queryStatus === 'error', [queryStatus]);
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const newStatus = await readContract(config, {
-          abi: abi,
-          address: challengeAddr,
-          functionName: 'userStatus',
-          args: [challengeId, address as `0x${string}`],
-        });
-        setUserStatus(newStatus as UserStatus);
-        setLoading(false);
-      } catch (_error) {
-        console.log('error', _error);
-        setError(_error);
-        setLoading(false);
-      }
-    };
-
-    fetchData().catch(console.error);
-
-    setInterval(fetchData, 5000);
-  }, [address, challengeId]);
-
-  return { loading, joined, error, status };
+  return { loading, joined, error, status, refetch };
 };
 
 export default useUserStatus;
