@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Snippet } from '@nextui-org/snippet';
 
 type InviteLinkProps = {
-  accessCode: string;
+  accessCode: string | undefined;
   challengeId: number;
 };
 
@@ -16,7 +16,7 @@ export default function InviteLink({ accessCode, challengeId }: InviteLinkProps)
     }
   }, []);
 
-  const link = origin + `/habit/stake/${challengeId}?code=${accessCode}`;
+  const link = origin + `/habit/stake/${challengeId}${accessCode ? `?code=${accessCode}` : ''}`;
   return (
     <Snippet
       className="mb-4 rounded-xl p-2 px-4"

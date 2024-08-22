@@ -6,8 +6,9 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
-import { useAccount, useBalance, useConnect } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import { Input } from '@nextui-org/input';
+import moment, { now } from 'moment';
 
 import { usdcAddr } from '@/constants';
 import useChallenge from '@/hooks/useChallenge';
@@ -158,6 +159,11 @@ export default function StakeChallenge() {
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
                   </div>
+                </div>
+
+                <div className="m-4 mt-8 text-center font-londrina text-base">
+                  ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
+                  {moment.unix(challenge.endTimestamp).fromNow()}
                 </div>
               </>
             )}

@@ -89,7 +89,7 @@ export default function Create() {
       })
         .then((res) => {
           toast.success('Successfully created!! 🥳🥳🥳', { id: 'create' });
-          refetch()
+          refetch();
           setCreatedChallengeId(challengeId);
           setStep(3);
         })

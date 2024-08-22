@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import moment from 'moment';
+import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount, useConnect } from 'wagmi';
 import { Challenge, UserStatus } from '@/types';
@@ -81,8 +81,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       handleOpenCheckinPopup();
       resetFields();
-      Promise.all([refetchCheckIns(), refetchStatus()])
-      .catch(error => {
+      Promise.all([refetchCheckIns(), refetchStatus()]).catch((error) => {
         console.error('Error refetching data:', error);
         // Optionally, handle the error more specifically here
       });
@@ -174,9 +173,8 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
       {/* overview   */}
       <div className="m-2 mb-4 w-full">
-        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn}  />
+        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn} />
       </div>
-
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
@@ -197,12 +195,15 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         </div>
       </div>
 
-      {!challenge.public && challenge.accessCode && (
-        <div className="w-full justify-start p-6 py-2 text-start">
-          <div className="pb-2 text-xl font-bold text-dark"> Invite Others </div>
-          <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
-        </div>
-      )}
+      <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="pb-2 text-xl font-bold text-dark"> Invite Others </div>
+        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
+      </div>
+
+      <div className="m-4 mt-8 text-center font-londrina text-base">
+        ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
+        {moment.unix(challenge.endTimestamp).fromNow()}
+      </div>
 
       {/* middle section: if timestamp is not valid, show warning message */}
 
