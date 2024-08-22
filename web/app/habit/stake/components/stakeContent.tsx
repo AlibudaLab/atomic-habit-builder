@@ -33,7 +33,7 @@ export default function StakeChallenge() {
 
   const { challengeId } = useParams<{ challengeId: string }>();
   const { address } = useAccount();
-  const { login, isPending: connecting } = usePasskeyConnection();
+  const { login, isPending: connecting, signedInBefore, register } = usePasskeyConnection();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';
@@ -42,7 +42,7 @@ export default function StakeChallenge() {
 
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
-  const { refetch: refetchAllChallenges } = useAllChallenges()
+  const { refetch: refetchAllChallenges } = useAllChallenges();
 
   const { address: smartWallet } = useAccount();
   const { joined, refetch } = useUserStatus(smartWallet, Number(challengeId));
@@ -110,7 +110,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
-    Promise.all([refetch(), refetchAllChallenges()]).catch((e) => console.log('refetch error', e))
+    Promise.all([refetch(), refetchAllChallenges()]).catch((e) => console.log('refetch error', e));
 
     handleOpenCheckinPopup(); // trigger pop up window
   });
@@ -197,7 +197,7 @@ export default function StakeChallenge() {
           <Button
             type="button"
             className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={login}
+            onClick={signedInBefore ? login : register}
             isLoading={connecting}
           >
             Connect
