@@ -107,7 +107,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
-    refetch()
+    refetch().catch((e) => console.log('refetch error', e))
     handleOpenCheckinPopup(); // trigger pop up window
   });
 
