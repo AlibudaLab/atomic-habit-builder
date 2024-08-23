@@ -43,7 +43,6 @@ export default function CreateStep1({
     <div className="flex w-full flex-col items-center justify-start px-8">
       {/* todo: add public challenge later */}
       <Switch
-        defaultSelected
         size="sm"
         className="my-2"
         isSelected={isPublic}
