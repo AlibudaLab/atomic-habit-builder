@@ -210,7 +210,7 @@ export default function StakeChallenge() {
           !joined &&
           challenge && (
             <div>
-              <div className="mx-4 mt-8 flex justify-center gap-2">
+              <div className="mx-8 mt-8 flex justify-center gap-2">
                 <Checkbox
                   className="font-londrina text-xs text-gray-600"
                   size="sm"
@@ -218,8 +218,7 @@ export default function StakeChallenge() {
                   onChange={() => setConfirmBoxChecked(!confirmBoxChecked)}
                 />
                 <span className="text-start font-londrina text-sm text-gray-500">
-                  I understand that I will lose my ${formatUnits(challenge.stake, 6)} to others if I
-                  fail to check in {challenge.targetNum} times
+                Fair warning: Missing any of the  {challenge.targetNum} check-ins means my  ${formatUnits(challenge.stake, 6)} joins the prize pool for others. I'm in!
                 </span>
               </div>
               <Button
