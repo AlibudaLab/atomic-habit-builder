@@ -1,11 +1,39 @@
 {
   "name": "Atomic",
   "short_name": "Atomic",
+  "description": "Atomic: Turn fitness challenges into unbreakable habits, one stake at a time.",
   "icons": [
+    {
+      "src": "/icons/192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
     {
       "src": "/icons/512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/1.jpg",
+      "sizes": "914x1874",
+      "type": "image/jpg"
+    },
+    {
+      "src": "/screenshots/2.jpg",
+      "sizes": "909x1867",
+      "type": "image/jpg"
     }
   ],
   "theme_color": "#ff784f",
