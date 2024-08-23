@@ -47,7 +47,7 @@ export default function CreateStep1({
         size="sm"
         className="my-2"
         isSelected={isPublic}
-        onValueChange={(value) => setIsPublic(value)}
+        onValueChange={setIsPublic}
       >
         <p className="text-sm"> Public </p>{' '}
       </Switch>
@@ -95,7 +95,10 @@ export default function CreateStep1({
         className="my-4"
         granularity="day"
         value={duration}
-        onChange={setDuration}
+        onChange={(newDuration) => {
+          if (newDuration === null) return
+          setDuration(newDuration)
+        }}
       />
 
       <Button onClick={() => setStep(2)} className="mt-8 min-h-12 w-full" color="primary">
