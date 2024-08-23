@@ -8,6 +8,18 @@
       "type": "image/png"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/screenshots/1.png",
+      "sizes": "914x1874",
+      "type": "image/png"
+    },
+    {
+      "src": "/screenshots/2.png",
+      "sizes": "909x1867",
+      "type": "image/png"
+    }
+  ],
   "theme_color": "#ff784f",
   "background_color": "#FFFFFF",
   "scope": "/",
