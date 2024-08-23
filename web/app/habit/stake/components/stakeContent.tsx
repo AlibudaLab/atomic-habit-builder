@@ -25,6 +25,7 @@ import useUserStatus from '@/hooks/useUserStatus';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
+import { Checkbox } from '@nextui-org/react';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -40,9 +41,11 @@ export default function StakeChallenge() {
 
   const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
 
+  const [confirmBoxChecked, setConfirmBoxChecked] = useState(false);
+
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
-  const { refetch: refetchAllChallenges } = useAllChallenges()
+  const { refetch: refetchAllChallenges } = useAllChallenges();
 
   const { address: smartWallet } = useAccount();
   const { joined, refetch } = useUserStatus(smartWallet, Number(challengeId));
@@ -110,7 +113,7 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
-    Promise.all([refetch(), refetchAllChallenges()]).catch((e) => console.log('refetch error', e))
+    Promise.all([refetch(), refetchAllChallenges()]).catch((e) => console.log('refetch error', e));
 
     handleOpenCheckinPopup(); // trigger pop up window
   });
@@ -206,16 +209,36 @@ export default function StakeChallenge() {
           hasAccess &&
           !joined &&
           challenge && (
-            <Button
-              color="primary"
-              type="button"
-              className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-              onClick={onJoinButtonClick}
-              isDisabled={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
-              isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
-            >
-              Join This Challenge
-            </Button>
+            <div>
+              <div className="mx-4 mt-8 flex justify-center gap-2">
+                <Checkbox
+                  className="font-londrina text-xs text-gray-600"
+                  size="sm"
+                  checked={confirmBoxChecked}
+                  onChange={() => setConfirmBoxChecked(!confirmBoxChecked)}
+                />
+                <span className="text-start font-londrina text-sm text-gray-500">
+                  I understand that I will lose my ${formatUnits(challenge.stake, 6)} to others if I
+                  fail to check in {challenge.targetNum} times
+                </span>
+              </div>
+              <Button
+                color="primary"
+                type="button"
+                className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+                onClick={onJoinButtonClick}
+                isDisabled={
+                  isJoinPreparing ||
+                  isMintPreparing ||
+                  isJoinLoading ||
+                  isMintLoading ||
+                  !confirmBoxChecked
+                }
+                isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+              >
+                Join This Challenge
+              </Button>
+            </div>
           )
         )}
 
@@ -227,7 +250,7 @@ export default function StakeChallenge() {
             onClick={handleCheckInPageClick}
             aria-description="You already joined the challenge"
           >
-            Next
+            Joined
           </Button>
         )}
 
