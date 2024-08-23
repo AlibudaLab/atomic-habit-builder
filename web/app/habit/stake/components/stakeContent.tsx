@@ -214,8 +214,8 @@ export default function StakeChallenge() {
                 <Checkbox
                   className="font-londrina text-xs text-gray-600"
                   size="sm"
-                  checked={confirmBoxChecked}
-                  onChange={() => setConfirmBoxChecked(!confirmBoxChecked)}
+                  isSelected={confirmBoxChecked}
+                  onValueChange={setConfirmBoxChecked}
                 />
                 <span className="text-start font-londrina text-sm text-gray-500">
                   {`Fair warning: Missing any of the ${
