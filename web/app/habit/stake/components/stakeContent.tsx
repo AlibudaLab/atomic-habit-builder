@@ -218,7 +218,12 @@ export default function StakeChallenge() {
                   onChange={() => setConfirmBoxChecked(!confirmBoxChecked)}
                 />
                 <span className="text-start font-londrina text-sm text-gray-500">
-                Fair warning: Missing any of the  {challenge.targetNum} check-ins means my  ${formatUnits(challenge.stake, 6)} joins the prize pool for others. I'm in!
+                  {`Fair warning: Missing any of the ${
+                    challenge.targetNum
+                  } check-ins means my ${formatUnits(
+                    challenge.stake,
+                    6,
+                  )} USDC joins the prize pool for others. I'm in!`}
                 </span>
               </div>
               <Button

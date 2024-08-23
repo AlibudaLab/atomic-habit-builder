@@ -42,12 +42,7 @@ export default function CreateStep1({
   return (
     <div className="flex w-full flex-col items-center justify-start px-8">
       {/* todo: add public challenge later */}
-      <Switch
-        size="sm"
-        className="my-2"
-        isSelected={isPublic}
-        onValueChange={setIsPublic}
-      >
+      <Switch size="sm" className="my-2" isSelected={isPublic} onValueChange={setIsPublic}>
         <p className="text-sm"> Public </p>{' '}
       </Switch>
 
@@ -95,8 +90,8 @@ export default function CreateStep1({
         granularity="day"
         value={duration}
         onChange={(newDuration) => {
-          if (newDuration === null) return
-          setDuration(newDuration)
+          if (newDuration === null) return;
+          setDuration(newDuration);
         }}
       />
 
