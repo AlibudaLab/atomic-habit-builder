@@ -25,6 +25,7 @@ import useUserStatus from '@/hooks/useUserStatus';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
+import { Checkbox } from '@nextui-org/react';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -39,6 +40,8 @@ export default function StakeChallenge() {
   const attachedCode = searchParams.get('code') ?? '';
 
   const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
+
+  const [confirmBoxChecked, setConfirmBoxChecked] = useState(false);
 
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
@@ -206,16 +209,40 @@ export default function StakeChallenge() {
           hasAccess &&
           !joined &&
           challenge && (
-            <Button
-              color="primary"
-              type="button"
-              className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-              onClick={onJoinButtonClick}
-              isDisabled={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
-              isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
-            >
-              Join This Challenge
-            </Button>
+            <div>
+              <div className="mx-8 mt-8 flex justify-center gap-2">
+                <Checkbox
+                  className="font-londrina text-xs text-gray-600"
+                  size="sm"
+                  isSelected={confirmBoxChecked}
+                  onValueChange={setConfirmBoxChecked}
+                />
+                <span className="text-start font-londrina text-sm text-gray-500">
+                  {`Fair warning: Missing any of the ${
+                    challenge.targetNum
+                  } check-ins means my ${formatUnits(
+                    challenge.stake,
+                    6,
+                  )} USDC joins the prize pool for others. I'm in!`}
+                </span>
+              </div>
+              <Button
+                color="primary"
+                type="button"
+                className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+                onClick={onJoinButtonClick}
+                isDisabled={
+                  isJoinPreparing ||
+                  isMintPreparing ||
+                  isJoinLoading ||
+                  isMintLoading ||
+                  !confirmBoxChecked
+                }
+                isLoading={isJoinPreparing || isMintPreparing || isJoinLoading || isMintLoading}
+              >
+                Join This Challenge
+              </Button>
+            </div>
           )
         )}
 
@@ -227,7 +254,7 @@ export default function StakeChallenge() {
             onClick={handleCheckInPageClick}
             aria-description="You already joined the challenge"
           >
-            Next
+            Joined
           </Button>
         )}
 

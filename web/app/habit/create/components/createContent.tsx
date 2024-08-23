@@ -52,7 +52,7 @@ export default function Create() {
     end: parseAbsoluteToLocal(defaultStart.add(1, 'week').toISOString()),
   });
 
-  const [stake, setStake] = useState(5);
+  const [stake, setStake] = useState(20);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
 
