@@ -33,7 +33,7 @@ export default function ChallengeList() {
       <div className="flex w-full flex-col items-center justify-center pb-24">
         <SubTitle text={subTitle} />
 
-        <div className='pt-8' />
+        <div className="pt-8" />
         {/* Challenge List */}
         {loadingUserData || loadingChallenges ? (
           <Loading />

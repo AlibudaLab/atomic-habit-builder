@@ -123,7 +123,7 @@ export default function Create() {
       <SubTitle text="Let's Build Another Habit" />
 
       <div
-        className={`h-full mt-12 w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
+        className={`mt-12 h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
           loaded ? 'slide-up' : ''
         }`}
       >

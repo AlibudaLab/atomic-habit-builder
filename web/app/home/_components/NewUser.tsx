@@ -11,9 +11,9 @@ export default function NewUser() {
   return (
     <main className="container mx-4 flex flex-col items-center px-4 text-center">
       <div className="flex w-full flex-col items-center justify-center">
-        <SubTitle text='Welcome to Atomic'/>
+        <SubTitle text="Welcome to Atomic" />
 
-        <p className="pt-8 mx-4 font-nunito text-sm">
+        <p className="mx-4 pt-8 font-nunito text-sm">
           To start your Atomic journey, you can join a challenge or create a new one.
         </p>
 

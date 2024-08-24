@@ -138,7 +138,7 @@ export default function StakeChallenge() {
 
         {challenge && (
           <>
-            <div className="m-2 mb-4 w-full">
+            <div className="my-4 w-full">
               <ChallengeBoxFilled challenge={challenge} fullWidth />
             </div>
 
@@ -197,7 +197,7 @@ export default function StakeChallenge() {
         {challenge && !address ? (
           <Button
             type="button"
-            className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+            className="mt-4 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
             onClick={signedInBefore ? login : register}
             isLoading={connecting}
           >

@@ -9,7 +9,7 @@ export default function Onboard() {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <SubTitle text='Please Sign in First' />
+      <SubTitle text="Please Sign in First" />
 
       <Button
         type="button"
