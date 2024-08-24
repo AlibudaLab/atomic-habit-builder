@@ -58,7 +58,14 @@ export default function StakeChallenge() {
       challenge?.creator === address ||
       challenge?.accessCode === inputAccessCode ||
       joined,
-    [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
+    [
+      challenge?.public,
+      challenge?.accessCode,
+      inputAccessCode,
+      joined,
+      address,
+      challenge?.creator,
+    ],
   );
 
   const { data: tokenBalance } = useBalance({

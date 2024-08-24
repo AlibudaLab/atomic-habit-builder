@@ -4,11 +4,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   useDisclosure,
-  RadioGroup,
-  Radio,
 } from '@nextui-org/react';
 import { useState } from 'react';
 
@@ -23,7 +20,7 @@ export function ConnectButton({ className }: { className?: string }) {
     <>
       <Button
         type="button"
-        className={`min-h-12 px-6 py-3 ${className || ''}`}
+        className={`min-h-12 px-6 py-3 ${className ? className : ''}`}
         onClick={onOpen}
         isLoading={connecting}
       >

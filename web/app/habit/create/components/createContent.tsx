@@ -98,7 +98,7 @@ export default function Create() {
           toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address, isPublic],
+    [name, description, type, accessCode, address, isPublic, refetch],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
