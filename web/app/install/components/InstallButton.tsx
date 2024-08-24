@@ -43,7 +43,7 @@ function InstallPWA() {
   return (
     <button
       type="button"
-      className="link-button text-bold w-4/5 max-w-80 rounded-lg bg-primary p-4 text-xl text-white"
+      className="link-button text-bold w-4/5 max-w-80 rounded-lg bg-primary p-3 text-lg text-white"
       id="setup_button"
       aria-label="Install app"
       title="Install app"

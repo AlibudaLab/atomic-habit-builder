@@ -1,5 +1,6 @@
 'use client';
 
+import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Button } from '@nextui-org/button';
 import { useRouter } from 'next/navigation';
@@ -10,9 +11,9 @@ export default function NewUser() {
   return (
     <main className="container mx-4 flex flex-col items-center px-4 text-center">
       <div className="flex w-full flex-col items-center justify-center">
-        <p className="pb-8 text-center font-londrina text-xl font-bold"> Welcome to Atomic! </p>
+        <SubTitle text='Welcome to Atomic'/>
 
-        <p className="mx-4 font-nunito text-sm">
+        <p className="pt-8 mx-4 font-nunito text-sm">
           To start your Atomic journey, you can join a challenge or create a new one.
         </p>
 

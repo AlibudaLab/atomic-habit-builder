@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
@@ -7,7 +8,7 @@ import useUserChallenges from '@/hooks/useUserChallenges';
 import Loading from '../../components/Loading';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { SubTitle } from '@/components/SubTitle/SubTitle';
 
 export default function ChallengeList() {
   const { address } = useAccount();
@@ -22,11 +23,17 @@ export default function ChallengeList() {
 
   const { push } = useRouter();
 
+  const subTitle = useMemo(() => {
+    if (address) return 'Join a Challenge Now!';
+    return 'Browse Challenges';
+  }, [address]);
+
   return (
     <main className="container flex flex-col items-center px-4 text-center">
-      <div className="flex w-full flex-col items-center justify-center">
-        <p className="pb-8 text-center font-londrina text-xl font-bold"> Join a Challenge Now! </p>
+      <div className="flex w-full flex-col items-center justify-center pb-24">
+        <SubTitle text={subTitle} />
 
+        <div className='pt-8' />
         {/* Challenge List */}
         {loadingUserData || loadingChallenges ? (
           <Loading />

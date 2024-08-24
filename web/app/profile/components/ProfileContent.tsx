@@ -63,7 +63,7 @@ export default function ProfileContent() {
   }, BigInt(0));
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-start p-4">
+    <div className="container flex flex-col items-center">
       {address === undefined ? (
         <Onboard />
       ) : (

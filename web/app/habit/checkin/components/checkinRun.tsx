@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
-import { useAccount, useCall } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { Challenge, UserStatus } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
@@ -157,10 +157,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   // if user has not joined the challenge, redirect to the stake page
   useEffect(() => {
-    if (!loadingJoined && !joined) {
+    if (address && !loadingJoined && !joined) {
       push(`/habit/stake/${challenge.id}`);
     }
-  }, [joined, loadingJoined, challenge.id, push]);
+  }, [joined, loadingJoined, challenge.id, push, address]);
 
   const activitiesToUse =
     challenge.type === ChallengeTypes.Run
@@ -170,9 +170,9 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       : workoutData;
 
   return (
-    <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
+    <div className="flex h-screen w-full flex-col items-center px-4 text-center">
       {/* overview   */}
-      <div className="m-2 mb-4 w-full">
+      <div className="m-2 mb-4 w-full pt-4">
         <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn} />
       </div>
 
@@ -200,7 +200,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
       </div>
 
-      <div className="m-4 mt-8 text-center font-londrina text-base">
+      <div className="m-4 text-center font-londrina text-base">
         ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
         {moment.unix(challenge.endTimestamp).fromNow()}
       </div>
@@ -221,7 +221,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       )}
 
       {userStatus === UserStatus.Joined && verifierConnected && canCheckInNow && (
-        <div className="flex w-full justify-center px-2 pt-4">
+        <div className="flex w-full justify-center px-2">
           <ActivityDropDown
             isDisabled={!address}
             fields={fields}

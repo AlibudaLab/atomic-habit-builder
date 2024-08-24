@@ -26,6 +26,7 @@ import { Environment, getCurrentEnvironment } from '@/store/environment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
+import { SubTitle } from '@/components/SubTitle/SubTitle';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -133,10 +134,7 @@ export default function StakeChallenge() {
   return (
     <main className="flex h-screen flex-col items-center px-4 text-center">
       <div className="flex max-w-96 flex-col items-center justify-center">
-        <p className="pb-4 text-center font-londrina text-xl font-bold">
-          {' '}
-          Stake and Commit to It!{' '}
-        </p>
+        <SubTitle text="Stake and Commit to It!" />
 
         {challenge && (
           <>
@@ -169,7 +167,7 @@ export default function StakeChallenge() {
                   </div>
                 </div>
 
-                <div className="m-4 mt-8 text-center font-londrina text-base">
+                <div className="m-4 text-center font-londrina text-base">
                   ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
                   {moment.unix(challenge.endTimestamp).fromNow()}
                 </div>
@@ -210,7 +208,7 @@ export default function StakeChallenge() {
           !joined &&
           challenge && (
             <div>
-              <div className="mx-8 mt-8 flex justify-center gap-2">
+              <div className="mx-8 mt-4 flex justify-center gap-2">
                 <Checkbox
                   className="font-londrina text-xs text-gray-600"
                   size="sm"
@@ -229,7 +227,7 @@ export default function StakeChallenge() {
               <Button
                 color="primary"
                 type="button"
-                className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+                className="mt-4 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
                 onClick={onJoinButtonClick}
                 isDisabled={
                   isJoinPreparing ||
@@ -254,7 +252,7 @@ export default function StakeChallenge() {
             onClick={handleCheckInPageClick}
             aria-description="You already joined the challenge"
           >
-            Joined
+            Start CheckIn
           </Button>
         )}
 
@@ -292,7 +290,7 @@ export default function StakeChallenge() {
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
          */}
-        {hasAccess && (
+        {hasAccess && !loadingChallenge && (
           <div className="p-4 text-xs">
             {tokenBalance && !hasEnoughBalance ? (
               <p>
