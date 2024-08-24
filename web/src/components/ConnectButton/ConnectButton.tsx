@@ -12,7 +12,7 @@ import { useState } from 'react';
 /**
  * Open a modal that allow both register & login
  */
-export function ConnectButton({ className }: { className?: string }) {
+export function ConnectButton({ className, primary }: { className?: string; primary?: boolean }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { login, isPending: connecting, signedInBefore, register } = usePasskeyConnection();
 
@@ -23,6 +23,7 @@ export function ConnectButton({ className }: { className?: string }) {
         className={`min-h-12 px-6 py-3 ${className ? className : ''}`}
         onClick={onOpen}
         isLoading={connecting}
+        color={primary ? 'primary' : 'default'}
       >
         Connect
       </Button>
