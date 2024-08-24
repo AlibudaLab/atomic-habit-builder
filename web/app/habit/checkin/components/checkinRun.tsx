@@ -155,13 +155,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     window.location = authUrl as any;
   }, []);
 
-  // if user has not joined the challenge, redirect to the stake page
-  useEffect(() => {
-    if (address && !loadingJoined && !joined) {
-      push(`/habit/stake/${challenge.id}`);
-    }
-  }, [joined, loadingJoined, challenge.id, push, address]);
-
   const activitiesToUse =
     challenge.type === ChallengeTypes.Run
       ? runData
