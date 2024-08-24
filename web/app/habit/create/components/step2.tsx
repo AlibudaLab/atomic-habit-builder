@@ -9,9 +9,9 @@ import { Button } from '@nextui-org/button';
 import Image from 'next/image';
 
 import usdcLogo from '@/imgs/coins/usdc.png';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
-import { ArrowLeftCircleIcon } from 'lucide-react';
+import { ConnectButton } from '@/components/ConnectButton/ConnectButton';
 
 type Step2Props = {
   stake: number;
@@ -30,7 +30,6 @@ export default function CreateStep2({
   isCreating,
   setStep,
 }: Step2Props) {
-  const { login, isPending: connecting } = usePasskeyConnection();
   const { address } = useAccount();
 
   return (
@@ -99,9 +98,7 @@ export default function CreateStep2({
           </Button>
         </div>
       ) : (
-        <Button onClick={login} className="mt-2 min-h-12 w-full" isLoading={connecting}>
-          Connect Wallet
-        </Button>
+        <ConnectButton className="w-full" />
       )}
     </div>
   );

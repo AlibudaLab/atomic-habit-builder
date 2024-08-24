@@ -27,6 +27,7 @@ import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
+import { ConnectButton } from '@/components/ConnectButton/ConnectButton';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -132,7 +133,7 @@ export default function StakeChallenge() {
   };
 
   return (
-    <main className="flex h-screen flex-col items-center px-4 text-center">
+    <main className="flex h-screen flex-col items-center px-4 pb-12 text-center">
       <div className="flex max-w-96 flex-col items-center justify-center">
         <SubTitle text="Stake and Commit to It!" />
 
@@ -146,13 +147,13 @@ export default function StakeChallenge() {
               <>
                 {/* goal description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Goal </div>
+                  <div className="text-xl font-bold text-dark"> Goal </div>
                   <div className="text-sm text-primary"> {challenge.description} </div>
                 </div>
 
                 {/* checkIn description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Check In </div>
+                  <div className="text-xl font-bold text-dark"> Check In </div>
                   <div className="text-sm text-primary">
                     {' '}
                     {getCheckInDescription(challenge.type)}{' '}
@@ -160,7 +161,7 @@ export default function StakeChallenge() {
                 </div>
 
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
+                  <div className="text-xl font-bold text-dark"> Stake Amount </div>
                   <div className="flex text-sm text-primary">
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
@@ -195,14 +196,7 @@ export default function StakeChallenge() {
         )}
 
         {challenge && !address ? (
-          <Button
-            type="button"
-            className="mt-4 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={signedInBefore ? login : register}
-            isLoading={connecting}
-          >
-            Connect
-          </Button>
+          <ConnectButton className="mt-4 w-3/4" />
         ) : (
           hasAccess &&
           !joined &&
