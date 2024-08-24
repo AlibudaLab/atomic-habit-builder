@@ -14,9 +14,10 @@ export default function ChallengeList() {
   const { address } = useAccount();
 
   const { challenges: allChallenges, loading: loadingChallenges } = useAllChallenges();
+  
   const challenges = useMemo(
     () => allChallenges.filter((c) => c?.public || c?.creator === address),
-    [allChallenges],
+    [allChallenges, address],
   );
 
   const { data: joined, loading: loadingUserData } = useUserChallenges(address);

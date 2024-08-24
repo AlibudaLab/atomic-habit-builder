@@ -14,7 +14,7 @@ export default function CheckIn() {
 
   return (
     <div className="flex h-screen w-full flex-col items-center">
-      <SubTitle text={`Happy Builder; Habit Builder!`} />
+      <SubTitle text="Happy Builder; Habit Builder!" />
 
       {loading ? (
         <Loading />

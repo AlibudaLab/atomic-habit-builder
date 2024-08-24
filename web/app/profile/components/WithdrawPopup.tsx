@@ -29,7 +29,7 @@ function WithdrawPopup({ onClose, maxAmount }: WithdrawalProps) {
     } else {
       setAmountError(null);
     }
-  }, [amount, amountToWithdraw]);
+  }, [amount, amountToWithdraw, maxAmount]);
 
   const invalidAddress = recipient !== '' && !isAddress(recipient);
 
