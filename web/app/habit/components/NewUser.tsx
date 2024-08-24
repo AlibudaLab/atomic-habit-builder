@@ -1,7 +1,6 @@
 'use client';
 
 import { SubTitle } from '@/components/SubTitle/SubTitle';
-import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Button } from '@nextui-org/button';
 import { useRouter } from 'next/navigation';
 
