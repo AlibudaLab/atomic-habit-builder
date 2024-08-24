@@ -23,7 +23,6 @@ import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import useUserStatus from '@/hooks/useUserStatus';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
-import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
@@ -36,7 +35,6 @@ export default function StakeChallenge() {
 
   const { challengeId } = useParams<{ challengeId: string }>();
   const { address } = useAccount();
-  const { login, isPending: connecting, signedInBefore, register } = usePasskeyConnection();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';

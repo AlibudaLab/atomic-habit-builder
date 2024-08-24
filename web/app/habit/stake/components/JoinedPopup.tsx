@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import { Challenge } from '@/types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
+import { randomChoice } from '@/utils/content';
 
 type JoinedPopupProps = {
   challenge: Challenge;
@@ -14,14 +15,27 @@ type JoinedPopupProps = {
 function JoinedPopup({ challenge, onClose, onCheckInPageClick }: JoinedPopupProps) {
   const title = "You've Successfully\nJoined the Challenge!";
 
+  const started = useMemo(() => {
+    return challenge.startTimestamp < moment().unix();
+  }, [challenge.startTimestamp]);
+
+  const additionalText = useMemo(() => {
+    return randomChoice([
+      `You're in. Now don't let your USDC become someone else's bonus.`,
+      `Challenge accepted. Your wallet's fate is in your hands now.`,
+      `Game on. Your USDC's either motivating you or motivating others soon.`,
+      `You've stepped into the arena. Time to turn those USDC into trophies.`,
+    ]);
+  }, []);
+
   const content = (
-    <div>
-      <p>Challenge starts from</p>
-      <p>
-        <strong>
-          {moment.unix(Number(challenge.startTimestamp.toString())).format('MMMM Do')}
-        </strong>
-      </p>
+    <div className="mx-4 font-nunito">
+      {started ? (
+        <p>Challenge ends {moment.unix(challenge.endTimestamp).fromNow()}!</p>
+      ) : (
+        <p>Challenge starts {moment.unix(challenge.startTimestamp).fromNow()}!</p>
+      )}
+      <div className="mt-8 text-sm italic">{additionalText}</div>
     </div>
   );
 
