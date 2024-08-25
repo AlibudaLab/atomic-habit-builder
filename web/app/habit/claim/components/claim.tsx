@@ -72,7 +72,9 @@ export default function Claim() {
     BigInt(challenge?.id ?? 0),
     () => {
       setClaimSuccess(true);
-      refetch().catch((error) => {console.log('Error refetching data:', error);});
+      refetch().catch((error) => {
+        console.log('Error refetching data:', error);
+      });
       handleOpenClaimedPopup();
     },
   );
