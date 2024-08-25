@@ -19,12 +19,15 @@ const useWithdraw = (challengeId: bigint, onSuccess?: () => void) => {
     },
     {
       onError: (error) => {
-        toast.error('Error while claiming: ' + error);
+        toast.error('Error while claiming', {id: 'claim'});
       },
       onSuccess: () => {
         //In the orginal file they refetch after success refetch();
-        toast.success('Successfully Claimed!');
+        toast.success('Successfully Claimed!', {id: 'claim'});
       },
+      onSent: () => {
+        toast.loading('Claiming...', {id: 'claim'});
+      }
     },
   );
 };
