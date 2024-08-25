@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount, useCall } from 'wagmi';
 import { Challenge, UserStatus } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
@@ -69,22 +69,22 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
 
-  const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
-  const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
-  const handleChallengeListClick = () => {
+  const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
+  const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
+  const handleChallengeListClick = useCallback(() => {
     push('/');
-  };
+  }, [push]);
 
   const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
     fields,
     () => {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
-      handleOpenCheckinPopup();
       resetFields();
       Promise.all([refetchCheckIns(), refetchStatus()]).catch((error) => {
         console.error('Error refetching data:', error);
         // Optionally, handle the error more specifically here
       });
+      handleOpenCheckinPopup();
     },
   );
 
@@ -286,6 +286,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {isCheckinPopupOpen && (
         <CheckinPopup
           challenge={challenge}
+          checkedIn={checkedIn}
           onClose={handleCloseCheckinPopup}
           onCheckInPageClick={handleChallengeListClick}
         />
