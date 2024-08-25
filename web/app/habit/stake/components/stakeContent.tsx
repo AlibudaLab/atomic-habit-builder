@@ -3,7 +3,7 @@
 'use client';
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
@@ -28,6 +28,7 @@ import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
+import { logEvent } from '@/utils/gtag';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -91,16 +92,19 @@ export default function StakeChallenge() {
   const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
   const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
 
-  const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
-  const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
-  const handleOpenInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(true);
-  const handleCloseInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(false);
-  const handleOpenDepositPopup = () => setIsDepositPopupOpen(true);
-  const handleCloseDepositPopup = () => setIsDepositPopupOpen(false);
-  const handleCheckInPageClick = () => {
+  const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
+  const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
+  const handleOpenInsufficientBalancePopup = useCallback(() => setIsInsufficientBalancePopupOpen(true), []);
+  const handleCloseInsufficientBalancePopup = useCallback(() => setIsInsufficientBalancePopupOpen(false), []);
+  const handleOpenDepositPopup = useCallback(() => {
+    logEvent({ action: 'deposit', category: 'account', label: 'deposit', value: 1 });
+    setIsDepositPopupOpen(true)
+  }, []);
+  const handleCloseDepositPopup = useCallback(() => setIsDepositPopupOpen(false), []);
+  const handleCheckInPageClick = useCallback(() => {
     // Logic to navigate to the check-in page
     push(`/habit/checkin/${challengeId}`);
-  };
+  }, [challengeId, push]);
 
   const {
     onSubmitTransaction: onMintTx,
