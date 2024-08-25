@@ -29,9 +29,8 @@ export function ConnectButton({ className, primary }: { className?: string; prim
       </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalHeader> Connect to Passkey </ModalHeader>
         <ModalContent>
-          <ModalHeader className="m-2 flex flex-col gap-1"> Connection Required </ModalHeader>
+          <ModalHeader className="m-2 flex flex-col gap-1"> Connect with Passkey </ModalHeader>
           <ModalBody className="justify-center">
             <div className="mx-2 text-sm">
               To continue, you need to connect to a Smart Account controlled by Passkey. You can
