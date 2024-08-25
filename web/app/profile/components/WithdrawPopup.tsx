@@ -37,6 +37,7 @@ function WithdrawPopup({ onClose, maxAmount }: WithdrawalProps) {
     usdcAddr,
     recipient as `0x${string}`,
     amountToWithdraw,
+    onClose, // onSuccess
   );
 
   const content = (
