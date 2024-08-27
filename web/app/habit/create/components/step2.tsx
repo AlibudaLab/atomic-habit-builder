@@ -83,11 +83,11 @@ export default function CreateStep2({
         ))}
       </Select>
 
-      {address ? (
-        <div className="mb-4 flex w-full justify-center gap-2">
-          <Button className="mt-2 min-h-12 w-1/2" color="default" onClick={() => setStep(1)}>
-            Back
-          </Button>
+      <div className="mb-4 flex w-full justify-center gap-2">
+        <Button className="mt-2 min-h-12 w-1/2" color="default" onClick={() => setStep(1)}>
+          Back
+        </Button>
+        {address ? (
           <Button
             isLoading={isCreating}
             onClick={onClickCreate}
@@ -96,10 +96,10 @@ export default function CreateStep2({
           >
             Create
           </Button>
-        </div>
-      ) : (
-        <ConnectButton className="w-full" cta="Create" />
-      )}
+        ) : (
+          <ConnectButton className="mt-2 w-1/2" cta="Create" primary />
+        )}
+      </div>
     </div>
   );
 }

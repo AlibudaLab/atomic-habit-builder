@@ -291,7 +291,7 @@ export default function StakeChallenge() {
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
          */}
-        {hasAccess && !loadingChallenge && (
+        {hasAccess && address && !loadingChallenge && (
           <div className="p-4 text-xs">
             {tokenBalance && !hasEnoughBalance ? (
               <p>
