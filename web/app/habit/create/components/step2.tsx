@@ -11,7 +11,7 @@ import Image from 'next/image';
 import usdcLogo from '@/imgs/coins/usdc.png';
 import { useAccount } from 'wagmi';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
-import { ConnectButton } from '@/components/ConnectButton/ConnectButton';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
 
 type Step2Props = {
   stake: number;
@@ -98,7 +98,7 @@ export default function CreateStep2({
           </Button>
         </div>
       ) : (
-        <ConnectButton className="w-full" />
+        <ConnectButton className="w-full" cta="Create" />
       )}
     </div>
   );

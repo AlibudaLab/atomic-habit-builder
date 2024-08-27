@@ -27,7 +27,7 @@ import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
-import { ConnectButton } from '@/components/ConnectButton/ConnectButton';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -203,7 +203,7 @@ export default function StakeChallenge() {
         )}
 
         {challenge && !address ? (
-          <ConnectButton className="mt-4 w-3/4" />
+          <ConnectButton className="mt-4 w-3/4" cta="Join This Challenge" primary />
         ) : (
           hasAccess &&
           !joined &&

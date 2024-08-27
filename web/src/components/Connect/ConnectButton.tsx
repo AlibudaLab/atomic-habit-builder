@@ -7,12 +7,20 @@ import {
   Button,
   useDisclosure,
 } from '@nextui-org/react';
-import { useState } from 'react';
+import { RegisterButton } from './RegisterButton';
 
 /**
  * Open a modal that allow both register & login
  */
-export function ConnectButton({ className, primary }: { className?: string; primary?: boolean }) {
+export function ConnectButton({
+  cta,
+  className,
+  primary,
+}: {
+  cta?: string;
+  className?: string;
+  primary?: boolean;
+}) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { login, isPending: connecting, signedInBefore, register } = usePasskeyConnection();
 
@@ -25,17 +33,14 @@ export function ConnectButton({ className, primary }: { className?: string; prim
         isLoading={connecting}
         color={primary ? 'primary' : 'default'}
       >
-        Connect
+        {cta ? cta : 'Connect'}
       </Button>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader className="m-2 flex flex-col gap-1"> Connect with Passkey </ModalHeader>
           <ModalBody className="justify-center">
-            <div className="mx-2 text-sm">
-              To continue, you need to connect to a Smart Account controlled by Passkey. You can
-              either sign in with an existing account or register a new one.
-            </div>
+            <div className="mx-2 text-sm">We need to verify your identity to continue!</div>
 
             <div className="flex flex-col items-center justify-center">
               <Button
@@ -43,19 +48,13 @@ export function ConnectButton({ className, primary }: { className?: string; prim
                 className="m-4 mt-8 w-48 p-6 font-londrina"
                 color="primary"
                 isLoading={connecting}
-                onClick={signedInBefore ? login : register}
+                onClick={login}
               >
-                {signedInBefore ? 'Sign in' : 'Register an account'}
+                {'Sign in'}
               </Button>
 
-              {/* secondary login option: show as text */}
-              <button
-                type="button"
-                onClick={signedInBefore ? register : login}
-                className="mb-4 text-sm text-gray-500 underline"
-              >
-                {signedInBefore ? 'Register a new account' : 'Already have a passkey? Sign in'}
-              </button>
+              {/* always put register as secondary */}
+              <RegisterButton />
             </div>
           </ModalBody>
         </ModalContent>

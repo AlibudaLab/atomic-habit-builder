@@ -21,13 +21,6 @@ export default function NewUser() {
           <Button className="w-1/2 no-underline" onClick={() => push('/habit/create')}>
             <div className="my-4 rounded-lg p-4">Create</div>
           </Button>
-          <Button
-            color="primary"
-            className="w-1/2 no-underline"
-            onClick={() => push('/habit/list')}
-          >
-            <div className="my-4 rounded-lg p-4">Explore</div>
-          </Button>
         </div>
       </div>
     </main>

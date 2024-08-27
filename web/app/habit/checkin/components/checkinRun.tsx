@@ -21,7 +21,7 @@ import CheckinPopup from './CheckinPopup';
 import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
-import { ConnectButton } from '@/components/ConnectButton/ConnectButton';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
 
 const initFields: CheckInFields = {
   challengeId: 0,

@@ -18,8 +18,9 @@ import { UserStatus } from '@/types';
 import { useState } from 'react';
 import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
-import { ConnectButton } from '@/components/ConnectButton/ConnectButton';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
+import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
@@ -78,8 +79,8 @@ export default function ProfileContent() {
 
         {address === undefined ? (
           <div className="flex flex-col items-center justify-center">
-            <div className="my-4 font-nunito text-sm">Connect to view your profile</div>
-            <ConnectButton className="mt-12 w-1/2" primary />
+            <div className="my-4 pt-10 font-nunito text-sm">Connect to view your profile</div>
+            <SignInAndRegister />
           </div>
         ) : (
           <>
