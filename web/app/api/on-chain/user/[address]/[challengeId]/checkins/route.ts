@@ -1,15 +1,15 @@
 import { toHex } from 'viem';
 import { NextRequest, NextResponse } from 'next/server';
-import { subgraphClient } from '../../configs';
-import { CheckInCountQueryResult } from '../../utils/types';
+import { subgraphClient } from '../../../../configs';
+import { CheckInCountQueryResult } from '../../../../utils/types';
 
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { user: string; challengeId: string } },
+  { params }: { params: { address: string; challengeId: string } },
 ): Promise<NextResponse> {
   try {
-    const { user, challengeId } = params;
+    const { address, challengeId } = params;
 
     const query = `
       query ($id: ID!) {
@@ -22,7 +22,7 @@ export async function GET(
     `;
 
     const variables: { id: string } = {
-      id: user.toLowerCase() + toHex(challengeId),
+      id: address.toLowerCase() + toHex(challengeId),
     };
 
     const data = await subgraphClient.request<CheckInCountQueryResult>(query, variables);
@@ -36,7 +36,7 @@ export async function GET(
     return NextResponse.json({
       checkInCount,
       challengeId,
-      userAddress: user,
+      address: address,
     });
   } catch (error) {
     console.error('[API] Error fetching user challenge check-in count:', error);

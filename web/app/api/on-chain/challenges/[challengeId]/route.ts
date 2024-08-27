@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { toHex } from 'viem';
-import { subgraphClient } from '../configs';
-import { ChallengeQueryResult } from '../utils/types';
+import { subgraphClient } from '../../configs';
+import { ChallengeQueryResult } from '../../utils/types';
 
 //TODO Filter out joinedUsers
 export async function GET({ params }: { params: { challengeId: string } }): Promise<Response> {

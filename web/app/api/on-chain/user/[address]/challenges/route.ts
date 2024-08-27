@@ -1,15 +1,13 @@
-// web/app/api/on-chain/[user]/challenges/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
-import { subgraphClient } from '../../configs';
-import { UserQueryResult, ChallengeWithUserStatus } from '../../utils/types';
+import { subgraphClient } from '../../../configs';
+import { UserQueryResult, ChallengeWithUserStatus } from '../../../utils/types';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { user: string } },
+  { params }: { params: { address: string } },
 ): Promise<NextResponse> {
   try {
-    const { user } = params;
+    const { address } = params;
     const searchParams = req.nextUrl.searchParams;
     const amount = parseInt(searchParams.get('amount') ?? '10', 10);
     const page = parseInt(searchParams.get('page') ?? '1', 10);
@@ -35,7 +33,7 @@ export async function GET(
     `;
 
     const variables: { id: string; first: number; skip: number } = {
-      id: user.toLowerCase(),
+      id: address.toLowerCase(),
       first: amount,
       skip,
     };
