@@ -5,11 +5,11 @@ import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 export function NotConnected() {
   const content = useMemo(() => {
     return randomChoice([
-      'Your financial fate is sealed here. Connect to peek.',
-      "See if you are winning or contributing to others' winnings. Connect.",
-      `Your wallet's journey is documented here. Connect to track it.`,
-      'Your habit history is calling. Connect to answer.',
-      'Wallet fatter or lighter? Connect for the truth.',
+      'Your financial fate is sealed here. Sign in to peek.',
+      "See if you are winning or contributing to others' winnings. ",
+      `Your wallet's journey is documented here. Sign in to track it.`,
+      'Your habit history is calling. Sign in to answer.',
+      'Wallet fatter or lighter? Sign in for the truth.',
     ]);
   }, []);
 

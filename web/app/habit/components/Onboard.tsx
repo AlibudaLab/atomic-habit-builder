@@ -15,11 +15,11 @@ export default function Onboard() {
 
   const content = useMemo(() => {
     return randomChoice([
-      'Ready to put your money where your habits are? Connect now!',
+      'Ready to put your money where your habits are? Start now!',
       'No pain, no gain... no check-in, no coin.',
-      'Stakes are high, rewards are higher. Connect and commit.',
+      'Stakes are high, rewards are higher. Start and commit.',
       'Your habits or your USDC – which will last longer? Join to find out.',
-      'Warning: Connection may lead to life improvement and potential profits.',
+      'Warning: Participation may lead to life improvement and potential profits.',
     ]);
   }, []);
 
