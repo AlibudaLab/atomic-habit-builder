@@ -11,7 +11,7 @@ import {
 /**
  * Always prompt user to register: warning and
  */
-export function RegisterButton({}: {}) {
+export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const { register, isPending: connecting } = usePasskeyConnection();
@@ -19,7 +19,7 @@ export function RegisterButton({}: {}) {
   return (
     <>
       <button type="button" onClick={onOpen} className="mb-4 text-sm text-gray-500 underline">
-        {'Register a new account'}
+        Register a new account
       </button>
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
@@ -28,8 +28,8 @@ export function RegisterButton({}: {}) {
           <ModalBody className="justify-center">
             <div className="mx-2 text-sm">
               <p>
-                Atomic requires a Passkey to control your smart wallet. It's your key to the
-                playground – and your USDC. Lose it, and you're locked out for good
+                Atomic requires a Passkey to control your smart wallet. It&apos;s your key to the
+                playground – and your USDC. Lose it, and you&apos;re locked out for good
               </p>
 
               <p className="pt-2">
@@ -45,7 +45,7 @@ export function RegisterButton({}: {}) {
                 isLoading={connecting}
                 onClick={register}
               >
-                {"I'm In!"}
+                I&apos;m In!
               </Button>
             </div>
           </ModalBody>

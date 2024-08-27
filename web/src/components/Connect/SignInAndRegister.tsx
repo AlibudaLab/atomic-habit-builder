@@ -25,7 +25,7 @@ export function SignInAndRegister({
         isLoading={connecting}
         onClick={login}
       >
-        {'Sign in'}
+        Sign in
       </Button>
 
       {/* always put register as secondary */}

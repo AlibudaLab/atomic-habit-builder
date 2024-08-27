@@ -50,7 +50,7 @@ export function ConnectButton({
                 isLoading={connecting}
                 onClick={login}
               >
-                {'Sign in'}
+                Sign in
               </Button>
 
               {/* always put register as secondary */}
