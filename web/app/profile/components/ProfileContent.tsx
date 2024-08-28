@@ -65,7 +65,7 @@ export default function ProfileContent() {
   }, BigInt(0));
 
   return (
-    <div className="container flex flex-col items-center">
+    <div className="container flex flex-col items-center pb-24">
       <div className="mx-2 w-full items-center">
         {isDepositModalOpen && <DepositPopup onClose={() => setIsDepositModalOpen(false)} />}
         {isWithdrawModalOpen && (
