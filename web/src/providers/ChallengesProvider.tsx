@@ -54,7 +54,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
   const refetch = useCallback(() => {
     refetchMetaData();
     setCounter((c) => c + 1);
-  }, []);
+  }, [refetchMetaData]);
 
   useEffect(() => {
     if (!publicClient?.multicall) return;
@@ -145,7 +145,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
       error,
       refetch,
     }),
-    [loading, challenges, error],
+    [loading, challenges, error, refetch],
   );
 
   return (

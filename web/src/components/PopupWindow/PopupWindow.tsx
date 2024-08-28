@@ -62,7 +62,7 @@ function PopupWindow({ title, onClose, content = null, buttons = [] }: PopupWind
                   key={btn.id}
                   type="button"
                   onClick={handleButtonClick(btn.onClick)}
-                  className={`${btn.className} m-2 w-4/5 max-w-56 p-4`}
+                  className={`${btn.className} m-2 min-h-12 w-4/5 max-w-56 p-4`}
                   isDisabled={btn.disabled}
                   color={btn.isPrimary ? 'primary' : 'default'}
                 >

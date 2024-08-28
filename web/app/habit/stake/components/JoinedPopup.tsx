@@ -29,7 +29,7 @@ function JoinedPopup({ challenge, onClose, onCheckInPageClick }: JoinedPopupProp
     return [
       {
         id: 'goToCheckIn',
-        label: 'Go to Check in Page',
+        label: 'Start Checking In',
         onClick: onCheckInPageClick,
         isPrimary: true,
       },
