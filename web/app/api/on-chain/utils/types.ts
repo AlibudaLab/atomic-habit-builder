@@ -17,6 +17,13 @@ export type Challenge = {
   totalClaims?: string;
   totalSucceedUsers?: string;
   totalFailedUsers?: string;
+  joinedUsers: [User];
+};
+
+export type User = {
+  user: {
+    id: string;
+  };
 };
 
 export type LatestChallenge = {
