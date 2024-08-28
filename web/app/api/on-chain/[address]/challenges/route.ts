@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { subgraphClient } from '../../../configs';
-import { UserQueryResult, ChallengeWithUserStatus } from '../../../utils/types';
+import { subgraphClient } from '../../configs';
+import { UserQueryResult, ChallengeWithUserStatus } from '../../utils/types';
+import { convertBytesToNumber } from '../../utils/conversion';
 
 export async function GET(
   req: NextRequest,
@@ -9,7 +10,7 @@ export async function GET(
   try {
     const { address } = params;
     const searchParams = req.nextUrl.searchParams;
-    const amount = parseInt(searchParams.get('amount') ?? '10', 10);
+    const amount = parseInt(searchParams.get('amount') ?? '100', 10);
     const page = parseInt(searchParams.get('page') ?? '1', 10);
     const skip = (page - 1) * amount;
 
@@ -21,9 +22,10 @@ export async function GET(
                 skip: $skip
             ) {
                 challengeId {
-                id
-                startTimestamp
-                status
+                  id
+                  startTimestamp
+                  endTimestamp
+                  status
                 }
                 status
             }
@@ -44,10 +46,13 @@ export async function GET(
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const challenges: ChallengeWithUserStatus[] = data.user.challengeHistory.map((ch) => ({
+    const challenges = data.user.challengeHistory.map((ch) => ({
       ...ch.challengeId,
+      id: convertBytesToNumber(ch.challengeId.id),
       userStatus: ch.status,
     }));
+
+    console.log(challenges);
 
     return NextResponse.json({
       challenges,

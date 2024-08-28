@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { toHex } from 'viem';
 import { subgraphClient } from '../../configs';
 import { ChallengeQueryResult } from '../../utils/types';
+import { convertNumberToBytes, transformChallenge } from '../../utils/conversion';
 
-//TODO Filter out joinedUsers
-export async function GET({ params }: { params: { challengeId: string } }): Promise<Response> {
+export async function GET(
+  _: NextRequest,
+  { params }: { params: { challengeId: number } },
+): Promise<Response> {
   try {
     const { challengeId } = params;
 
@@ -38,15 +40,15 @@ export async function GET({ params }: { params: { challengeId: string } }): Prom
       }
     `;
 
-    const variables = { id: toHex(challengeId) };
+    const variables = { id: convertNumberToBytes(challengeId) };
 
     const data = await subgraphClient.request<ChallengeQueryResult>(query, variables);
 
-    if (!data.challenge) {
-      return NextResponse.json({ error: 'Challenge not found' }, { status: 404 });
-    }
+    if (!data.challenge) return NextResponse.json({ error: 'Challenge not found' }, { status: 404 });
 
-    return NextResponse.json(data.challenge);
+    const transformedChallenge = transformChallenge(data.challenge);
+
+    return NextResponse.json(transformedChallenge);
   } catch (error) {
     console.error('[API] Error fetching challenge:', error);
     return NextResponse.json({ error: 'Failed to fetch challenge' }, { status: 500 });
