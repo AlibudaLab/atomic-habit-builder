@@ -2,7 +2,7 @@
 'use client';
 
 import { ChallengeWithCheckIns } from '@/types';
-import { ChallengeBoxFilled } from './ChallengeBox';
+import { ChallengePreview } from './ChallengeBox';
 import { Divider } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import NewUser from './NewUser';
@@ -36,7 +36,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
           onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline"
         >
-          <ChallengeBoxFilled
+          <ChallengePreview
             key={challenge.id.toString()}
             challenge={challenge}
             checkedIn={challenge.checkedIn}
@@ -59,7 +59,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
           onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline"
         >
-          <ChallengeBoxFilled
+          <ChallengePreview
             key={challenge.id.toString()}
             challenge={challenge}
             checkedIn={challenge.checkedIn}

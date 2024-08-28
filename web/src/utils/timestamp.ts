@@ -16,3 +16,40 @@ export function formatTime(timestamp: number): string {
 export function formatDuration(start: number, end: number): string {
   return `${formatTime(start)} - ${formatTime(end)}`;
 }
+
+export function getCountdownString(ending: number) {
+  var now = moment();
+  var end = moment.unix(ending); // another date
+  var duration = moment.duration(end.diff(now));
+
+  //Get Days and subtract from duration
+  var days = duration.days();
+  duration.subtract(days, 'days');
+
+  //Get hours and subtract from duration
+  var hours = duration.hours();
+  duration.subtract(hours, 'hours');
+
+  //Get Minutes and subtract from duration
+  var minutes = duration.minutes();
+  duration.subtract(minutes, 'minutes');
+
+  //Get seconds
+  var seconds = duration.seconds();
+
+  // If > 14 days, only show days
+  if (days > 14) {
+    return `${days} days`;
+  }
+  // If > 0 days, show days and hours
+  else if (days > 0) {
+    return `${days} days, ${hours} hours`;
+  }
+
+  // If > 0 hours, show hours and minutes
+  else if (hours > 0) {
+    return `${hours} hours, ${minutes} minutes`;
+  }
+
+  return `${minutes} minutes, ${seconds} seconds`;
+}

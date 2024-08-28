@@ -1,6 +1,6 @@
 import { base, baseSepolia } from 'viem/chains';
 import { DonationDest } from './types';
-import { Address, getChainContractAddress, zeroAddress } from 'viem';
+import { Address } from 'viem';
 import { getChainsForEnvironment } from './store/supportedChains';
 
 const currentChainId = getChainsForEnvironment().id;
