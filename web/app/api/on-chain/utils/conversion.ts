@@ -1,5 +1,6 @@
 import { numberToHex } from 'viem';
 import { Challenge } from './types';
+import { MAX_BPS } from './constants';
 
 export function convertBytesToNumber(bytes: string): number {
   const hex = bytes.startsWith('0x') ? bytes.slice(2) : bytes;
@@ -18,6 +19,21 @@ export function transformChallenge(challenge: Challenge) {
   return {
     ...challenge,
     id: convertBytesToNumber(challenge.id).toString(),
-    joinedUsers: challenge.joinedUsers.map(user => user.user.id)
+    joinedUsers: challenge.joinedUsers.map((user) => user.user.id),
   };
+}
+
+export function calculateWinningStakePerUser(
+  totalUsers: bigint,
+  succeedUsers: bigint,
+  stakePerUser: bigint,
+  donationBPS: bigint,
+  status: string,
+) {
+  if (status !== '2' || succeedUsers.toString() === '0') return '0';
+
+  const totalStake = totalUsers * stakePerUser;
+  const donation = ((totalUsers - succeedUsers) * stakePerUser * donationBPS) / BigInt(MAX_BPS);
+
+  return ((totalStake - donation) / succeedUsers).toString();
 }

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { subgraphClient } from '../../configs';
-import { UserQueryResult, ChallengeWithUserStatus } from '../../utils/types';
-import { convertBytesToNumber } from '../../utils/conversion';
+import { UserQueryResult } from '../../utils/types';
+import { calculateWinningStakePerUser, convertBytesToNumber } from '../../utils/conversion';
 
 export async function GET(
   req: NextRequest,
@@ -23,9 +23,20 @@ export async function GET(
             ) {
                 challengeId {
                   id
+                  verifier
+                  minimumCheckIns
                   startTimestamp
+                  joinDueTimestamp
                   endTimestamp
-                  status
+                  donateDestination
+                  totalUsers
+                  stakePerUser
+                  totalStake
+                  totalSucceedUsers
+                  donationBPS
+                }
+                checkIns {
+                  id
                 }
                 status
             }
@@ -50,9 +61,15 @@ export async function GET(
       ...ch.challengeId,
       id: convertBytesToNumber(ch.challengeId.id),
       userStatus: ch.status,
+      checkInsCount: ch.checkIns.length,
+      winningStakePerUser: calculateWinningStakePerUser(
+        BigInt(ch.challengeId.totalUsers),
+        BigInt(ch.challengeId.totalSucceedUsers ?? 0),
+        BigInt(ch.challengeId.stakePerUser),
+        BigInt(ch.challengeId.donationBPS ?? 0),
+        ch.status,
+      ),
     }));
-
-    console.log(challenges);
 
     return NextResponse.json({
       challenges,
