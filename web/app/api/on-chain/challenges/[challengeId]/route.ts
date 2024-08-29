@@ -44,7 +44,8 @@ export async function GET(
 
     const data = await subgraphClient.request<ChallengeQueryResult>(query, variables);
 
-    if (!data.challenge) return NextResponse.json({ error: 'Challenge not found' }, { status: 404 });
+    if (!data.challenge)
+      return NextResponse.json({ error: 'Challenge not found' }, { status: 404 });
 
     const transformedChallenge = transformChallenge(data.challenge);
 

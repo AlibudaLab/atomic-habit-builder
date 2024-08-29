@@ -35,7 +35,7 @@ export async function GET(
     return NextResponse.json({
       address,
       challengeId,
-      checkInCount
+      checkInCount,
     });
   } catch (error) {
     console.error('[API] Error fetching user challenge check-in count:', error);
