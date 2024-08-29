@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 
 const useUserCheckIns = (address: string | undefined, challengeId: number) => {
   const [counter, setCounter] = useState(0);
-  const [checkIns, setCheckIns] = useState<number | null>(null);
+  const [checkIns, setCheckIns] = useState<number | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 

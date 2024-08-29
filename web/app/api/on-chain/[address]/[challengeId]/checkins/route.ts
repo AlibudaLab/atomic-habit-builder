@@ -30,7 +30,7 @@ export async function GET(
       return NextResponse.json({ error: 'User challenge not found' }, { status: 404 });
     }
 
-    const checkInCount = data.userChallenge.checkIns.length;
+    const checkInCount = data.userChallenge.checkIns?.length ?? 0;
 
     return NextResponse.json({
       address,

@@ -61,7 +61,7 @@ export async function GET(
       ...ch.challengeId,
       id: convertBytesToNumber(ch.challengeId.id),
       userStatus: ch.status,
-      checkInsCount: ch.checkIns.length,
+      checkInsCount: ch.checkIns?.length ?? 0,
       winningStakePerUser: calculateWinningStakePerUser(
         BigInt(ch.challengeId.totalUsers),
         BigInt(ch.challengeId.totalSucceedUsers ?? 0),
