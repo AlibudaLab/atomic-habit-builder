@@ -163,7 +163,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-l font-bold text-dark"> Description </div>
+        <div className="text-xl font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
