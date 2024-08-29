@@ -78,7 +78,7 @@ function FractionDisplay({ numerator, denominator }: { numerator: number; denomi
   return (
     <div className="inline-flex flex-col items-center">
       <span className="text-xs">{numerator}</span>
-      <div className="h-px w-full bg-white"/>
+      <div className="h-px w-full bg-white" />
       <span className="text-xs">{denominator}</span>
     </div>
   );
@@ -101,14 +101,16 @@ export function ChallengePreview({
 
   return (
     <div
-      className={`wrapped-filled p-2 focus:scale-105 ${isPast ? 'opacity-50' : ''} ${
-        fullWidth ? 'w-full' : 'm-2'
-      }`}
+      className={`wrapped-filled p-2 transition-transform duration-300 focus:scale-105 ${
+        isPast ? 'opacity-50' : ''
+      } ${fullWidth ? 'w-full' : 'm-2'}`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
-          <p className="text-xs opacity-80">{formatDuration(challenge.startTimestamp, challenge.endTimestamp)}</p>
+          <p className="text-xs opacity-80">
+            {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+          </p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-xs">
             {' '}
@@ -120,10 +122,10 @@ export function ChallengePreview({
             value={percentage}
             size="lg"
             classNames={{
-              svg: 'w-12 h-12',
-              indicator: 'stroke-white stroke-1',
-              track: 'stroke-white/20 stroke-1',
-              value: 'text-xxs font-nunito text-white',
+              svg: 'w-14 h-14',
+              indicator: 'stroke-white stroke-[1.5px]',
+              track: 'stroke-white/20 stroke-[1.5px]',
+              value: 'text-xs font-nunito text-white',
               label: 'text-xs font-nunito',
             }}
             showValueLabel
