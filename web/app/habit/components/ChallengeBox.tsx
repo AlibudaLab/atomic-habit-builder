@@ -1,11 +1,8 @@
 import { Challenge } from '@/types';
-import { challengeToEmoji, getChallengeUnit } from '@/utils/challenges';
-import { formatDuration, getCountdownString } from '@/utils/timestamp';
+import { challengeToEmoji } from '@/utils/challenges';
+import { formatDuration } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
-import { CheckCheckIcon } from 'lucide-react';
-import { formatUnits } from 'viem';
-import { getActivityDuration } from '@/utils/time';
 
 export function ChallengeBox({
   challenge,
