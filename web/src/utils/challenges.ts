@@ -25,3 +25,16 @@ export function getCheckInDescription(type: ChallengeTypes) {
       return 'Check in by tapping onto the target NFC Chip.';
   }
 }
+
+export function getChallengeUnit(type: ChallengeTypes) {
+  switch (type) {
+    case ChallengeTypes.Run:
+      return 'runs';
+    case ChallengeTypes.Workout:
+      return 'workouts';
+    case ChallengeTypes.Cycling:
+      return 'rides';
+    case ChallengeTypes.NFC_Chip:
+      return 'times';
+  }
+}

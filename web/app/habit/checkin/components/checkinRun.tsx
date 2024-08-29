@@ -16,7 +16,7 @@ import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
-import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
@@ -158,19 +158,13 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     <div className="flex h-screen w-full flex-col items-center px-4 text-center">
       {/* overview   */}
       <div className="my-4 w-full">
-        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn} />
+        <ChallengePreview challenge={challenge} fullWidth checkedIn={checkedIn} />
       </div>
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-xl font-bold text-dark"> Goal </div>
+        <div className="text-l font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
-      </div>
-
-      {/* check in description  */}
-      <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-xl font-bold text-dark"> Check In </div>
-        <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
