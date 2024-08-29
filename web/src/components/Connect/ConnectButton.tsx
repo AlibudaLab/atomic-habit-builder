@@ -22,7 +22,7 @@ export function ConnectButton({
   primary?: boolean;
 }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const { login, isPending: connecting, signedInBefore, register } = usePasskeyConnection();
+  const { login, isPending: connecting } = usePasskeyConnection();
 
   return (
     <>

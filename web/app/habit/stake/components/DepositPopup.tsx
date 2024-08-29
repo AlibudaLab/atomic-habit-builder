@@ -38,8 +38,6 @@ function DepositPopup({ onClose }: DepositPopupProps) {
   ];
 
   const networks = [
-    // { key: 'eth', label: 'Ethereum' },
-    // { key: 'op', label: 'Optimism' },
     { key: 'base', label: 'Base' },
   ];
 
