@@ -76,6 +76,16 @@ export function ChallengeBoxFilled({
   );
 }
 
+function FractionDisplay({ numerator, denominator }: { numerator: number; denominator: number }) {
+  return (
+    <div className="inline-flex flex-col items-center">
+      <span className="text-xs">{numerator}</span>
+      <div className="h-px w-full bg-white"></div>
+      <span className="text-xs">{denominator}</span>
+    </div>
+  );
+}
+
 export function ChallengePreview({
   challenge,
   checkedIn,
@@ -98,20 +108,24 @@ export function ChallengePreview({
 
   return (
     <div
-      className={`wrapped-filled p-2 ${isPast ? 'opacity-50' : ''} ${fullWidth ? 'w-full' : 'm-2'}`}
+      className={`wrapped-filled p-2 focus:scale-105 ${isPast ? 'opacity-50' : ''} ${
+        fullWidth ? 'w-full' : 'm-2'
+      }`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
           <p className="text-xs opacity-80">{getCountdownString(challenge.endTimestamp)} left</p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
-          <p className="text-sm"> ${formatUnits(challenge.stake, 6)} staked </p>
+          <p className="text-xs">
+            {' '}
+            {challenge.public ? 'Public' : 'Private'} | {challenge.participants} joined{' '}
+          </p>
         </div>
         <div className="ml-auto min-w-[64px] p-2 text-lg ">
           <CircularProgress
             value={percentage}
             size="lg"
-            label={`${checkedIn} ${getChallengeUnit(challenge.type)}`}
             classNames={{
               svg: 'w-12 h-12',
               indicator: 'stroke-white',
@@ -120,7 +134,15 @@ export function ChallengePreview({
               label: 'text-xs font-nunito',
             }}
             showValueLabel
-            valueLabel={<div> {isCompleted ? 'Done' : `${percentage}%`} </div>}
+            valueLabel={
+              isCompleted ? (
+                <div> Claim </div>
+              ) : (
+                <div className="flex flex-col gap-0">
+                  <FractionDisplay numerator={checkedIn} denominator={challenge.targetNum} />
+                </div>
+              )
+            }
           />
         </div>
       </div>
