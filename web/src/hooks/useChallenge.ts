@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaDatas';
 
 const useChallenge = (id: number) => {
+  const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(true);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [error, setError] = useState<unknown | null>(null);
@@ -15,9 +16,9 @@ const useChallenge = (id: number) => {
 
     const fetchData = async () => {
       try {
+        console.log('fetch challenges counter', counter);
         setLoading(true);
-
-        const response = await fetch(`/api/on-chain/challenges/${id}`, { cache: 'no-store' });
+        const response = await fetch(`/api/on-chain/challenges/${id}`);
         if (!response.ok) throw new Error('Failed to fetch challenge');
         const result = await response.json();
 
@@ -46,9 +47,13 @@ const useChallenge = (id: number) => {
     };
 
     fetchData().catch(console.error);
-  }, [id, challengesMetaDatas, loadingMetaData]);
+  }, [id, challengesMetaDatas, loadingMetaData, counter]);
 
-  return { loading, challenge, error };
+  const refetch = useCallback(() => {
+    setCounter((c) => c + 1);
+  }, []);
+
+  return { loading, challenge, error, refetch };
 };
 
 export default useChallenge;
