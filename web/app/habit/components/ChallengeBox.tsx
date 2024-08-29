@@ -80,7 +80,7 @@ function FractionDisplay({ numerator, denominator }: { numerator: number; denomi
   return (
     <div className="inline-flex flex-col items-center">
       <span className="text-xs">{numerator}</span>
-      <div className="h-px w-full bg-white"></div>
+      <div className="h-px w-full bg-white"/>
       <span className="text-xs">{denominator}</span>
     </div>
   );
