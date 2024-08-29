@@ -1,25 +1,39 @@
-import { abi } from '@/abis/challenge';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { UserStatus } from '@/types';
-import { challengeAddr } from '@/constants';
-import { useReadContract } from 'wagmi';
 
 const useUserStatus = (address: string | undefined, challengeId: number) => {
-  const {
-    data: status,
-    status: queryStatus,
-    refetch,
-  } = useReadContract({
-    abi,
-    address: challengeAddr,
-    functionName: 'userStatus',
-    args: [BigInt(challengeId), address as `0x${string}`],
-  });
+  const [counter, setCounter] = useState(0);
+  const [status, setStatus] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  const joined = status ? status >= UserStatus.Joined : false;
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (!address) return;
+      setLoading(true);
+      try {
+        console.log('fetch userState counter', counter);
+        const response = await fetch(`/api/on-chain/${address}/${challengeId}/userStatus`, {
+          next: { revalidate: 0 },
+        });
+        if (!response.ok) throw new Error('Failed to fetch user status');
+        const data = await response.json();
+        setStatus(data.userStatus);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('An error occurred'));
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const loading = useMemo(() => queryStatus === 'pending', [queryStatus]);
-  const error = useMemo(() => queryStatus === 'error', [queryStatus]);
+    fetchStatus().catch(console.error);
+  }, [address, challengeId, counter]);
+
+  const joined = useMemo(() => status !== null && status >= UserStatus.Joined, [status]);
+
+  const refetch = useCallback(() => {
+    setCounter((c) => c + 1);
+  }, []);
 
   return { loading, joined, error, status, refetch };
 };

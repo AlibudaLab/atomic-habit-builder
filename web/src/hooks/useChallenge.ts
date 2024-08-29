@@ -1,13 +1,9 @@
-import { abi } from '@/abis/challenge';
-import { useState, useEffect } from 'react';
-import { wagmiConfig as config } from '@/OnchainProviders';
-import { usePublicClient } from 'wagmi';
+import { useState, useEffect, useCallback } from 'react';
 import { Challenge } from '@/types';
 import useChallengeMetaDatas from './useChallengeMetaDatas';
-import { challengeAddr } from '@/constants';
 
 const useChallenge = (id: number) => {
-  const publicClient = usePublicClient({ config });
+  const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(true);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [error, setError] = useState<unknown | null>(null);
@@ -15,52 +11,35 @@ const useChallenge = (id: number) => {
   const { challengesMetaDatas, loading: loadingMetaData } = useChallengeMetaDatas();
 
   useEffect(() => {
-    if (!publicClient?.multicall) return;
     if (challengesMetaDatas.length === 0) return;
     if (loadingMetaData) return;
 
     const fetchData = async () => {
       try {
+        console.log('fetch challenges counter', counter);
         setLoading(true);
-
-        const [challengeRes, participantCount] = await publicClient.multicall({
-          contracts: [
-            {
-              address: challengeAddr,
-              abi,
-              functionName: 'getChallenge',
-              args: [BigInt(id.toString())],
-            },
-            {
-              address: challengeAddr,
-              abi,
-              functionName: 'totalUsers',
-              args: [BigInt(id.toString())],
-            },
-          ],
-        });
+        const response = await fetch(`/api/on-chain/challenges/${id}`);
+        if (!response.ok) throw new Error('Failed to fetch challenge');
+        const result = await response.json();
 
         const metaData = challengesMetaDatas.find((c) => c.id.toString() === id.toString());
         if (!metaData) return;
-        const res = challengeRes.result;
-        if (!res || participantCount.error) return;
 
         const data = {
-          verifier: res.verifier,
-          targetNum: Number(res.minimumCheckIns),
-          startTimestamp: Number(res.startTimestamp),
-          joinDueTimestamp: Number(res.joinDueTimestamp),
-          endTimestamp: Number(res.endTimestamp),
-          donationDestination: res.donateDestination,
-          participants: Number(participantCount.result.toString()),
-          stake: res.stakePerUser,
-          totalStaked: res.stakePerUser * participantCount.result,
+          verifier: result.verifier,
+          targetNum: Number(result.minimumCheckIns),
+          startTimestamp: Number(result.startTimestamp),
+          joinDueTimestamp: Number(result.joinDueTimestamp),
+          endTimestamp: Number(result.endTimestamp),
+          donationDestination: result.donateDestination,
+          participants: Number(result.totalUsers),
+          stake: result.stakePerUser,
+          totalStaked: result.totalStake,
           ...metaData,
         };
 
         setChallenge(data);
       } catch (_error) {
-        console.log('error', _error);
         setError(_error);
       } finally {
         setLoading(false);
@@ -68,9 +47,13 @@ const useChallenge = (id: number) => {
     };
 
     fetchData().catch(console.error);
-  }, [publicClient, id, challengesMetaDatas, loadingMetaData]);
+  }, [id, challengesMetaDatas, loadingMetaData, counter]);
 
-  return { loading, challenge, error };
+  const refetch = useCallback(() => {
+    setCounter((c) => c + 1);
+  }, []);
+
+  return { loading, challenge, error, refetch };
 };
 
 export default useChallenge;
