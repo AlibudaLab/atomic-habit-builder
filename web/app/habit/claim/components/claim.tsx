@@ -31,7 +31,7 @@ export default function Claim() {
 
   const { address: account } = useAccount();
 
-  const { data } = useReadContracts({
+  const { data, refetch } = useReadContracts({
     contracts: [
       {
         abi,
@@ -72,6 +72,9 @@ export default function Claim() {
     BigInt(challenge?.id ?? 0),
     () => {
       setClaimSuccess(true);
+      refetch().catch((error) => {
+        console.log('Error refetching data:', error);
+      });
       handleOpenClaimedPopup();
     },
   );

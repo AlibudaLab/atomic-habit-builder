@@ -7,14 +7,8 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import { readContract } from '@wagmi/core';
-import { abi as challengeAbi } from '@/abis/challenge';
-import { wagmiConfig as config } from '@/OnchainProviders';
-import { usePublicClient } from 'wagmi';
-import { Address } from 'viem';
-import { Challenge } from '@/types';
+import { Challenge, ChallengeDetail } from '@/types';
 import useChallengeMetaDatas from '../hooks/useChallengeMetaDatas';
-import { challengeAddr } from '@/constants';
 
 type AllChallengesContextType = {
   loading: boolean;
@@ -38,8 +32,6 @@ type AllChallengesProviderProps = {
 };
 
 export function AllChallengesProvider({ children }: AllChallengesProviderProps) {
-  const publicClient = usePublicClient({ config });
-
   const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(true);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -54,10 +46,9 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
   const refetch = useCallback(() => {
     refetchMetaData();
     setCounter((c) => c + 1);
-  }, []);
+  }, [refetchMetaData]);
 
   useEffect(() => {
-    if (!publicClient?.multicall) return;
     if (loadingMetaData) return;
 
     const fetchData = async () => {
@@ -65,70 +56,37 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
         console.log('fetch challenges counter', counter);
         setLoading(true);
 
-        const challengeCount = await readContract(config, {
-          abi: challengeAbi,
-          address: challengeAddr,
-          functionName: 'challengeCounter',
-        });
+        const response = await fetch(`/api/on-chain/challenges`, { next: { revalidate: 0 } });
+        if (!response.ok) throw new Error('Failed to fetch challenge');
+        const result = await response.json();
 
-        const result = await publicClient.multicall({
-          contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
-            address: challengeAddr,
-            abi: challengeAbi,
-            functionName: 'getChallenge',
-            args: [i + 1],
-          })),
-        });
-
-        const participantsRes = (await publicClient.multicall({
-          contracts: Array.from({ length: Number(challengeCount.toString()) }, (_, i) => ({
-            address: challengeAddr,
-            abi: challengeAbi,
-            functionName: 'totalUsers',
-            args: [i + 1],
-          })),
-        })) as { result: bigint }[];
-
-        const newData: Challenge[] = result
-          .map((raw, idx) => {
-            const res = raw.result as any as {
-              verifier: Address;
-              minimumCheckIns: bigint;
-              startTimestamp: bigint;
-              joinDueTimestamp: bigint;
-              endTimestamp: bigint;
-              donateDestination: Address;
-              stakePerUser: bigint;
-            };
-
-            const participants = participantsRes[idx].result;
-
-            return {
-              id: BigInt(idx + 1),
-              verifier: res.verifier,
-              targetNum: Number(res.minimumCheckIns.toString()),
-              startTimestamp: Number(res.startTimestamp.toString()),
-              joinDueTimestamp: Number(res.joinDueTimestamp.toString()),
-              endTimestamp: Number(res.endTimestamp.toString()),
-              donationDestination: res.donateDestination,
-              stake: res.stakePerUser,
-              participants: Number(participants.toString()),
-              totalStaked: res.stakePerUser * participants,
-            };
-          })
-          .sort((a, b) => (a.startTimestamp > b.startTimestamp ? 1 : -1))
-          .map((c) => {
+        const newData: Challenge[] = result.challenges
+          .map((challenge: any) => ({
+            id: BigInt(challenge.id),
+            verifier: challenge.verifier,
+            targetNum: Number(challenge.minimumCheckIns),
+            startTimestamp: Number(challenge.startTimestamp),
+            joinDueTimestamp: Number(challenge.joinDueTimestamp),
+            endTimestamp: Number(challenge.endTimestamp),
+            donationDestination: challenge.donateDestination,
+            stake: BigInt(challenge.stakePerUser),
+            participants: Number(challenge.totalUsers),
+            totalStaked: BigInt(challenge.totalStake),
+          }))
+          .sort((a: ChallengeDetail, b: ChallengeDetail) =>
+            a.startTimestamp > b.startTimestamp ? 1 : -1,
+          )
+          .map((c: ChallengeDetail) => {
             const matchingMetaData = challengesMetaDatas.find(
               (meta) => meta.id === Number(c.id.toString()),
             );
             if (!matchingMetaData) return undefined;
             return { ...c, ...matchingMetaData };
           })
-          .filter((c) => c !== undefined) as Challenge[];
+          .filter((c: ChallengeDetail) => c !== undefined) as Challenge[];
 
         setChallenges(newData);
       } catch (_error) {
-        console.log('error', _error);
         setError(_error);
       } finally {
         setLoading(false);
@@ -136,7 +94,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
     };
 
     fetchData().catch(console.error);
-  }, [publicClient, loadingMetaData, challengesMetaDatas, counter]);
+  }, [loadingMetaData, challengesMetaDatas, counter]);
 
   const contextValue = useMemo(
     () => ({
@@ -145,7 +103,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
       error,
       refetch,
     }),
-    [loading, challenges, error],
+    [loading, challenges, error, refetch],
   );
 
   return (

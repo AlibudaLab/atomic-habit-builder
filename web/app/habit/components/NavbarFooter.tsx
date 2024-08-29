@@ -6,8 +6,6 @@ import { CgProfile } from 'react-icons/cg';
 import { FaList } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
-import { useAccount } from 'wagmi';
 
 enum TabKey {
   None = 'none',
@@ -19,29 +17,25 @@ enum TabKey {
 
 export default function NavbarFooter() {
   const [selected, setSelected] = useState<TabKey>(TabKey.None);
-
   const pathName = usePathname();
-
   const router = useRouter();
-
-  const { isConnected } = useAccount();
 
   // detect url to see which is selected
   useEffect(() => {
-    if (pathName.includes('list')) {
+    if (pathName.includes('list') || pathName.includes('stake')) {
       setSelected(TabKey.LIST);
     } else if (pathName.includes('create')) {
       setSelected(TabKey.CREATE);
     } else if (pathName.includes('profile')) {
       setSelected(TabKey.PROFILE);
-    } else if (pathName === '/') {
+    } else if (pathName === '/' || pathName.includes('checkin')) {
       setSelected(TabKey.HOME);
     } else {
       setSelected(TabKey.None);
     }
   }, [pathName, setSelected]);
 
-  return isConnected ? (
+  return (
     <div
       aria-label="Options"
       className="fixed bottom-0 z-50 mx-10 mb-6 flex items-center gap-8 rounded-[40px] bg-white p-4 text-dark shadow-2xl "
@@ -91,7 +85,5 @@ export default function NavbarFooter() {
         </div>
       </button>
     </div>
-  ) : (
-    <div> </div>
   );
 }

@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${nunito.className} ${londrina.variable} ${nunito.variable}`}>
       <body className="flex flex-1 flex-col items-center pb-[100px]">
         <Providers>
-          <div className="container flex max-w-[440px] flex-col items-center justify-center bg-white px-4 pt-16">
+          <div className="container flex max-w-[440px] flex-col items-center justify-center bg-white px-4 pt-8">
             <Header />
             {children}
             <NavbarFooter />

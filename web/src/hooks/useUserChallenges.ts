@@ -1,9 +1,5 @@
-import { readContract } from '@wagmi/core';
-import { abi } from '@/abis/challenge';
-import { useState, useEffect, useMemo } from 'react';
-import { wagmiConfig as config } from '@/OnchainProviders';
-import { ChallengeWithCheckIns, UserStatus } from '@/types';
-import { challengeAddr } from '@/constants';
+import { useState, useEffect } from 'react';
+import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 
 const useUserChallenges = (address: string | undefined) => {
@@ -23,77 +19,31 @@ const useUserChallenges = (address: string | undefined) => {
       try {
         setLoading(true);
 
-        const response = await fetch(`/api/user?address=${address}`);
-        const res = await response.json();
-
-        const joinedChallenges = res.joinedChallenges ?? ([] as number[]);
+        const response = await fetch(`/api/on-chain/${address}/challenges`, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Failed to fetch challenge');
+        const result = await response.json();
 
         // all challenges that user participants in
-        let knownChallenges = challenges.filter((c) => joinedChallenges.includes(c.id));
-
-        const checkedIns = await Promise.all(
-          knownChallenges.map(async (c) => {
-            const checkedIn = (await readContract(config, {
-              abi,
-              address: challengeAddr,
-              functionName: 'getUserCheckInCounts',
-              args: [BigInt(c.id), address as `0x${string}`],
-            })) as unknown as bigint;
-            return checkedIn;
-          }),
+        const knownChallenges = challenges.filter((c) => 
+          result.challenges.some((rc: { id: number }) => rc.id === c.id)
         );
 
-        // TODO: remove this once we have a better view function to get winner's stake
-        const totalSucceededCounts = await Promise.all(
-          knownChallenges.map(async (c) => {
-            const succeeded = (await readContract(config, {
-              abi,
-              address: challengeAddr,
-              functionName: 'totalSucceedUsers',
-              args: [BigInt(c.id)],
-            })) as unknown as bigint;
-            return succeeded;
-          }),
-        );
-
-        const claimables = await Promise.all(
-          knownChallenges.map(async (c) => {
-            const stake = (await readContract(config, {
-              abi,
-              address: challengeAddr,
-              functionName: 'getWinningStakePerUser',
-              args: [BigInt(c.id)],
-            })) as unknown as bigint;
-            return stake;
-          }),
-        );
-
-        const statuses = await Promise.all(
-          knownChallenges.map(async (c) => {
-            const status = (await readContract(config, {
-              abi,
-              address: challengeAddr,
-              functionName: 'userStatus',
-              args: [BigInt(c.id), address as `0x${string}`],
-            })) as unknown as UserStatus;
-            return status;
-          }),
-        );
-
-        const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c, idx) => {
+        const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c) => {
+          const matchingOnchainData = result.challenges.find(
+            (challenge: Challenge) => challenge.id === Number(c.id.toString()),
+          );
           return {
             ...c,
-            checkedIn: Number(checkedIns[idx].toString()),
-            succeedClaimable: claimables[idx],
-            totalSucceeded: totalSucceededCounts[idx],
-            status: statuses[idx],
+            checkedIn: Number(matchingOnchainData.checkInsCount.toString()),
+            succeedClaimable: BigInt(matchingOnchainData.winningStakePerUser),
+            totalSucceeded: BigInt(matchingOnchainData.totalSucceedUsers),
+            status: Number(matchingOnchainData.userStatus),
           };
         });
 
         setData(challengesWithCheckIns);
         setLoading(false);
       } catch (_error) {
-        console.log('error', _error);
         setError(_error);
         setLoading(false);
       }
@@ -101,6 +51,8 @@ const useUserChallenges = (address: string | undefined) => {
 
     fetchData().catch(console.error);
   }, [address, challenges]);
+
+  console.log('data', data);
 
   return { loading, data, error };
 };

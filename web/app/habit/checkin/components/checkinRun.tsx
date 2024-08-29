@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { Challenge, UserStatus } from '@/types';
 import { getCheckInDescription } from '@/utils/challenges';
 import * as stravaUtils from '@/utils/strava';
@@ -16,12 +16,12 @@ import useRunData from '@/hooks/useRunData';
 import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
-import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
+import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
-import usePasskeyConnection from '@/hooks/usePasskeyConnection';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -35,17 +35,9 @@ const initFields: CheckInFields = {
  * @returns
  */
 export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
-  const { login, isPending: connecting } = usePasskeyConnection();
-
   const { push } = useRouter();
-  // const { connect, connectors, isPending: connecting } = useConnect();
   const { address } = useAccount();
-  const {
-    status: userStatus,
-    joined,
-    loading: loadingJoined,
-    refetch: refetchStatus,
-  } = useUserStatus(address, challenge.id);
+  const { status: userStatus, refetch: refetchStatus } = useUserStatus(address, challenge.id);
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
@@ -69,22 +61,22 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
 
-  const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
-  const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
-  const handleChallengeListClick = () => {
+  const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
+  const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
+  const handleChallengeListClick = useCallback(() => {
     push('/');
-  };
+  }, [push]);
 
   const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
     fields,
     () => {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
-      handleOpenCheckinPopup();
       resetFields();
       Promise.all([refetchCheckIns(), refetchStatus()]).catch((error) => {
         console.error('Error refetching data:', error);
         // Optionally, handle the error more specifically here
       });
+      handleOpenCheckinPopup();
     },
   );
 
@@ -155,13 +147,6 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     window.location = authUrl as any;
   }, []);
 
-  // if user has not joined the challenge, redirect to the stake page
-  useEffect(() => {
-    if (!loadingJoined && !joined) {
-      push(`/habit/stake/${challenge.id}`);
-    }
-  }, [joined, loadingJoined, challenge.id, push]);
-
   const activitiesToUse =
     challenge.type === ChallengeTypes.Run
       ? runData
@@ -170,37 +155,31 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       : workoutData;
 
   return (
-    <div className="flex w-full max-w-96 flex-col items-center justify-center pb-32">
+    <div className="flex h-screen w-full flex-col items-center px-4 text-center">
       {/* overview   */}
-      <div className="m-2 mb-4 w-full">
-        <ChallengeBoxFilled challenge={challenge} fullWidth checkedIn={checkedIn} />
+      <div className="my-4 w-full">
+        <ChallengePreview challenge={challenge} fullWidth checkedIn={checkedIn} />
       </div>
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="pb-2 text-xl font-bold text-dark"> Goal </div>
+        <div className="text-xl font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
-      {/* check in description  */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="pb-2 text-xl font-bold text-dark"> Check In </div>
-        <div className="text-sm text-primary"> {getCheckInDescription(challenge.type)} </div>
-      </div>
-
-      <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="pb-2 text-xl font-bold text-dark"> Staked Amount </div>
+        <div className="text-xl font-bold text-dark"> Staked Amount </div>
         <div className="flex text-sm text-primary">
           {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
         </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="pb-2 text-xl font-bold text-dark"> Invite Others </div>
+        <div className="text-xl font-bold text-dark"> Invite Others </div>
         <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
       </div>
 
-      <div className="m-4 mt-8 text-center font-londrina text-base">
+      <div className="m-4 text-center font-londrina text-base">
         ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
         {moment.unix(challenge.endTimestamp).fromNow()}
       </div>
@@ -208,20 +187,10 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {/* middle section: if timestamp is not valid, show warning message */}
 
       {/* no address detected: ask user to connect */}
-      {!address && (
-        <Button
-          type="button"
-          color="primary"
-          className="mt-12 min-h-12 w-3/4 max-w-56"
-          onClick={login}
-          isLoading={connecting}
-        >
-          Connect Wallet
-        </Button>
-      )}
+      {!address && <ConnectButton className="w-3/4" />}
 
       {userStatus === UserStatus.Joined && verifierConnected && canCheckInNow && (
-        <div className="flex w-full justify-center px-2 pt-4">
+        <div className="flex w-full justify-center px-2">
           <ActivityDropDown
             isDisabled={!address}
             fields={fields}
@@ -250,7 +219,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         (!canCheckInNow ? (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button
-              className="mt-12 min-h-12 w-3/4 max-w-56"
+              className="mt-4 min-h-12 w-3/4 max-w-56"
               color="primary"
               variant="flat"
               onClick={handleChallengeListClick}
@@ -265,7 +234,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           <Button
             type="button"
             color="primary"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
+            className="mt-4 min-h-12 w-3/4 max-w-56"
             onClick={onClickCheckIn}
             isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
             isLoading={isCheckInLoading || isSigning}
@@ -276,7 +245,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           <Button
             type="button"
             color="primary"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
+            className="mt-4 min-h-12 w-3/4 max-w-56"
             onClick={onClickConnectStrava}
           >
             Connect with Strava
@@ -286,6 +255,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {isCheckinPopupOpen && (
         <CheckinPopup
           challenge={challenge}
+          checkedIn={checkedIn}
           onClose={handleCloseCheckinPopup}
           onCheckInPageClick={handleChallengeListClick}
         />

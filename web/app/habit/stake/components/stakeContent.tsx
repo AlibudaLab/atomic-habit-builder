@@ -3,7 +3,7 @@
 'use client';
 
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
@@ -26,6 +26,9 @@ import { Environment, getCurrentEnvironment } from '@/store/environment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
+import { SubTitle } from '@/components/SubTitle/SubTitle';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
+import { logEvent } from '@/utils/gtag';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -56,7 +59,14 @@ export default function StakeChallenge() {
       challenge?.creator === address ||
       challenge?.accessCode === inputAccessCode ||
       joined,
-    [challenge?.public, challenge?.accessCode, inputAccessCode, joined],
+    [
+      challenge?.public,
+      challenge?.accessCode,
+      inputAccessCode,
+      joined,
+      address,
+      challenge?.creator,
+    ],
   );
 
   const { data: tokenBalance } = useBalance({
@@ -82,16 +92,19 @@ export default function StakeChallenge() {
   const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
   const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
 
-  const handleOpenCheckinPopup = () => setIsCheckinPopupOpen(true);
-  const handleCloseCheckinPopup = () => setIsCheckinPopupOpen(false);
-  const handleOpenInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(true);
-  const handleCloseInsufficientBalancePopup = () => setIsInsufficientBalancePopupOpen(false);
-  const handleOpenDepositPopup = () => setIsDepositPopupOpen(true);
-  const handleCloseDepositPopup = () => setIsDepositPopupOpen(false);
-  const handleCheckInPageClick = () => {
+  const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
+  const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
+  const handleOpenInsufficientBalancePopup = useCallback(() => setIsInsufficientBalancePopupOpen(true), []);
+  const handleCloseInsufficientBalancePopup = useCallback(() => setIsInsufficientBalancePopupOpen(false), []);
+  const handleOpenDepositPopup = useCallback(() => {
+    logEvent({ action: 'deposit', category: 'account', label: 'deposit', value: 1 });
+    setIsDepositPopupOpen(true)
+  }, []);
+  const handleCloseDepositPopup = useCallback(() => setIsDepositPopupOpen(false), []);
+  const handleCheckInPageClick = useCallback(() => {
     // Logic to navigate to the check-in page
     push(`/habit/checkin/${challengeId}`);
-  };
+  }, [challengeId, push]);
 
   const {
     onSubmitTransaction: onMintTx,
@@ -131,16 +144,13 @@ export default function StakeChallenge() {
   };
 
   return (
-    <main className="flex h-screen flex-col items-center px-4 text-center">
+    <main className="flex h-screen flex-col items-center px-4 pb-12 text-center">
       <div className="flex max-w-96 flex-col items-center justify-center">
-        <p className="pb-4 text-center font-londrina text-xl font-bold">
-          {' '}
-          Stake and Commit to It!{' '}
-        </p>
+        <SubTitle text="Stake and Commit to It!" />
 
         {challenge && (
           <>
-            <div className="m-2 mb-4 w-full">
+            <div className="my-4 w-full">
               <ChallengeBoxFilled challenge={challenge} fullWidth />
             </div>
 
@@ -148,13 +158,13 @@ export default function StakeChallenge() {
               <>
                 {/* goal description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Goal </div>
+                  <div className="text-xl font-bold text-dark"> Goal </div>
                   <div className="text-sm text-primary"> {challenge.description} </div>
                 </div>
 
                 {/* checkIn description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Check In </div>
+                  <div className="text-xl font-bold text-dark"> Check In </div>
                   <div className="text-sm text-primary">
                     {' '}
                     {getCheckInDescription(challenge.type)}{' '}
@@ -162,14 +172,14 @@ export default function StakeChallenge() {
                 </div>
 
                 <div className="w-full justify-start p-6 py-2 text-start">
-                  <div className="pb-2 text-xl font-bold text-dark"> Stake Amount </div>
+                  <div className="text-xl font-bold text-dark"> Stake Amount </div>
                   <div className="flex text-sm text-primary">
                     {' '}
                     {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
                   </div>
                 </div>
 
-                <div className="m-4 mt-8 text-center font-londrina text-base">
+                <div className="m-4 text-center font-londrina text-base">
                   ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
                   {moment.unix(challenge.endTimestamp).fromNow()}
                 </div>
@@ -197,20 +207,13 @@ export default function StakeChallenge() {
         )}
 
         {challenge && !address ? (
-          <Button
-            type="button"
-            className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
-            onClick={signedInBefore ? login : register}
-            isLoading={connecting}
-          >
-            Connect
-          </Button>
+          <ConnectButton className="mt-4 w-3/4" cta="Join This Challenge" primary />
         ) : (
           hasAccess &&
           !joined &&
           challenge && (
             <div>
-              <div className="mx-8 mt-8 flex justify-center gap-2">
+              <div className="mx-8 mt-4 flex justify-center gap-2">
                 <Checkbox
                   className="font-londrina text-xs text-gray-600"
                   size="sm"
@@ -229,7 +232,7 @@ export default function StakeChallenge() {
               <Button
                 color="primary"
                 type="button"
-                className="mt-14 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
+                className="mt-4 min-h-12 w-3/4 max-w-56 px-6 py-3 font-bold"
                 onClick={onJoinButtonClick}
                 isDisabled={
                   isJoinPreparing ||
@@ -254,7 +257,7 @@ export default function StakeChallenge() {
             onClick={handleCheckInPageClick}
             aria-description="You already joined the challenge"
           >
-            Joined
+            Start CheckIn
           </Button>
         )}
 
@@ -292,7 +295,7 @@ export default function StakeChallenge() {
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
          */}
-        {hasAccess && (
+        {hasAccess && address && !loadingChallenge && (
           <div className="p-4 text-xs">
             {tokenBalance && !hasEnoughBalance ? (
               <p>

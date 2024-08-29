@@ -1,0 +1,42 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { subgraphClient } from '../../../configs';
+import { UserChallengeQueryResult } from '../../../utils/types';
+import { convertNumberToBytes } from 'app/api/on-chain/utils/conversion';
+
+export async function GET(
+  _: NextRequest,
+  { params }: { params: { address: string; challengeId: number } },
+): Promise<NextResponse> {
+  try {
+    const { address, challengeId } = params;
+
+    const query = `
+      query ($id: ID!) {
+        userChallenge(id: $id) {
+          status
+        }
+      }
+    `;
+
+    const variables: { id: string } = {
+      id: address.toLowerCase() + convertNumberToBytes(challengeId).slice(2),
+    };
+
+    const data = await subgraphClient.request<UserChallengeQueryResult>(query, variables);
+
+    if (!data.userChallenge)
+      return NextResponse.json({ error: 'User challenge not found' }, { status: 404 });
+
+    return NextResponse.json({
+      address,
+      challengeId,
+      userStatus: Number(data.userChallenge.status),
+    });
+  } catch (error) {
+    console.error('[API] Error fetching user challenge check-in count:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch user challenge check-in count' },
+      { status: 500 },
+    );
+  }
+}

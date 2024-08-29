@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { DateRangePicker, Select, SelectItem } from '@nextui-org/react';
+import { DateRangePicker, Select, SelectItem, Textarea } from '@nextui-org/react';
 import { ZonedDateTime } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
@@ -41,7 +41,6 @@ export default function CreateStep1({
 }: Step1Props) {
   return (
     <div className="flex w-full flex-col items-center justify-start px-8">
-      {/* todo: add public challenge later */}
       <Switch size="sm" className="my-2" isSelected={isPublic} onValueChange={setIsPublic}>
         <p className="text-sm"> Public </p>{' '}
       </Switch>
@@ -56,11 +55,11 @@ export default function CreateStep1({
         required
       />
 
-      <Input
+      <Textarea
         label="Description"
         placeholder="Describe your challenge here!"
         value={description}
-        onChange={(e) => setDescription(e.target.value)}
+        onValueChange={setDescription}
         className="my-4"
       />
 
@@ -95,7 +94,14 @@ export default function CreateStep1({
         }}
       />
 
-      <Button onClick={() => setStep(2)} className="mt-8 min-h-12 w-full" color="primary">
+      <Button
+        onClick={() => {
+          setStep(2);
+        }}
+        className="mt-8 min-h-12 w-full"
+        color="primary"
+        isDisabled={!name || !description}
+      >
         Next
       </Button>
     </div>

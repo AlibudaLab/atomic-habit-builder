@@ -1,33 +1,27 @@
 'use client';
 
-import usePasskeyConnection from '@/hooks/usePasskeyConnection';
+import { ConnectButton } from '@/components/Connect/ConnectButton';
+import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
+import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { Button } from '@nextui-org/button';
+import { useRouter } from 'next/navigation';
 
+/**
+ * For first time visitor (not-logged in) to the app!
+ * @returns
+ */
 export default function Onboard() {
-  const { login, register, isPending, signedInBefore, initializing } = usePasskeyConnection();
+  const { push } = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <p className="pb-4 text-center font-londrina text-xl font-bold"> Please Sign in First </p>
+    <main className="container mx-6 flex flex-col items-center px-4 text-center">
+      <div className="flex w-full flex-col items-center justify-center">
+        <SubTitle text="Welcome to Atomic" />
 
-      <Button
-        type="button"
-        className="m-4 mt-8 w-48 p-6 font-londrina"
-        color="primary"
-        isLoading={isPending || initializing}
-        onClick={signedInBefore ? login : register}
-      >
-        {initializing ? '  ' : signedInBefore ? 'Sign in with Passkey' : 'Register an account'}
-      </Button>
+        <p className="mx-4 pb-4 pt-12 font-nunito text-sm">Stake, commit, and track your habits.</p>
 
-      {/* secondary login option: show as text */}
-      <button
-        type="button"
-        onClick={signedInBefore ? register : login}
-        className="text-sm text-gray-500 underline"
-      >
-        {signedInBefore ? 'Register a new account' : 'Log in with existing passkey'}
-      </button>
-    </div>
+        <SignInAndRegister />
+      </div>
+    </main>
   );
 }

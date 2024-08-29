@@ -1,6 +1,6 @@
 import { base, baseSepolia } from 'viem/chains';
 import { DonationDest } from './types';
-import { Address, getChainContractAddress, zeroAddress } from 'viem';
+import { Address } from 'viem';
 import { getChainsForEnvironment } from './store/supportedChains';
 
 const currentChainId = getChainsForEnvironment().id;
@@ -18,7 +18,7 @@ export const donationDestinations: DonationDest[] = [
   //   address: '0x32e3C7fD24e175701A35c224f2238d18439C7dBC',
   // },
   {
-    name: 'Alibuda Labs',
+    name: 'Atomic team',
     address: '0x21a4175FdF0BC084eaA63d277212790ee6a07789',
   },
 ];

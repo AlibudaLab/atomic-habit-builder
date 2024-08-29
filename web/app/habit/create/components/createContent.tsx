@@ -17,6 +17,7 @@ import { parseAbsoluteToLocal } from '@internationalized/date';
 const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
+import { SubTitle } from '@/components/SubTitle/SubTitle';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -97,7 +98,7 @@ export default function Create() {
           toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address, isPublic],
+    [name, description, type, accessCode, address, isPublic, refetch],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
@@ -119,13 +120,10 @@ export default function Create() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <p className="pb-8 pt-2 text-center font-londrina text-xl font-bold">
-        {' '}
-        Let&lsquo;s Built Another Habit!{' '}
-      </p>
+      <SubTitle text="Let's Build Another Habit" />
 
       <div
-        className={`h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
+        className={`mt-12 h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
           loaded ? 'slide-up' : ''
         }`}
       >

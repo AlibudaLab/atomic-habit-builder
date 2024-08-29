@@ -2,9 +2,10 @@
 'use client';
 
 import { ChallengeWithCheckIns } from '@/types';
-import { ChallengeBoxFilled } from './ChallengeBox';
+import { ChallengePreview } from './ChallengeBox';
 import { Divider } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
+import NewUser from './NewUser';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -14,8 +15,13 @@ type DashboardProps = {
 export default function Dashboard({ onGoingChallenges, pastChallenges }: DashboardProps) {
   const { push } = useRouter();
 
-  return (
+  const totalChallenges = onGoingChallenges.length + pastChallenges.length;
+
+  return totalChallenges === 0 ? (
+    <NewUser />
+  ) : (
     <div className="flex h-screen w-full flex-col items-center justify-start">
+      {/* if no challenges, show new user component */}
       <div className="flex w-full items-center justify-center">
         {onGoingChallenges.length > 0 && (
           <p className="my-4 font-londrina text-xl font-bold"> My Challenge </p>
@@ -30,7 +36,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
           onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline"
         >
-          <ChallengeBoxFilled
+          <ChallengePreview
             key={challenge.id.toString()}
             challenge={challenge}
             checkedIn={challenge.checkedIn}
@@ -53,7 +59,7 @@ export default function Dashboard({ onGoingChallenges, pastChallenges }: Dashboa
           onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline"
         >
-          <ChallengeBoxFilled
+          <ChallengePreview
             key={challenge.id.toString()}
             challenge={challenge}
             checkedIn={challenge.checkedIn}
