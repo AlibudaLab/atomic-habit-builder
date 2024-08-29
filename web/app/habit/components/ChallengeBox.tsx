@@ -121,8 +121,8 @@ export function ChallengePreview({
             size="lg"
             classNames={{
               svg: 'w-12 h-12',
-              indicator: 'stroke-white',
-              track: 'stroke-white/20',
+              indicator: 'stroke-white stroke-1',
+              track: 'stroke-white/20 stroke-1',
               value: 'text-xxs font-nunito text-white',
               label: 'text-xs font-nunito',
             }}
