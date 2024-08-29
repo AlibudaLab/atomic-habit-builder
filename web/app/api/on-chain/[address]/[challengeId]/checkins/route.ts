@@ -1,4 +1,3 @@
-import { toHex } from 'viem';
 import { NextRequest, NextResponse } from 'next/server';
 import { subgraphClient } from '../../../configs';
 import { CheckInCountQueryResult } from '../../../utils/types';
