@@ -5,6 +5,7 @@ import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
 import { CheckCheckIcon } from 'lucide-react';
 import { formatUnits } from 'viem';
+import { getActivityDuration } from '@/utils/time';
 
 export function ChallengeBox({
   challenge,
@@ -110,7 +111,7 @@ export function ChallengePreview({
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
-          <p className="text-xs opacity-80">{getCountdownString(challenge.endTimestamp)} left</p>
+          <p className="text-xs opacity-80">{formatDuration(challenge.startTimestamp, challenge.endTimestamp)}</p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-xs">
             {' '}
