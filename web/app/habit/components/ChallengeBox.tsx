@@ -101,11 +101,6 @@ export function ChallengePreview({
 
   const isCompleted = checkedIn >= challenge.targetNum;
 
-  if (percentage == 0) {
-    percentage = 50;
-    checkedIn = 2;
-  }
-
   return (
     <div
       className={`wrapped-filled p-2 focus:scale-105 ${isPast ? 'opacity-50' : ''} ${
