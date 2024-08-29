@@ -13,9 +13,7 @@ export async function GET(
     const query = `
       query ($id: ID!) {
         userChallenge(id: $id) {
-          checkIns {
-            id
-          }
+          status
         }
       }
     `;
@@ -26,16 +24,13 @@ export async function GET(
 
     const data = await subgraphClient.request<UserChallengeQueryResult>(query, variables);
 
-    if (!data.userChallenge) {
+    if (!data.userChallenge)
       return NextResponse.json({ error: 'User challenge not found' }, { status: 404 });
-    }
-
-    const checkInCount = data.userChallenge.checkIns.length;
 
     return NextResponse.json({
       address,
       challengeId,
-      checkInCount,
+      userStatus: Number(data.userChallenge.status),
     });
   } catch (error) {
     console.error('[API] Error fetching user challenge check-in count:', error);

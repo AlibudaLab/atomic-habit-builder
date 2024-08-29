@@ -41,7 +41,7 @@ export type ChallengeQueryResult = {
 
 export type UserChallengeHistory = {
   challengeId: Challenge;
-  checkIns: [];
+  checkIns?: [];
   status: string;
 };
 
@@ -52,14 +52,11 @@ export type UserQueryResult = {
   } | null;
 };
 
-export type ChallengeWithUserStatus = Challenge & {
-  userStatus: string;
-};
-
-export type CheckInCountQueryResult = {
+export type UserChallengeQueryResult = {
   userChallenge: {
-    checkIns: {
+    checkIns?: {
       id: string;
     }[];
+    status?: string;
   } | null;
 };
