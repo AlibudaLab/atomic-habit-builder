@@ -219,7 +219,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
         (!canCheckInNow ? (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button
-              className="mt-12 min-h-12 w-3/4 max-w-56"
+              className="mt-4 min-h-12 w-3/4 max-w-56"
               color="primary"
               variant="flat"
               onClick={handleChallengeListClick}
@@ -234,7 +234,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           <Button
             type="button"
             color="primary"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
+            className="mt-4 min-h-12 w-3/4 max-w-56"
             onClick={onClickCheckIn}
             isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
             isLoading={isCheckInLoading || isSigning}
@@ -245,7 +245,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
           <Button
             type="button"
             color="primary"
-            className="mt-12 min-h-12 w-3/4 max-w-56"
+            className="mt-4 min-h-12 w-3/4 max-w-56"
             onClick={onClickConnectStrava}
           >
             Connect with Strava
