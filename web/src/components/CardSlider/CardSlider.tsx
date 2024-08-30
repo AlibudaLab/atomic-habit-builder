@@ -6,7 +6,7 @@ const step1 = require('../../imgs/steps/step1.png');
 const step2 = require('../../imgs/steps/step2.png');
 const step3 = require('../../imgs/steps/step3.png');
 
-interface CardData {
+type CardData = {
   image: string;
   description: string;
 }
@@ -27,7 +27,7 @@ const cardData: CardData[] = [
   },
 ];
 
-const CardSlider: React.FC = () => {
+function CardSlider() {
   const [currentCard, setCurrentCard] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +75,7 @@ const CardSlider: React.FC = () => {
       <div ref={sliderRef} className="snap-x snap-mandatory overflow-x-auto scrollbar-hide">
         <div className="flex">
           {cardData.map((card, index) => (
-            <div key={index} className="w-full flex-shrink-0 snap-center">
+            <div key={`${card.description}`} className="w-full flex-shrink-0 snap-center">
               <div className="flex h-48 items-center justify-center rounded-t-lg">
                 <Image
                   src={card.image}
@@ -93,9 +93,9 @@ const CardSlider: React.FC = () => {
         </div>
       </div>
       <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 transform space-x-2">
-        {cardData.map((_, index) => (
+        {cardData.map((card, index) => (
           <div
-            key={index}
+            key={`c-${card.description}`}
             className={`h-2 w-2 rounded-full ${
               index === currentCard ? 'bg-primary' : 'bg-gray-300'
             }`}
@@ -103,12 +103,14 @@ const CardSlider: React.FC = () => {
         ))}
       </div>
       <button
+        type='button'
         onClick={prevCard}
         className="absolute left-2 top-1/2 -translate-y-1/2 transform rounded-full bg-white/50 p-2"
       >
         <ChevronLeft className="h-4 w-4 text-gray-500" />
       </button>
       <button
+        type='button'
         onClick={nextCard}
         className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full bg-white/50 p-2"
       >
