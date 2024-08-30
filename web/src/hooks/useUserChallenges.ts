@@ -24,8 +24,8 @@ const useUserChallenges = (address: string | undefined) => {
         const result = await response.json();
 
         // all challenges that user participants in
-        const knownChallenges = challenges.filter((c) => 
-          result.challenges.some((rc: { id: number }) => rc.id === c.id)
+        const knownChallenges = challenges.filter((c) =>
+          result.challenges.some((rc: { id: number }) => rc.id === c.id),
         );
 
         const challengesWithCheckIns: ChallengeWithCheckIns[] = knownChallenges.map((c) => {

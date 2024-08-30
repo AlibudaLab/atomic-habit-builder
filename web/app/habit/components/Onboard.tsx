@@ -5,6 +5,7 @@ import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { Button } from '@nextui-org/button';
 import { useRouter } from 'next/navigation';
+import CardSlider from '../../../src/components/CardSlider/CardSlider';
 
 /**
  * For first time visitor (not-logged in) to the app!
@@ -16,9 +17,12 @@ export default function Onboard() {
   return (
     <main className="container mx-6 flex flex-col items-center px-4 text-center">
       <div className="flex w-full flex-col items-center justify-center">
-        <SubTitle text="Welcome to Atomic" />
+        {/* <SubTitle text="Welcome to Atomic" /> */}
 
-        <p className="mx-4 pb-4 pt-12 font-nunito text-sm">Stake, commit, and track your habits.</p>
+        <p className="mx-6 pt-4 font-londrina text-lg"> Stake to join a challenge. </p>
+        <p className="mx-6 pb-8 font-londrina text-lg">Earn rewards by building a habit. </p>
+
+        <CardSlider />
 
         <SignInAndRegister />
       </div>

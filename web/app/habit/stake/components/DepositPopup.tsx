@@ -37,9 +37,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
     { key: 'usdc', label: 'USDC', icon: usdc },
   ];
 
-  const networks = [
-    { key: 'base', label: 'Base' },
-  ];
+  const networks = [{ key: 'base', label: 'Base' }];
 
   const content = (
     <div className="text-left">

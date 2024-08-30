@@ -20,7 +20,7 @@ export default function usePasskeyConnection() {
     initializing,
     signedInBefore,
     register: () => {
-      connect({ connector: connectors[0] })
+      connect({ connector: connectors[0] });
       logEvent({ action: 'register', category: 'connect', label: 'register', value: 1 });
     },
     login: () => {
