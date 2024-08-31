@@ -14,16 +14,16 @@ type CardData = {
 const cardData: CardData[] = [
   {
     image: step1,
-    description: 'Stake USDC: Commit to the challenge by depositing your stake.',
+    description: 'Stake USDC: Join the challenge with a fixed deposit',
   },
   {
     image: step2,
-    description: 'Sync Strava: Log your activities before the deadline to stay in the game.',
+    description: 'Log Strava: Verify your activities before the deadline',
   },
   {
     image: step3,
     description:
-      'Win or Lose: Complete the challenge to claim the pool, or lose your stake if you fail.',
+      'Win or Lose: Complete to share the pool, or forfeit your stake',
   },
 ];
 
