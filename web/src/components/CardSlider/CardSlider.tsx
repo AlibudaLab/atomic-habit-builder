@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -9,7 +9,7 @@ const step3 = require('../../imgs/steps/step3.png');
 type CardData = {
   image: string;
   description: string;
-}
+};
 
 const cardData: CardData[] = [
   {
@@ -30,6 +30,7 @@ const cardData: CardData[] = [
 function CardSlider() {
   const [currentCard, setCurrentCard] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const scrollToCard = (index: number) => {
     if (sliderRef.current) {
@@ -50,13 +51,33 @@ function CardSlider() {
     }
   };
 
+  const debouncedHandleScroll = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      if (sliderRef.current) {
+        const scrollPosition = sliderRef.current.scrollLeft;
+        const cardWidth = sliderRef.current.offsetWidth;
+        const newIndex = Math.round(scrollPosition / cardWidth);
+        setCurrentCard(newIndex);
+      }
+    }, 100); // Adjust this value to balance responsiveness and performance
+  }, []);
+
   useEffect(() => {
     const slider = sliderRef.current;
     if (slider) {
-      slider.addEventListener('scroll', handleScroll);
-      return () => slider.removeEventListener('scroll', handleScroll);
+      slider.addEventListener('scroll', debouncedHandleScroll);
+      return () => {
+        slider.removeEventListener('scroll', debouncedHandleScroll);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+      };
     }
-  }, []);
+  }, [debouncedHandleScroll]);
 
   const nextCard = () => {
     const newIndex = (currentCard + 1) % cardData.length;
@@ -82,7 +103,7 @@ function CardSlider() {
                   alt={`Step ${index + 1}`}
                   width={200}
                   height={200}
-                  objectFit="contain"
+                  style={{ objectFit: 'contain' }}
                 />
               </div>
               <p className="mt-2 h-24 rounded-b-lg px-4 py-2 text-center text-sm">
@@ -103,14 +124,14 @@ function CardSlider() {
         ))}
       </div>
       <button
-        type='button'
+        type="button"
         onClick={prevCard}
         className="absolute left-2 top-1/2 -translate-y-1/2 transform rounded-full bg-white/50 p-2"
       >
         <ChevronLeft className="h-4 w-4 text-gray-500" />
       </button>
       <button
-        type='button'
+        type="button"
         onClick={nextCard}
         className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full bg-white/50 p-2"
       >
@@ -118,6 +139,6 @@ function CardSlider() {
       </button>
     </div>
   );
-};
+}
 
 export default CardSlider;
