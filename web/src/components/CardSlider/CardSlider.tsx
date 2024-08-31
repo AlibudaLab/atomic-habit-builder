@@ -9,7 +9,7 @@ const step3 = require('../../imgs/steps/step3.png');
 type CardData = {
   image: string;
   description: string;
-}
+};
 
 const cardData: CardData[] = [
   {
@@ -124,14 +124,14 @@ function CardSlider() {
         ))}
       </div>
       <button
-        type='button'
+        type="button"
         onClick={prevCard}
         className="absolute left-2 top-1/2 -translate-y-1/2 transform rounded-full bg-white/50 p-2"
       >
         <ChevronLeft className="h-4 w-4 text-gray-500" />
       </button>
       <button
-        type='button'
+        type="button"
         onClick={nextCard}
         className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full bg-white/50 p-2"
       >
@@ -139,6 +139,6 @@ function CardSlider() {
       </button>
     </div>
   );
-};
+}
 
 export default CardSlider;
