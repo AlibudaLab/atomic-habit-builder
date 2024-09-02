@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { STRAVA_API_BASE_URL } from '../configs';
+import { STRAVA_API_BASE_URL } from '../config';
 
 /**
  * @param req
