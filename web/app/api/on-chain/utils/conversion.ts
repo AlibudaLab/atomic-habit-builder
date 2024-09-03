@@ -26,8 +26,6 @@ export function calculateWinningStakePerUser(
   const totalStake = totalUsers * stakePerUser;
   const donation = ((totalUsers - succeedUsers) * stakePerUser * donationBPS) / BigInt(MAX_BPS);
 
-  console.log('donation', donation);
-
   return ((totalStake - donation) / succeedUsers).toString();
 }
 

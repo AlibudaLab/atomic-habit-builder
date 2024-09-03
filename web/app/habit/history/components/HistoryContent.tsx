@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import moment from 'moment';
 import { useMemo } from 'react';
-import { getUserChallengeStatus } from '@/utils/challenges';
 import { UserChallengeStatus } from '@/types';
 
 function HistoryContent() {
