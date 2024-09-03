@@ -6,8 +6,7 @@ import Dashboard from '../habit/components/UserDashboard';
 import Loading from 'app/habit/components/Loading';
 import moment from 'moment';
 import { useAccount } from 'wagmi';
-import { UserChallengeStatus } from '@/constants';
-import { getUserChallengeStatus } from '@/utils/challenges';
+import { UserChallengeStatus } from '@/types';
 
 export default function DashboardPage() {
   const { address } = useAccount();
@@ -17,7 +16,7 @@ export default function DashboardPage() {
     ? challenges.filter(
         (c) =>
           c.endTimestamp > moment().unix() ||
-          getUserChallengeStatus(c) === UserChallengeStatus.Claimable,
+          c.status === UserChallengeStatus.Claimable,
       )
     : [];
 

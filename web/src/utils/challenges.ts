@@ -1,5 +1,6 @@
 import { P } from '@/components/layout/guide';
-import { ChallengeTypes, UserChallengeStatus } from '@/constants';
+import { ChallengeTypes } from '@/constants';
+import { UserChallengeStatus } from '@/types';
 import { Challenge, ChallengeWithCheckIns, UserStatus } from '@/types';
 import moment from 'moment';
 
@@ -42,16 +43,17 @@ export function getChallengeUnit(type: ChallengeTypes) {
   }
 }
 
-export function getUserChallengeStatus(challenge: ChallengeWithCheckIns) {
+export function getUserChallengeStatus(userStatus: UserStatus, checkedIn: number, challenge: Challenge) {
   const now = moment().unix();
 
-  const checkedIn = challenge.checkedIn;
-  const userStatus = challenge.status;
+  if (userStatus === UserStatus.NotExist) { 
+    return UserChallengeStatus.NotJoined
+  }
 
   if (challenge.startTimestamp > now) {
     return UserChallengeStatus.NotStarted;
   }
-  if (checkedIn >= challenge.targetNum) {
+  if (checkedIn >= challenge.minimumCheckIns) {
     if (challenge.endTimestamp > now) {
       return UserChallengeStatus.Completed;
     }

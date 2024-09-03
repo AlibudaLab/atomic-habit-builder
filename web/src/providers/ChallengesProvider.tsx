@@ -64,7 +64,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
           .map((challenge: any) => ({
             id: BigInt(challenge.id),
             verifier: challenge.verifier,
-            targetNum: Number(challenge.minimumCheckIns),
+            minimumCheckIns: Number(challenge.minimumCheckIns),
             startTimestamp: Number(challenge.startTimestamp),
             joinDueTimestamp: Number(challenge.joinDueTimestamp),
             endTimestamp: Number(challenge.endTimestamp),

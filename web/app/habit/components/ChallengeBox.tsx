@@ -3,7 +3,7 @@ import { challengeToEmoji, getUserChallengeStatus } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
-import { UserChallengeStatus } from '@/constants';
+import { UserChallengeStatus } from '@/types';
 import { useMemo } from 'react';
 
 export function ChallengeBox({
@@ -26,7 +26,7 @@ export function ChallengeBox({
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-sm"> {challenge.participants} joined </p>
         </div>
-        <div className="ml-auto p-2 text-sm font-bold">{challenge.targetNum} times</div>
+        <div className="ml-auto p-2 text-sm font-bold">{challenge.minimumCheckIns} times</div>
       </div>
     </div>
   );
@@ -62,10 +62,10 @@ export function ChallengeBoxFilled({
           // if checkedIn is defined, show the checkedIn number, otherwise show the target number
           checkedIn !== undefined ? (
             <div className="ml-auto min-w-[64px] p-2 text-lg ">
-              {checkedIn} / {challenge.targetNum}
+              {checkedIn} / {challenge.minimumCheckIns}
             </div>
           ) : (
-            <div className="text-md ml-auto p-2">{challenge.targetNum} times</div>
+            <div className="text-md ml-auto p-2">{challenge.minimumCheckIns} times</div>
           )
         }
       </div>
@@ -92,9 +92,9 @@ export function ChallengePreview({
   checkedIn: number;
   fullWidth?: boolean;
 }) {
-  const userChallengeStatus = getUserChallengeStatus(challenge);
+  const userChallengeStatus = challenge.status
 
-  let percentage = (checkedIn * 100) / challenge.targetNum;
+  let percentage = (checkedIn * 100) / challenge.minimumCheckIns;
 
   const claimable = userChallengeStatus === UserChallengeStatus.Claimable;
 
@@ -148,7 +148,7 @@ export function ChallengePreview({
                 <div> Claim </div>
               ) : (
                 <div className="flex flex-col gap-0">
-                  <FractionDisplay numerator={checkedIn} denominator={challenge.targetNum} />
+                  <FractionDisplay numerator={checkedIn} denominator={challenge.minimumCheckIns} />
                 </div>
               )
             }

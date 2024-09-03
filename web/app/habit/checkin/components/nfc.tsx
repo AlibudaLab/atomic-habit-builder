@@ -6,16 +6,15 @@ import { arxSignMessage, getCheckinMessage } from '@/utils/arx';
 import toast from 'react-hot-toast';
 import { useWriteContract } from 'wagmi';
 import { abi as challengeAbi } from '@/abis/challenge';
-import { Challenge } from '@/types';
+import { ChallengeWithCheckIns } from '@/types';
 import moment from 'moment';
-import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
 import { formatUnits, toBytes, zeroAddress } from 'viem';
 import { challengeAddr } from '@/constants';
 
-export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
+export default function NFCCheckIn({ challenge }: { challenge: ChallengeWithCheckIns }) {
   const { address } = useAccount();
 
   const {
@@ -28,8 +27,6 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: dataHash,
   });
-
-  const { checkedIn } = useUserChallengeCheckIns(address, challenge.id);
 
   const onCheckInButtonClick = async () => {
     let nfcPendingToastId = null;
@@ -85,7 +82,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <ChallengeBoxFilled challenge={challenge} checkedIn={checkedIn} />
+      <ChallengeBoxFilled challenge={challenge} />
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
@@ -104,7 +101,7 @@ export default function NFCCheckIn({ challenge }: { challenge: Challenge }) {
         <div className="text-sm text-primary"> {`${formatUnits(challenge.stake, 6)} USDC`} </div>
       </div>
 
-      {checkedIn >= challenge.targetNum ? (
+      {challenge.checkedIn >= challenge.minimumCheckIns ? (
         <Link href={`/habit/claim/${challenge.id.toString()}`}>
           <button
             type="button"

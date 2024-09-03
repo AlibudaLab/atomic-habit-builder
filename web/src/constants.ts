@@ -39,12 +39,3 @@ export const challengeAddr = challengeContractAddrs[currentChainId];
 
 export const usdcAddr = usdcContractAddrs[currentChainId];
 
-// combining user status & challenge status, indicating what the user should do next
-export const UserChallengeStatus = {
-  NotStarted: 'Not Started',
-  Ongoing: 'Ongoing',
-  Completed: 'Completed', // completed all check-ins, challenge is still ongoing
-  Claimable: 'Claimable', // completed check-ins, and challenge is past end time
-  Failed: 'Failed', // challenge is past end time, and user has not completed all check-ins
-  Claimed: 'Claimed',
-};

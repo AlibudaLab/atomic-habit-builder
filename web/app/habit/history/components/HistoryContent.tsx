@@ -6,7 +6,7 @@ import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import moment from 'moment';
 import { useMemo } from 'react';
 import { getUserChallengeStatus } from '@/utils/challenges';
-import { UserChallengeStatus } from '@/constants';
+import { UserChallengeStatus } from '@/types';
 
 function HistoryContent() {
   const { push } = useRouter();
@@ -20,7 +20,7 @@ function HistoryContent() {
         ? challenges.filter(
             (c) =>
               c.endTimestamp < moment().unix() &&
-              getUserChallengeStatus(c) != UserChallengeStatus.Claimable,
+              c.status != UserChallengeStatus.Claimable,
           )
         : [],
     [challenges],

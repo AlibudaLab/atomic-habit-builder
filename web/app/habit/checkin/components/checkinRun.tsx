@@ -6,18 +6,16 @@ import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
-import { Challenge, ChallengeWithCheckIns, UserStatus } from '@/types';
+import { ChallengeWithCheckIns, UserChallengeStatus, UserStatus } from '@/types';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
 import useFields from '@/hooks/useFields';
 import useCheckInRun, { CheckInFields } from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
-import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
-import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
@@ -191,7 +189,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       {/* no address detected: ask user to connect */}
       {!address && <ConnectButton className="w-3/4" />}
 
-      {challenge.status === UserStatus.Joined && verifierConnected && canCheckInNow && (
+      {challenge.status === UserChallengeStatus.Ongoing && verifierConnected && canCheckInNow && (
         <div className="flex w-full justify-center px-2">
           <ActivityDropDown
             isDisabled={!address}
@@ -205,7 +203,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       )}
 
       {/* if user already finish, always allow going to the claim page */}
-      {challenge.status === UserStatus.Claimable && (
+      {challenge.status === UserChallengeStatus.Claimable && (
         <Button
           type="button"
           color="primary"
@@ -217,7 +215,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       )}
 
       {/* challenge is not finished yet */}
-      {challenge.status === UserStatus.Joined &&
+      {challenge.status !== UserChallengeStatus.NotJoined &&
         (!canCheckInNow ? (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button

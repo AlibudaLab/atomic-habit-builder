@@ -14,7 +14,7 @@ import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
-import { UserStatus } from '@/types';
+import { UserChallengeStatus, UserStatus } from '@/types';
 import { useState } from 'react';
 import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
@@ -45,16 +45,16 @@ export default function ProfileContent() {
     if (challenge.endTimestamp > Date.now() / 1000) return acc + challenge.stake;
 
     // only get the claimable if user succeed
-    if (challenge.checkedIn < challenge.targetNum) return acc;
+    if (challenge.checkedIn < challenge.minimumCheckIns) return acc;
 
-    if (challenge.status === UserStatus.Claimed) return acc;
+    if (challenge.status === UserChallengeStatus.Claimed) return acc;
 
     return acc + challenge.succeedClaimable;
   }, BigInt(0));
 
   const finishedChallenges = challenges.filter(
     (challenge) =>
-      challenge.endTimestamp < Date.now() / 1000 && challenge.checkedIn >= challenge.targetNum,
+      challenge.endTimestamp < Date.now() / 1000 && challenge.checkedIn >= challenge.minimumCheckIns,
   );
 
   // todo: use a view function to replace this logic
