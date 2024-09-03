@@ -3,6 +3,8 @@ import { challengeToEmoji, getUserChallengeStatus } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
+import { UserChallengeStatus } from '@/constants';
+import { useMemo } from 'react';
 
 export function ChallengeBox({
   challenge,
@@ -94,19 +96,32 @@ export function ChallengePreview({
   fullWidth?: boolean;
 }) {
   const userChallengeStatus = getUserChallengeStatus(challenge);
-  console.log('userChallengeStatus', userChallengeStatus)
-
-  const isPast = challenge.endTimestamp < moment().unix();
+  console.log('userChallengeStatus', userChallengeStatus);
 
   let percentage = (checkedIn * 100) / challenge.targetNum;
 
-  const isCompleted = checkedIn >= challenge.targetNum;
+  const isCompleted = userChallengeStatus === UserChallengeStatus.Completed;
+
+  const customCss = useMemo(() => {
+    if (userChallengeStatus === UserChallengeStatus.Failed) {
+      return 'bg-failed';
+    } else if (
+      userChallengeStatus === UserChallengeStatus.Completed ||
+      userChallengeStatus === UserChallengeStatus.Claimable
+    ) {
+      return 'bg-primary opacity-50';
+    } else if (userChallengeStatus === UserChallengeStatus.Claimed) {
+      return 'bg-primary opacity-50';
+    }
+
+    return 'bg-primary';
+  }, [userChallengeStatus]);
 
   return (
     <div
-      className={`wrapped-filled p-2 transition-transform duration-300 focus:scale-105 ${
-        isPast ? 'opacity-50' : ''
-      } ${fullWidth ? 'w-full' : 'm-2'}`}
+      className={`${customCss} wrapped-filled p-2 transition-transform duration-300 focus:scale-105 ${
+        fullWidth ? 'w-full' : 'm-2'
+      }`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>

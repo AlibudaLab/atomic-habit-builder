@@ -37,14 +37,14 @@ const initFields: CheckInFields = {
 export default function RunCheckIn({ challenge }: { challenge: ChallengeWithCheckIns }) {
   const { push } = useRouter();
   const { address } = useAccount();
-  
+
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   // const { checkedIn, refetch: refetchCheckIns } = useUserChallengeCheckIns(address, challenge.id);
   const [isSigning, setIsSigning] = useState(false);
 
-  const { refetch: refetchAll } = useUserChallenges()
+  const { refetch: refetchAll } = useUserChallenges();
 
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
