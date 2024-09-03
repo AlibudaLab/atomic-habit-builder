@@ -9,7 +9,7 @@ export function useUserStatus(id: number) {
     const challenge = challenges?.find((c) => c.id === id);
     if (!challenge) return UserChallengeStatus.NotJoined;
     else return challenge.status;
-  }, []);
+  }, [challenges, id]);
 
   const joined = useMemo(() => status !== UserChallengeStatus.NotJoined, [status]);
 
