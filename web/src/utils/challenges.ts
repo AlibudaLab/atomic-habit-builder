@@ -1,7 +1,6 @@
-import { P } from '@/components/layout/guide';
 import { ChallengeTypes } from '@/constants';
 import { UserChallengeStatus } from '@/types';
-import { Challenge, ChallengeWithCheckIns, UserStatus } from '@/types';
+import { Challenge, UserStatus } from '@/types';
 import moment from 'moment';
 
 export function challengeToEmoji(type: ChallengeTypes) {
@@ -46,33 +45,20 @@ export function getChallengeUnit(type: ChallengeTypes) {
 export function getUserChallengeStatus(
   userStatus: UserStatus,
   checkedIn: number,
-  challenge: Challenge,
-) {
+  { startTimestamp, endTimestamp, minimumCheckIns }: Challenge,
+): UserChallengeStatus {
   const now = moment().unix();
+  if (userStatus === UserStatus.NotExist) return UserChallengeStatus.NotJoined;
+  if (now < startTimestamp) return UserChallengeStatus.NotStarted;
 
-  if (userStatus === UserStatus.NotExist) {
-    return UserChallengeStatus.NotJoined;
+  const isCompleted = checkedIn >= minimumCheckIns;
+  const isOngoing = now <= endTimestamp;
+
+  if (isCompleted) {
+    if (isOngoing) return UserChallengeStatus.Completed;
+    return userStatus === UserStatus.Claimed
+      ? UserChallengeStatus.Claimed
+      : UserChallengeStatus.Claimable;
   }
-
-  if (challenge.startTimestamp > now) {
-    return UserChallengeStatus.NotStarted;
-  }
-  if (checkedIn >= challenge.minimumCheckIns) {
-    if (challenge.endTimestamp > now) {
-      return UserChallengeStatus.Completed;
-    }
-
-    if (userStatus === UserStatus.Claimed) {
-      return UserChallengeStatus.Claimed;
-    }
-
-    return UserChallengeStatus.Claimable;
-  } else {
-    // user checkin < target amount
-    if (challenge.endTimestamp > now) {
-      return UserChallengeStatus.Ongoing;
-    }
-
-    return UserChallengeStatus.Failed;
-  }
+  return isOngoing ? UserChallengeStatus.Ongoing : UserChallengeStatus.Failed;
 }

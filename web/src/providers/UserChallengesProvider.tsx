@@ -1,4 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  ReactNode,
+} from 'react';
 import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { getUserChallengeStatus } from '@/utils/challenges';
@@ -16,7 +24,7 @@ export function UserChallengesProvider({
   children,
   address,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   address: string | undefined;
 }) {
   const [loading, setLoading] = useState(address !== undefined);

@@ -7,7 +7,7 @@ import ClaimedPopup from './ClaimedPopup';
 import { Button } from '@nextui-org/button';
 import { useAccount } from 'wagmi';
 import { formatUnits } from 'viem';
-import { ChallengeStatus, UserChallengeStatus, UserStatus } from '@/types';
+import { ChallengeStatus, UserChallengeStatus } from '@/types';
 import moment from 'moment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useChallengeWithCheckIns } from '@/hooks/useChallengeWithCheckIns';
