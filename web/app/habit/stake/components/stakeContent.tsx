@@ -94,11 +94,17 @@ export default function StakeChallenge() {
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
-  const handleOpenInsufficientBalancePopup = useCallback(() => setIsInsufficientBalancePopupOpen(true), []);
-  const handleCloseInsufficientBalancePopup = useCallback(() => setIsInsufficientBalancePopupOpen(false), []);
+  const handleOpenInsufficientBalancePopup = useCallback(
+    () => setIsInsufficientBalancePopupOpen(true),
+    [],
+  );
+  const handleCloseInsufficientBalancePopup = useCallback(
+    () => setIsInsufficientBalancePopupOpen(false),
+    [],
+  );
   const handleOpenDepositPopup = useCallback(() => {
     logEvent({ action: 'deposit', category: 'account', label: 'deposit', value: 1 });
-    setIsDepositPopupOpen(true)
+    setIsDepositPopupOpen(true);
   }, []);
   const handleCloseDepositPopup = useCallback(() => setIsDepositPopupOpen(false), []);
   const handleCheckInPageClick = useCallback(() => {
