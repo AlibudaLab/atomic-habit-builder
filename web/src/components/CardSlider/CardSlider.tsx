@@ -1,4 +1,6 @@
+
 import { useState, useRef, useEffect, useCallback } from 'react';
+
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -8,22 +10,25 @@ const step3 = require('../../imgs/steps/step3.png');
 
 type CardData = {
   image: string;
+  title: string;
   description: string;
 };
 
 const cardData: CardData[] = [
   {
     image: step1,
-    description: 'Stake USDC: Join the challenge with a fixed deposit',
+    title: 'Stake USDC',
+    description: 'Join the challenge with a fixed deposit',
   },
   {
     image: step2,
-    description: 'Log Strava: Verify your activities before the deadline',
+    title: 'Log Strava',
+    description: 'Verify your activities before the deadline',
   },
   {
     image: step3,
-    description:
-      'Win or Lose: Complete to share the pool, or forfeit your stake',
+    title: 'Win or Lose',
+    description: 'Complete to share the pool, or forfeit your stake',
   },
 ];
 
@@ -106,8 +111,9 @@ function CardSlider() {
                   style={{ objectFit: 'contain' }}
                 />
               </div>
-              <p className="mt-2 h-24 rounded-b-lg px-4 py-2 text-center text-sm">
-                {card.description}
+              <p className="flex h-24 flex-col rounded-b-lg px-4 py-2 text-center text-sm">
+                <span className="font-xl mb-1 font-bold"> {card.title} </span>
+                <span>{card.description} </span>
               </p>
             </div>
           ))}
