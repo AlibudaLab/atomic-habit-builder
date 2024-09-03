@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
 import CreateStep3 from './step3';
-import moment, { now } from 'moment';
+import moment from 'moment';
 import './create.css';
 
 import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constants';

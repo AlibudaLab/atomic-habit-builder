@@ -81,6 +81,12 @@ export function UserChallengesProvider({
     void fetchData();
   }, [fetchData]);
 
+  useEffect(() => {
+    if (!address) {
+      setLoading(false);
+    }
+  }, [address]);
+
   const refetch = useCallback(() => {
     void fetchData(false);
   }, [fetchData]);

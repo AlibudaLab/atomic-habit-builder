@@ -52,8 +52,6 @@ export default function StakeChallenge() {
   const { refetch: refetchAllChallenges } = useAllChallenges();
   const { refetch: refetchUserChallenges } = useUserChallenges();
 
-  const { address: smartWallet } = useAccount();
-
   const hasAccess = useMemo(
     () =>
       challenge?.public === true ||
@@ -71,10 +69,10 @@ export default function StakeChallenge() {
   );
 
   const { data: tokenBalance } = useBalance({
-    address: smartWallet,
+    address: address,
     token: usdcAddr,
     query: {
-      enabled: !!smartWallet && !!challenge,
+      enabled: !!address && !!challenge,
       refetchInterval: (data: any) =>
         challenge &&
         data.value &&
@@ -119,7 +117,7 @@ export default function StakeChallenge() {
     isLoading: isMintLoading,
   } = useMintERC20(
     usdcAddr,
-    smartWallet as `0x${string}`,
+    address as `0x${string}`,
     500_000000n, // mint 500 USDC
   );
 
