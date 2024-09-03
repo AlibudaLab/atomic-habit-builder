@@ -34,6 +34,7 @@ export async function GET(
                   totalStake
                   totalSucceedUsers
                   donationBPS
+                  status
                 }
                 checkIns {
                   id
@@ -67,7 +68,6 @@ export async function GET(
         BigInt(ch.challengeId.totalSucceedUsers ?? 0),
         BigInt(ch.challengeId.stakePerUser),
         BigInt(ch.challengeId.donationBPS ?? 0),
-        ch.status,
       ),
     }));
 

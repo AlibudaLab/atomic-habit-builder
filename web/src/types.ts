@@ -23,6 +23,8 @@ export type ChallengeDetail = {
   donationDestination: Address;
   participants: number;
   totalStaked: bigint;
+  succeedClaimable: bigint;
+  challengeStatus: ChallengeStatus;
 };
 
 // Defined by us, off-chain
@@ -40,7 +42,6 @@ export type Challenge = ChallengeDetail & ChallengeMetaData;
 
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
-  succeedClaimable: bigint;
   totalSucceeded: bigint;
   status: UserChallengeStatus;
 };
@@ -80,4 +81,4 @@ export enum UserChallengeStatus {
   Claimable = 'Claimable', // completed check-ins, and challenge is past end time
   Failed = 'Failed', // challenge is past end time, and user has not completed all check-ins
   Claimed = 'Claimed',
-};
+}

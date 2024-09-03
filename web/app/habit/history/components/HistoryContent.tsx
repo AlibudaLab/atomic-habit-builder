@@ -18,9 +18,7 @@ function HistoryContent() {
     () =>
       challenges
         ? challenges.filter(
-            (c) =>
-              c.endTimestamp < moment().unix() &&
-              c.status != UserChallengeStatus.Claimable,
+            (c) => c.endTimestamp < moment().unix() && c.status != UserChallengeStatus.Claimable,
           )
         : [],
     [challenges],
@@ -37,10 +35,10 @@ function HistoryContent() {
       </div>
 
       {/* map challenges to list of buttons */}
-      {finishedChallenges.map((challenge, idx) => (
+      {finishedChallenges.map((challenge) => (
         <button
           type="button"
-          key={`link-${idx}`}
+          key={`link-${challenge.id}`}
           onClick={() => push(`/habit/checkin/${challenge.id}`)}
           className="w-full no-underline transition-transform duration-200 focus:scale-105"
         >

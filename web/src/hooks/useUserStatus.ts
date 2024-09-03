@@ -9,9 +9,9 @@ export function useUserStatus(id: number) {
     const challenge = challenges?.find((c) => c.id === id);
     if (!challenge) return UserChallengeStatus.NotJoined;
     else return challenge.status;
-  }, []) 
+  }, []);
 
-  const joined = useMemo(() => status !== UserChallengeStatus.NotJoined, [status])
+  const joined = useMemo(() => status !== UserChallengeStatus.NotJoined, [status]);
 
   return { status, joined, loading };
 }

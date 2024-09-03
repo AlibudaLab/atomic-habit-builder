@@ -38,4 +38,3 @@ const challengeContractAddrs: Record<number, Address> = {
 export const challengeAddr = challengeContractAddrs[currentChainId];
 
 export const usdcAddr = usdcContractAddrs[currentChainId];
-

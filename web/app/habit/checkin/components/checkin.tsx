@@ -18,11 +18,9 @@ export default function CheckIn() {
       {loading ? (
         <Loading />
       ) : challenge ? (
-        <>
-          {(challenge.type === ChallengeTypes.Run ||
-            challenge.type === ChallengeTypes.Workout ||
-            challenge.type === ChallengeTypes.Cycling) && <RunCheckIn challenge={challenge} />}
-        </>
+        (challenge.type === ChallengeTypes.Run ||
+          challenge.type === ChallengeTypes.Workout ||
+          challenge.type === ChallengeTypes.Cycling) && <RunCheckIn challenge={challenge} />
       ) : (
         <div className="text-center"> Challenge not found </div>
       )}

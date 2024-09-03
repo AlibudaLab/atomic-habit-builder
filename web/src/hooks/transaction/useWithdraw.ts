@@ -10,28 +10,44 @@ import { logEvent } from '@/utils/gtag';
  * useShowErrorToast and useToast was removed
  */
 
-const useWithdraw = (challengeId: bigint, onSuccess?: () => void) => {
-  return useSubmitTransaction(
-    {
-      address: challengeAddr,
-      abi: abi,
-      functionName: 'withdraw',
-      args: [challengeId],
+const useWithdraw = (needSettle: boolean, challengeId: bigint, onSuccess?: () => void) => {
+  const txConfig = needSettle
+    ? {
+        contracts: [
+          {
+            address: challengeAddr,
+            abi: abi,
+            functionName: 'settle',
+            args: [challengeId],
+          },
+          {
+            address: challengeAddr,
+            abi: abi,
+            functionName: 'withdraw',
+            args: [challengeId],
+          },
+        ],
+      }
+    : {
+        address: challengeAddr,
+        abi: abi,
+        functionName: 'withdraw',
+        args: [challengeId],
+      };
+
+  return useSubmitTransaction(txConfig, {
+    onError: (error) => {
+      toast.error('Error while claiming', { id: 'claim' });
     },
-    {
-      onError: (error) => {
-        toast.error('Error while claiming', { id: 'claim' });
-      },
-      onSuccess: () => {
-        //In the orginal file they refetch after success refetch();
-        toast.success('Successfully Claimed!', { id: 'claim' });
-        logEvent({ action: 'claim', category: 'challenge', label: 'claim', value: 1 });
-      },
-      onSent: () => {
-        toast.loading('Claiming...', { id: 'claim' });
-      },
+    onSuccess: () => {
+      //In the orginal file they refetch after success refetch();
+      toast.success('Successfully Claimed!', { id: 'claim' });
+      logEvent({ action: 'claim', category: 'challenge', label: 'claim', value: 1 });
     },
-  );
+    onSent: () => {
+      toast.loading('Claiming...', { id: 'claim' });
+    },
+  });
 };
 
 export default useWithdraw;

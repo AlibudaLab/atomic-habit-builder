@@ -14,9 +14,7 @@ export default function DashboardPage() {
 
   const allOngoing = challenges
     ? challenges.filter(
-        (c) =>
-          c.endTimestamp > moment().unix() ||
-          c.status === UserChallengeStatus.Claimable,
+        (c) => c.endTimestamp > moment().unix() || c.status === UserChallengeStatus.Claimable,
       )
     : [];
 

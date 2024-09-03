@@ -15,25 +15,33 @@ export function convertNumberToBytes(num: number): string {
   return '0x' + reversed;
 }
 
-export function transformChallenge(challenge: Challenge) {
-  return {
-    ...challenge,
-    id: convertBytesToNumber(challenge.id).toString(),
-    joinedUsers: challenge.joinedUsers.map((user) => user.user.id),
-  };
-}
-
 export function calculateWinningStakePerUser(
   totalUsers: bigint,
   succeedUsers: bigint,
   stakePerUser: bigint,
   donationBPS: bigint,
-  status: string,
 ) {
-  if (status !== '2' || succeedUsers.toString() === '0') return '0';
+  if (succeedUsers.toString() === '0') return '0';
 
   const totalStake = totalUsers * stakePerUser;
   const donation = ((totalUsers - succeedUsers) * stakePerUser * donationBPS) / BigInt(MAX_BPS);
 
+  console.log('donation', donation);
+
   return ((totalStake - donation) / succeedUsers).toString();
+}
+
+export function transformChallenge(challenge: Challenge) {
+  return {
+    ...challenge,
+    id: convertBytesToNumber(challenge.id).toString(),
+    joinedUsers: challenge.joinedUsers.map((user) => user.user.id),
+
+    winningStakePerUser: calculateWinningStakePerUser(
+      BigInt(challenge.totalUsers),
+      BigInt(challenge.totalSucceedUsers ?? 0),
+      BigInt(challenge.stakePerUser),
+      BigInt(challenge.donationBPS ?? 0),
+    ),
+  };
 }

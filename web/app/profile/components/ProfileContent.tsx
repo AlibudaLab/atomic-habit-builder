@@ -54,7 +54,8 @@ export default function ProfileContent() {
 
   const finishedChallenges = challenges.filter(
     (challenge) =>
-      challenge.endTimestamp < Date.now() / 1000 && challenge.checkedIn >= challenge.minimumCheckIns,
+      challenge.endTimestamp < Date.now() / 1000 &&
+      challenge.checkedIn >= challenge.minimumCheckIns,
   );
 
   // todo: use a view function to replace this logic

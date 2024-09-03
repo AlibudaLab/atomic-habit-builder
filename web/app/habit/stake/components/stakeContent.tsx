@@ -47,7 +47,7 @@ export default function StakeChallenge() {
 
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
-  const { joined } = useUserStatus(Number(challengeId))
+  const { joined } = useUserStatus(Number(challengeId));
 
   const { refetch: refetchAllChallenges } = useAllChallenges();
   const { refetch: refetchUserChallenges } = useUserChallenges();
@@ -133,7 +133,9 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
-    Promise.all([refetchUserChallenges(), refetchAllChallenges()]).catch((e) => console.log('refetch error', e));
+    Promise.all([refetchUserChallenges(), refetchAllChallenges()]).catch((e) =>
+      console.log('refetch error', e),
+    );
 
     handleOpenCheckinPopup(); // trigger pop up window
   });

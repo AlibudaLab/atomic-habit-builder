@@ -43,11 +43,15 @@ export function getChallengeUnit(type: ChallengeTypes) {
   }
 }
 
-export function getUserChallengeStatus(userStatus: UserStatus, checkedIn: number, challenge: Challenge) {
+export function getUserChallengeStatus(
+  userStatus: UserStatus,
+  checkedIn: number,
+  challenge: Challenge,
+) {
   const now = moment().unix();
 
-  if (userStatus === UserStatus.NotExist) { 
-    return UserChallengeStatus.NotJoined
+  if (userStatus === UserStatus.NotExist) {
+    return UserChallengeStatus.NotJoined;
   }
 
   if (challenge.startTimestamp > now) {

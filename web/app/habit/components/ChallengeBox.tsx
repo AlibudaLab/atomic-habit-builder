@@ -92,7 +92,7 @@ export function ChallengePreview({
   checkedIn: number;
   fullWidth?: boolean;
 }) {
-  const userChallengeStatus = challenge.status
+  const userChallengeStatus = challenge.status;
 
   let percentage = (checkedIn * 100) / challenge.minimumCheckIns;
 

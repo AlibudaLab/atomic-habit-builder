@@ -1,24 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import useChallenge from '@/hooks/useChallenge';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import ClaimedPopup from './ClaimedPopup';
 import { Button } from '@nextui-org/button';
-import { abi } from '@/abis/challenge';
-import { challengeAddr } from '@/constants';
-import { useAccount, useConnect, useReadContracts } from 'wagmi';
-import { formatUnits, zeroAddress } from 'viem';
-import { ChallengeStatus, UserStatus } from '@/types';
+import { useAccount } from 'wagmi';
+import { formatUnits } from 'viem';
+import { ChallengeStatus, UserChallengeStatus, UserStatus } from '@/types';
 import moment from 'moment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
+import { useChallengeWithCheckIns } from '@/hooks/useChallengeWithCheckIns';
 
 export default function Claim() {
   const { push } = useRouter();
   const { challengeId } = useParams<{ challengeId: string }>();
   const { login, isPending: connecting } = usePasskeyConnection();
-  const { challenge, loading } = useChallenge(Number(challengeId));
+  const { challenge, loading, refetch } = useChallengeWithCheckIns(Number(challengeId));
   const [claimSuccess, setClaimSuccess] = useState(false);
 
   const [isClaimedPopupOpen, setIsClaimedPopupOpen] = useState(false);
@@ -31,64 +29,34 @@ export default function Claim() {
 
   const { address: account } = useAccount();
 
-  const { data, refetch } = useReadContracts({
-    contracts: [
-      {
-        abi,
-        address: challengeAddr,
-        functionName: 'getWinningStakePerUser',
-        args: [BigInt(challengeId)],
-      },
-      {
-        abi,
-        address: challengeAddr,
-        functionName: 'totalSucceedUsers',
-        args: [BigInt(challengeId)],
-      },
-      {
-        abi,
-        address: challengeAddr,
-        functionName: 'userStatus',
-        args: [BigInt(challengeId), account ?? zeroAddress],
-      },
-      {
-        abi,
-        address: challengeAddr,
-        functionName: 'challengeStatus',
-        args: [BigInt(challengeId)],
-      },
-    ],
-    query: {
-      enabled: !!account,
-    },
-  });
-
-  const winningStakePerUser = data?.[0].result;
-  const totalFinishedUsers = data?.[1].result;
-  const userStatus = data?.[2].result;
-  const challengeStatus = data?.[3].result as ChallengeStatus;
+  const needSettle = useMemo(
+    () => challenge?.challengeStatus !== ChallengeStatus.Settled,
+    [challenge?.status],
+  );
 
   const { onSubmitTransaction: onWithdrawTx, isLoading: isWithdrawLoading } = useWithdraw(
+    needSettle,
     BigInt(challenge?.id ?? 0),
     () => {
       setClaimSuccess(true);
-      refetch().catch((error) => {
-        console.log('Error refetching data:', error);
-      });
+      refetch();
       handleOpenClaimedPopup();
     },
   );
 
-  const challengeHasEnded = challenge?.endTimestamp && Date.now() > challenge.endTimestamp * 1000;
-  const userCanClaim =
-    userStatus === UserStatus.Claimable &&
-    winningStakePerUser !== undefined &&
-    !!totalFinishedUsers;
+  const challengeHasEnded = useMemo(
+    () => challenge?.endTimestamp && moment().unix() > challenge.endTimestamp,
+    [challenge?.endTimestamp],
+  );
 
-  const claimed =
-    userStatus === UserStatus.Claimed && !!winningStakePerUser && !!totalFinishedUsers;
-
-  const canClaimNow = userCanClaim && challengeStatus === ChallengeStatus.Settled;
+  const userCanClaim = useMemo(
+    () => challenge?.status === UserChallengeStatus.Claimable,
+    [challenge?.status],
+  );
+  const claimed = useMemo(
+    () => challenge?.status === UserChallengeStatus.Claimed,
+    [challenge?.status],
+  );
 
   return (
     <div className="mx-8 flex flex-col items-center justify-center">
@@ -106,16 +74,16 @@ export default function Claim() {
           {userCanClaim && (
             <div className="mx-4 my-8 w-full">
               <div className="flex items-center justify-between p-4 font-nunito text-sm">
-                <p>Claimable</p>
+                <p> {claimed ? 'Claimed' : 'Claimable'} </p>
                 {challengeHasEnded ? (
-                  <p> {formatUnits(winningStakePerUser, 6)} USDC</p>
+                  <p> {formatUnits(challenge.succeedClaimable, 6)} USDC</p>
                 ) : (
                   <p> {formatUnits(challenge.stake, 6)}+ USDC</p>
                 )}
               </div>
               <div className="flex items-center justify-between px-4 pb-4 font-nunito text-sm">
                 <p>Total Finished</p>
-                <p>{totalFinishedUsers.toString()}</p>
+                <p>{challenge.totalSucceeded.toString()}</p>
               </div>
               {!challengeHasEnded && (
                 <div className="flex items-center justify-between px-4 pb-4 font-nunito text-sm">
@@ -128,7 +96,7 @@ export default function Claim() {
           {claimed && (
             <div className="mx-4 my-8 w-full">
               <div className="text-md flex items-center justify-between p-4 font-nunito">
-                <p>{formatUnits(winningStakePerUser, 6)} USDC Claimed</p>
+                <p>{formatUnits(challenge.succeedClaimable, 6)} USDC Claimed</p>
               </div>
             </div>
           )}
@@ -151,7 +119,7 @@ export default function Claim() {
           ) : (
             <Button
               // if unsettled, disable the button
-              isDisabled={!canClaimNow}
+              isDisabled={!userCanClaim}
               type="button"
               className="mt-4 min-h-12 w-3/4 max-w-56"
               color="primary"
@@ -169,7 +137,7 @@ export default function Claim() {
       )}
 
       {/* wait for settle message */}
-      {userCanClaim && !canClaimNow && (
+      {userCanClaim && !userCanClaim && (
         <div className="mt-2 text-xs text-default-400">Please wait for the challenge to settle</div>
       )}
 
