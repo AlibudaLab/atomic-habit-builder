@@ -18,7 +18,7 @@ export const getExplorerLink = (address: `0x${string}` | undefined, chainId: num
     return `https://sepolia.basescan.org/address/${address}`;
   }
   if (chainId === base.id) {
-    return `https://basescan.io/address/${address}`;
+    return `https://basescan.org/address/${address}`;
   }
   return '';
 };
