@@ -94,6 +94,7 @@ export function ChallengePreview({
   fullWidth?: boolean;
 }) {
   const userChallengeStatus = getUserChallengeStatus(challenge);
+  console.log('userChallengeStatus', userChallengeStatus)
 
   const isPast = challenge.endTimestamp < moment().unix();
 
@@ -116,7 +117,7 @@ export function ChallengePreview({
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-xs">
             {' '}
-            {challenge.public ? 'Public' : 'Private'} | {challenge.participants} joined{' '}
+            {challenge.public ? 'Public' : 'Private'} | {userChallengeStatus}
           </p>
         </div>
         <div className="ml-auto min-w-[64px] p-2 text-lg ">
