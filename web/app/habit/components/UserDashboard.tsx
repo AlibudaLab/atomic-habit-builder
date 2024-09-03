@@ -13,8 +13,6 @@ type DashboardProps = {
 export default function Dashboard({ onGoingChallenges }: DashboardProps) {
   const { push } = useRouter();
 
-  // const totalChallenges = onGoingChallenges.length + pastChallenges.length;
-
   return onGoingChallenges.length === 0 ? (
     <NewUser />
   ) : (

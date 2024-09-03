@@ -11,7 +11,7 @@ import moment from 'moment';
 import Link from 'next/link';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import { getCheckInDescription } from '@/utils/challenges';
-import { formatUnits, toBytes, zeroAddress } from 'viem';
+import { formatUnits, zeroAddress } from 'viem';
 import { challengeAddr } from '@/constants';
 
 export default function NFCCheckIn({ challenge }: { challenge: ChallengeWithCheckIns }) {

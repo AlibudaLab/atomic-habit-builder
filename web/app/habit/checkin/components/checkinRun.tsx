@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
-import { ChallengeWithCheckIns, UserChallengeStatus, UserStatus } from '@/types';
+import { ChallengeWithCheckIns, UserChallengeStatus } from '@/types';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
 import useFields from '@/hooks/useFields';
@@ -35,11 +35,9 @@ const initFields: CheckInFields = {
 export default function RunCheckIn({ challenge }: { challenge: ChallengeWithCheckIns }) {
   const { push } = useRouter();
   const { address } = useAccount();
-
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
-  // const { checkedIn, refetch: refetchCheckIns } = useUserChallengeCheckIns(address, challenge.id);
   const [isSigning, setIsSigning] = useState(false);
 
   const { refetch: refetchAll } = useUserChallenges();

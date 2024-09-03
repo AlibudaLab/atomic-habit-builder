@@ -43,6 +43,7 @@ const useWithdraw = (needSettle: boolean, challengeId: bigint, onSuccess?: () =>
       //In the orginal file they refetch after success refetch();
       toast.success('Successfully Claimed!', { id: 'claim' });
       logEvent({ action: 'claim', category: 'challenge', label: 'claim', value: 1 });
+      onSuccess?.();
     },
     onSent: () => {
       toast.loading('Claiming...', { id: 'claim' });
