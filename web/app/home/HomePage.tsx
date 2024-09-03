@@ -21,7 +21,7 @@ export default function DashboardPage() {
       ) : loading ? (
         <Loading />
       ) : (
-        <Dashboard onGoingChallenges={allOngoing} pastChallenges={allPast} />
+        <Dashboard onGoingChallenges={allOngoing} />
       )}
     </main>
   );

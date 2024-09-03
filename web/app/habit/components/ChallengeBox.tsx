@@ -50,7 +50,7 @@ export function ChallengeBoxFilled({
 
   return (
     <div
-      className={`wrapped-filled p-2 ${isPast ? 'opacity-50' : ''} ${fullWidth ? 'w-full' : 'm-2'}`}
+      className={`wrapped-filled p-2 bg-primary ${isPast ? 'opacity-50' : ''} ${fullWidth ? 'w-full' : 'm-2'}`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
@@ -149,7 +149,7 @@ export function ChallengePreview({
             showValueLabel
             valueLabel={
               isCompleted ? (
-                <div> Claim </div>
+                <div> Completed </div>
               ) : (
                 <div className="flex flex-col gap-0">
                   <FractionDisplay numerator={checkedIn} denominator={challenge.targetNum} />
