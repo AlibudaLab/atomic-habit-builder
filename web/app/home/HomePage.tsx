@@ -6,13 +6,20 @@ import Dashboard from '../habit/components/UserDashboard';
 import Loading from 'app/habit/components/Loading';
 import moment from 'moment';
 import { useAccount } from 'wagmi';
+import { UserChallengeStatus } from '@/constants';
+import { getUserChallengeStatus } from '@/utils/challenges';
 
 export default function DashboardPage() {
   const { address } = useAccount();
   const { data: challenges, loading } = useUserChallenges();
 
-  const allOngoing = challenges ? challenges.filter((c) => c.endTimestamp > moment().unix()) : [];
-  const allPast = challenges ? challenges.filter((c) => c.endTimestamp < moment().unix()) : [];
+  const allOngoing = challenges
+    ? challenges.filter(
+        (c) =>
+          c.endTimestamp > moment().unix() ||
+          getUserChallengeStatus(c) === UserChallengeStatus.Claimable,
+      )
+    : [];
 
   return (
     <main className="container flex flex-col items-center">

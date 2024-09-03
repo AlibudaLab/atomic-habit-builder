@@ -46,7 +46,7 @@ export default function ChallengeList() {
               return (
                 <button
                   type="button"
-                  className="m-2 w-full no-underline"
+                  className="m-2 w-full no-underline transition-transform duration-300 focus:scale-105"
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >

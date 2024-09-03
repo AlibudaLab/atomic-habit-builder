@@ -32,7 +32,7 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
           type="button"
           key={`link-${idx}`}
           onClick={() => push(`/habit/checkin/${challenge.id}`)}
-          className="w-full no-underline"
+          className="w-full transition-transform duration-100 focus:scale-105"
         >
           <ChallengePreview
             key={challenge.id.toString()}
@@ -42,9 +42,9 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
         </button>
       ))}
 
-      {/* <button onClick={() => push('/habit/list')} className="my-6 py-4 text-dark">
-        <p className="text-md font-bold"> Join Other Challenges </p>
-      </button> */}
+      <button onClick={() => push('/habit/history')} className="my-6 py-4 text-dark">
+        <p className="font underline"> Challenge History </p>
+      </button>
     </div>
   );
 }

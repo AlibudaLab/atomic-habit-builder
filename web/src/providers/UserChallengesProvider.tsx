@@ -26,6 +26,8 @@ export const UserChallengesProvider: React.FC<{
     try {
       setLoading(true);
 
+      console.log('fetching user challenges');
+
       const response = await fetch(`/api/on-chain/${address}/challenges`, { cache: 'no-store' });
       if (!response.ok) throw new Error('Failed to fetch challenge');
       const result = await response.json();
