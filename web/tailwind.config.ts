@@ -37,6 +37,7 @@ const config: Config = {
         'boat-gold': '#7b602f',
         primary: '#ff784f',
         dark: '#3a3042',
+        failed: '#CCC7B8',
       },
       fontFamily: {
         nunito: ['var(--font-nunito)'],

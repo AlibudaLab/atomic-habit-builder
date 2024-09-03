@@ -1,11 +1,9 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { useAccount } from 'wagmi';
 
 import { Challenge } from '@/types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
-import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import { Button } from '@nextui-org/button';
 import { BsTwitterX } from 'react-icons/bs';
 
@@ -22,8 +20,8 @@ type CheckinPopupProps = {
 
 function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: CheckinPopupProps) {
   const isFinished = useMemo(
-    () => checkedIn >= challenge.targetNum,
-    [checkedIn, challenge.targetNum],
+    () => checkedIn >= challenge.minimumCheckIns,
+    [checkedIn, challenge.minimumCheckIns],
   );
 
   const title = useMemo(() => {
@@ -45,7 +43,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: Che
       <ul className="mb-4 list-disc pl-5">
         {!isFinished && (
           <li>
-            Total Check in: {checkedIn} / {challenge.targetNum}
+            Total Check in: {checkedIn} / {challenge.minimumCheckIns}
           </li>
         )}
         <li>

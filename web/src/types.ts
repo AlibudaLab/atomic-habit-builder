@@ -19,10 +19,12 @@ export type ChallengeDetail = {
   endTimestamp: number;
   verifier: string;
   stake: bigint;
-  targetNum: number;
+  minimumCheckIns: number;
   donationDestination: Address;
   participants: number;
   totalStaked: bigint;
+  succeedClaimable: bigint;
+  challengeStatus: ChallengeStatus;
 };
 
 // Defined by us, off-chain
@@ -40,9 +42,8 @@ export type Challenge = ChallengeDetail & ChallengeMetaData;
 
 export type ChallengeWithCheckIns = Challenge & {
   checkedIn: number;
-  succeedClaimable: bigint;
   totalSucceeded: bigint;
-  status: UserStatus;
+  status: UserChallengeStatus;
 };
 
 export type DonationDest = {
@@ -53,15 +54,31 @@ export type DonationDest = {
 
 export type ActivityMap = Record<string, string[]>;
 
+// user status defined on-chain
 export enum UserStatus {
   NotExist,
   Joined,
-  Claimable,
+  Claimable, // settled and can be claimed
   Claimed,
 }
 
+// challenge status defined on-chain
 export enum ChallengeStatus {
   NotExist,
   Created,
   Settled,
+}
+
+// combining user status & challenge status, indicating what the user should do next
+export enum UserChallengeStatus {
+  // not started yet
+  NotJoined = 'Not Joined',
+  NotStarted = 'Not Started',
+  // challenge in progress
+  Ongoing = 'Ongoing',
+  Completed = 'Completed', // completed all check-ins, challenge is still ongoing
+  // challenge is past end time
+  Claimable = 'Claimable', // completed check-ins, and challenge is past end time
+  Failed = 'Failed', // challenge is past end time, and user has not completed all check-ins
+  Claimed = 'Claimed',
 }

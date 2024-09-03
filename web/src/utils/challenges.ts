@@ -1,4 +1,7 @@
 import { ChallengeTypes } from '@/constants';
+import { UserChallengeStatus } from '@/types';
+import { Challenge, UserStatus } from '@/types';
+import moment from 'moment';
 
 export function challengeToEmoji(type: ChallengeTypes) {
   switch (type) {
@@ -37,4 +40,25 @@ export function getChallengeUnit(type: ChallengeTypes) {
     case ChallengeTypes.NFC_Chip:
       return 'times';
   }
+}
+
+export function getUserChallengeStatus(
+  userStatus: UserStatus,
+  checkedIn: number,
+  { startTimestamp, endTimestamp, minimumCheckIns }: Challenge,
+): UserChallengeStatus {
+  const now = moment().unix();
+  if (userStatus === UserStatus.NotExist) return UserChallengeStatus.NotJoined;
+  if (now < startTimestamp) return UserChallengeStatus.NotStarted;
+
+  const isCompleted = checkedIn >= minimumCheckIns;
+  const isOngoing = now <= endTimestamp;
+
+  if (isCompleted) {
+    if (isOngoing) return UserChallengeStatus.Completed;
+    return userStatus === UserStatus.Claimed
+      ? UserChallengeStatus.Claimed
+      : UserChallengeStatus.Claimable;
+  }
+  return isOngoing ? UserChallengeStatus.Ongoing : UserChallengeStatus.Failed;
 }

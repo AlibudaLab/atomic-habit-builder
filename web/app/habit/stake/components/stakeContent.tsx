@@ -11,7 +11,6 @@ import { Input } from '@nextui-org/input';
 import moment, { now } from 'moment';
 
 import { usdcAddr } from '@/constants';
-import useChallenge from '@/hooks/useChallenge';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
 import { getCheckInDescription } from '@/utils/challenges';
@@ -21,14 +20,15 @@ import JoinedPopup from './JoinedPopup';
 import InsufficientBalancePopup from './InsufficientBalancePopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
-import useUserStatus from '@/hooks/useUserStatus';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
-import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { logEvent } from '@/utils/gtag';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
+import useChallenge from '@/hooks/useChallenge';
+import { useUserStatus } from '@/hooks/useUserStatus';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -37,7 +37,6 @@ export default function StakeChallenge() {
 
   const { challengeId } = useParams<{ challengeId: string }>();
   const { address } = useAccount();
-  const { login, isPending: connecting, signedInBefore, register } = usePasskeyConnection();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';
@@ -48,10 +47,12 @@ export default function StakeChallenge() {
 
   const { challenge, loading: loadingChallenge } = useChallenge(Number(challengeId));
 
+  const { joined } = useUserStatus(Number(challengeId));
+
   const { refetch: refetchAllChallenges } = useAllChallenges();
+  const { refetch: refetchUserChallenges } = useUserChallenges();
 
   const { address: smartWallet } = useAccount();
-  const { joined, refetch } = useUserStatus(smartWallet, Number(challengeId));
 
   const hasAccess = useMemo(
     () =>
@@ -132,7 +133,9 @@ export default function StakeChallenge() {
     isPreparing: isJoinPreparing,
     isLoading: isJoinLoading,
   } = useJoinChallenge(address, BigInt(challenge?.id ?? 0), challenge?.stake ?? BigInt(0), () => {
-    Promise.all([refetch(), refetchAllChallenges()]).catch((e) => console.log('refetch error', e));
+    Promise.all([refetchUserChallenges(), refetchAllChallenges()]).catch((e) =>
+      console.log('refetch error', e),
+    );
 
     handleOpenCheckinPopup(); // trigger pop up window
   });
@@ -228,7 +231,7 @@ export default function StakeChallenge() {
                 />
                 <span className="text-start font-londrina text-sm text-gray-500">
                   {`Fair warning: Missing any of the ${
-                    challenge.targetNum
+                    challenge.minimumCheckIns
                   } check-ins means my ${formatUnits(
                     challenge.stake,
                     6,

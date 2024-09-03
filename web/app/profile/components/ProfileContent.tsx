@@ -10,15 +10,14 @@ import usdcIcon from '@/imgs/coins/usdc.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { base } from 'viem/chains';
-import useUserChallenges from '@/hooks/useUserChallenges';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
-import { UserStatus } from '@/types';
+import { UserChallengeStatus, UserStatus } from '@/types';
 import { useState } from 'react';
 import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
-import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 
@@ -38,7 +37,7 @@ export default function ProfileContent() {
     },
   });
 
-  const { data: challenges } = useUserChallenges(address);
+  const { data: challenges } = useUserChallenges();
 
   // assume all in USDC
   const totalStaked = challenges.reduce((acc, challenge) => {
@@ -46,21 +45,22 @@ export default function ProfileContent() {
     if (challenge.endTimestamp > Date.now() / 1000) return acc + challenge.stake;
 
     // only get the claimable if user succeed
-    if (challenge.checkedIn < challenge.targetNum) return acc;
+    if (challenge.checkedIn < challenge.minimumCheckIns) return acc;
 
-    if (challenge.status === UserStatus.Claimed) return acc;
+    if (challenge.status === UserChallengeStatus.Claimed) return acc;
 
     return acc + challenge.succeedClaimable;
   }, BigInt(0));
 
   const finishedChallenges = challenges.filter(
     (challenge) =>
-      challenge.endTimestamp < Date.now() / 1000 && challenge.checkedIn >= challenge.targetNum,
+      challenge.endTimestamp < Date.now() / 1000 &&
+      challenge.checkedIn >= challenge.minimumCheckIns,
   );
 
   // todo: use a view function to replace this logic
   const usdcEarned = finishedChallenges.reduce((acc, challenge) => {
-    const earned = challenge.totalStaked / challenge.totalSucceeded - challenge.stake;
+    const earned = challenge.succeedClaimable - challenge.stake;
     return acc + earned;
   }, BigInt(0));
 
