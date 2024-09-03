@@ -1,5 +1,5 @@
-import { Challenge } from '@/types';
-import { challengeToEmoji } from '@/utils/challenges';
+import { Challenge, ChallengeWithCheckIns } from '@/types';
+import { challengeToEmoji, getUserChallengeStatus } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
@@ -89,10 +89,12 @@ export function ChallengePreview({
   checkedIn,
   fullWidth,
 }: {
-  challenge: Challenge;
+  challenge: ChallengeWithCheckIns;
   checkedIn: number;
   fullWidth?: boolean;
 }) {
+  const userChallengeStatus = getUserChallengeStatus(challenge);
+
   const isPast = challenge.endTimestamp < moment().unix();
 
   let percentage = (checkedIn * 100) / challenge.targetNum;

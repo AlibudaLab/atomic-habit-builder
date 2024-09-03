@@ -10,7 +10,7 @@ import usdcIcon from '@/imgs/coins/usdc.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { base } from 'viem/chains';
-import useUserChallenges from '@/hooks/useUserChallenges';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
@@ -18,7 +18,6 @@ import { UserStatus } from '@/types';
 import { useState } from 'react';
 import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
-import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 
@@ -38,7 +37,7 @@ export default function ProfileContent() {
     },
   });
 
-  const { data: challenges } = useUserChallenges(address);
+  const { data: challenges } = useUserChallenges();
 
   // assume all in USDC
   const totalStaked = challenges.reduce((acc, challenge) => {

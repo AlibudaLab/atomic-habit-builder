@@ -1,4 +1,7 @@
-import { ChallengeTypes } from '@/constants';
+import { P } from '@/components/layout/guide';
+import { ChallengeTypes, UserChallengeStatus } from '@/constants';
+import { Challenge, ChallengeWithCheckIns, UserStatus } from '@/types';
+import moment from 'moment';
 
 export function challengeToEmoji(type: ChallengeTypes) {
   switch (type) {
@@ -36,5 +39,34 @@ export function getChallengeUnit(type: ChallengeTypes) {
       return 'rides';
     case ChallengeTypes.NFC_Chip:
       return 'times';
+  }
+}
+
+export function getUserChallengeStatus(challenge: ChallengeWithCheckIns) {
+  const now = moment().unix();
+
+  const checkedIn = challenge.checkedIn;
+  const userStatus = challenge.status;
+
+  if (challenge.startTimestamp > now) {
+    return UserChallengeStatus.NotStarted;
+  }
+  if (checkedIn >= challenge.targetNum) {
+    if (challenge.endTimestamp > now) {
+      return UserChallengeStatus.Completed;
+    }
+
+    if (userStatus === UserStatus.Claimed) {
+      return UserChallengeStatus.Claimed;
+    }
+
+    return UserChallengeStatus.Claimable;
+  } else {
+    // user checkin < target amount
+    if (challenge.endTimestamp > now) {
+      return UserChallengeStatus.Ongoing;
+    }
+
+    return UserChallengeStatus.Failed;
   }
 }
