@@ -60,7 +60,7 @@ export default function ProfileContent() {
 
   // todo: use a view function to replace this logic
   const usdcEarned = finishedChallenges.reduce((acc, challenge) => {
-    const earned = challenge.totalStaked / challenge.totalSucceeded - challenge.stake;
+    const earned = challenge.succeedClaimable - challenge.stake;
     return acc + earned;
   }, BigInt(0));
 
