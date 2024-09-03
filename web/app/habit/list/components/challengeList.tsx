@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { ChallengeBox } from '../../components/ChallengeBox';
 import { useAccount } from 'wagmi';
-import useUserChallenges from '@/hooks/useUserChallenges';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Loading from '../../components/Loading';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
@@ -20,7 +20,7 @@ export default function ChallengeList() {
     [allChallenges, address],
   );
 
-  const { data: joined, loading: loadingUserData } = useUserChallenges(address);
+  const { data: joined, loading: loadingUserData } = useUserChallenges();
 
   const { push } = useRouter();
 
@@ -46,7 +46,7 @@ export default function ChallengeList() {
               return (
                 <button
                   type="button"
-                  className="m-2 w-full no-underline"
+                  className="m-2 w-full no-underline transition-transform duration-300 focus:scale-105"
                   key={challenge.id.toString()}
                   onClick={() => push(`/habit/stake/${challenge.id}`)}
                 >

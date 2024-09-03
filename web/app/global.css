@@ -80,7 +80,7 @@ html .wrapped {
 }
 
 div .wrapped-filled {
-  background-color: var(--palette-primary);
+  /* background-color: var(--palette-primary); */
   color: var(--palette-bg);
   border-radius: 10px;
 }

@@ -1,19 +1,22 @@
 'use client';
 
-import useUserChallenges from '@/hooks/useUserChallenges';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Onboard from '../habit/components/Onboard';
 import Dashboard from '../habit/components/UserDashboard';
-import { useAccount } from 'wagmi';
 import Loading from 'app/habit/components/Loading';
 import moment from 'moment';
+import { useAccount } from 'wagmi';
+import { UserChallengeStatus } from '@/types';
 
 export default function DashboardPage() {
   const { address } = useAccount();
+  const { data: challenges, loading } = useUserChallenges();
 
-  const { data: challenges, loading } = useUserChallenges(address);
-
-  const allOngoing = challenges ? challenges.filter((c) => c.endTimestamp > moment().unix()) : [];
-  const allPast = challenges ? challenges.filter((c) => c.endTimestamp < moment().unix()) : [];
+  const allOngoing = challenges
+    ? challenges.filter(
+        (c) => c.endTimestamp > moment().unix() || c.status === UserChallengeStatus.Claimable,
+      )
+    : [];
 
   return (
     <main className="container flex flex-col items-center">
@@ -22,7 +25,7 @@ export default function DashboardPage() {
       ) : loading ? (
         <Loading />
       ) : (
-        <Dashboard onGoingChallenges={allOngoing} pastChallenges={allPast} />
+        <Dashboard onGoingChallenges={allOngoing} />
       )}
     </main>
   );

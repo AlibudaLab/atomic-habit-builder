@@ -1,8 +1,10 @@
-import { Challenge } from '@/types';
-import { challengeToEmoji } from '@/utils/challenges';
+import { Challenge, ChallengeWithCheckIns } from '@/types';
+import { challengeToEmoji, getUserChallengeStatus } from '@/utils/challenges';
 import { formatDuration } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
+import { UserChallengeStatus } from '@/types';
+import { useMemo } from 'react';
 
 export function ChallengeBox({
   challenge,
@@ -14,12 +16,7 @@ export function ChallengeBox({
   const isPast = challenge.endTimestamp < moment().unix();
 
   return (
-    <button
-      type="button"
-      className={`wrapped transition-transform duration-300 focus:scale-105 ${
-        isPast && 'opacity-50'
-      } ${fullWidth ? 'w-full' : 'm-2'}`}
-    >
+    <div className={`wrapped ${isPast && 'opacity-50'} ${fullWidth ? 'w-full' : 'm-2'}`}>
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2 text-primary">
@@ -29,9 +26,9 @@ export function ChallengeBox({
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-sm"> {challenge.participants} joined </p>
         </div>
-        <div className="ml-auto p-2 text-sm font-bold">{challenge.targetNum} times</div>
+        <div className="ml-auto p-2 text-sm font-bold">{challenge.minimumCheckIns} times</div>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -48,7 +45,9 @@ export function ChallengeBoxFilled({
 
   return (
     <div
-      className={`wrapped-filled p-2 ${isPast ? 'opacity-50' : ''} ${fullWidth ? 'w-full' : 'm-2'}`}
+      className={`wrapped-filled bg-primary p-2 ${isPast ? 'opacity-50' : ''} ${
+        fullWidth ? 'w-full' : 'm-2'
+      }`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
@@ -63,10 +62,10 @@ export function ChallengeBoxFilled({
           // if checkedIn is defined, show the checkedIn number, otherwise show the target number
           checkedIn !== undefined ? (
             <div className="ml-auto min-w-[64px] p-2 text-lg ">
-              {checkedIn} / {challenge.targetNum}
+              {checkedIn} / {challenge.minimumCheckIns}
             </div>
           ) : (
-            <div className="text-md ml-auto p-2">{challenge.targetNum} times</div>
+            <div className="text-md ml-auto p-2">{challenge.minimumCheckIns} times</div>
           )
         }
       </div>
@@ -89,21 +88,36 @@ export function ChallengePreview({
   checkedIn,
   fullWidth,
 }: {
-  challenge: Challenge;
+  challenge: ChallengeWithCheckIns;
   checkedIn: number;
   fullWidth?: boolean;
 }) {
-  const isPast = challenge.endTimestamp < moment().unix();
+  const userChallengeStatus = challenge.status;
 
-  let percentage = (checkedIn * 100) / challenge.targetNum;
+  let percentage = (checkedIn * 100) / challenge.minimumCheckIns;
 
-  const isCompleted = checkedIn >= challenge.targetNum;
+  const claimable = userChallengeStatus === UserChallengeStatus.Claimable;
+
+  const customCss = useMemo(() => {
+    if (userChallengeStatus === UserChallengeStatus.Failed) {
+      return 'bg-failed';
+    } else if (
+      userChallengeStatus === UserChallengeStatus.Completed ||
+      userChallengeStatus === UserChallengeStatus.Claimable
+    ) {
+      return 'bg-primary opacity-50';
+    } else if (userChallengeStatus === UserChallengeStatus.Claimed) {
+      return 'bg-primary opacity-50';
+    }
+
+    return 'bg-primary';
+  }, [userChallengeStatus]);
 
   return (
     <div
-      className={`wrapped-filled p-2 transition-transform duration-300 focus:scale-105 ${
-        isPast ? 'opacity-50' : ''
-      } ${fullWidth ? 'w-full' : 'm-2'}`}
+      className={`${customCss} wrapped-filled p-2 transition-transform duration-300 focus:scale-105 ${
+        fullWidth ? 'w-full' : 'm-2'
+      }`}
     >
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
@@ -114,7 +128,7 @@ export function ChallengePreview({
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-xs">
             {' '}
-            {challenge.public ? 'Public' : 'Private'} | {challenge.participants} joined{' '}
+            {challenge.public ? 'Public' : 'Private'} | {userChallengeStatus}
           </p>
         </div>
         <div className="ml-auto min-w-[64px] p-2 text-lg ">
@@ -130,11 +144,11 @@ export function ChallengePreview({
             }}
             showValueLabel
             valueLabel={
-              isCompleted ? (
+              claimable ? (
                 <div> Claim </div>
               ) : (
                 <div className="flex flex-col gap-0">
-                  <FractionDisplay numerator={checkedIn} denominator={challenge.targetNum} />
+                  <FractionDisplay numerator={checkedIn} denominator={challenge.minimumCheckIns} />
                 </div>
               )
             }

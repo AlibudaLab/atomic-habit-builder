@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
+import { getUserChallengeStatus } from '@/utils/challenges';
 
 const useUserChallenges = (address: string | undefined) => {
   // when address is undefined, loading is false
@@ -37,7 +38,11 @@ const useUserChallenges = (address: string | undefined) => {
             checkedIn: Number(matchingOnchainData.checkInsCount.toString()),
             succeedClaimable: BigInt(matchingOnchainData.winningStakePerUser),
             totalSucceeded: BigInt(matchingOnchainData.totalSucceedUsers),
-            status: Number(matchingOnchainData.userStatus),
+            status: getUserChallengeStatus(
+              Number(matchingOnchainData.userStatus),
+              Number(matchingOnchainData.checkInsCount),
+              c,
+            ),
           };
         });
 

@@ -38,20 +38,21 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
   return (
-    <div className="xs:px-16 flex h-full w-full flex-col items-center justify-start px-8">
+    <div className="flex w-full flex-grow flex-col items-center justify-start px-8">
       <p className="text-bold px-4 py-4 text-center font-londrina text-2xl text-primary">
         Challenge Created!
       </p>
 
-      <p className="text-grey-800 xs:p-4 text-center text-sm">
+      <p className="text-grey-800 xs:p-4 text-nunito pt-2 text-center text-sm">
         Share it with your community and start the health challenge together!
       </p>
 
       <div className="mt-12 flex justify-between gap-2">
-        <Button onClick={() => shareOnX(text, link)} endContent={<BsTwitterX />}>
+        <Button className="h-12" onClick={() => shareOnX(text, link)} endContent={<BsTwitterX />}>
           Share on
         </Button>
         <Button
+          className="h-12"
           onClick={() => shareOnFarcaster(text, [link])}
           endContent={<Image alt="warp" src={farcasterLogo} width={25} height={25} />}
         >

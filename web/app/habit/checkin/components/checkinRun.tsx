@@ -6,22 +6,20 @@ import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
 import { useAccount } from 'wagmi';
-import { Challenge, UserStatus } from '@/types';
-import { getCheckInDescription } from '@/utils/challenges';
+import { ChallengeWithCheckIns, UserChallengeStatus } from '@/types';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
 import useFields from '@/hooks/useFields';
 import useCheckInRun, { CheckInFields } from '@/hooks/transaction/useCheckInRun';
 import useRunData from '@/hooks/useRunData';
-import useUserChallengeCheckIns from '@/hooks/useUserCheckIns';
 import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
-import useUserStatus from '@/hooks/useUserStatus';
 import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -34,15 +32,15 @@ const initFields: CheckInFields = {
  * @param param0
  * @returns
  */
-export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
+export default function RunCheckIn({ challenge }: { challenge: ChallengeWithCheckIns }) {
   const { push } = useRouter();
   const { address } = useAccount();
-  const { status: userStatus, refetch: refetchStatus } = useUserStatus(address, challenge.id);
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
-  const { checkedIn, refetch: refetchCheckIns } = useUserChallengeCheckIns(address, challenge.id);
   const [isSigning, setIsSigning] = useState(false);
+
+  const { refetch: refetchAll } = useUserChallenges();
 
   const challengeStarted = useMemo(
     () => moment().unix() > challenge.startTimestamp,
@@ -72,7 +70,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     () => {
       if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
       resetFields();
-      Promise.all([refetchCheckIns(), refetchStatus()]).catch((error) => {
+      Promise.all([refetchAll()]).catch((error) => {
         console.error('Error refetching data:', error);
         // Optionally, handle the error more specifically here
       });
@@ -158,7 +156,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
     <div className="flex h-screen w-full flex-col items-center px-4 text-center">
       {/* overview   */}
       <div className="my-4 w-full">
-        <ChallengePreview challenge={challenge} fullWidth checkedIn={checkedIn} />
+        <ChallengePreview challenge={challenge} fullWidth checkedIn={challenge.checkedIn} />
       </div>
 
       {/* goal description */}
@@ -189,7 +187,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {/* no address detected: ask user to connect */}
       {!address && <ConnectButton className="w-3/4" />}
 
-      {userStatus === UserStatus.Joined && verifierConnected && canCheckInNow && (
+      {challenge.status === UserChallengeStatus.Ongoing && verifierConnected && canCheckInNow && (
         <div className="flex w-full justify-center px-2">
           <ActivityDropDown
             isDisabled={!address}
@@ -203,7 +201,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       )}
 
       {/* if user already finish, always allow going to the claim page */}
-      {userStatus === UserStatus.Claimable && (
+      {challenge.status === UserChallengeStatus.Claimable && (
         <Button
           type="button"
           color="primary"
@@ -215,7 +213,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       )}
 
       {/* challenge is not finished yet */}
-      {userStatus === UserStatus.Joined &&
+      {challenge.status !== UserChallengeStatus.NotJoined &&
         (!canCheckInNow ? (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button
@@ -255,7 +253,7 @@ export default function RunCheckIn({ challenge }: { challenge: Challenge }) {
       {isCheckinPopupOpen && (
         <CheckinPopup
           challenge={challenge}
-          checkedIn={checkedIn}
+          checkedIn={challenge.checkedIn}
           onClose={handleCloseCheckinPopup}
           onCheckInPageClick={handleChallengeListClick}
         />

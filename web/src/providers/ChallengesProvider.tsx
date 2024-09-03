@@ -7,7 +7,7 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import { Challenge, ChallengeDetail } from '@/types';
+import { Challenge, ChallengeDetail, ChallengeStatus } from '@/types';
 import useChallengeMetaDatas from '../hooks/useChallengeMetaDatas';
 
 type AllChallengesContextType = {
@@ -64,7 +64,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
           .map((challenge: any) => ({
             id: BigInt(challenge.id),
             verifier: challenge.verifier,
-            targetNum: Number(challenge.minimumCheckIns),
+            minimumCheckIns: Number(challenge.minimumCheckIns),
             startTimestamp: Number(challenge.startTimestamp),
             joinDueTimestamp: Number(challenge.joinDueTimestamp),
             endTimestamp: Number(challenge.endTimestamp),
@@ -72,6 +72,8 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
             stake: BigInt(challenge.stakePerUser),
             participants: Number(challenge.totalUsers),
             totalStaked: BigInt(challenge.totalStake),
+            succeedClaimable: BigInt(challenge.winningStakePerUser),
+            challengeStatus: challenge.status as ChallengeStatus,
           }))
           .sort((a: ChallengeDetail, b: ChallengeDetail) =>
             a.startTimestamp > b.startTimestamp ? 1 : -1,
