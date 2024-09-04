@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { Input } from '@nextui-org/input';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
 import moment, { now } from 'moment';
 
 import { usdcAddr } from '@/constants';
@@ -149,6 +150,15 @@ export default function StakeChallenge() {
     }
     handleOpenInsufficientBalancePopup();
   };
+
+  // TODO: get user rankings from subgraph
+  const userRankings = [
+    { name: "Alice", checkIns: 5 },
+    { name: "Bob", checkIns: 4 },
+    { name: "Charlie", checkIns: 3 },
+    { name: "David", checkIns: 2 },
+    { name: "Eve", checkIns: 1 },
+  ];
 
   return (
     <main className="flex h-screen flex-col items-center px-4 pb-12 text-center">
@@ -296,6 +306,28 @@ export default function StakeChallenge() {
               </Button>
             </div>
           )
+        )}
+
+        {challenge && (
+          <div className="w-full max-w-md mt-8">
+            <h3 className="text-xl font-bold mb-4">Leaderboard</h3>
+            <Table aria-label="Leaderboard">
+              <TableHeader>
+                <TableColumn className="text-center">RANK</TableColumn>
+                <TableColumn className="text-center">NAME</TableColumn>
+                <TableColumn className="text-center">CHECK-INS</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {userRankings.map((user, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.checkIns} / {challenge.minimumCheckIns}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
 
         {/**
