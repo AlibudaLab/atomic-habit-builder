@@ -15,7 +15,7 @@ describe('Open the app', () => {
 
     it('should able to enter a challenge page', () => {
         cy.visit('http://localhost:3000/habit/list')
-        cy.get('button').contains('Let’s Cycling Challenge 🚴').click()
+        cy.get('main').eq(1).find('button').first().click()
 
         // Check if the challenge details are displayed
         cy.get('div').should('contain', 'Goal')
