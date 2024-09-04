@@ -38,7 +38,7 @@ export default function NavbarFooter() {
   return (
     <div
       aria-label="Options"
-      className="fixed bottom-0 z-50 mx-10 mb-6 flex items-center gap-8 rounded-[40px] bg-white p-4 text-dark shadow-2xl "
+      className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-8 rounded-[40px] bg-white p-4 text-dark shadow-2xl"
       color="primary"
     >
       <button

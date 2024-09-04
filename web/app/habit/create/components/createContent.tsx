@@ -119,12 +119,12 @@ export default function Create() {
   }, [create]);
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
+    <div className="flex h-full w-full flex-col items-center justify-start pt-8">
       <SubTitle text="Let's Build Another Habit" />
 
       <div
-        className={`mt-12 h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
-          loaded ? 'slide-up' : ''
+        className={`fixed bottom-0 left-0 right-0 h-[calc(100vh-180px)] w-full overflow-y-auto rounded-t-[20px] bg-white p-6 pb-24 shadow-large transition-transform duration-300 ease-in-out ${
+          loaded ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         {/* Show text "create" and then the 3 sub steps */}
