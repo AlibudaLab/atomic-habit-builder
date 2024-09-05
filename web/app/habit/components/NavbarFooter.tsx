@@ -46,7 +46,7 @@ export default function NavbarFooter() {
         key={TabKey.HOME}
         className={selected === TabKey.HOME ? 'opacity-100' : 'opacity-40'}
         onClick={() => {
-          router.push('/')
+          router.push('/');
           logEventSimple({ eventName: 'click_homepage', category: 'browse' });
         }}
         type="button"
@@ -60,7 +60,7 @@ export default function NavbarFooter() {
         key={TabKey.LIST}
         className={selected === TabKey.LIST ? 'opacity-100' : 'opacity-40'}
         onClick={() => {
-          router.push('/habit/list')
+          router.push('/habit/list');
           logEventSimple({ eventName: 'click_list', category: 'browse' });
         }}
         type="button"
@@ -74,7 +74,7 @@ export default function NavbarFooter() {
         key={TabKey.CREATE}
         className={selected === TabKey.CREATE ? 'opacity-100' : 'opacity-40'}
         onClick={() => {
-          router.push('/habit/create')
+          router.push('/habit/create');
           logEventSimple({ eventName: 'click_create_challenge', category: 'create' });
         }}
         type="button"
@@ -88,7 +88,7 @@ export default function NavbarFooter() {
         key={TabKey.PROFILE}
         className={selected === TabKey.PROFILE ? 'opacity-100' : 'opacity-40'}
         onClick={() => {
-          router.push('/profile')
+          router.push('/profile');
           logEventSimple({ eventName: 'click_profile_page', category: 'profile' });
         }}
         type="button"

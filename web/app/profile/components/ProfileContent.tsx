@@ -108,7 +108,13 @@ export default function ProfileContent() {
                     }}
                   />
 
-                  <Link href={getExplorerLink(address, chainId ?? base.id)} target="_blank">
+                  <Link
+                    onClick={() => {
+                      logEventSimple({ eventName: 'click_basescan', category: 'others' });
+                    }}
+                    href={getExplorerLink(address, chainId ?? base.id)}
+                    target="_blank"
+                  >
                     <ExternalLinkIcon />
                   </Link>
                 </div>
@@ -135,7 +141,7 @@ export default function ProfileContent() {
                   isIconOnly
                   className="bg-slate-100"
                   onClick={() => {
-                    setAddFundModalOpen(true)
+                    setAddFundModalOpen(true);
                     logEventSimple({ eventName: 'click_deposit_profile', category: 'profile' });
                   }}
                 >
@@ -147,7 +153,7 @@ export default function ProfileContent() {
                   isIconOnly
                   className="bg-slate-100"
                   onClick={() => {
-                    setIsWithdrawModalOpen(true)
+                    setIsWithdrawModalOpen(true);
                     logEventSimple({ eventName: 'click_withdraw_profile', category: 'profile' });
                   }}
                 >
@@ -202,6 +208,7 @@ export default function ProfileContent() {
                 className="mt-4 min-h-12 w-1/2"
                 onClick={() => {
                   void disconnect();
+                  logEventSimple({ eventName: 'click_logout', category: 'connect' });
                 }}
               >
                 Log out

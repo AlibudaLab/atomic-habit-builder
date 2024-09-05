@@ -18,6 +18,7 @@ const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
+import { logEventSimple } from '@/utils/gtag';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -116,6 +117,7 @@ export default function Create() {
   const onClickCreate = useCallback(async () => {
     // submit create tx
     create();
+    logEventSimple({ eventName: 'click_create_button', category: 'create' });
   }, [create]);
 
   return (
