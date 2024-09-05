@@ -90,23 +90,12 @@ export default function StakeChallenge() {
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
   const [isAddFundPopupOpen, setIsAddFundPopupOpen] = useState(false);
-  const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
-  const handleOpenAddFundPopup = useCallback(
-    () => setIsAddFundPopupOpen(true),
-    [],
-  );
-  const handleCloseAddFundPopup = useCallback(
-    () => setIsAddFundPopupOpen(false),
-    [],
-  );
-  const handleOpenDepositPopup = useCallback(() => {
-    logEvent({ action: 'deposit', category: 'account', label: 'deposit', value: 1 });
-    setIsDepositPopupOpen(true);
-  }, []);
-  const handleCloseDepositPopup = useCallback(() => setIsDepositPopupOpen(false), []);
+  const handleOpenAddFundPopup = useCallback(() => setIsAddFundPopupOpen(true), []);
+  const handleCloseAddFundPopup = useCallback(() => setIsAddFundPopupOpen(false), []);
+
   const handleCheckInPageClick = useCallback(() => {
     // Logic to navigate to the check-in page
     push(`/habit/checkin/${challengeId}`);
@@ -277,13 +266,8 @@ export default function StakeChallenge() {
           />
         )}
         {isAddFundPopupOpen && !hasEnoughBalance && (
-          <AddFundPopup
-            onClose={handleCloseAddFundPopup}
-            onDepositClick={handleOpenDepositPopup}
-          />
+          <AddFundPopup address={address} onClose={handleCloseAddFundPopup} />
         )}
-
-        {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
         {loadingChallenge ? (
           <Loading />
