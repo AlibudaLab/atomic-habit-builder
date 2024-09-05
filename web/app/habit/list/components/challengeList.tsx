@@ -9,6 +9,7 @@ import Loading from '../../components/Loading';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
+import { logEventSimple } from '@/utils/gtag';
 
 export default function ChallengeList() {
   const { address } = useAccount();
@@ -48,7 +49,13 @@ export default function ChallengeList() {
                   type="button"
                   className="m-2 w-full no-underline transition-transform duration-300 focus:scale-105"
                   key={challenge.id.toString()}
-                  onClick={() => push(`/habit/stake/${challenge.id}`)}
+                  onClick={() => {
+                    push(`/habit/stake/${challenge.id}`);
+                    logEventSimple({
+                      eventName: 'click_challenge_not_joined_ongoing',
+                      category: 'browse',
+                    });
+                  }}
                 >
                   <ChallengeBox challenge={challenge} fullWidth />
                 </button>

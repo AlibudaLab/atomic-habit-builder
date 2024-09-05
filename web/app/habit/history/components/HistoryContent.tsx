@@ -6,6 +6,7 @@ import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import moment from 'moment';
 import { useMemo } from 'react';
 import { UserChallengeStatus } from '@/types';
+import { logEventSimple } from '@/utils/gtag';
 
 function HistoryContent() {
   const { push } = useRouter();
@@ -38,7 +39,16 @@ function HistoryContent() {
         <button
           type="button"
           key={`link-${challenge.id}`}
-          onClick={() => push(`/habit/checkin/${challenge.id}`)}
+          onClick={() => {
+            const failed = challenge.minimumCheckIns > challenge.checkedIn;
+            push(`/habit/checkin/${challenge.id}`);
+            logEventSimple({
+              eventName: failed
+                ? 'click_challenge_joined_failed'
+                : 'click_challenge_joined_completed',
+              category: 'browse',
+            });
+          }}
           className="w-full no-underline transition-transform duration-200 focus:scale-105"
         >
           <ChallengePreview
