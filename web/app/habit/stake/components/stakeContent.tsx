@@ -8,7 +8,6 @@ import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
 import { useAccount, useBalance } from 'wagmi';
 import { Input } from '@nextui-org/input';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
 import moment, { now } from 'moment';
 
 import { usdcAddr } from '@/constants';
@@ -30,6 +29,7 @@ import { logEvent } from '@/utils/gtag';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import useChallenge from '@/hooks/useChallenge';
 import { useUserStatus } from '@/hooks/useUserStatus';
+import Leaderboard from 'app/habit/components/Leaderboard';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -153,11 +153,11 @@ export default function StakeChallenge() {
 
   // TODO: get user rankings from subgraph
   const userRankings = [
-    { name: "Alice", checkIns: 5 },
-    { name: "Bob", checkIns: 4 },
-    { name: "Charlie", checkIns: 3 },
-    { name: "David", checkIns: 2 },
-    { name: "Eve", checkIns: 1 },
+    { address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", checkIns: 5 },
+    { address: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199", checkIns: 4 },
+    { address: "0xdD2FD4581271e230360230F9337D5c0430Bf44C0", checkIns: 3 },
+    { address: "0xbDA5747bFD65F08deb54cb465eB87D40e51B197E", checkIns: 2 },
+    { address: "0x2546BcD3c84621e976D8185a91A922aE77ECEc30", checkIns: 1 },
   ];
 
   return (
@@ -309,25 +309,11 @@ export default function StakeChallenge() {
         )}
 
         {challenge && (
-          <div className="w-full max-w-md mt-8">
-            <h3 className="text-xl font-bold mb-4">Leaderboard</h3>
-            <Table aria-label="Leaderboard">
-              <TableHeader>
-                <TableColumn className="text-center">RANK</TableColumn>
-                <TableColumn className="text-center">NAME</TableColumn>
-                <TableColumn className="text-center">CHECK-INS</TableColumn>
-              </TableHeader>
-              <TableBody>
-                {userRankings.map((user, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.checkIns} / {challenge.minimumCheckIns}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <Leaderboard 
+            userRankings={userRankings} 
+            address="0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"
+            challenge={challenge} 
+          />
         )}
 
         {/**
