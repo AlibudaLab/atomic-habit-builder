@@ -41,28 +41,6 @@ function DepositPopup({ onClose }: DepositPopupProps) {
 
   const content = (
     <div className="text-left">
-      <div className="mb-2 flex items-center">
-        <label htmlFor="token" className="mr-2 w-1/3 font-bold">
-          Token
-        </label>
-        <Select
-          labelPlacement="outside-left"
-          variant="bordered"
-          radius="sm"
-          className="w-2/3 max-w-xs rounded p-2"
-          selectedKeys={new Set([selectedToken])}
-          onSelectionChange={handleTokenChange}
-        >
-          {tokens.map((token) => (
-            <SelectItem
-              key={token.key}
-              startContent={<Image src={token.icon} height={20} width={20} alt="token" />}
-            >
-              {token.label}
-            </SelectItem>
-          ))}
-        </Select>
-      </div>
       <div className="mb-4 flex items-center">
         <label htmlFor="network" className="mr-2 w-1/3 font-bold">
           Network

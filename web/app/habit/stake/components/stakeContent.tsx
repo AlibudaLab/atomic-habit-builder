@@ -17,7 +17,7 @@ import { getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
-import InsufficientBalancePopup from './InsufficientBalancePopup';
+import AddFundPopup from './AddFundPopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
@@ -89,17 +89,17 @@ export default function StakeChallenge() {
     Number(tokenBalance.value.toString()) >= Number(challenge.stake.toString());
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
-  const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
+  const [isAddFundPopupOpen, setIsAddFundPopupOpen] = useState(false);
   const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
-  const handleOpenInsufficientBalancePopup = useCallback(
-    () => setIsInsufficientBalancePopupOpen(true),
+  const handleOpenAddFundPopup = useCallback(
+    () => setIsAddFundPopupOpen(true),
     [],
   );
-  const handleCloseInsufficientBalancePopup = useCallback(
-    () => setIsInsufficientBalancePopupOpen(false),
+  const handleCloseAddFundPopup = useCallback(
+    () => setIsAddFundPopupOpen(false),
     [],
   );
   const handleOpenDepositPopup = useCallback(() => {
@@ -148,7 +148,7 @@ export default function StakeChallenge() {
       onJoinTx();
       return;
     }
-    handleOpenInsufficientBalancePopup();
+    handleOpenAddFundPopup();
   };
 
   return (
@@ -276,9 +276,9 @@ export default function StakeChallenge() {
             onCheckInPageClick={handleCheckInPageClick}
           />
         )}
-        {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
-          <InsufficientBalancePopup
-            onClose={handleCloseInsufficientBalancePopup}
+        {isAddFundPopupOpen && !hasEnoughBalance && (
+          <AddFundPopup
+            onClose={handleCloseAddFundPopup}
             onDepositClick={handleOpenDepositPopup}
           />
         )}
