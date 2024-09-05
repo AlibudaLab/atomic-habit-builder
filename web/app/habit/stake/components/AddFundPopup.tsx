@@ -52,14 +52,10 @@ function AddFundPopup({
     ];
   }, [handleDepositFromBridge, setIsDepositPopupOpen]);
 
-  return (
-    <>
-      {isDepositPopupOpen ? (
-        <DepositPopup onClose={() => setIsDepositPopupOpen(false)} />
-      ) : (
-        <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />
-      )}
-    </>
+  return isDepositPopupOpen ? (
+    <DepositPopup onClose={() => setIsDepositPopupOpen(false)} />
+  ) : (
+    <PopupWindow title={title} onClose={onClose} content={content} buttons={buttons} />
   );
 }
 

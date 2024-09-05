@@ -27,7 +27,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
     <div className="text-left">
       <div className="mx-2 flex justify-start gap-2">
         <Checkbox
-          className="font-londrina text-xs text-gray-600"
+          className="font-nunito text-xs text-gray-600"
           size="sm"
           isSelected={confirmBox1Checked}
           onValueChange={setConfirmBox1Checked}
@@ -39,7 +39,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
       </div>
       <div className="mx-2 mt-4 flex justify-start gap-2">
         <Checkbox
-          className="font-londrina text-xs text-gray-600"
+          className="font-nunito text-xs text-gray-600"
           size="sm"
           isSelected={confirmBox2Checked}
           onValueChange={setConfirmBox2Checked}
