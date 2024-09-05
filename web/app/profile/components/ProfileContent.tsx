@@ -21,6 +21,7 @@ import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
+import { logEventSimple } from '@/utils/gtag';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
@@ -133,7 +134,10 @@ export default function ProfileContent() {
                 <Button
                   isIconOnly
                   className="bg-slate-100"
-                  onClick={() => setAddFundModalOpen(true)}
+                  onClick={() => {
+                    setAddFundModalOpen(true)
+                    logEventSimple({ eventName: 'click_deposit_profile', category: 'profile' });
+                  }}
                 >
                   <PlusCircleIcon size={20} />
                 </Button>
@@ -142,7 +146,10 @@ export default function ProfileContent() {
                 <Button
                   isIconOnly
                   className="bg-slate-100"
-                  onClick={() => setIsWithdrawModalOpen(true)}
+                  onClick={() => {
+                    setIsWithdrawModalOpen(true)
+                    logEventSimple({ eventName: 'click_withdraw_profile', category: 'profile' });
+                  }}
                 >
                   <MinusCircleIcon size={20} />
                 </Button>

@@ -2,7 +2,7 @@ import { parseAbi } from 'viem';
 import toast from 'react-hot-toast';
 
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
-import { logEvent } from '@/utils/gtag';
+import { logEventSimple } from '@/utils/gtag';
 
 const useTransferERC20 = (
   token: `0x${string}`,
@@ -25,7 +25,7 @@ const useTransferERC20 = (
         //In the orginal file they refetch after success refetch();
         toast.success('Token sent!');
         onSuccess?.();
-        logEvent({ action: 'withdraw', category: 'account', label: 'withdraw', value: 1 });
+        logEventSimple({ eventName: 'clieck_withdraw', category: 'others' });
       },
     },
   );

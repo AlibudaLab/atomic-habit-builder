@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Snippet } from '@nextui-org/snippet';
+import { logEventSimple } from '@/utils/gtag';
 
 type InviteLinkProps = {
   accessCode: string | undefined;
@@ -24,6 +25,9 @@ export default function InviteLink({ accessCode, challengeId }: InviteLinkProps)
       hideSymbol
       color="default"
       codeString={link}
+      onClick={() => {
+        logEventSimple({ eventName: 'click_copy_invite', category: 'others' });
+      }}
     >
       <span> Copy Invite Link </span>
     </Snippet>

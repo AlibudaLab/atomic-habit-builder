@@ -25,7 +25,7 @@ import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
-import { logEvent } from '@/utils/gtag';
+import { logEvent, logEventSimple } from '@/utils/gtag';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import useChallenge from '@/hooks/useChallenge';
 import { useUserStatus } from '@/hooks/useUserStatus';
@@ -93,12 +93,16 @@ export default function StakeChallenge() {
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
-  const handleOpenAddFundPopup = useCallback(() => setIsAddFundPopupOpen(true), []);
+  const handleOpenAddFundPopup = useCallback(() => {
+    setIsAddFundPopupOpen(true);
+    logEventSimple({ eventName: 'click_deposit_challenge', category: 'challenge' });
+  }, []);
   const handleCloseAddFundPopup = useCallback(() => setIsAddFundPopupOpen(false), []);
 
   const handleCheckInPageClick = useCallback(() => {
     // Logic to navigate to the check-in page
     push(`/habit/checkin/${challengeId}`);
+    logEventSimple({ eventName: 'click_check_in_popup', category: 'challenge' });
   }, [challengeId, push]);
 
   const {
