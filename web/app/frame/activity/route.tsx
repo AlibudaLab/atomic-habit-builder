@@ -27,9 +27,9 @@ function Stat({ label, value }: { label: string; value: string }) {
   );
 }
 
-function createSvgMap(encodedPolyline: string) {
+function createMapboxUrl(encodedPolyline: string, width: number, height: number): string {
   const coordinates = polyline.decode(encodedPolyline);
-
+  
   // Find bounds
   const bounds = coordinates.reduce(
     (acc, [lat, lon]) => ({
@@ -41,30 +41,19 @@ function createSvgMap(encodedPolyline: string) {
     { minLat: Infinity, minLon: Infinity, maxLat: -Infinity, maxLon: -Infinity },
   );
 
-  // Calculate scale and offset
-  const width = 600;
-  const height = 630;
-  const padding = 20;
-  const scale = Math.min(
-    (width - 2 * padding) / (bounds.maxLon - bounds.minLon),
-    (height - 2 * padding) / (bounds.maxLat - bounds.minLat),
-  );
+  const center = [
+    (bounds.minLon + bounds.maxLon) / 2,
+    (bounds.minLat + bounds.maxLat) / 2
+  ];
 
-  // Create SVG path
-  const pathData = coordinates
-    .map(([lat, lon], index) => {
-      const x = (lon - bounds.minLon) * scale + padding;
-      const y = height - ((lat - bounds.minLat) * scale + padding);
-      return `${index === 0 ? 'M' : 'L'}${x.toFixed(2)},${y.toFixed(2)}`;
-    })
-    .join(' ');
+  console.log('center: ', center);
 
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 ${width} ${height}`}>
-      <rect width="100%" height="100%" fill="#f0f0f0" />
-      <path d={pathData} fill="none" stroke="#FC4C01" strokeWidth="3" />
-    </svg>
-  );
+  const zoom = 13; // You might want to calculate this based on the bounds
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN; // Store your token in an environment variable
+
+  const path = `path-3+FC4C01(${encodeURIComponent(encodedPolyline)})`;
+
+  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${path}/${center.join(',')},${zoom}/${width}x${height}@2x?access_token=${mapboxToken}`;
 }
 
 export async function GET(request: Request) {
@@ -102,7 +91,8 @@ export async function GET(request: Request) {
       stats = [{ label: 'Unknown Activity', value: 'No data available' }];
   }
 
-  const svgMap = createSvgMap(encodedPolyline);
+  const mapUrl = createMapboxUrl(encodedPolyline, 600, 630);
+  console.log('mapUrl: ', mapUrl);
 
   return new ImageResponse(
     (
@@ -154,10 +144,11 @@ export async function GET(request: Request) {
             display: 'flex',
             width: '50%',
             height: '100%',
+            backgroundImage: `url(${mapUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
-        >
-          {svgMap}
-        </div>
+        />
       </div>
     ),
     {
