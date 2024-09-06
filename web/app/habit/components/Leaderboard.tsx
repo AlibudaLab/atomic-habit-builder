@@ -13,6 +13,8 @@ type LeaderboardProps = {
 }
 
 function Leaderboard({ userRankings, address, challenge }: LeaderboardProps) {
+  const sortedUserRankings = [...userRankings].sort((a, b) => Number(b.totalCheckIns) - Number(a.totalCheckIns));
+
   return (
     <div className="w-full max-w-md mt-8">
       <div className="text-xl text-dark mb-5">🏆Leaderboard</div> 
@@ -23,7 +25,7 @@ function Leaderboard({ userRankings, address, challenge }: LeaderboardProps) {
           <TableColumn className="text-center bg-white">Check-ins</TableColumn>
         </TableHeader>
         <TableBody>
-          {userRankings.map((user, index) => (
+          {sortedUserRankings.map((user, index) => (
             <TableRow key={user.id}>
               <TableCell className={`font-bold ${
                 index === 0 ? 'text-yellow-500' :
