@@ -24,6 +24,7 @@ export type User = {
   user: {
     id: string;
   };
+  totalCheckIns: string;
 };
 
 export type LatestChallenge = {
