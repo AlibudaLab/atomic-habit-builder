@@ -1,10 +1,6 @@
 import React from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
-
-type User = {
-  address: string;
-  checkIns: number;
-}
+import { User } from '@/types';
 
 type LeaderboardProps = {
   userRankings: User[];
@@ -26,7 +22,7 @@ function Leaderboard({ userRankings, address, challenge }: LeaderboardProps) {
         </TableHeader>
         <TableBody>
           {userRankings.map((user, index) => (
-            <TableRow key={user.address}>
+            <TableRow key={user.id}>
               <TableCell className={`font-bold ${
                 index === 0 ? 'text-yellow-500' :
                 index === 1 ? 'text-gray-400' :
@@ -36,13 +32,13 @@ function Leaderboard({ userRankings, address, challenge }: LeaderboardProps) {
                 {index + 1}
               </TableCell>
               <TableCell className={`font-bold ${
-                user.address === address ? "bg-primary text-white rounded-lg" : ""
+                user.id === address ? "bg-primary text-white rounded-lg" : ""
               }`}>
-                {user.address === address
+                {user.id === address
                   ? "You"
-                  : `${user.address.slice(0, 4)}...${user.address.slice(-4)}`}
+                  : `${user.id.slice(0, 4)}...${user.id.slice(-4)}`}
               </TableCell>
-              <TableCell className='font-bold'>{user.checkIns} / {challenge.minimumCheckIns}</TableCell>
+              <TableCell className='font-bold'>{user.totalCheckIns} / {challenge.minimumCheckIns}</TableCell>
             </TableRow>
           ))}
         </TableBody>

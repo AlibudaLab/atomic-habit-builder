@@ -151,15 +151,6 @@ export default function StakeChallenge() {
     handleOpenInsufficientBalancePopup();
   };
 
-  // TODO: get user rankings from subgraph
-  const userRankings = [
-    { address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", checkIns: 5 },
-    { address: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199", checkIns: 4 },
-    { address: "0xdD2FD4581271e230360230F9337D5c0430Bf44C0", checkIns: 3 },
-    { address: "0xbDA5747bFD65F08deb54cb465eB87D40e51B197E", checkIns: 2 },
-    { address: "0x2546BcD3c84621e976D8185a91A922aE77ECEc30", checkIns: 1 },
-  ];
-
   return (
     <main className="flex h-screen flex-col items-center px-4 pb-12 text-center">
       <div className="flex max-w-96 flex-col items-center justify-center">
@@ -310,8 +301,8 @@ export default function StakeChallenge() {
 
         {challenge && (
           <Leaderboard 
-            userRankings={userRankings} 
-            address="0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"
+            userRankings={challenge.joinedUsers} 
+            address=""
             challenge={challenge} 
           />
         )}
