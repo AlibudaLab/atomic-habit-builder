@@ -36,7 +36,7 @@ const initFields: CheckInFields = {
  */
 export default function RunCheckIn({ challenge }: { challenge: ChallengeWithCheckIns }) {
   const { push } = useRouter();
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
