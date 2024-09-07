@@ -5,7 +5,7 @@ import { abi as challengeAbi } from '@/abis/challenge';
 import useSubmitTransaction from '@/hooks/transaction/useSubmitTransaction';
 import { Address } from 'viem';
 import { usdcAddr, challengeAddr } from '@/constants';
-import { logEvent } from '@/utils/gtag';
+import { logEventSimple } from '@/utils/gtag';
 
 /**
  * @description This fill was learned in https://github.com/guildxyz/guild.xyz/blob/3b150b2b9b9c3bf816cf0bc915753df432274399/src/requirements/Payment/components/WithdrawButton/hooks/useWithdraw.ts
@@ -44,7 +44,7 @@ const useJoinChallenge = (
       //In the orginal file they refetch after success refetch();
       toast.success('Joined! Directing to checkIn!', { id: 'join-challenge' });
       onSuccess?.();
-      logEvent({ action: 'join', category: 'challenge', label: 'join', value: 1 });
+      logEventSimple({ eventName: 'click_join_challenge_CTA', category: 'challenge' });
     },
     onSent: () => {
       toast.loading('Transaction sent...', { id: 'join-challenge' });

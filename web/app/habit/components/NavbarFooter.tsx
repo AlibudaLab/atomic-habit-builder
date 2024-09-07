@@ -6,6 +6,7 @@ import { CgProfile } from 'react-icons/cg';
 import { FaList } from 'react-icons/fa';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { logEventSimple } from '@/utils/gtag';
 
 enum TabKey {
   None = 'none',
@@ -44,7 +45,10 @@ export default function NavbarFooter() {
       <button
         key={TabKey.HOME}
         className={selected === TabKey.HOME ? 'opacity-100' : 'opacity-40'}
-        onClick={() => router.push('/')}
+        onClick={() => {
+          router.push('/');
+          logEventSimple({ eventName: 'click_homepage', category: 'browse' });
+        }}
         type="button"
       >
         <div className="mx-2 flex items-center">
@@ -55,7 +59,10 @@ export default function NavbarFooter() {
       <button
         key={TabKey.LIST}
         className={selected === TabKey.LIST ? 'opacity-100' : 'opacity-40'}
-        onClick={() => router.push('/habit/list')}
+        onClick={() => {
+          router.push('/habit/list');
+          logEventSimple({ eventName: 'click_list', category: 'browse' });
+        }}
         type="button"
       >
         <div className="mx-2 flex items-center">
@@ -66,7 +73,10 @@ export default function NavbarFooter() {
       <button
         key={TabKey.CREATE}
         className={selected === TabKey.CREATE ? 'opacity-100' : 'opacity-40'}
-        onClick={() => router.push('/habit/create')}
+        onClick={() => {
+          router.push('/habit/create');
+          logEventSimple({ eventName: 'click_create_challenge', category: 'create' });
+        }}
         type="button"
       >
         <div className="mx-2 flex items-center">
@@ -77,7 +87,10 @@ export default function NavbarFooter() {
       <button
         key={TabKey.PROFILE}
         className={selected === TabKey.PROFILE ? 'opacity-100' : 'opacity-40'}
-        onClick={() => router.push('/profile')}
+        onClick={() => {
+          router.push('/profile');
+          logEventSimple({ eventName: 'click_profile_page', category: 'profile' });
+        }}
         type="button"
       >
         <div className="mx-2 flex items-center">

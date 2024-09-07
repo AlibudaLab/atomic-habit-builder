@@ -21,6 +21,7 @@ import InviteLink from 'app/habit/components/InviteLink';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Leaderboard from 'app/habit/components/Leaderboard';
+import { logEventSimple } from '@/utils/gtag';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -138,6 +139,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
   // only show this button if user is not connected to strava
   const onClickConnectStrava = useCallback(() => {
+    logEventSimple({ eventName: 'click_connect_strava', category: 'challenge' });
     // path that user will be redirected to after connecting to strava
     const redirectUri = window.origin + '/connect-run/strava';
 
