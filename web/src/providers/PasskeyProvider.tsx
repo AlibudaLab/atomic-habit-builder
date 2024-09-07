@@ -12,9 +12,9 @@ import {
 import { KERNEL_V3_1 } from '@zerodev/sdk/constants';
 import { ENTRYPOINT_ADDRESS_V07 } from 'permissionless';
 import { http, createPublicClient, Hex, Transport, Chain } from 'viem';
-import { base, polygonMumbai } from 'viem/chains';
-import { getZerodevSigner } from '@/utils/passkey';
+import { getZerodevSigner, updateZerodevSigner } from '@/utils/passkey';
 import { getChainsForEnvironment } from '@/store/supportedChains';
+import storage from 'local-storage-fallback';
 
 const chain = getChainsForEnvironment();
 
@@ -34,6 +34,7 @@ type PasskeyContextType = {
   account: KernelSmartAccount<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | null;
   login: () => Promise<void>;
   register: () => Promise<void>;
+  logout: () => void; // Add logout function to the context type
 };
 
 const PasskeyContext = createContext<PasskeyContextType | undefined>(undefined);
@@ -49,7 +50,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const initializeAccount = async () => {
-      const storedAddress = localStorage.getItem('userAddress');
+      const storedAddress = storage.getItem('userAddress');
       if (storedAddress) {
         setAddress(storedAddress as Hex);
         await reconnect();
@@ -62,7 +63,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
 
   const reconnect = async () => {
     const passkeyData = getZerodevSigner();
-    if (!passkeyData) return;
+    if (!passkeyData || !passkeyData.isConnected) return; // Only reconnect if passkeyData.connect is true
 
     try {
       const validator = await deserializePasskeyValidator(publicClient, {
@@ -84,7 +85,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Reconnection failed:', error);
       setAddress(undefined);
-      localStorage.removeItem('userAddress');
+      storage.removeItem('userAddress');
     }
   };
 
@@ -148,6 +149,12 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await _login();
+      const passkeyData = getZerodevSigner();
+      if (passkeyData) {
+        passkeyData.isConnected = true;
+        // Assuming you have a function to update the signer data
+        updateZerodevSigner(passkeyData);
+      }
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
@@ -159,10 +166,28 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await _register();
+      const passkeyData = getZerodevSigner();
+      if (passkeyData) {
+        passkeyData.isConnected = true;
+        // Assuming you have a function to update the signer data
+        updateZerodevSigner(passkeyData);
+      }
     } catch (error) {
       console.error('Registration failed:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const logout = () => {
+    setAddress(undefined);
+    setAccount(null);
+    storage.removeItem('userAddress');
+    const passkeyData = getZerodevSigner();
+    if (passkeyData) {
+      passkeyData.isConnected = false;
+      // Assuming you have a function to update the signer data
+      updateZerodevSigner(passkeyData);
     }
   };
 
@@ -172,6 +197,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     account,
     login,
     register,
+    logout, // Add logout function to the context value
   };
 
   return <PasskeyContext.Provider value={contextValue}>{children}</PasskeyContext.Provider>;

@@ -29,3 +29,8 @@ export const setZerodevSigner = (signer: string, isConnected: boolean) => {
   storage.setItem('zerodev_wallet_signer', JSON.stringify({ signer, isConnected }));
   return;
 };
+
+
+export function updateZerodevSigner(passkeyData: any) {
+  storage.setItem('zerodevSigner', JSON.stringify(passkeyData));
+}
