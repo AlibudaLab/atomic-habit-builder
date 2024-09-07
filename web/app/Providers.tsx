@@ -1,32 +1,30 @@
 'use client';
 
 import './global.css';
-
-import OnchainProviders from '@/OnchainProviders';
+import { NextUIProvider } from '@nextui-org/system';
 import { AllChallengesProvider } from '@/providers/ChallengesProvider';
 import { UserChallengesProvider } from '@/providers/UserChallengesProvider';
-import { NextUIProvider } from '@nextui-org/system';
-import { useAccount } from 'wagmi';
+import { PasskeyProvider, usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
-  const { address } = useAccount();
-
   return (
-    <AllChallengesProvider>
-      <UserChallengesProvider address={address}>{children}</UserChallengesProvider>
-    </AllChallengesProvider>
+    <PasskeyProvider>
+      <AllChallengesProvider>
+        <PasskeyAwareUserChallengesProvider>{children}</PasskeyAwareUserChallengesProvider>
+      </AllChallengesProvider>
+    </PasskeyProvider>
   );
 }
 
-/** Root layout to define the structure of every page
- * https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts
- */
+function PasskeyAwareUserChallengesProvider({ children }: { children: React.ReactNode }) {
+  const { address } = usePasskeyAccount();
+  return <UserChallengesProvider address={address || undefined}>{children}</UserChallengesProvider>;
+}
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <OnchainProviders>
-      <NextUIProvider>
-        <ChallengeDataProviders>{children}</ChallengeDataProviders>
-      </NextUIProvider>
-    </OnchainProviders>
+    <NextUIProvider>
+      <ChallengeDataProviders>{children}</ChallengeDataProviders>
+    </NextUIProvider>
   );
 }
