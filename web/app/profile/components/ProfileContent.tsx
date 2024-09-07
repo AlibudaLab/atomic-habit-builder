@@ -24,9 +24,7 @@ import { logEventSimple } from '@/utils/gtag';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 export default function ProfileContent() {
-  const { address } = usePasskeyAccount();
-
-  const { disconnect } = useDisconnect();
+  const { address, logout } = usePasskeyAccount();
 
   const [isAddFundModalOpen, setAddFundModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
@@ -205,7 +203,7 @@ export default function ProfileContent() {
                 type="button"
                 className="mt-4 min-h-12 w-1/2"
                 onClick={() => {
-                  void disconnect();
+                  void logout();
                   logEventSimple({ eventName: 'click_logout', category: 'connect' });
                 }}
               >
