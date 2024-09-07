@@ -57,13 +57,17 @@ function DepositPopup({ onClose }: DepositPopupProps) {
           Deposit Address:
         </label>
         <div id="depositAddress" className="m-2 break-all rounded">
-          <Snippet symbol="" color="default" onClick={() => {
-            logEventSimple({ eventName: 'click_copy_address', category: 'others' });
-          }}>
+          <Snippet
+            symbol=""
+            color="default"
+            onClick={() => {
+              logEventSimple({ eventName: 'click_copy_address', category: 'others' });
+            }}
+          >
             <span className="whitespace-normal break-all font-nunito">
               {confirmBox1Checked && confirmBox2Checked ? address : addressMask}{' '}
             </span>
-        </Snippet>
+          </Snippet>
         </div>
       </div>
     </div>

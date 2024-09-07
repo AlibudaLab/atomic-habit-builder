@@ -20,11 +20,11 @@ export default function usePasskeyConnection() {
     initializing,
     signedInBefore,
     register: () => {
-      register()
+      register();
       logEventSimple({ eventName: 'clieck_sign_up', category: 'connect' });
     },
     login: () => {
-      login()
+      login();
       logEventSimple({ eventName: 'click_sign_in', category: 'connect' });
     },
     isPending: isLoading,

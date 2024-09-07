@@ -106,11 +106,13 @@ export default function ProfileContent() {
                     }}
                   />
 
-                  <Link 
+                  <Link
                     onClick={() => {
                       logEventSimple({ eventName: 'click_basescan', category: 'others' });
                     }}
-                    href={getExplorerLink(address, base.id)} target="_blank">
+                    href={getExplorerLink(address, base.id)}
+                    target="_blank"
+                  >
                     <ExternalLinkIcon />
                   </Link>
                 </div>

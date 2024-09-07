@@ -254,11 +254,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         ))}
 
       {challenge && address && (
-        <Leaderboard 
-          userRankings={challenge.joinedUsers} 
-          address={address}
-          challenge={challenge} 
-        />
+        <Leaderboard userRankings={challenge.joinedUsers} address={address} challenge={challenge} />
       )}
 
       {isCheckinPopupOpen && (

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { createKernelAccount, KernelSmartAccount } from '@zerodev/sdk';
 import {
   toPasskeyValidator,
@@ -31,39 +31,28 @@ const passkeyServer = `https://passkeys.zerodev.app/api/v4`;
 type PasskeyContextType = {
   address: Hex | undefined;
   isLoading: boolean;
+  isInitializing: boolean;
   account: KernelSmartAccount<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | null;
   login: () => Promise<void>;
   register: () => Promise<void>;
-  logout: () => void; // Add logout function to the context type
+  logout: () => void;
 };
 
 const PasskeyContext = createContext<PasskeyContextType | undefined>(undefined);
 
 export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<Hex | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const [account, setAccount] = useState<KernelSmartAccount<
     typeof ENTRYPOINT_ADDRESS_V07,
     Transport,
     Chain
   > | null>(null);
 
-  useEffect(() => {
-    const initializeAccount = async () => {
-      const storedAddress = storage.getItem('userAddress');
-      if (storedAddress) {
-        setAddress(storedAddress as Hex);
-        await reconnect();
-      }
-      setIsLoading(false);
-    };
-
-    initializeAccount();
-  }, []);
-
-  const reconnect = async () => {
+  const reconnect = useCallback(async () => {
     const passkeyData = getZerodevSigner();
-    if (!passkeyData || !passkeyData.isConnected) return; // Only reconnect if passkeyData.connect is true
+    if (!passkeyData?.isConnected) return;
 
     try {
       const validator = await deserializePasskeyValidator(publicClient, {
@@ -72,7 +61,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
         kernelVersion,
       });
 
-      const account = await createKernelAccount(publicClient, {
+      const newAccount = await createKernelAccount(publicClient, {
         plugins: {
           sudo: validator,
         },
@@ -80,20 +69,20 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
         kernelVersion,
       });
 
-      setAccount(account);
-      setAddress(account.address);
+      setAccount(newAccount);
+      setAddress(newAccount.address);
     } catch (error) {
       console.error('Reconnection failed:', error);
       setAddress(undefined);
       storage.removeItem('userAddress');
     }
-  };
+  }, []);
 
-  const _login = async () => {
+  const loginOrRegister = useCallback(async (mode: WebAuthnMode) => {
     const webAuthnKey = await toWebAuthnKey({
       passkeyName: 'atomic',
       passkeyServerUrl: passkeyServer,
-      mode: WebAuthnMode.Login,
+      mode,
       passkeyServerHeaders: {},
     });
 
@@ -104,7 +93,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
       validatorContractVersion: PasskeyValidatorContractVersion.V0_0_2,
     });
 
-    const account = await createKernelAccount(publicClient, {
+    const newAccount = await createKernelAccount(publicClient, {
       plugins: {
         sudo: passkeyValidator,
       },
@@ -112,47 +101,32 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
       kernelVersion,
     });
 
-    setAccount(account);
-    setAddress(account.address);
-    localStorage.setItem('userAddress', account.address);
-  };
+    setAccount(newAccount);
+    setAddress(newAccount.address);
+    storage.setItem('userAddress', newAccount.address);
+  }, []);
 
-  const _register = async () => {
-    const webAuthnKey = await toWebAuthnKey({
-      passkeyName: 'atomic',
-      passkeyServerUrl: passkeyServer,
-      mode: WebAuthnMode.Register,
-      passkeyServerHeaders: {},
-    });
+  useEffect(() => {
+    const initializeAccount = async () => {
+      setIsInitializing(true);
+      const storedAddress = storage.getItem('userAddress');
+      if (storedAddress) {
+        setAddress(storedAddress as Hex);
+        await reconnect();
+      }
+      setIsInitializing(false);
+    };
 
-    const passkeyValidator = await toPasskeyValidator(publicClient, {
-      webAuthnKey,
-      entryPoint: ENTRYPOINT_ADDRESS_V07,
-      kernelVersion: KERNEL_V3_1,
-      validatorContractVersion: PasskeyValidatorContractVersion.V0_0_2,
-    });
+    void initializeAccount();
+  }, [reconnect]);
 
-    const account = await createKernelAccount(publicClient, {
-      plugins: {
-        sudo: passkeyValidator,
-      },
-      entryPoint,
-      kernelVersion,
-    });
-
-    setAccount(account);
-    setAddress(account.address);
-    localStorage.setItem('userAddress', account.address);
-  };
-
-  const login = async () => {
+  const login = useCallback(async () => {
     setIsLoading(true);
     try {
-      await _login();
+      await loginOrRegister(WebAuthnMode.Login);
       const passkeyData = getZerodevSigner();
       if (passkeyData) {
         passkeyData.isConnected = true;
-        // Assuming you have a function to update the signer data
         updateZerodevSigner(passkeyData);
       }
     } catch (error) {
@@ -160,16 +134,15 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [loginOrRegister]);
 
-  const register = async () => {
+  const register = useCallback(async () => {
     setIsLoading(true);
     try {
-      await _register();
+      await loginOrRegister(WebAuthnMode.Register);
       const passkeyData = getZerodevSigner();
       if (passkeyData) {
         passkeyData.isConnected = true;
-        // Assuming you have a function to update the signer data
         updateZerodevSigner(passkeyData);
       }
     } catch (error) {
@@ -177,28 +150,31 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [loginOrRegister]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setAddress(undefined);
     setAccount(null);
     storage.removeItem('userAddress');
     const passkeyData = getZerodevSigner();
     if (passkeyData) {
       passkeyData.isConnected = false;
-      // Assuming you have a function to update the signer data
       updateZerodevSigner(passkeyData);
     }
-  };
+  }, []);
 
-  const contextValue: PasskeyContextType = {
-    address,
-    isLoading,
-    account,
-    login,
-    register,
-    logout, // Add logout function to the context value
-  };
+  const contextValue = useMemo(
+    () => ({
+      address,
+      isLoading,
+      isInitializing,
+      account,
+      login,
+      register,
+      logout,
+    }),
+    [address, isLoading, isInitializing, account, login, register, logout],
+  );
 
   return <PasskeyContext.Provider value={contextValue}>{children}</PasskeyContext.Provider>;
 }

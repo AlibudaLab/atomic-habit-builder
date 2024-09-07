@@ -289,11 +289,7 @@ export default function StakeChallenge() {
         )}
 
         {challenge && (
-          <Leaderboard 
-            userRankings={challenge.joinedUsers} 
-            address=""
-            challenge={challenge} 
-          />
+          <Leaderboard userRankings={challenge.joinedUsers} address="" challenge={challenge} />
         )}
 
         {/**
