@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { ChallengeBox } from '../../components/ChallengeBox';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Loading from '../../components/Loading';
 import moment from 'moment';
@@ -12,7 +12,7 @@ import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { logEventSimple } from '@/utils/gtag';
 
 export default function ChallengeList() {
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const { challenges: allChallenges, loading: loadingChallenges } = useAllChallenges();
 

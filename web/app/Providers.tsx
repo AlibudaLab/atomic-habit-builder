@@ -5,14 +5,17 @@ import { NextUIProvider } from '@nextui-org/system';
 import { AllChallengesProvider } from '@/providers/ChallengesProvider';
 import { UserChallengesProvider } from '@/providers/UserChallengesProvider';
 import { PasskeyProvider, usePasskeyAccount } from '@/providers/PasskeyProvider';
+import OnchainProviders from '@/OnchainProviders';
 
 function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
   return (
-    <PasskeyProvider>
-      <AllChallengesProvider>
-        <PasskeyAwareUserChallengesProvider>{children}</PasskeyAwareUserChallengesProvider>
-      </AllChallengesProvider>
-    </PasskeyProvider>
+    <OnchainProviders>
+      <PasskeyProvider>
+        <AllChallengesProvider>
+          <PasskeyAwareUserChallengesProvider>{children}</PasskeyAwareUserChallengesProvider>
+        </AllChallengesProvider>
+      </PasskeyProvider>
+    </OnchainProviders>
   );
 }
 

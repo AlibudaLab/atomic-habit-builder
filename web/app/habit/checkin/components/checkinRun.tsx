@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import moment, { now } from 'moment';
 import { formatUnits } from 'viem';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { ChallengeWithCheckIns, UserChallengeStatus } from '@/types';
 import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';

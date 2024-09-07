@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import ClaimedPopup from './ClaimedPopup';
 import { Button } from '@nextui-org/button';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { formatUnits } from 'viem';
 import { ChallengeStatus, UserChallengeStatus } from '@/types';
 import moment from 'moment';
@@ -28,7 +28,7 @@ export default function Claim() {
     push('/');
   };
 
-  const { address: account } = useAccount();
+  const { address: account } = usePasskeyAccount();
 
   const needSettle = useMemo(
     () => challenge?.challengeStatus !== ChallengeStatus.Settled,
