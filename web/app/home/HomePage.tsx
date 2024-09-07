@@ -9,7 +9,12 @@ import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { UserChallengeStatus } from '@/types';
 
 export default function DashboardPage() {
-  const { address } = usePasskeyAccount();
+  const { address, isInitializing } = usePasskeyAccount();
+
+  if (isInitializing) {
+    return <div>Initializing...</div>; // Or your custom loading component
+  }
+
   const { data: challenges, loading } = useUserChallenges();
 
   const allOngoing = challenges
