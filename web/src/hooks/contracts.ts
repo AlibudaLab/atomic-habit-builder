@@ -1,5 +1,5 @@
 import { Abi, Address, type Chain } from 'viem';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { getChainsForEnvironment } from '@/store/supportedChains';
 
 type ContractInstance = {
@@ -19,12 +19,13 @@ type Spec<T extends Abi> = {
   [chainId: number]: ContractInstance;
 };
 
+const accountChain = getChainsForEnvironment();
+
 /**
  * Generates a hook that returns contract data based on the current network.
  */
 export function generateContractHook<T extends Abi>({ abi, ...spec }: Spec<T>) {
   function useContract(): UseContractReturn<typeof abi> {
-    const { chain: accountChain } = useAccount();
     const supportedChains = Object.values(spec).map((s) => s.chain);
 
     // use a supported chain available in current env as fallback

@@ -5,11 +5,11 @@ import Onboard from '../habit/components/Onboard';
 import Dashboard from '../habit/components/UserDashboard';
 import Loading from 'app/habit/components/Loading';
 import moment from 'moment';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { UserChallengeStatus } from '@/types';
 
 export default function DashboardPage() {
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
   const { data: challenges, loading } = useUserChallenges();
 
   const allOngoing = challenges

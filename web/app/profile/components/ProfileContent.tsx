@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccount, useBalance, useDisconnect } from 'wagmi';
+import { useBalance, useDisconnect } from 'wagmi';
 import { usdcAddr } from '@/constants';
 import { formatUnits } from 'viem';
 import { getSlicedAddress, getExplorerLink } from '@/utils/address';
@@ -16,15 +16,15 @@ import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
 import { UserChallengeStatus } from '@/types';
 import { useState } from 'react';
-import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
 import { logEventSimple } from '@/utils/gtag';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 export default function ProfileContent() {
-  const { address, chainId } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const { disconnect } = useDisconnect();
 
@@ -108,13 +108,11 @@ export default function ProfileContent() {
                     }}
                   />
 
-                  <Link
+                  <Link 
                     onClick={() => {
                       logEventSimple({ eventName: 'click_basescan', category: 'others' });
                     }}
-                    href={getExplorerLink(address, chainId ?? base.id)}
-                    target="_blank"
-                  >
+                    href={getExplorerLink(address, base.id)} target="_blank">
                     <ExternalLinkIcon />
                   </Link>
                 </div>

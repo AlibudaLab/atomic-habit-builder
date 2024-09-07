@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 import { Snippet } from '@nextui-org/snippet';
 import { Select, SelectItem } from '@nextui-org/select';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 import usdc from '@/imgs/coins/usdc.png';
 import Image from 'next/image';
@@ -17,7 +17,7 @@ type DepositPopupProps = {
 };
 
 function DepositPopup({ onClose }: DepositPopupProps) {
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const [confirmBox1Checked, setConfirmBox1Checked] = useState(false);
   const [confirmBox2Checked, setConfirmBox2Checked] = useState(false);
