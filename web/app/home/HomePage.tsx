@@ -5,16 +5,11 @@ import Onboard from '../habit/components/Onboard';
 import Dashboard from '../habit/components/UserDashboard';
 import Loading from 'app/habit/components/Loading';
 import moment from 'moment';
-import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { UserChallengeStatus } from '@/types';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 export default function DashboardPage() {
-  const { address, isInitializing } = usePasskeyAccount();
-
-  if (isInitializing) {
-    return <div>Initializing...</div>; // Or your custom loading component
-  }
-
+  const { address } = usePasskeyAccount();
   const { data: challenges, loading } = useUserChallenges();
 
   const allOngoing = challenges

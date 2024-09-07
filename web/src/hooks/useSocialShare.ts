@@ -4,7 +4,7 @@ import { logEventSimple } from '@/utils/gtag';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function () {
+export default function useSocialShare() {
   const path = usePathname();
 
   const [fullPathShare, setFullPathShare] = useState<string>('');

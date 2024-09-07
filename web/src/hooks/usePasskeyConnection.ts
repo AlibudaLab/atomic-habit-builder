@@ -3,7 +3,7 @@
 import { logEventSimple } from '@/utils/gtag';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import storage from 'local-storage-fallback';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 export default function usePasskeyConnection() {
   const [initializing, setInitializing] = useState(true);
@@ -16,19 +16,27 @@ export default function usePasskeyConnection() {
     setInitializing(false);
   }, []);
 
+  const handleRegister = useCallback(() => {
+    void register().then(() => {
+      logEventSimple({ eventName: 'clieck_sign_up', category: 'connect' });
+    }).catch((error) => {
+      console.error('Registration failed:', error);
+    });
+  }, [register]);
+
+  const handleLogin = useCallback(() => {
+    void login().then(() => {
+      logEventSimple({ eventName: 'click_sign_in', category: 'connect' });
+    }).catch((error) => {
+      console.error('Login failed:', error);
+    });
+  }, [login]);
+
   return {
     initializing,
     signedInBefore,
-    register: () => {
-      register().then(() => {
-        logEventSimple({ eventName: 'clieck_sign_up', category: 'connect' });
-      });
-    },
-    login: () => {
-      login().then(() => {
-        logEventSimple({ eventName: 'click_sign_in', category: 'connect' });
-      })
-    },
+    register: handleRegister,
+    login: handleLogin,
     isPending: isLoading,
   };
 }

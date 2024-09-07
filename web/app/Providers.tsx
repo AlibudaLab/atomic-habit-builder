@@ -7,6 +7,11 @@ import { UserChallengesProvider } from '@/providers/UserChallengesProvider';
 import { PasskeyProvider, usePasskeyAccount } from '@/providers/PasskeyProvider';
 import OnchainProviders from '@/OnchainProviders';
 
+function PasskeyAwareUserChallengesProvider({ children }: { children: React.ReactNode }) {
+  const { address } = usePasskeyAccount();
+  return <UserChallengesProvider address={address ?? undefined}>{children}</UserChallengesProvider>;
+}
+
 function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
   return (
     <OnchainProviders>
@@ -17,11 +22,6 @@ function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
       </PasskeyProvider>
     </OnchainProviders>
   );
-}
-
-function PasskeyAwareUserChallengesProvider({ children }: { children: React.ReactNode }) {
-  const { address } = usePasskeyAccount();
-  return <UserChallengesProvider address={address || undefined}>{children}</UserChallengesProvider>;
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
