@@ -27,6 +27,7 @@ export async function GET(req: NextRequest): Promise<Response> {
             user {
               id
             }
+            totalCheckIns
           }
         }
         latestChallenge: challenges(first: 1, orderBy: id, orderDirection: desc) {

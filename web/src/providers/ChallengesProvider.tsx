@@ -74,6 +74,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
             totalStaked: BigInt(challenge.totalStake),
             succeedClaimable: BigInt(challenge.winningStakePerUser),
             challengeStatus: challenge.status as ChallengeStatus,
+            joinedUsers: challenge.joinedUsers,
           }))
           .sort((a: ChallengeDetail, b: ChallengeDetail) =>
             a.startTimestamp > b.startTimestamp ? 1 : -1,

@@ -20,6 +20,7 @@ import { Button } from '@nextui-org/button';
 import InviteLink from 'app/habit/components/InviteLink';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
+import Leaderboard from 'app/habit/components/Leaderboard';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -249,6 +250,14 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
             Connect with Strava
           </Button>
         ))}
+
+      {challenge && address && (
+        <Leaderboard 
+          userRankings={challenge.joinedUsers} 
+          address={address}
+          challenge={challenge} 
+        />
+      )}
 
       {isCheckinPopupOpen && (
         <CheckinPopup

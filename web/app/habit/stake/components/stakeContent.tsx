@@ -29,6 +29,7 @@ import { logEvent } from '@/utils/gtag';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import useChallenge from '@/hooks/useChallenge';
 import { useUserStatus } from '@/hooks/useUserStatus';
+import Leaderboard from 'app/habit/components/Leaderboard';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -296,6 +297,14 @@ export default function StakeChallenge() {
               </Button>
             </div>
           )
+        )}
+
+        {challenge && (
+          <Leaderboard 
+            userRankings={challenge.joinedUsers} 
+            address=""
+            challenge={challenge} 
+          />
         )}
 
         {/**
