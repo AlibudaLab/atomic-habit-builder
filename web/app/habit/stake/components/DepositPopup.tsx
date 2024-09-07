@@ -7,6 +7,9 @@ import { useAccount } from 'wagmi';
 
 import usdc from '@/imgs/coins/usdc.png';
 import Image from 'next/image';
+import { Checkbox } from '@nextui-org/react';
+
+const addressMask = '********************************************';
 
 type DepositPopupProps = {
   onClose: () => void;
@@ -15,78 +18,48 @@ type DepositPopupProps = {
 function DepositPopup({ onClose }: DepositPopupProps) {
   const { address } = useAccount();
 
-  const [selectedToken, setSelectedToken] = useState<string>('usdc');
-  const [selectedNetwork, setSelectedNetwork] = useState<string>('base');
-
-  const handleTokenChange = useCallback((keys: any) => {
-    const selectedKey = Array.from(keys).join(', ');
-    setSelectedToken(selectedKey);
-  }, []);
-
-  const handleNetworkChange = useCallback((keys: any) => {
-    const selectedKey = Array.from(keys).join(', ');
-    setSelectedNetwork(selectedKey);
-  }, []);
+  const [confirmBox1Checked, setConfirmBox1Checked] = useState(false);
+  const [confirmBox2Checked, setConfirmBox2Checked] = useState(false);
 
   const buttons = useMemo(() => [], []);
 
   const title = 'Deposit';
 
-  const tokens = [
-    // { key: 'eth', label: 'ETH' },
-    { key: 'usdc', label: 'USDC', icon: usdc },
-  ];
-
-  const networks = [{ key: 'base', label: 'Base' }];
-
   const content = (
     <div className="text-left">
-      <div className="mb-2 flex items-center">
-        <label htmlFor="token" className="mr-2 w-1/3 font-bold">
-          Token
-        </label>
-        <Select
-          labelPlacement="outside-left"
-          variant="bordered"
-          radius="sm"
-          className="w-2/3 max-w-xs rounded p-2"
-          selectedKeys={new Set([selectedToken])}
-          onSelectionChange={handleTokenChange}
-        >
-          {tokens.map((token) => (
-            <SelectItem
-              key={token.key}
-              startContent={<Image src={token.icon} height={20} width={20} alt="token" />}
-            >
-              {token.label}
-            </SelectItem>
-          ))}
-        </Select>
+      <div className="mx-2 flex justify-start gap-2">
+        <Checkbox
+          className="font-nunito text-xs text-gray-600"
+          size="sm"
+          isSelected={confirmBox1Checked}
+          onValueChange={setConfirmBox1Checked}
+        />
+        <span className="text-start font-londrina text-sm text-gray-500">
+          I confirm that I will deposit <span className="font-bold">USDC</span> only. No other
+          tokens allowed! 🪙
+        </span>
       </div>
-      <div className="mb-4 flex items-center">
-        <label htmlFor="network" className="mr-2 w-1/3 font-bold">
-          Network
-        </label>
-        <Select
-          labelPlacement="outside-left"
-          variant="bordered"
-          radius="sm"
-          className="w-2/3 max-w-xs rounded p-2"
-          selectedKeys={new Set([selectedNetwork])}
-          onSelectionChange={handleNetworkChange}
-        >
-          {networks.map((network) => (
-            <SelectItem key={network.key}>{network.label}</SelectItem>
-          ))}
-        </Select>
+      <div className="mx-2 mt-4 flex justify-start gap-2">
+        <Checkbox
+          className="font-nunito text-xs text-gray-600"
+          size="sm"
+          isSelected={confirmBox2Checked}
+          onValueChange={setConfirmBox2Checked}
+        />
+        <span className="text-start font-londrina text-sm text-gray-500">
+          I understand this deposit is exclusively for the{' '}
+          <span className="font-bold">Base network</span>. 🚀
+        </span>
       </div>
-      <div className="mb-4">
-        <label htmlFor="depositAddress" className="mb-2 block font-bold">
+      <div className="my-8">
+        <label htmlFor="depositAddress" className="m-2 block font-bold">
           Deposit Address:
         </label>
-        <div id="depositAddress" className="mt-1 break-all rounded">
+        <div id="depositAddress" className="m-2 break-all rounded">
           <Snippet symbol="" color="default">
-            <span className="whitespace-normal break-all">{address}</span>
+            <span className="whitespace-normal break-all font-nunito">
+              {confirmBox1Checked && confirmBox2Checked ? address : addressMask}{' '}
+            </span>
           </Snippet>
         </div>
       </div>

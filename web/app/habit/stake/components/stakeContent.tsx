@@ -17,7 +17,7 @@ import { getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
-import InsufficientBalancePopup from './InsufficientBalancePopup';
+import AddFundPopup from './AddFundPopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
@@ -89,24 +89,13 @@ export default function StakeChallenge() {
     Number(tokenBalance.value.toString()) >= Number(challenge.stake.toString());
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
-  const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
-  const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
+  const [isAddFundPopupOpen, setIsAddFundPopupOpen] = useState(false);
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
-  const handleOpenInsufficientBalancePopup = useCallback(
-    () => setIsInsufficientBalancePopupOpen(true),
-    [],
-  );
-  const handleCloseInsufficientBalancePopup = useCallback(
-    () => setIsInsufficientBalancePopupOpen(false),
-    [],
-  );
-  const handleOpenDepositPopup = useCallback(() => {
-    logEvent({ action: 'deposit', category: 'account', label: 'deposit', value: 1 });
-    setIsDepositPopupOpen(true);
-  }, []);
-  const handleCloseDepositPopup = useCallback(() => setIsDepositPopupOpen(false), []);
+  const handleOpenAddFundPopup = useCallback(() => setIsAddFundPopupOpen(true), []);
+  const handleCloseAddFundPopup = useCallback(() => setIsAddFundPopupOpen(false), []);
+
   const handleCheckInPageClick = useCallback(() => {
     // Logic to navigate to the check-in page
     push(`/habit/checkin/${challengeId}`);
@@ -148,7 +137,7 @@ export default function StakeChallenge() {
       onJoinTx();
       return;
     }
-    handleOpenInsufficientBalancePopup();
+    handleOpenAddFundPopup();
   };
 
   return (
@@ -276,14 +265,9 @@ export default function StakeChallenge() {
             onCheckInPageClick={handleCheckInPageClick}
           />
         )}
-        {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
-          <InsufficientBalancePopup
-            onClose={handleCloseInsufficientBalancePopup}
-            onDepositClick={handleOpenDepositPopup}
-          />
+        {isAddFundPopupOpen && !hasEnoughBalance && (
+          <AddFundPopup address={address} onClose={handleCloseAddFundPopup} />
         )}
-
-        {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
         {loadingChallenge ? (
           <Loading />
