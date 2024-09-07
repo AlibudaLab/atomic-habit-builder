@@ -63,7 +63,7 @@ function DepositPopup({ onClose }: DepositPopupProps) {
             <span className="whitespace-normal break-all font-nunito">
               {confirmBox1Checked && confirmBox2Checked ? address : addressMask}{' '}
             </span>
-          </Snippet>
+        </Snippet>
         </div>
       </div>
     </div>

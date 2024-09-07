@@ -10897,20 +10897,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zerodev/passkey-validator@npm:5.3.3":
-  version: 5.3.3
-  resolution: "@zerodev/passkey-validator@npm:5.3.3"
-  dependencies:
-    "@noble/curves": "npm:^1.3.0"
-    "@simplewebauthn/browser": "npm:^8.3.4"
-  peerDependencies:
-    "@zerodev/sdk": ^5.2.1
-    permissionless: ^0.1.18
-    viem: ^2.16.3
-  checksum: 10c0/8aadde4fade3cf5aae6fab42e0110e37b1fe4885626078f96e360297b56fab8a08c0e16318f406ac0cedb07d914d185704b48bf35d1c98098d30b88b0f5f378c
-  languageName: node
-  linkType: hard
-
 "@zerodev/passkey-validator@npm:5.3.4":
   version: 5.3.4
   resolution: "@zerodev/passkey-validator@npm:5.3.4"
@@ -10925,18 +10911,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zerodev/passkey-validator@npm:^5.4.0":
-  version: 5.4.0
-  resolution: "@zerodev/passkey-validator@npm:5.4.0"
+"@zerodev/passkey-validator@npm:^5.4.1":
+  version: 5.4.1
+  resolution: "@zerodev/passkey-validator@npm:5.4.1"
   dependencies:
     "@noble/curves": "npm:^1.3.0"
     "@simplewebauthn/browser": "npm:^8.3.4"
   peerDependencies:
     "@zerodev/sdk": ^5.2.1
     "@zerodev/webauthn-key": ^5.3.0
-    permissionless: ^0.1.18
+    permissionless: ">=0.1.18 <=0.1.29"
     viem: ^2.16.3
-  checksum: 10c0/d0707274555eca63e47e96b242028c513116ac8235520d716d3bcaa7993b7d5102c7a972c8041e10d857d410472df49ddc6e8e5512269e21efc5d4d3b52c0eb8
+  checksum: 10c0/783266721ed5ec3b09b2184dc335d961f61be1fec4ad491b409f303423b2b4faca73fe11c394adba9be82b5029ab45c87d98e76e2977e7a57a5d1ec6d94423b6
   languageName: node
   linkType: hard
 
@@ -10966,19 +10952,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zerodev/wallet@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@zerodev/wallet@npm:0.1.1"
+"@zerodev/sdk@npm:^5.3.13":
+  version: 5.3.13
+  resolution: "@zerodev/sdk@npm:5.3.13"
   dependencies:
-    "@zerodev/ecdsa-validator": "npm:5.3.1"
-    "@zerodev/passkey-validator": "npm:5.3.3"
-    "@zerodev/permissions": "npm:5.3.1"
-    "@zerodev/sdk": "npm:5.3.2"
+    semver: "npm:^7.6.0"
   peerDependencies:
-    permissionless: ^0.1.29
+    permissionless: ">=0.1.18 <=0.1.29"
     viem: ^2.16.3
-    wagmi: ^2.9.0
-  checksum: 10c0/05006fa30658d2ca3da67cd390fc13de0513da9b9be70104b31b8cce7bb5d8d4c4cc4f06630b54931d69c434ba4f3a379a4ff0d44318881278af95cf9ff88b47
+  checksum: 10c0/e31e571a7ed85f57b4ee63850f7446c4e43d24c50fa8ff7216a548ee2e76fa70d4ef8589c5befcaeacab493c7af37ed087877901c9dd62df52a185f80a747ba1
+  languageName: node
+  linkType: hard
+
+"@zerodev/webauthn-key@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "@zerodev/webauthn-key@npm:5.3.2"
+  dependencies:
+    "@noble/curves": "npm:^1.3.0"
+    "@simplewebauthn/browser": "npm:^8.3.4"
+  peerDependencies:
+    viem: ^2.16.3
+  checksum: 10c0/ff2a6ccd39e701722a116e394e03a664e99ad964060de2eec356f0c72a00830e5ad5957c5bd3fee1f7d795accb3748b561cf20d5f6e41be3c87cc5748c462eb9
   languageName: node
   linkType: hard
 
@@ -22464,8 +22458,9 @@ __metadata:
     "@typescript-eslint/types": "npm:^5.54.1"
     "@typescript-eslint/utils": "npm:^5.54.1"
     "@wagmi/cli": "npm:2.1.4"
-    "@zerodev/passkey-validator": "npm:^5.4.0"
-    "@zerodev/wallet": "npm:^0.1.1"
+    "@zerodev/passkey-validator": "npm:^5.4.1"
+    "@zerodev/sdk": "npm:^5.3.13"
+    "@zerodev/webauthn-key": "npm:^5.3.2"
     abitype: "npm:^0.10.3"
     autoprefixer: "npm:^10.4.16"
     babel-jest: "npm:^29.7.0"
