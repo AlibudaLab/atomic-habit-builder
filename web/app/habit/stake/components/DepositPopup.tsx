@@ -9,6 +9,8 @@ import usdc from '@/imgs/coins/usdc.png';
 import Image from 'next/image';
 import { Checkbox } from '@nextui-org/react';
 
+const addressMask = '********************************************';
+
 type DepositPopupProps = {
   onClose: () => void;
 };
@@ -53,14 +55,12 @@ function DepositPopup({ onClose }: DepositPopupProps) {
         <label htmlFor="depositAddress" className="m-2 block font-bold">
           Deposit Address:
         </label>
-        <div id="depositAddress" className="mt-1 break-all rounded">
-          {confirmBox1Checked && confirmBox2Checked ? (
-            <Snippet symbol="" color="default">
-              <span className="whitespace-normal break-all">{address}</span>
-            </Snippet>
-          ) : (
-            <div className="min-h-12" />
-          )}
+        <div id="depositAddress" className="m-2 break-all rounded">
+          <Snippet symbol="" color="default">
+            <span className="whitespace-normal break-all font-nunito">
+              {confirmBox1Checked && confirmBox2Checked ? address : addressMask}{' '}
+            </span>
+          </Snippet>
         </div>
       </div>
     </div>

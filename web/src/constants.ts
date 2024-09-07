@@ -25,7 +25,7 @@ export const donationDestinations: DonationDest[] = [
 
 export const defaultVerifier = '0x29C3d6b54E2F8Ae641Fc331cF2143B6d05c97897';
 
-const usdcContractAddrs: Record<number, Address> = {
+export const usdcContractAddrs: Record<number, Address> = {
   [baseSepolia.id]: '0xCb5c7C676D8CcE531ceDd0fe2b4159b59607910F',
   [base.id]: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
 };
