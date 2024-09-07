@@ -21,6 +21,7 @@ import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
+import { logEventSimple } from '@/utils/gtag';
 
 export default function ProfileContent() {
   const { address, chainId } = useAccount();
@@ -107,7 +108,13 @@ export default function ProfileContent() {
                     }}
                   />
 
-                  <Link href={getExplorerLink(address, chainId ?? base.id)} target="_blank">
+                  <Link
+                    onClick={() => {
+                      logEventSimple({ eventName: 'click_basescan', category: 'others' });
+                    }}
+                    href={getExplorerLink(address, chainId ?? base.id)}
+                    target="_blank"
+                  >
                     <ExternalLinkIcon />
                   </Link>
                 </div>
@@ -133,7 +140,10 @@ export default function ProfileContent() {
                 <Button
                   isIconOnly
                   className="bg-slate-100"
-                  onClick={() => setAddFundModalOpen(true)}
+                  onClick={() => {
+                    setAddFundModalOpen(true);
+                    logEventSimple({ eventName: 'click_deposit_profile', category: 'profile' });
+                  }}
                 >
                   <PlusCircleIcon size={20} />
                 </Button>
@@ -142,7 +152,10 @@ export default function ProfileContent() {
                 <Button
                   isIconOnly
                   className="bg-slate-100"
-                  onClick={() => setIsWithdrawModalOpen(true)}
+                  onClick={() => {
+                    setIsWithdrawModalOpen(true);
+                    logEventSimple({ eventName: 'click_withdraw_profile', category: 'profile' });
+                  }}
                 >
                   <MinusCircleIcon size={20} />
                 </Button>
@@ -195,6 +208,7 @@ export default function ProfileContent() {
                 className="mt-4 min-h-12 w-1/2"
                 onClick={() => {
                   void disconnect();
+                  logEventSimple({ eventName: 'click_logout', category: 'connect' });
                 }}
               >
                 Log out

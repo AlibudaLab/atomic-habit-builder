@@ -14,7 +14,7 @@ export enum WorkoutVerifier {
 export type User = {
   id: string;
   totalCheckIns: string;
-}
+};
 
 // Raw data from the chain / subgraph
 export type ChallengeDetail = {

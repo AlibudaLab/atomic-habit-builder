@@ -8,6 +8,7 @@ import { useAccount } from 'wagmi';
 import usdc from '@/imgs/coins/usdc.png';
 import Image from 'next/image';
 import { Checkbox } from '@nextui-org/react';
+import { logEventSimple } from '@/utils/gtag';
 
 const addressMask = '********************************************';
 
@@ -56,7 +57,13 @@ function DepositPopup({ onClose }: DepositPopupProps) {
           Deposit Address:
         </label>
         <div id="depositAddress" className="m-2 break-all rounded">
-          <Snippet symbol="" color="default">
+          <Snippet
+            symbol=""
+            color="default"
+            onClick={() => {
+              logEventSimple({ eventName: 'click_copy_address', category: 'others' });
+            }}
+          >
             <span className="whitespace-normal break-all font-nunito">
               {confirmBox1Checked && confirmBox2Checked ? address : addressMask}{' '}
             </span>

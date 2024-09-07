@@ -1,8 +1,8 @@
 'use client';
 
-import { logEvent } from '@/utils/gtag';
+import { logEventSimple } from '@/utils/gtag';
 import storage from 'local-storage-fallback';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useConnect } from 'wagmi';
 
 export default function usePasskeyConnection() {
@@ -21,14 +21,14 @@ export default function usePasskeyConnection() {
     signedInBefore,
     register: () => {
       connect({ connector: connectors[0] });
-      logEvent({ action: 'register', category: 'connect', label: 'register', value: 1 });
+      logEventSimple({ eventName: 'clieck_sign_up', category: 'connect' });
     },
     login: () => {
       connect(
         { connector: connectors[1] },
         { onError: (e) => console.log('login error', e.message) },
       );
-      logEvent({ action: 'login', category: 'connect', label: 'login', value: 1 });
+      logEventSimple({ eventName: 'click_sign_in', category: 'connect' });
     },
     isPending,
   };

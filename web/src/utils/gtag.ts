@@ -36,3 +36,17 @@ export const logEvent = ({
     value: value,
   });
 };
+
+export const logEventSimple = ({
+  eventName,
+  category,
+}: {
+  eventName: string;
+  category: string;
+}) => {
+  window.gtag('event', eventName, {
+    event_category: category,
+    event_label: eventName,
+    value: 1,
+  });
+};

@@ -11,6 +11,7 @@ import { ChallengeStatus, UserChallengeStatus } from '@/types';
 import moment from 'moment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useChallengeWithCheckIns } from '@/hooks/useChallengeWithCheckIns';
+import { logEventSimple } from '@/utils/gtag';
 
 export default function Claim() {
   const { push } = useRouter();
@@ -41,6 +42,7 @@ export default function Claim() {
       setClaimSuccess(true);
       refetch();
       handleOpenClaimedPopup();
+      logEventSimple({ eventName: 'click_claim_reward', category: 'challenge' });
     },
   );
 
