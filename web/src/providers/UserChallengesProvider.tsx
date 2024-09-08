@@ -82,8 +82,8 @@ export function UserChallengesProvider({
   }, [fetchData]);
 
   useEffect(() => {
-    console.log('useEfffect triggered address', address);
     if (address) {
+      console.log('address', address);
       void fetchData();
     }
   }, [address, fetchData]);

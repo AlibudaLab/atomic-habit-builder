@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import processViemContractError from '@/utils/processViemContractError';
-import { Abi, DecodeEventLogReturnType, TransactionReceipt, decodeEventLog } from 'viem';
 import {
-  UseSimulateContractParameters,
-  useSimulateContract,
-  useWaitForTransactionReceipt,
-} from 'wagmi';
-import { useWriteContracts, useCallsStatus } from 'wagmi/experimental';
-
-const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY;
-const ZERODEV_PAYMASTER_URL = `https://rpc.zerodev.app/api/v3/paymaster/${zerodevApiKey}`;
+  Abi,
+  DecodeEventLogReturnType,
+  TransactionReceipt,
+  decodeEventLog,
+  encodeFunctionData,
+  http,
+} from 'viem';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
+import { useWaitForTransactionReceipt } from 'wagmi';
+import { getChainsForEnvironment } from '@/store/supportedChains';
 
 const getEvents = (
-  contractCallConfig: UseSimulateContractParameters,
+  contractCallConfig: any,
   transactionReceipt: TransactionReceipt | Record<string, any>,
 ) =>
   transactionReceipt.logs
@@ -29,23 +30,6 @@ const getEvents = (
     })
     .filter(Boolean);
 
-/**
- *
- * @param contractCallConfig is the typicall write contract config
- * @param options.setContext
- * @param options.customErrorsMap convert contract custon errors to human readable messages
- *
- * @param options.onSent successfully submit the transaction
- * @param options.onSuccess tx confirmed
- * @param options.onError
- * @returns
- * @description This file was learned in https://github.com/guildxyz/guild.xyz/blob/3b150b2b9b9c3bf816cf0bc915753df432274399/src/hooks/useSubmitTransaction.ts
- * And three parts were adjusted:
- * 1. Estimate gas was removed,
- * 2. Transaction status context was removed
- * 3. contractCallConfig was defined as any
- */
-
 const useSubmitTransaction = (
   contractCallConfig: any,
   options?: {
@@ -59,104 +43,87 @@ const useSubmitTransaction = (
   },
 ) => {
   const [loading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
+  const [transactionHash, setTransactionHash] = useState<`0x${string}` | undefined>(undefined);
+  const onSuccessCalledRef = useRef(false);
 
-  const { error: simulateContractError, isLoading: isSimulateContractLoading } =
-    useSimulateContract({
-      query: { enabled: contractCallConfig.query?.enabled ?? true },
-      ...contractCallConfig,
+  const { accountClient, account } = usePasskeyAccount();
+
+  console.log('tx error', error);
+
+  const { data: transactionReceipt, isLoading: isWaitForTransactionLoading } =
+    useWaitForTransactionReceipt({
+      hash: transactionHash,
     });
 
-  const {
-    writeContracts,
-    data: batchHash,
-    error: batchWriteContractError,
-    isError: isBatchWriteContractError,
-    isPending: isBatchWriteContractLoading,
-    isSuccess: isBatchWriteContractSuccess,
+  const onSubmitTransaction = async () => {
+    if (!accountClient || !account) {
+      console.log('accountClient', accountClient);
+      console.log('account', account);
+      setError('No account connected');
+      return;
+    }
 
-    reset: resetBatchWriteContract,
-  } = useWriteContracts();
+    setIsLoading(true);
+    setError(undefined);
 
-  const { data: callsStatus } = useCallsStatus({
-    id: batchHash as string,
-    query: {
-      enabled: !!batchHash,
-      // Poll every second until the calls are confirmed
-      refetchInterval: (data: any) => (data.state.data?.status === 'CONFIRMED' ? false : 1000),
-    },
-  });
+    try {
+      const transactions = Array.isArray(contractCallConfig.contracts)
+        ? contractCallConfig.contracts
+        : [contractCallConfig];
 
-  const {
-    data: transactionReceipt,
-    error: waitForTransactionError,
-    isSuccess,
-    isError: isWaitForTransactionError,
-    isLoading: isWaitForTransactionLoading,
-  } = useWaitForTransactionReceipt({
-    hash: callsStatus?.receipts?.[0]?.transactionHash as `0x${string}`,
-  });
+      const txHash = await accountClient.sendTransactions({
+        transactions: transactions.map((contract: any) => ({
+          to: contract.address,
+          data: encodeFunctionData({
+            abi: contract.abi,
+            functionName: contract.functionName,
+            args: contract.args,
+          }),
+          value: BigInt(contract.value || 0),
+        })),
+        account: account,
+      });
 
-  const rawError = waitForTransactionError ?? batchWriteContractError ?? simulateContractError;
-
-  const error = rawError
-    ? processViemContractError(rawError, (errorName) => {
+      setTransactionHash(txHash);
+      onSuccessCalledRef.current = false; // Reset the ref when a new transaction is submitted
+      options?.onSent?.();
+    } catch (err: any) {
+      const errorMessage = processViemContractError(err, (errorName) => {
         if (!options?.customErrorsMap || !(errorName in options.customErrorsMap))
           return `Contract error: ${errorName}`;
         return options.customErrorsMap[errorName];
-      })
-    : undefined;
-
-  const isError = isBatchWriteContractError || isWaitForTransactionError;
-  const { onSuccess, onError } = options ?? {};
+      });
+      setError(errorMessage || 'Unknown error occurred');
+      options?.onError?.(errorMessage || 'Unknown error occurred', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!transactionReceipt && !isSuccess && !isError) return;
-
-    if (transactionReceipt && isSuccess) {
-      if (typeof onSuccess === 'function') {
-        const events = getEvents(contractCallConfig, transactionReceipt);
-
-        onSuccess(
-          transactionReceipt as TransactionReceipt,
-          events as unknown as DecodeEventLogReturnType[],
-        );
-        setIsLoading(false);
-      }
+    if (transactionReceipt && options?.onSuccess && !onSuccessCalledRef.current) {
+      const events = getEvents(contractCallConfig, transactionReceipt);
+      options.onSuccess(transactionReceipt, events as DecodeEventLogReturnType[]);
+      onSuccessCalledRef.current = true; // Mark onSuccess as called for this transaction
     }
+  }, [transactionReceipt, options, contractCallConfig]);
 
-    if (error) {
-      onError?.(error, rawError);
-      setIsLoading(false);
-      resetBatchWriteContract();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactionReceipt, isSuccess, isError]);
+  useEffect(() => {
+    return () => {
+      setTransactionHash(undefined);
+      setError(undefined);
+      onSuccessCalledRef.current = false; // Reset the ref when the component unmounts
+    };
+  }, []);
 
   return {
-    onSubmitTransaction: () => {
-      setIsLoading(true);
-      writeContracts?.(
-        {
-          contracts: contractCallConfig.contracts || [contractCallConfig],
-          capabilities: {
-            paymasterService: {
-              url: ZERODEV_PAYMASTER_URL,
-            },
-          },
-        },
-        {
-          // tx successfully sent to the bundler
-          onSuccess: () => {
-            if (typeof options?.onSent === 'function') {
-              options.onSent();
-            }
-          },
-        },
-      );
-    },
-    isPreparing: isSimulateContractLoading,
-    isLoading: isWaitForTransactionLoading || isBatchWriteContractLoading || loading,
+    onSubmitTransaction,
+    isPreparing: false,
+    isLoading: loading || isWaitForTransactionLoading,
     error,
+    transactionHash,
+    transactionReceipt,
   };
 };
 

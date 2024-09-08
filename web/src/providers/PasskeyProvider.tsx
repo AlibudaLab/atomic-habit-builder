@@ -1,7 +1,14 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { createKernelAccount, KernelSmartAccount } from '@zerodev/sdk';
+import {
+  createKernelAccount,
+  createKernelAccountClient,
+  createZeroDevPaymasterClient,
+  KernelAccountClient,
+  KernelSmartAccount,
+  SponsorUserOperationParameters,
+} from '@zerodev/sdk';
 import {
   toPasskeyValidator,
   toWebAuthnKey,
@@ -11,13 +18,12 @@ import {
 } from '@zerodev/passkey-validator';
 import { KERNEL_V3_1 } from '@zerodev/sdk/constants';
 import { ENTRYPOINT_ADDRESS_V07 } from 'permissionless';
-import { http, createPublicClient, Hex, Transport, Chain } from 'viem';
-import { getZerodevSigner, updateZerodevSigner } from '@/utils/passkey';
+import { http, createPublicClient, Hex, Transport, Chain, Address } from 'viem';
+import { getPasskeyData, setPasskeyData } from '@/utils/passkey';
 import { getChainsForEnvironment } from '@/store/supportedChains';
 import storage from 'local-storage-fallback';
 
 const chain = getChainsForEnvironment();
-
 const publicClient = createPublicClient({
   chain: chain,
   transport: http(),
@@ -26,13 +32,17 @@ const publicClient = createPublicClient({
 const entryPoint = ENTRYPOINT_ADDRESS_V07;
 const kernelVersion = KERNEL_V3_1;
 
+const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY;
 const passkeyServer = `https://passkeys.zerodev.app/api/v4`;
+const paymasterUrl = `https://rpc.zerodev.app/api/v2/paymaster/${zerodevApiKey}`;
+const bundlerRpc = `https://rpc.zerodev.app/api/v2/bundler/${zerodevApiKey}`;
 
 type PasskeyContextType = {
   address: Hex | undefined;
   isConnecting: boolean;
   isInitializing: boolean;
   account: KernelSmartAccount<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | null;
+  accountClient: KernelAccountClient<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | undefined;
   login: () => Promise<void>;
   register: () => Promise<void>;
   logout: () => void;
@@ -49,71 +59,100 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     Transport,
     Chain
   > | null>(null);
+  const [accountClient, setAccountClient] = useState<
+    KernelAccountClient<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | undefined
+  >(undefined);
+
+  const createAccountAndClient = useCallback(async (validator: any) => {
+    const newAccount = await createKernelAccount(publicClient, {
+      plugins: {
+        sudo: validator,
+      },
+      entryPoint,
+      kernelVersion,
+      index: 0n,
+    });
+
+    const newAccountClient = createKernelAccountClient({
+      account: newAccount,
+      entryPoint,
+      chain,
+      bundlerTransport: http(bundlerRpc),
+      middleware: {
+        sponsorUserOperation: async ({ userOperation }) => {
+          const paymasterClient = createZeroDevPaymasterClient({
+            chain,
+            transport: http(paymasterUrl),
+            entryPoint,
+          });
+          const _userOperation = userOperation as SponsorUserOperationParameters<
+            typeof entryPoint
+          >['userOperation'];
+          return paymasterClient.sponsorUserOperation({
+            userOperation: _userOperation,
+            entryPoint,
+          });
+        },
+      },
+    });
+
+    setAccount(newAccount);
+    setAccountClient(newAccountClient);
+    setAddress(newAccount.address.toLowerCase() as Address);
+    storage.setItem('userAddress', newAccount.address);
+  }, []);
 
   const reconnect = useCallback(async () => {
-    const passkeyData = getZerodevSigner();
+    const passkeyData = getPasskeyData();
+    console.log('passkeyData', passkeyData);
     if (!passkeyData?.isConnected) return;
 
     try {
+      console.log('reconnecting with saved passkey info');
       const validator = await deserializePasskeyValidator(publicClient, {
         serializedData: passkeyData.signer,
         entryPoint,
         kernelVersion,
       });
 
-      const newAccount = await createKernelAccount(publicClient, {
-        plugins: {
-          sudo: validator,
-        },
-        entryPoint,
-        kernelVersion,
-      });
-
-      setAccount(newAccount);
-      setAddress(newAccount.address);
+      await createAccountAndClient(validator);
     } catch (error) {
       console.error('Reconnection failed:', error);
       setAddress(undefined);
       storage.removeItem('userAddress');
     }
-  }, []);
+  }, [createAccountAndClient]);
 
-  const loginOrRegister = useCallback(async (mode: WebAuthnMode) => {
-    const webAuthnKey = await toWebAuthnKey({
-      passkeyName: 'atomic',
-      passkeyServerUrl: passkeyServer,
-      mode,
-      passkeyServerHeaders: {},
-    });
+  const loginOrRegister = useCallback(
+    async (mode: WebAuthnMode) => {
+      const webAuthnKey = await toWebAuthnKey({
+        passkeyName: 'atomic',
+        passkeyServerUrl: passkeyServer,
+        mode,
+        passkeyServerHeaders: {},
+      });
 
-    const passkeyValidator = await toPasskeyValidator(publicClient, {
-      webAuthnKey,
-      entryPoint: ENTRYPOINT_ADDRESS_V07,
-      kernelVersion: KERNEL_V3_1,
-      validatorContractVersion: PasskeyValidatorContractVersion.V0_0_2,
-    });
+      const passkeyValidator = await toPasskeyValidator(publicClient, {
+        webAuthnKey,
+        entryPoint: ENTRYPOINT_ADDRESS_V07,
+        kernelVersion: KERNEL_V3_1,
+        validatorContractVersion: PasskeyValidatorContractVersion.V0_0_2,
+      });
 
-    const newAccount = await createKernelAccount(publicClient, {
-      plugins: {
-        sudo: passkeyValidator,
-      },
-      entryPoint,
-      kernelVersion,
-    });
+      const passkeyData = passkeyValidator.getSerializedData();
+      setPasskeyData(passkeyData, true);
 
-    setAccount(newAccount);
-    setAddress(newAccount.address);
-    storage.setItem('userAddress', newAccount.address);
-  }, []);
+      await createAccountAndClient(passkeyValidator);
+    },
+    [createAccountAndClient],
+  );
 
   useEffect(() => {
+    console.log('triggered');
     const initializeAccount = async () => {
       setIsInitializing(true);
-      const storedAddress = storage.getItem('userAddress');
-      if (storedAddress) {
-        setAddress(storedAddress as Hex);
-        await reconnect();
-      }
+      console.log('reconnecting');
+      await reconnect();
       setIsInitializing(false);
     };
 
@@ -124,11 +163,6 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     setIsConnecting(true);
     try {
       await loginOrRegister(WebAuthnMode.Login);
-      const passkeyData = getZerodevSigner();
-      if (passkeyData) {
-        passkeyData.isConnected = true;
-        updateZerodevSigner(passkeyData);
-      }
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
@@ -140,11 +174,6 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     setIsConnecting(true);
     try {
       await loginOrRegister(WebAuthnMode.Register);
-      const passkeyData = getZerodevSigner();
-      if (passkeyData) {
-        passkeyData.isConnected = true;
-        updateZerodevSigner(passkeyData);
-      }
     } catch (error) {
       console.error('Registration failed:', error);
     } finally {
@@ -155,12 +184,9 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const logout = useCallback(() => {
     setAddress(undefined);
     setAccount(null);
+    setAccountClient(undefined);
     storage.removeItem('userAddress');
-    const passkeyData = getZerodevSigner();
-    if (passkeyData) {
-      passkeyData.isConnected = false;
-      updateZerodevSigner(passkeyData);
-    }
+    setPasskeyData('', false);
   }, []);
 
   const contextValue = useMemo(
@@ -169,11 +195,12 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
       isConnecting,
       isInitializing,
       account,
+      accountClient,
       login,
       register,
       logout,
     }),
-    [address, isConnecting, isInitializing, account, login, register, logout],
+    [address, isConnecting, isInitializing, account, accountClient, login, register, logout],
   );
 
   return <PasskeyContext.Provider value={contextValue}>{children}</PasskeyContext.Provider>;

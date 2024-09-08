@@ -9,7 +9,7 @@ import OnchainProviders from '@/OnchainProviders';
 
 function PasskeyAwareUserChallengesProvider({ children }: { children: React.ReactNode }) {
   const { address } = usePasskeyAccount();
-  return <UserChallengesProvider address={address ?? undefined}>{children}</UserChallengesProvider>;
+  return <UserChallengesProvider address={address}>{children}</UserChallengesProvider>;
 }
 
 function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
