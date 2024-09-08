@@ -56,7 +56,7 @@ const useSubmitTransaction = (
       hash: transactionHash,
     });
 
-  const onSubmitTransaction = async () => {
+  const submitTransaction = () => {
     if (!accountClient || !account) {
       console.log('accountClient', accountClient);
       console.log('account', account);
@@ -67,38 +67,39 @@ const useSubmitTransaction = (
     setIsLoading(true);
     setError(undefined);
 
-    try {
-      const transactions = Array.isArray(contractCallConfig.contracts)
-        ? contractCallConfig.contracts
-        : [contractCallConfig];
+    const transactions = Array.isArray(contractCallConfig.contracts)
+      ? contractCallConfig.contracts
+      : [contractCallConfig];
 
-      const txHash = await accountClient.sendTransactions({
-        transactions: transactions.map((contract: any) => ({
-          to: contract.address,
-          data: encodeFunctionData({
-            abi: contract.abi,
-            functionName: contract.functionName,
-            args: contract.args,
-          }),
-          value: BigInt(contract.value || 0),
-        })),
-        account: account,
-      });
-
+    accountClient.sendTransactions({
+      transactions: transactions.map((contract: any) => ({
+        to: contract.address,
+        data: encodeFunctionData({
+          abi: contract.abi,
+          functionName: contract.functionName,
+          args: contract.args,
+        }),
+        value: BigInt(contract.value ?? 0),
+      })),
+      account: account,
+    })
+    .then((txHash) => {
       setTransactionHash(txHash);
-      onSuccessCalledRef.current = false; // Reset the ref when a new transaction is submitted
+      onSuccessCalledRef.current = false;
       options?.onSent?.();
-    } catch (err: any) {
+    })
+    .catch((err: any) => {
       const errorMessage = processViemContractError(err, (errorName) => {
         if (!options?.customErrorsMap || !(errorName in options.customErrorsMap))
           return `Contract error: ${errorName}`;
         return options.customErrorsMap[errorName];
       });
-      setError(errorMessage || 'Unknown error occurred');
-      options?.onError?.(errorMessage || 'Unknown error occurred', err);
-    } finally {
+      setError(errorMessage ?? 'Unknown error occurred');
+      options?.onError?.(errorMessage ?? 'Unknown error occurred', err);
+    })
+    .finally(() => {
       setIsLoading(false);
-    }
+    });
   };
 
   useEffect(() => {
@@ -118,7 +119,7 @@ const useSubmitTransaction = (
   }, []);
 
   return {
-    onSubmitTransaction,
+    onSubmitTransaction: submitTransaction,
     isPreparing: false,
     isLoading: loading || isWaitForTransactionLoading,
     error,

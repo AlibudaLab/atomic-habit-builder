@@ -85,11 +85,11 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
             transport: http(paymasterUrl),
             entryPoint,
           });
-          const _userOperation = userOperation as SponsorUserOperationParameters<
+          const castedUserOperation = userOperation as SponsorUserOperationParameters<
             typeof entryPoint
           >['userOperation'];
           return paymasterClient.sponsorUserOperation({
-            userOperation: _userOperation,
+            userOperation: castedUserOperation,
             entryPoint,
           });
         },
