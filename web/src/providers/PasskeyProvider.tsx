@@ -30,7 +30,7 @@ const passkeyServer = `https://passkeys.zerodev.app/api/v4`;
 
 type PasskeyContextType = {
   address: Hex | undefined;
-  isLoading: boolean;
+  isConnecting: boolean;
   isInitializing: boolean;
   account: KernelSmartAccount<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | null;
   login: () => Promise<void>;
@@ -42,7 +42,7 @@ const PasskeyContext = createContext<PasskeyContextType | undefined>(undefined);
 
 export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<Hex | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [account, setAccount] = useState<KernelSmartAccount<
     typeof ENTRYPOINT_ADDRESS_V07,
@@ -121,7 +121,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   }, [reconnect]);
 
   const login = useCallback(async () => {
-    setIsLoading(true);
+    setIsConnecting(true);
     try {
       await loginOrRegister(WebAuthnMode.Login);
       const passkeyData = getZerodevSigner();
@@ -132,12 +132,12 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
-      setIsLoading(false);
+      setIsConnecting(false);
     }
   }, [loginOrRegister]);
 
   const register = useCallback(async () => {
-    setIsLoading(true);
+    setIsConnecting(true);
     try {
       await loginOrRegister(WebAuthnMode.Register);
       const passkeyData = getZerodevSigner();
@@ -148,7 +148,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Registration failed:', error);
     } finally {
-      setIsLoading(false);
+      setIsConnecting(false);
     }
   }, [loginOrRegister]);
 
@@ -166,14 +166,14 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const contextValue = useMemo(
     () => ({
       address,
-      isLoading,
+      isConnecting,
       isInitializing,
       account,
       login,
       register,
       logout,
     }),
-    [address, isLoading, isInitializing, account, login, register, logout],
+    [address, isConnecting, isInitializing, account, login, register, logout],
   );
 
   return <PasskeyContext.Provider value={contextValue}>{children}</PasskeyContext.Provider>;

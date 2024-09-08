@@ -9,7 +9,7 @@ import { UserChallengeStatus } from '@/types';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 export default function DashboardPage() {
-  const { address } = usePasskeyAccount();
+  const { address, isInitializing } = usePasskeyAccount();
   const { data: challenges, loading } = useUserChallenges();
 
   const allOngoing = challenges
@@ -22,7 +22,7 @@ export default function DashboardPage() {
     <main className="container flex flex-col items-center">
       {!address ? (
         <Onboard />
-      ) : loading ? (
+      ) : isInitializing || loading ? (
         <Loading />
       ) : (
         <Dashboard onGoingChallenges={allOngoing} />

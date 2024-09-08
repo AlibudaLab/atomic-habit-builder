@@ -27,7 +27,7 @@ export function UserChallengesProvider({
   children: ReactNode;
   address: string | undefined;
 }) {
-  const [loading, setLoading] = useState(address !== undefined);
+  const [loading, setLoading] = useState(true);
 
   const [data, setData] = useState<ChallengeWithCheckIns[]>([]);
   const [error, setError] = useState<unknown | null>(null);
@@ -82,10 +82,11 @@ export function UserChallengesProvider({
   }, [fetchData]);
 
   useEffect(() => {
-    if (!address) {
-      setLoading(false);
+    console.log('useEfffect triggered address', address);
+    if (address) {
+      void fetchData();
     }
-  }, [address]);
+  }, [address, fetchData]);
 
   const refetch = useCallback(() => {
     void fetchData(false);
