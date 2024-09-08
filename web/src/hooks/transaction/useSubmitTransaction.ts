@@ -71,35 +71,36 @@ const useSubmitTransaction = (
       ? contractCallConfig.contracts
       : [contractCallConfig];
 
-    accountClient.sendTransactions({
-      transactions: transactions.map((contract: any) => ({
-        to: contract.address,
-        data: encodeFunctionData({
-          abi: contract.abi,
-          functionName: contract.functionName,
-          args: contract.args,
-        }),
-        value: BigInt(contract.value ?? 0),
-      })),
-      account: account,
-    })
-    .then((txHash) => {
-      setTransactionHash(txHash);
-      onSuccessCalledRef.current = false;
-      options?.onSent?.();
-    })
-    .catch((err: any) => {
-      const errorMessage = processViemContractError(err, (errorName) => {
-        if (!options?.customErrorsMap || !(errorName in options.customErrorsMap))
-          return `Contract error: ${errorName}`;
-        return options.customErrorsMap[errorName];
+    accountClient
+      .sendTransactions({
+        transactions: transactions.map((contract: any) => ({
+          to: contract.address,
+          data: encodeFunctionData({
+            abi: contract.abi,
+            functionName: contract.functionName,
+            args: contract.args,
+          }),
+          value: BigInt(contract.value ?? 0),
+        })),
+        account: account,
+      })
+      .then((txHash) => {
+        setTransactionHash(txHash);
+        onSuccessCalledRef.current = false;
+        options?.onSent?.();
+      })
+      .catch((err: any) => {
+        const errorMessage = processViemContractError(err, (errorName) => {
+          if (!options?.customErrorsMap || !(errorName in options.customErrorsMap))
+            return `Contract error: ${errorName}`;
+          return options.customErrorsMap[errorName];
+        });
+        setError(errorMessage ?? 'Unknown error occurred');
+        options?.onError?.(errorMessage ?? 'Unknown error occurred', err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-      setError(errorMessage ?? 'Unknown error occurred');
-      options?.onError?.(errorMessage ?? 'Unknown error occurred', err);
-    })
-    .finally(() => {
-      setIsLoading(false);
-    });
   };
 
   useEffect(() => {

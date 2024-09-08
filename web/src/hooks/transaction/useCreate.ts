@@ -16,7 +16,7 @@ const useCreateChallenge = (
   stake: bigint,
   onSuccess?: (receipt: any, events: DecodeEventLogReturnType[]) => void,
 ) => {
-    return useSubmitTransaction(
+  return useSubmitTransaction(
     {
       address: challengeAddr,
       abi: abi,

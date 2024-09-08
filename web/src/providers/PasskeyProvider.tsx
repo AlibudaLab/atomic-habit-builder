@@ -48,12 +48,25 @@ type PasskeyContextType = {
   logout: () => void;
 };
 
-const PasskeyContext = createContext<PasskeyContextType | undefined>(undefined);
+// Create a default context value
+const defaultContextValue: PasskeyContextType = {
+  address: undefined,
+  isConnecting: false,
+  isInitializing: true,
+  account: null,
+  accountClient: undefined,
+  login: async () => {},
+  register: async () => {},
+  logout: () => {},
+};
+
+// Use the default context value when creating the context
+const PasskeyContext = createContext<PasskeyContextType>(defaultContextValue);
 
 export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<Hex | undefined>(undefined);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true); // Set initial state to true
   const [account, setAccount] = useState<KernelSmartAccount<
     typeof ENTRYPOINT_ADDRESS_V07,
     Transport,
@@ -148,16 +161,19 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    console.log('triggered');
     const initializeAccount = async () => {
-      setIsInitializing(true);
-      console.log('reconnecting');
-      await reconnect();
-      setIsInitializing(false);
+      setIsInitializing(true); // Reset to true on every mount
+      try {
+        await reconnect();
+      } catch (error) {
+        console.error('Initialization failed:', error);
+      } finally {
+        setIsInitializing(false);
+      }
     };
 
     void initializeAccount();
-  }, [reconnect]);
+  }, []); // Empty dependency array ensures this runs on mount
 
   const login = useCallback(async () => {
     setIsConnecting(true);
