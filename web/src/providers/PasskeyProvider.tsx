@@ -67,6 +67,7 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<Hex | undefined>(undefined);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true); // Set initial state to true
+
   const [account, setAccount] = useState<KernelSmartAccount<
     typeof ENTRYPOINT_ADDRESS_V07,
     Transport,
@@ -118,7 +119,10 @@ export function PasskeyProvider({ children }: { children: React.ReactNode }) {
   const reconnect = useCallback(async () => {
     const passkeyData = getPasskeyData();
     console.log('passkeyData', passkeyData);
-    if (!passkeyData?.isConnected) return;
+    if (!passkeyData?.isConnected) {
+      setIsInitializing(false);
+      return;
+    }
 
     try {
       console.log('reconnecting with saved passkey info');

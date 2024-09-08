@@ -20,10 +20,12 @@ export default function DashboardPage() {
 
   return (
     <main className="container flex flex-col items-center">
-      {isInitializing || loading ? (
+      {isInitializing ? (
         <Loading />
       ) : address === undefined ? (
         <Onboard />
+      ) : loading ? (
+        <Loading />
       ) : (
         <Dashboard onGoingChallenges={allOngoing} />
       )}
