@@ -2,17 +2,19 @@ import { ImageResponse } from '@vercel/og';
 import { robotoFontLink } from 'app/api/frame/utils/constants';
 import { formatTime } from 'app/api/frame/utils/format';
 import { getFont, getMapUrl } from 'app/api/frame/utils/getter';
+import { InfoBlock, TextBlock } from '../components/ActivityInfo';
 
 export const runtime = 'edge';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-
-  const type = searchParams.get('type') ?? 'unknown';
-  const name = searchParams.get('name') ?? '';
-  const distance = parseFloat(searchParams.get('distance') ?? '0');
-  const movingTime = parseInt(searchParams.get('moving_time') ?? '0', 10);
-  const encodedPolyline = searchParams.get('polyline') ?? '';
+  const [type, name, distance, movingTime, encodedPolyline] = [
+    'type',
+    'name',
+    'distance',
+    'moving_time',
+    'polyline',
+  ].map((param) => searchParams.get(param) ?? '');
 
   const [robotoRegular, robotoBold] = await Promise.all([
     getFont(robotoFontLink.regular),
@@ -56,28 +58,12 @@ export async function GET(request: Request) {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <p
-              style={{
-                fontSize: '50px',
-                fontWeight: 'bold',
-                margin: '0',
-                color: '#FFFFFF',
-                textAlign: 'right',
-              }}
-            >
-              {name}
-            </p>
-            <p
-              style={{
-                fontSize: '50px',
-                fontWeight: 'bold',
-                margin: '5px 0 0 0',
-                color: '#FFFFFF',
-                textAlign: 'right',
-              }}
-            >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
-            </p>
+            <TextBlock text={name} size="50px" />
+            <TextBlock
+              text={type.charAt(0).toUpperCase() + type.slice(1)}
+              size="50px"
+              margin="5px 0 0 0"
+            />
           </div>
           <div
             style={{
@@ -87,58 +73,12 @@ export async function GET(request: Request) {
               marginBottom: type.toLowerCase() !== 'workout' ? '20px' : '0',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                marginBottom: '20px',
-              }}
-            >
-              <p
-                style={{
-                  fontSize: '40px',
-                  fontWeight: '700',
-                  margin: '0 0 5px 0',
-                  color: '#FFFFFF',
-                }}
-              >
-                Time
-              </p>
-              <p
-                style={{
-                  fontSize: '40px',
-                  fontWeight: '700',
-                  margin: '0',
-                  color: '#FFFFFF',
-                }}
-              >
-                {formatTime(movingTime)}
-              </p>
-            </div>
+            <InfoBlock title="Time" value={formatTime(parseInt(movingTime, 10))} />
             {type.toLowerCase() !== 'workout' && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                <p
-                  style={{
-                    fontSize: '40px',
-                    fontWeight: '700',
-                    margin: '0 0 5px 0',
-                    color: '#FFFFFF',
-                  }}
-                >
-                  Distance
-                </p>
-                <p
-                  style={{
-                    fontSize: '40px',
-                    fontWeight: '700',
-                    margin: '0',
-                    color: '#FFFFFF',
-                  }}
-                >
-                  {(distance / 1000).toFixed(2)} km
-                </p>
-              </div>
+              <InfoBlock
+                title="Distance"
+                value={`${(parseFloat(distance) / 1000).toFixed(2)} km`}
+              />
             )}
           </div>
         </div>
@@ -148,18 +88,8 @@ export async function GET(request: Request) {
       width: 1200,
       height: 630,
       fonts: [
-        {
-          name: 'Roboto',
-          data: robotoRegular,
-          weight: 400,
-          style: 'normal',
-        },
-        {
-          name: 'Roboto',
-          data: robotoBold,
-          weight: 700,
-          style: 'normal',
-        },
+        { name: 'Roboto', data: robotoRegular, weight: 400, style: 'normal' },
+        { name: 'Roboto', data: robotoBold, weight: 700, style: 'normal' },
       ],
     },
   );
