@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import { robotoFontLink } from 'app/api/frame/utils/constants';
 import { formatTime } from 'app/api/frame/utils/format';
 import { getFont, getMapUrl } from 'app/api/frame/utils/getter';
 
@@ -14,17 +15,9 @@ export async function GET(request: Request) {
   const encodedPolyline = searchParams.get('polyline') ?? '';
 
   const [robotoRegular, robotoBold] = await Promise.all([
-    getFont('https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Regular.ttf'),
-    getFont('https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Bold.ttf'),
+    getFont(robotoFontLink.regular),
+    getFont(robotoFontLink.bold),
   ]);
-
-  const backgroundImage = encodedPolyline
-    ? `url(${getMapUrl(encodedPolyline, 1200, 630)})`
-    : `url(${
-        type.toLowerCase() === 'run'
-          ? 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTY4bzdpcDQ0Y3RycnFxNGE3eTd2ZzQ2NnRhNmVmamd3ZDFqcHB3bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Xs7tigYjWwhkSFR2Ih/giphy.gif'
-          : 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHc0bnU2eGlvbHRuOHBtZG54aW9uNHNoZ212ZmNiNTZxMnM4bXozdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3owvJVUhntFJjT4usg/giphy.gif'
-      })`;
 
   return new ImageResponse(
     (
@@ -32,7 +25,7 @@ export async function GET(request: Request) {
         style={{
           width: '1200px',
           height: '630px',
-          backgroundImage: backgroundImage,
+          backgroundImage: `url(${getMapUrl(encodedPolyline, 1200, 630)})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           fontFamily: 'Roboto',

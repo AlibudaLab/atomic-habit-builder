@@ -12,3 +12,8 @@ export const gifUrls = {
     'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExbDQyNXF5bWQydzl5bmp3MW5wb2gwYWFndHFqZW9jZXUwcDFmYXVjdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5EJHDSPpFhbG0/giphy.gif',
   ],
 };
+
+export const robotoFontLink = {
+  regular: 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Regular.ttf',
+  bold: 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Bold.ttf',
+};
