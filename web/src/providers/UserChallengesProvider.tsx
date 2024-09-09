@@ -35,7 +35,16 @@ export function UserChallengesProvider({
 
   const fetchData = useCallback(
     async (resetLoading = true) => {
-      if (!address || challenges.length === 0) return;
+      if (!address) {
+        setLoading(false);
+        setData([]);
+        return;
+      }
+
+      if (challenges.length === 0) {
+        setLoading(true);
+        return;
+      }
 
       try {
         if (resetLoading) setLoading(true);
