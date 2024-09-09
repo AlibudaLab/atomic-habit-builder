@@ -2,14 +2,12 @@ import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 import { Snippet } from '@nextui-org/snippet';
-import { Select, SelectItem } from '@nextui-org/select';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
-import { useAccount } from 'wagmi';
 
 import { Checkbox } from '@nextui-org/react';
 import { logEventSimple } from '@/utils/gtag';
 
-const addressMask = '0x****';
+const addressMask = '**************************************';
 
 type DepositPopupProps = {
   onClose: () => void;
@@ -62,10 +60,10 @@ function DepositPopup({ onClose }: DepositPopupProps) {
             onClick={() => {
               logEventSimple({ eventName: 'click_copy_address', category: 'others' });
             }}
-            className="w-full"
+            className="w-full max-w-full"
           >
-            <div className="w-full overflow-hidden">
-              <span className="block truncate font-nunito text-sm">
+            <div className="w-full whitespace-normal break-all">
+              <span className="font-nunito text-xs">
                 {confirmBox1Checked && confirmBox2Checked ? address : addressMask}
               </span>
             </div>
