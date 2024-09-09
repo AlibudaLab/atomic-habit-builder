@@ -18,7 +18,7 @@ function Leaderboard({ userRankings, address, challenge }: LeaderboardProps) {
   );
 
   return (
-    <div className="mt-10 w-full max-w-md">
+    <div className="mt-10 w-full max-w-md pb-12">
       <div className="mb-5 text-xl text-dark">🏆 Leaderboard</div>
       <Table aria-label="Leaderboard">
         <TableHeader>
