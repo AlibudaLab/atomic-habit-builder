@@ -1,159 +1,173 @@
 import { ImageResponse } from '@vercel/og';
-import polyline from '@mapbox/polyline';
+import { formatTime } from 'app/api/frame/utils/format';
+import { getFont, getMapUrl } from 'app/api/frame/utils/getter';
 
 export const runtime = 'edge';
-
-// Utility functions
-function formatTime(seconds: number): string {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const remainingSeconds = seconds % 60;
-  return `${hours.toString().padStart(2, '0')}:${minutes
-    .toString()
-    .padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={{ display: 'flex', marginBottom: 15 }}>
-      <p style={{ fontSize: 18, fontWeight: 'bold', margin: 0, color: '#333333' }}>{label}</p>
-      <p style={{ fontSize: 24, margin: 0, color: '#000000' }}>{value}</p>
-    </div>
-  );
-}
-
-function createMapboxUrl(encodedPolyline: string, width: number, height: number): string {
-  const coordinates = polyline.decode(encodedPolyline);
-  
-  // Find bounds
-  const bounds = coordinates.reduce(
-    (acc, [lat, lon]) => ({
-      minLat: Math.min(acc.minLat, lat),
-      minLon: Math.min(acc.minLon, lon),
-      maxLat: Math.max(acc.maxLat, lat),
-      maxLon: Math.max(acc.maxLon, lon),
-    }),
-    { minLat: Infinity, minLon: Infinity, maxLat: -Infinity, maxLon: -Infinity },
-  );
-
-  const center = [
-    (bounds.minLon + bounds.maxLon) / 2,
-    (bounds.minLat + bounds.maxLat) / 2
-  ];
-
-  console.log('center: ', center);
-
-  const zoom = 13; // You might want to calculate this based on the bounds
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN; // Store your token in an environment variable
-
-  const path = `path-3+FC4C01(${encodeURIComponent(encodedPolyline)})`;
-
-  return `https://api.mapbox.com/styles/v1/mapbox/streets-v12/static/${path}/${center.join(',')},${zoom}/${width}x${height}@2x?access_token=${mapboxToken}`;
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const type = searchParams.get('type') ?? 'unknown';
-  const id = searchParams.get('id') ?? '';
   const name = searchParams.get('name') ?? '';
   const distance = parseFloat(searchParams.get('distance') ?? '0');
   const movingTime = parseInt(searchParams.get('moving_time') ?? '0', 10);
-  const maxHeartrate = parseInt(searchParams.get('max_heartrate') ?? '0', 10);
-  const timestamp = searchParams.get('timestamp') ?? '';
   const encodedPolyline = searchParams.get('polyline') ?? '';
 
-  let stats: { label: string; value: string }[] = [];
+  const [robotoRegular, robotoBold] = await Promise.all([
+    getFont('https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Regular.ttf'),
+    getFont('https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Bold.ttf'),
+  ]);
 
-  switch (type) {
-    case 'run':
-      stats = [
-        { label: 'Distance', value: `${(distance / 1000).toFixed(2)} km` },
-        { label: 'Time', value: formatTime(movingTime) },
-        { label: 'Max HR', value: `${maxHeartrate} bpm` },
-      ];
-      break;
-    case 'workout':
-      stats = [{ label: 'Time', value: formatTime(movingTime) }];
-      break;
-    case 'cycling':
-      stats = [
-        { label: 'Distance', value: `${(distance / 1000).toFixed(2)} km` },
-        { label: 'Time', value: formatTime(movingTime) },
-      ];
-      break;
-    default:
-      stats = [{ label: 'Unknown Activity', value: 'No data available' }];
-  }
-
-  const mapUrl = createMapboxUrl(encodedPolyline, 600, 630);
-  console.log('mapUrl: ', mapUrl);
+  const backgroundImage = encodedPolyline
+    ? `url(${getMapUrl(encodedPolyline, 1200, 630)})`
+    : `url(${
+        type.toLowerCase() === 'run'
+          ? 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTY4bzdpcDQ0Y3RycnFxNGE3eTd2ZzQ2NnRhNmVmamd3ZDFqcHB3bSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Xs7tigYjWwhkSFR2Ih/giphy.gif'
+          : 'https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHc0bnU2eGlvbHRuOHBtZG54aW9uNHNoZ212ZmNiNTZxMnM4bXozdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3owvJVUhntFJjT4usg/giphy.gif'
+      })`;
 
   return new ImageResponse(
     (
       <div
         style={{
+          width: '1200px',
+          height: '630px',
+          backgroundImage: backgroundImage,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          fontFamily: 'Roboto',
           display: 'flex',
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#FFFFFF',
-          fontFamily: 'Arial, sans-serif',
-          color: '#000000',
+          position: 'relative',
         }}
       >
-        {/* Left column for information */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '748.75',
+            right: '0',
+            bottom: '0',
+            background: 'linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)',
+          }}
+        />
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
+            padding: '30px',
+            marginLeft: 'auto',
             width: '50%',
             height: '100%',
-            padding: '40px',
-            backgroundColor: '#F8F8F8',
+            position: 'relative',
           }}
         >
-          <h1 style={{ fontSize: 40, marginBottom: 20, color: '#FC4C01' }}>{name}</h1>
-          <p
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <p
+              style={{
+                fontSize: '50px',
+                fontWeight: 'bold',
+                margin: '0',
+                color: '#FFFFFF',
+                textAlign: 'right',
+              }}
+            >
+              {name}
+            </p>
+            <p
+              style={{
+                fontSize: '50px',
+                fontWeight: 'bold',
+                margin: '5px 0 0 0',
+                color: '#FFFFFF',
+                textAlign: 'right',
+              }}
+            >
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </p>
+          </div>
+          <div
             style={{
-              fontSize: 24,
-              marginBottom: 20,
-              color: '#FC4C01',
-              textTransform: 'capitalize',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              marginBottom: type.toLowerCase() !== 'workout' ? '20px' : '0',
             }}
           >
-            {type}
-          </p>
-          {stats.map((stat) => (
-            <Stat key={`${stat.label}-${stat.value}`} label={stat.label} value={stat.value} />
-          ))}
-          <p style={{ fontSize: 18, marginTop: 20, color: '#333333' }}>
-            Date: {formatDate(timestamp)}
-          </p>
-          <p style={{ fontSize: 14, marginTop: 10, color: '#666666' }}>Activity ID: {id}</p>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-end',
+                marginBottom: '20px',
+              }}
+            >
+              <p
+                style={{
+                  fontSize: '40px',
+                  fontWeight: '700',
+                  margin: '0 0 5px 0',
+                  color: '#FFFFFF',
+                }}
+              >
+                Time
+              </p>
+              <p
+                style={{
+                  fontSize: '40px',
+                  fontWeight: '700',
+                  margin: '0',
+                  color: '#FFFFFF',
+                }}
+              >
+                {formatTime(movingTime)}
+              </p>
+            </div>
+            {type.toLowerCase() !== 'workout' && (
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                <p
+                  style={{
+                    fontSize: '40px',
+                    fontWeight: '700',
+                    margin: '0 0 5px 0',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  Distance
+                </p>
+                <p
+                  style={{
+                    fontSize: '40px',
+                    fontWeight: '700',
+                    margin: '0',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  {(distance / 1000).toFixed(2)} km
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Right column for map */}
-        <div
-          style={{
-            display: 'flex',
-            width: '50%',
-            height: '100%',
-            backgroundImage: `url(${mapUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
       </div>
     ),
     {
       width: 1200,
       height: 630,
+      fonts: [
+        {
+          name: 'Roboto',
+          data: robotoRegular,
+          weight: 400,
+          style: 'normal',
+        },
+        {
+          name: 'Roboto',
+          data: robotoBold,
+          weight: 700,
+          style: 'normal',
+        },
+      ],
     },
   );
 }
