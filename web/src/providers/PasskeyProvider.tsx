@@ -1,6 +1,14 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  ReactNode,
+} from 'react';
 import {
   createKernelAccount,
   createKernelAccountClient,
@@ -63,7 +71,7 @@ const defaultContextValue: PasskeyContextType = {
 // Use the default context value when creating the context
 const PasskeyContext = createContext<PasskeyContextType>(defaultContextValue);
 
-export function PasskeyProvider({ children }: { children: React.ReactNode }) {
+export function PasskeyProvider({ children }: { children: ReactNode }) {
   const [address, setAddress] = useState<Hex | undefined>(undefined);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true); // Set initial state to true

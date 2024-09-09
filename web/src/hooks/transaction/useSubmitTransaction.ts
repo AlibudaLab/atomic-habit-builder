@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import processViemContractError from '@/utils/processViemContractError';
 import {
   Abi,
@@ -6,14 +6,12 @@ import {
   TransactionReceipt,
   decodeEventLog,
   encodeFunctionData,
-  http,
 } from 'viem';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
-import { useWaitForTransactionReceipt } from 'wagmi';
-import { getChainsForEnvironment } from '@/store/supportedChains';
+import { UseSimulateContractParameters, useWaitForTransactionReceipt } from 'wagmi';
 
 const getEvents = (
-  contractCallConfig: any,
+  contractCallConfig: UseSimulateContractParameters,
   transactionReceipt: TransactionReceipt | Record<string, any>,
 ) =>
   transactionReceipt.logs
@@ -49,17 +47,13 @@ const useSubmitTransaction = (
 
   const { accountClient, account } = usePasskeyAccount();
 
-  console.log('tx error', error);
-
   const { data: transactionReceipt, isLoading: isWaitForTransactionLoading } =
     useWaitForTransactionReceipt({
       hash: transactionHash,
     });
 
-  const submitTransaction = () => {
+  const submitTransaction = useCallback(() => {
     if (!accountClient || !account) {
-      console.log('accountClient', accountClient);
-      console.log('account', account);
       setError('No account connected');
       return;
     }
@@ -101,7 +95,7 @@ const useSubmitTransaction = (
       .finally(() => {
         setIsLoading(false);
       });
-  };
+  }, [accountClient, account, contractCallConfig, options]);
 
   useEffect(() => {
     if (transactionReceipt && options?.onSuccess && !onSuccessCalledRef.current) {
@@ -110,14 +104,6 @@ const useSubmitTransaction = (
       onSuccessCalledRef.current = true; // Mark onSuccess as called for this transaction
     }
   }, [transactionReceipt, options, contractCallConfig]);
-
-  useEffect(() => {
-    return () => {
-      setTransactionHash(undefined);
-      setError(undefined);
-      onSuccessCalledRef.current = false; // Reset the ref when the component unmounts
-    };
-  }, []);
 
   return {
     onSubmitTransaction: submitTransaction,

@@ -6,14 +6,12 @@ import storage from 'local-storage-fallback';
 import { useEffect, useState, useCallback } from 'react';
 
 export default function usePasskeyConnection() {
-  const [initializing, setInitializing] = useState(true);
   const [signedInBefore, setSignedInBefore] = useState(false);
   const { login, register, isConnecting, isInitializing } = usePasskeyAccount();
 
   useEffect(() => {
     const usedBefore = storage.getItem('zerodev_wallet_signer') !== null;
     setSignedInBefore(usedBefore);
-    setInitializing(false);
   }, []);
 
   const handleRegister = useCallback(() => {
@@ -37,7 +35,7 @@ export default function usePasskeyConnection() {
   }, [login]);
 
   return {
-    initializing: isInitializing || initializing,
+    initializing: isInitializing,
     signedInBefore,
     register: handleRegister,
     login: handleLogin,
