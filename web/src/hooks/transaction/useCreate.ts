@@ -41,9 +41,9 @@ const useCreateChallenge = (
         console.log('e', e);
         toast.error('Error Creating a Challenge.', { id: 'create' });
       },
-      onSuccess: (reciept, events) => {
+      onSuccess: (receipt, events) => {
         toast.loading('Writing to DB...', { id: 'create' });
-        onSuccess?.(reciept, events);
+        onSuccess?.(receipt, events);
       },
       onSent: () => {
         toast.loading('Transaction sent...', { id: 'create' });

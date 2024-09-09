@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccount, useBalance, useDisconnect } from 'wagmi';
+import { useBalance, useDisconnect } from 'wagmi';
 import { usdcAddr } from '@/constants';
 import { formatUnits } from 'viem';
 import { getSlicedAddress, getExplorerLink } from '@/utils/address';
@@ -16,17 +16,15 @@ import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
 import { UserChallengeStatus } from '@/types';
 import { useState } from 'react';
-import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
 import { logEventSimple } from '@/utils/gtag';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 export default function ProfileContent() {
-  const { address, chainId } = useAccount();
-
-  const { disconnect } = useDisconnect();
+  const { address, logout } = usePasskeyAccount();
 
   const [isAddFundModalOpen, setAddFundModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
@@ -112,7 +110,7 @@ export default function ProfileContent() {
                     onClick={() => {
                       logEventSimple({ eventName: 'click_basescan', category: 'others' });
                     }}
-                    href={getExplorerLink(address, chainId ?? base.id)}
+                    href={getExplorerLink(address, base.id)}
                     target="_blank"
                   >
                     <ExternalLinkIcon />
@@ -207,7 +205,7 @@ export default function ProfileContent() {
                 type="button"
                 className="mt-4 min-h-12 w-1/2"
                 onClick={() => {
-                  void disconnect();
+                  void logout();
                   logEventSimple({ eventName: 'click_logout', category: 'connect' });
                 }}
               >

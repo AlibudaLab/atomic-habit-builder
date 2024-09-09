@@ -6,7 +6,8 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
-import { useAccount, useBalance } from 'wagmi';
+import { useBalance } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { Input } from '@nextui-org/input';
 import moment, { now } from 'moment';
 
@@ -37,7 +38,7 @@ export default function StakeChallenge() {
   const { push } = useRouter();
 
   const { challengeId } = useParams<{ challengeId: string }>();
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
 import CreateStep3 from './step3';
@@ -26,7 +26,7 @@ import { logEventSimple } from '@/utils/gtag';
  * @returns
  */
 export default function Create() {
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
