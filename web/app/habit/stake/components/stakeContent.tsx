@@ -288,10 +288,6 @@ export default function StakeChallenge() {
           )
         )}
 
-        {challenge && (
-          <Leaderboard userRankings={challenge.joinedUsers} address="" challenge={challenge} />
-        )}
-
         {/**
          * If doesn't have enough balance -> Mint first
          * If has enough balance -> Show balance
@@ -322,6 +318,10 @@ export default function StakeChallenge() {
               </p>
             )}
           </div>
+        )}
+
+        {challenge && (
+          <Leaderboard userRankings={challenge.joinedUsers} address="" challenge={challenge} />
         )}
       </div>
     </main>

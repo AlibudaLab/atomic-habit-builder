@@ -1,16 +1,15 @@
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 import { Snippet } from '@nextui-org/snippet';
 import { Select, SelectItem } from '@nextui-org/select';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
+import { useAccount } from 'wagmi';
 
-import usdc from '@/imgs/coins/usdc.png';
-import Image from 'next/image';
 import { Checkbox } from '@nextui-org/react';
 import { logEventSimple } from '@/utils/gtag';
 
-const addressMask = '********************************************';
+const addressMask = '0x****';
 
 type DepositPopupProps = {
   onClose: () => void;
@@ -56,17 +55,20 @@ function DepositPopup({ onClose }: DepositPopupProps) {
         <label htmlFor="depositAddress" className="m-2 block font-bold">
           Deposit Address:
         </label>
-        <div id="depositAddress" className="m-2 break-all rounded">
+        <div id="depositAddress" className="m-2">
           <Snippet
             symbol=""
             color="default"
             onClick={() => {
               logEventSimple({ eventName: 'click_copy_address', category: 'others' });
             }}
+            className="w-full"
           >
-            <span className="whitespace-normal break-all font-nunito">
-              {confirmBox1Checked && confirmBox2Checked ? address : addressMask}{' '}
-            </span>
+            <div className="w-full overflow-hidden">
+              <span className="block truncate font-nunito text-sm">
+                {confirmBox1Checked && confirmBox2Checked ? address : addressMask}
+              </span>
+            </div>
           </Snippet>
         </div>
       </div>
