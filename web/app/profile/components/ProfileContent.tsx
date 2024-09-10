@@ -22,9 +22,10 @@ import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
 import { logEventSimple } from '@/utils/gtag';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
+import Loading from 'app/habit/components/Loading';
 
 export default function ProfileContent() {
-  const { address, logout } = usePasskeyAccount();
+  const { address, logout, isInitializing } = usePasskeyAccount();
 
   const [isAddFundModalOpen, setAddFundModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
@@ -84,7 +85,9 @@ export default function ProfileContent() {
 
         <SubTitle text="User Profile" />
 
-        {address === undefined ? (
+        {isInitializing ? (
+          <Loading />
+        ) : address === undefined ? (
           <div className="flex flex-col items-center justify-center">
             <div className="my-4 pt-10 font-nunito text-sm">Connect to view your profile</div>
             <SignInAndRegister />

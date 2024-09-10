@@ -118,9 +118,9 @@ export function PasskeyProvider({ children }: { children: ReactNode }) {
       },
     });
 
+    setAddress(newAccount.address.toLowerCase() as Address);
     setAccount(newAccount);
     setAccountClient(newAccountClient);
-    setAddress(newAccount.address.toLowerCase() as Address);
     storage.setItem('userAddress', newAccount.address);
   }, []);
 
@@ -180,6 +180,7 @@ export function PasskeyProvider({ children }: { children: ReactNode }) {
       } catch (error) {
         console.error('Initialization failed:', error);
       } finally {
+        console.log('done initialize reconnecting');
         setIsInitializing(false);
       }
     };

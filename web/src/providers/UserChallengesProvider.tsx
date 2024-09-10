@@ -10,6 +10,7 @@ import {
 import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { getUserChallengeStatus } from '@/utils/challenges';
+import { usePasskeyAccount } from './PasskeyProvider';
 
 type UserChallengesContextType = {
   loading: boolean;
@@ -22,13 +23,11 @@ const UserChallengesContext = createContext<UserChallengesContextType | undefine
 
 export function UserChallengesProvider({
   children,
-  address,
 }: {
   children: ReactNode;
-  address: string | undefined;
 }) {
-  const [loading, setLoading] = useState(true);
-
+  const { address } = usePasskeyAccount();
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ChallengeWithCheckIns[]>([]);
   const [error, setError] = useState<unknown | null>(null);
   const { challenges } = useAllChallenges();
@@ -77,9 +76,9 @@ export function UserChallengesProvider({
         });
 
         setData(challengesWithCheckIns);
-        setLoading(false);
       } catch (_error) {
         setError(_error);
+      } finally {
         setLoading(false);
       }
     },
@@ -87,13 +86,12 @@ export function UserChallengesProvider({
   );
 
   useEffect(() => {
-    void fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
     if (address) {
-      console.log('address', address);
+      setLoading(true); // Set loading to true immediately when address changes
       void fetchData();
+    } else {
+      setLoading(false);
+      setData([]);
     }
   }, [address, fetchData]);
 
