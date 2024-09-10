@@ -8,6 +8,7 @@ import { Button } from '@nextui-org/react';
 import { Switch } from '@nextui-org/switch';
 
 import { ChallengeTypes } from '@/constants';
+import { logEventSimple } from '@/utils/gtag';
 
 type Step1Props = {
   name: string;
@@ -97,6 +98,7 @@ export default function CreateStep1({
       <Button
         onClick={() => {
           setStep(2);
+          logEventSimple({ eventName: 'click_create_next_button', category: 'create' });
         }}
         className="mt-8 min-h-12 w-full"
         color="primary"

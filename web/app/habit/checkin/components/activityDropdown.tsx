@@ -3,6 +3,7 @@ import { getActivityDuration, timeDifference } from '@/utils/time';
 import { Select, SelectItem } from '@nextui-org/select';
 
 import { CheckInFields } from '@/hooks/transaction/useCheckInRun';
+import { logEventSimple } from '@/utils/gtag';
 
 const hasDistance = (data: StravaData) => {
   return (data as StravaRunData).distance !== undefined;
@@ -42,6 +43,7 @@ export function ActivityDropDown({
               key={activity.id.toString()}
               onClick={() => {
                 onActivitySelect(activity.id);
+                logEventSimple({ eventName: 'click_strava_reocrd', category: 'checkin' });
               }}
               textValue={`${activity.name} (${timeDifference(
                 Date.now(),

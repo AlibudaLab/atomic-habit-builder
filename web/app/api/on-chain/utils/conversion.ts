@@ -33,7 +33,10 @@ export function transformChallenge(challenge: Challenge) {
   return {
     ...challenge,
     id: convertBytesToNumber(challenge.id).toString(),
-    joinedUsers: challenge.joinedUsers.map((user) => user.user.id),
+    joinedUsers: challenge.joinedUsers.map((user) => ({
+      id: user.user.id,
+      totalCheckIns: user.totalCheckIns,
+    })),
 
     winningStakePerUser: calculateWinningStakePerUser(
       BigInt(challenge.totalUsers),

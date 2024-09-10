@@ -31,13 +31,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${nunito.className} ${londrina.variable} ${nunito.variable}`}>
-      <body className="flex flex-1 flex-col items-center pb-[100px]">
+      <body className="flex flex-1 flex-col items-center bg-white">
         <Providers>
-          <div className="container flex max-w-[440px] flex-col items-center justify-center bg-white px-4 pt-8">
+          <div className="container max-w-[440px] flex-1 px-4 pb-[120px] pt-8">
             <Header />
             {children}
-            <NavbarFooter />
           </div>
+          <NavbarFooter />
         </Providers>
       </body>
       <GoogleAnalytics />

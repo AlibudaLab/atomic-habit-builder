@@ -1,9 +1,10 @@
 'use client';
 
+import { logEventSimple } from '@/utils/gtag';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function () {
+export default function useSocialShare() {
   const path = usePathname();
 
   const [fullPathShare, setFullPathShare] = useState<string>('');
@@ -23,6 +24,7 @@ export default function () {
     shareUrl.searchParams.set('via', via);
     shareUrl.searchParams.set('url', url);
     open(shareUrl.toString());
+    logEventSimple({ eventName: 'click_facaster_share', category: 'share' });
   };
 
   const shareOnTelegram = (text: string, url: string = fullPathShare) => {
@@ -37,6 +39,7 @@ export default function () {
     url.searchParams.set('text', text);
     embeds.forEach((embed) => url.searchParams.append('embeds[]', embed));
     open(url.toString());
+    logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
 
   return {

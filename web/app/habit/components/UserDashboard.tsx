@@ -5,6 +5,7 @@ import { ChallengeWithCheckIns } from '@/types';
 import { ChallengePreview } from './ChallengeBox';
 import { useRouter } from 'next/navigation';
 import NewUser from './NewUser';
+import { logEventSimple } from '@/utils/gtag';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -29,7 +30,10 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
         <button
           type="button"
           key={`link-${idx}`}
-          onClick={() => push(`/habit/checkin/${challenge.id}`)}
+          onClick={() => {
+            push(`/habit/checkin/${challenge.id}`);
+            logEventSimple({ eventName: 'click_challenge_joined_ongoing', category: 'browse' });
+          }}
           className="w-full transition-transform duration-100 focus:scale-105"
         >
           <ChallengePreview
@@ -40,7 +44,13 @@ export default function Dashboard({ onGoingChallenges }: DashboardProps) {
         </button>
       ))}
 
-      <button onClick={() => push('/habit/history')} className="my-6 py-4 text-dark">
+      <button
+        onClick={() => {
+          push('/habit/history');
+          logEventSimple({ eventName: 'click_challenge_history', category: 'browse' });
+        }}
+        className="my-6 py-4 text-dark"
+      >
         <p className="font underline"> Challenge History </p>
       </button>
     </div>

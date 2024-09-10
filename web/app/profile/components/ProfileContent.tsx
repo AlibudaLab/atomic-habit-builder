@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccount, useBalance, useDisconnect } from 'wagmi';
+import { useBalance, useDisconnect } from 'wagmi';
 import { usdcAddr } from '@/constants';
 import { formatUnits } from 'viem';
 import { getSlicedAddress, getExplorerLink } from '@/utils/address';
@@ -14,19 +14,20 @@ import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
-import { UserChallengeStatus, UserStatus } from '@/types';
+import { UserChallengeStatus } from '@/types';
 import { useState } from 'react';
-import DepositPopup from 'app/habit/stake/components/DepositPopup';
 import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
+import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
+import { logEventSimple } from '@/utils/gtag';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
+import Loading from 'app/habit/components/Loading';
 
 export default function ProfileContent() {
-  const { address, chainId } = useAccount();
+  const { address, logout, isInitializing } = usePasskeyAccount();
 
-  const { disconnect } = useDisconnect();
-
-  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isAddFundModalOpen, setAddFundModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   const { data: tokenBalance } = useBalance({
@@ -65,9 +66,16 @@ export default function ProfileContent() {
   }, BigInt(0));
 
   return (
-    <div className="container flex flex-col items-center pb-24">
+    <div className="container flex flex-col items-center">
       <div className="mx-2 w-full items-center">
-        {isDepositModalOpen && <DepositPopup onClose={() => setIsDepositModalOpen(false)} />}
+        {isAddFundModalOpen && (
+          <AddFundPopup
+            onClose={() => setAddFundModalOpen(false)}
+            address={address}
+            title="Top up your wallet"
+            description="Deposit more funds to join more challenges"
+          />
+        )}
         {isWithdrawModalOpen && (
           <WithdrawPopup
             onClose={() => setIsWithdrawModalOpen(false)}
@@ -77,7 +85,9 @@ export default function ProfileContent() {
 
         <SubTitle text="User Profile" />
 
-        {address === undefined ? (
+        {isInitializing ? (
+          <Loading />
+        ) : address === undefined ? (
           <div className="flex flex-col items-center justify-center">
             <div className="my-4 pt-10 font-nunito text-sm">Connect to view your profile</div>
             <SignInAndRegister />
@@ -99,7 +109,13 @@ export default function ProfileContent() {
                     }}
                   />
 
-                  <Link href={getExplorerLink(address, chainId ?? base.id)} target="_blank">
+                  <Link
+                    onClick={() => {
+                      logEventSimple({ eventName: 'click_basescan', category: 'others' });
+                    }}
+                    href={getExplorerLink(address, base.id)}
+                    target="_blank"
+                  >
                     <ExternalLinkIcon />
                   </Link>
                 </div>
@@ -125,7 +141,10 @@ export default function ProfileContent() {
                 <Button
                   isIconOnly
                   className="bg-slate-100"
-                  onClick={() => setIsDepositModalOpen(true)}
+                  onClick={() => {
+                    setAddFundModalOpen(true);
+                    logEventSimple({ eventName: 'click_deposit_profile', category: 'profile' });
+                  }}
                 >
                   <PlusCircleIcon size={20} />
                 </Button>
@@ -134,7 +153,10 @@ export default function ProfileContent() {
                 <Button
                   isIconOnly
                   className="bg-slate-100"
-                  onClick={() => setIsWithdrawModalOpen(true)}
+                  onClick={() => {
+                    setIsWithdrawModalOpen(true);
+                    logEventSimple({ eventName: 'click_withdraw_profile', category: 'profile' });
+                  }}
                 >
                   <MinusCircleIcon size={20} />
                 </Button>
@@ -186,7 +208,8 @@ export default function ProfileContent() {
                 type="button"
                 className="mt-4 min-h-12 w-1/2"
                 onClick={() => {
-                  void disconnect();
+                  void logout();
+                  logEventSimple({ eventName: 'click_logout', category: 'connect' });
                 }}
               >
                 Log out

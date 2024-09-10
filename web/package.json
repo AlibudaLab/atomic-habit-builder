@@ -15,7 +15,9 @@
     "stylelint:check": "stylelint '**/*.css'",
     "test": "jest .",
     "test:coverage": "jest . --coverage",
-    "test:coverage:open": "yarn test:coverage && open coverage/lcov-report/index.html"
+    "test:coverage:open": "yarn test:coverage && open coverage/lcov-report/index.html",
+    "cypress": "cypress open",
+    "test:e2e": "cypress run"
   },
   "dependencies": {
     "@alibuda/zerodev-wallet": "0.2.0",
@@ -42,8 +44,9 @@
     "@react-spring/web": "^9.7.3",
     "@sentry/nextjs": "^8.26.0",
     "@tanstack/react-query": "^5.20.1",
-    "@zerodev/passkey-validator": "^5.4.0",
-    "@zerodev/wallet": "^0.1.1",
+    "@zerodev/passkey-validator": "^5.4.1",
+    "@zerodev/sdk": "^5.3.13",
+    "@zerodev/webauthn-key": "^5.3.2",
     "abitype": "^0.10.3",
     "clipboard-copy": "^4.0.1",
     "clsx": "^2.1.0",
@@ -87,6 +90,7 @@
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
     "@jest/globals": "^29.7.0",
+    "@testing-library/cypress": "^10.0.2",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
@@ -106,6 +110,7 @@
     "@wagmi/cli": "2.1.4",
     "autoprefixer": "^10.4.16",
     "babel-jest": "^29.7.0",
+    "cypress": "^13.14.0",
     "eslint": "^8.27.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-airbnb-typescript": "17.0.0",

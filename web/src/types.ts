@@ -11,6 +11,11 @@ export enum WorkoutVerifier {
   Strava = 'Strava',
 }
 
+export type User = {
+  id: string;
+  totalCheckIns: string;
+};
+
 // Raw data from the chain / subgraph
 export type ChallengeDetail = {
   id: number;
@@ -25,6 +30,7 @@ export type ChallengeDetail = {
   totalStaked: bigint;
   succeedClaimable: bigint;
   challengeStatus: ChallengeStatus;
+  joinedUsers: User[];
 };
 
 // Defined by us, off-chain

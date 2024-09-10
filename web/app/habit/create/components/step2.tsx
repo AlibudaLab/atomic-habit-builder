@@ -9,7 +9,7 @@ import { Button } from '@nextui-org/button';
 import Image from 'next/image';
 
 import usdcLogo from '@/imgs/coins/usdc.png';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 
@@ -30,7 +30,7 @@ export default function CreateStep2({
   isCreating,
   setStep,
 }: Step2Props) {
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   return (
     <div className="flex w-full flex-grow flex-col items-center justify-start px-8">

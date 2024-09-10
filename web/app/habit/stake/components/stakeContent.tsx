@@ -6,7 +6,8 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { formatUnits } from 'viem';
-import { useAccount, useBalance } from 'wagmi';
+import { useBalance } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { Input } from '@nextui-org/input';
 import moment, { now } from 'moment';
 
@@ -17,7 +18,7 @@ import { getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
-import InsufficientBalancePopup from './InsufficientBalancePopup';
+import AddFundPopup from './AddFundPopup';
 import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
@@ -25,10 +26,11 @@ import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { Checkbox } from '@nextui-org/react';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
-import { logEvent } from '@/utils/gtag';
+import { logEvent, logEventSimple } from '@/utils/gtag';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import useChallenge from '@/hooks/useChallenge';
 import { useUserStatus } from '@/hooks/useUserStatus';
+import Leaderboard from 'app/habit/components/Leaderboard';
 
 const isTestnet = getCurrentEnvironment() === Environment.testnet;
 
@@ -36,7 +38,7 @@ export default function StakeChallenge() {
   const { push } = useRouter();
 
   const { challengeId } = useParams<{ challengeId: string }>();
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const searchParams = useSearchParams();
   const attachedCode = searchParams.get('code') ?? '';
@@ -88,27 +90,20 @@ export default function StakeChallenge() {
     Number(tokenBalance.value.toString()) >= Number(challenge.stake.toString());
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
-  const [isInsufficientBalancePopupOpen, setIsInsufficientBalancePopupOpen] = useState(false);
-  const [isDepositPopupOpen, setIsDepositPopupOpen] = useState(false);
+  const [isAddFundPopupOpen, setIsAddFundPopupOpen] = useState(false);
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
-  const handleOpenInsufficientBalancePopup = useCallback(
-    () => setIsInsufficientBalancePopupOpen(true),
-    [],
-  );
-  const handleCloseInsufficientBalancePopup = useCallback(
-    () => setIsInsufficientBalancePopupOpen(false),
-    [],
-  );
-  const handleOpenDepositPopup = useCallback(() => {
-    logEvent({ action: 'deposit', category: 'account', label: 'deposit', value: 1 });
-    setIsDepositPopupOpen(true);
+  const handleOpenAddFundPopup = useCallback(() => {
+    setIsAddFundPopupOpen(true);
+    logEventSimple({ eventName: 'click_deposit_challenge', category: 'challenge' });
   }, []);
-  const handleCloseDepositPopup = useCallback(() => setIsDepositPopupOpen(false), []);
+  const handleCloseAddFundPopup = useCallback(() => setIsAddFundPopupOpen(false), []);
+
   const handleCheckInPageClick = useCallback(() => {
     // Logic to navigate to the check-in page
     push(`/habit/checkin/${challengeId}`);
+    logEventSimple({ eventName: 'click_check_in_popup', category: 'challenge' });
   }, [challengeId, push]);
 
   const {
@@ -147,7 +142,7 @@ export default function StakeChallenge() {
       onJoinTx();
       return;
     }
-    handleOpenInsufficientBalancePopup();
+    handleOpenAddFundPopup();
   };
 
   return (
@@ -275,14 +270,9 @@ export default function StakeChallenge() {
             onCheckInPageClick={handleCheckInPageClick}
           />
         )}
-        {isInsufficientBalancePopupOpen && !hasEnoughBalance && (
-          <InsufficientBalancePopup
-            onClose={handleCloseInsufficientBalancePopup}
-            onDepositClick={handleOpenDepositPopup}
-          />
+        {isAddFundPopupOpen && !hasEnoughBalance && (
+          <AddFundPopup address={address} onClose={handleCloseAddFundPopup} />
         )}
-
-        {isDepositPopupOpen && <DepositPopup onClose={handleCloseDepositPopup} />}
 
         {loadingChallenge ? (
           <Loading />
@@ -328,6 +318,10 @@ export default function StakeChallenge() {
               </p>
             )}
           </div>
+        )}
+
+        {challenge && (
+          <Leaderboard userRankings={challenge.joinedUsers} address="" challenge={challenge} />
         )}
       </div>
     </main>

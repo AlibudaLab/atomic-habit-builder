@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import CreateStep1 from './step1';
 import CreateStep2 from './step2';
 import CreateStep3 from './step3';
@@ -18,6 +18,7 @@ const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
+import { logEventSimple } from '@/utils/gtag';
 
 /**
  * TEMP: Workout & Running activity check-in
@@ -25,7 +26,7 @@ import { SubTitle } from '@/components/SubTitle/SubTitle';
  * @returns
  */
 export default function Create() {
-  const { address } = useAccount();
+  const { address } = usePasskeyAccount();
 
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
@@ -116,15 +117,16 @@ export default function Create() {
   const onClickCreate = useCallback(async () => {
     // submit create tx
     create();
+    logEventSimple({ eventName: 'click_create_button', category: 'create' });
   }, [create]);
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
+    <div className="flex h-full w-full flex-col items-center justify-start pt-8">
       <SubTitle text="Let's Build Another Habit" />
 
       <div
-        className={`mt-12 h-full w-screen max-w-[500px] flex-grow flex-col rounded-t-[20px] p-2 pb-24 shadow-large ${
-          loaded ? 'slide-up' : ''
+        className={`fixed bottom-0 left-0 right-0 h-[calc(100vh-180px)] w-full overflow-y-auto rounded-t-[20px] bg-white p-6 pb-24 shadow-large transition-transform duration-300 ease-in-out ${
+          loaded ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
         {/* Show text "create" and then the 3 sub steps */}

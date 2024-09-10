@@ -15,6 +15,7 @@ type AllChallengesContextType = {
   challenges: Challenge[];
   error: unknown | null;
   refetch: () => void;
+  refetchOnChainData: () => void;
 };
 
 const AllChallengesContext = createContext<AllChallengesContextType | undefined>(undefined);
@@ -32,7 +33,6 @@ type AllChallengesProviderProps = {
 };
 
 export function AllChallengesProvider({ children }: AllChallengesProviderProps) {
-  const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(true);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [error, setError] = useState<unknown | null>(null);
@@ -43,21 +43,14 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
     refetch: refetchMetaData,
   } = useChallengeMetaDatas();
 
-  const refetch = useCallback(() => {
-    refetchMetaData();
-    setCounter((c) => c + 1);
-  }, [refetchMetaData]);
+  const fetchChallenges = useCallback(
+    async (resetLoading = true) => {
+      if (loadingMetaData) return;
 
-  useEffect(() => {
-    if (loadingMetaData) return;
-
-    const fetchData = async () => {
       try {
-        console.log('fetch challenges counter', counter);
-        setLoading(true);
-
+        if (resetLoading) setLoading(true);
         const response = await fetch(`/api/on-chain/challenges`, { next: { revalidate: 0 } });
-        if (!response.ok) throw new Error('Failed to fetch challenge');
+        if (!response.ok) throw new Error('Failed to fetch challenges');
         const result = await response.json();
 
         const newData: Challenge[] = result.challenges
@@ -74,6 +67,7 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
             totalStaked: BigInt(challenge.totalStake),
             succeedClaimable: BigInt(challenge.winningStakePerUser),
             challengeStatus: challenge.status as ChallengeStatus,
+            joinedUsers: challenge.joinedUsers,
           }))
           .sort((a: ChallengeDetail, b: ChallengeDetail) =>
             a.startTimestamp > b.startTimestamp ? 1 : -1,
@@ -88,15 +82,29 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
           .filter((c: ChallengeDetail) => c !== undefined) as Challenge[];
 
         setChallenges(newData);
+        setError(null);
       } catch (_error) {
         setError(_error);
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [loadingMetaData, challengesMetaDatas],
+  );
 
-    fetchData().catch(console.error);
-  }, [loadingMetaData, challengesMetaDatas, counter]);
+  useEffect(() => {
+    void fetchChallenges(true);
+  }, [fetchChallenges]);
+
+  const refetch = useCallback(() => {
+    void refetchMetaData();
+    void fetchChallenges(false);
+  }, [refetchMetaData, fetchChallenges]);
+
+  // do not refetch metadata
+  const refetchOnChainData = useCallback(() => {
+    void fetchChallenges(false);
+  }, [fetchChallenges]);
 
   const contextValue = useMemo(
     () => ({
@@ -104,8 +112,9 @@ export function AllChallengesProvider({ children }: AllChallengesProviderProps) 
       challenges,
       error,
       refetch,
+      refetchOnChainData,
     }),
-    [loading, challenges, error, refetch],
+    [loading, challenges, error, refetch, refetchOnChainData],
   );
 
   return (

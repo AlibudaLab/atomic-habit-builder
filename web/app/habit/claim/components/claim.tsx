@@ -5,12 +5,13 @@ import { useParams, useRouter } from 'next/navigation';
 import useWithdraw from '@/hooks/transaction/useWithdraw';
 import ClaimedPopup from './ClaimedPopup';
 import { Button } from '@nextui-org/button';
-import { useAccount } from 'wagmi';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { formatUnits } from 'viem';
 import { ChallengeStatus, UserChallengeStatus } from '@/types';
 import moment from 'moment';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { useChallengeWithCheckIns } from '@/hooks/useChallengeWithCheckIns';
+import { logEventSimple } from '@/utils/gtag';
 
 export default function Claim() {
   const { push } = useRouter();
@@ -27,7 +28,7 @@ export default function Claim() {
     push('/');
   };
 
-  const { address: account } = useAccount();
+  const { address: account } = usePasskeyAccount();
 
   const needSettle = useMemo(
     () => challenge?.challengeStatus !== ChallengeStatus.Settled,
@@ -41,6 +42,7 @@ export default function Claim() {
       setClaimSuccess(true);
       refetch();
       handleOpenClaimedPopup();
+      logEventSimple({ eventName: 'click_claim_reward', category: 'challenge' });
     },
   );
 
