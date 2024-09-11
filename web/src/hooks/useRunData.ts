@@ -75,7 +75,7 @@ const useRunData = (challenge: Challenge) => {
 
       setLoading(true);
       const { accessToken } = stravaUtils.splitSecret(secret);
-      console.log('using accessToken', accessToken);
+      
       try {
         const [newRunData, newWorkoutData, newCyclingData] = await Promise.all([
           stravaUtils.fetchActivities(

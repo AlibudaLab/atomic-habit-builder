@@ -142,6 +142,8 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       ? cyclingData
       : workoutData;
 
+  console.log('activitiesToUse:', activitiesToUse);
+
   const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
     fields,
     () => {
