@@ -12,7 +12,7 @@ import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { logEventSimple } from '@/utils/gtag';
 
 export default function ChallengeList() {
-  const { address } = usePasskeyAccount();
+  const { address, isInitializing } = usePasskeyAccount();
 
   const { challenges: allChallenges, loading: loadingChallenges } = useAllChallenges();
 
@@ -37,7 +37,7 @@ export default function ChallengeList() {
 
         <div className="pt-8" />
         {/* Challenge List */}
-        {loadingUserData || loadingChallenges ? (
+        {isInitializing || loadingUserData || loadingChallenges ? (
           <Loading />
         ) : (
           challenges.map((challenge) => {

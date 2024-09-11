@@ -323,6 +323,10 @@ export default function StakeChallenge() {
             )}
           </div>
         )}
+
+        {challenge && (
+          <Leaderboard userRankings={challenge.joinedUsers} address="" challenge={challenge} />
+        )}
       </div>
     </main>
   );
