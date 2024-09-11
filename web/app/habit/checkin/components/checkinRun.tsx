@@ -135,14 +135,12 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     window.location = authUrl as any;
   }, []);
 
-  const activitiesToUse =
-    challenge.type === ChallengeTypes.Run
-      ? runData
+  const activitiesToUse: stravaUtils.StravaData[] =
+    challenge.type === ChallengeTypes.Workout
+      ? workoutData
       : challenge.type === ChallengeTypes.Cycling
       ? cyclingData
-      : workoutData;
-
-  console.log('activitiesToUse:', activitiesToUse);
+      : runData;
 
   const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
     fields,
@@ -150,31 +148,25 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       if (fields.activityId) {
         addToActivityMap(fields.challengeId, fields.activityId.toString());
         // Find the checked-in activity
-        const checkedInActivity = activitiesToUse.find(a => a.id === fields.activityId);
+        const checkedInActivity = activitiesToUse.find((a) => a.id === fields.activityId);
         if (checkedInActivity) {
           const baseActivity = {
             id: checkedInActivity.id,
             type: challenge.type,
             name: checkedInActivity.name,
-            moving_time: checkedInActivity.moving_time
+            moving_time: checkedInActivity.moving_time,
           };
 
-          switch (challenge.type) {
-            case ChallengeTypes.Run:
-            case ChallengeTypes.Cycling:
-              setLastCheckedInActivity({
-                ...baseActivity,
-                distance: (checkedInActivity as stravaUtils.StravaRunData).distance,
-                polyline: (checkedInActivity as stravaUtils.StravaRunData).polyline
-              });
-              break;
-            case ChallengeTypes.Workout:
-              setLastCheckedInActivity(baseActivity);
-              break;
-            default:
-              console.error('Unknown challenge type:', challenge.type);
-              setLastCheckedInActivity(baseActivity);
-          }
+          const activityToSet =
+            'distance' in checkedInActivity && 'map' in checkedInActivity
+              ? {
+                  ...baseActivity,
+                  distance: checkedInActivity.distance,
+                  polyline: checkedInActivity.map.summary_polyline,
+                }
+              : baseActivity;
+
+          setLastCheckedInActivity(activityToSet);
         }
       }
       resetFields();
