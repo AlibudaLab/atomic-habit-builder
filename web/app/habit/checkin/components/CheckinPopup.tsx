@@ -26,7 +26,13 @@ type CheckinPopupProps = {
   } | null;
 };
 
-function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn, lastCheckedInActivity }: CheckinPopupProps) {
+function CheckinPopup({
+  challenge,
+  onClose,
+  onCheckInPageClick,
+  checkedIn,
+  lastCheckedInActivity,
+}: CheckinPopupProps) {
   const isFinished = useMemo(
     () => checkedIn >= challenge.minimumCheckIns,
     [checkedIn, challenge.minimumCheckIns],
