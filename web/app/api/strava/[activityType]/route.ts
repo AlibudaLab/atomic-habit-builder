@@ -62,7 +62,6 @@ export async function GET(
               map: activity.map,
               max_heartrate: activity.max_heartrate,
               timestamp: activity.start_date,
-              polyline: activity.map?.summary_polyline ?? '',
             };
           }),
         },
@@ -77,8 +76,8 @@ export async function GET(
               name: activity.name,
               distance: activity.distance,
               moving_time: activity.moving_time,
+              map: activity.map,
               timestamp: activity.start_date,
-              polyline: activity.map?.summary_polyline ?? '',
             };
           }),
         },
