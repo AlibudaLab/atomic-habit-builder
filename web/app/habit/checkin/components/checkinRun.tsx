@@ -60,25 +60,20 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   );
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
+  const [lastCheckedInActivity, setLastCheckedInActivity] = useState<{
+    id: number;
+    type: string;
+    name: string;
+    moving_time: number;
+    distance?: number;
+    polyline?: string;
+  } | null>(null);
 
   const handleOpenCheckinPopup = useCallback(() => setIsCheckinPopupOpen(true), []);
   const handleCloseCheckinPopup = useCallback(() => setIsCheckinPopupOpen(false), []);
   const handleChallengeListClick = useCallback(() => {
     push('/');
   }, [push]);
-
-  const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
-    fields,
-    () => {
-      if (fields.activityId) addToActivityMap(fields.challengeId, fields.activityId.toString());
-      resetFields();
-      Promise.all([refetchAll()]).catch((error) => {
-        console.error('Error refetching data:', error);
-        // Optionally, handle the error more specifically here
-      });
-      handleOpenCheckinPopup();
-    },
-  );
 
   const {
     connected: verifierConnected,
@@ -129,14 +124,6 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       });
   }, [address, chosenActivityId, challenge.id, setField]);
 
-  const onClickCheckIn = async () => {
-    if (fields.activityId === 0) {
-      toast.error('Please select an activity');
-      return;
-    }
-    onCheckInTx();
-  };
-
   // only show this button if user is not connected to strava
   const onClickConnectStrava = useCallback(() => {
     logEventSimple({ eventName: 'click_connect_strava', category: 'challenge' });
@@ -154,6 +141,56 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       : challenge.type === ChallengeTypes.Cycling
       ? cyclingData
       : workoutData;
+
+  const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
+    fields,
+    () => {
+      if (fields.activityId) {
+        addToActivityMap(fields.challengeId, fields.activityId.toString());
+        // Find the checked-in activity
+        const checkedInActivity = activitiesToUse.find(a => a.id === fields.activityId);
+        if (checkedInActivity) {
+          const baseActivity = {
+            id: checkedInActivity.id,
+            type: challenge.type,
+            name: checkedInActivity.name,
+            moving_time: checkedInActivity.moving_time
+          };
+
+          switch (challenge.type) {
+            case ChallengeTypes.Run:
+            case ChallengeTypes.Cycling:
+              setLastCheckedInActivity({
+                ...baseActivity,
+                distance: (checkedInActivity as stravaUtils.StravaRunData).distance,
+                polyline: (checkedInActivity as stravaUtils.StravaRunData).polyline
+              });
+              break;
+            case ChallengeTypes.Workout:
+              setLastCheckedInActivity(baseActivity);
+              break;
+            default:
+              console.error('Unknown challenge type:', challenge.type);
+              setLastCheckedInActivity(baseActivity);
+          }
+        }
+      }
+      resetFields();
+      Promise.all([refetchAll()]).catch((error) => {
+        console.error('Error refetching data:', error);
+        // Optionally, handle the error more specifically here
+      });
+      handleOpenCheckinPopup();
+    },
+  );
+
+  const onClickCheckIn = async () => {
+    if (fields.activityId === 0) {
+      toast.error('Please select an activity');
+      return;
+    }
+    onCheckInTx();
+  };
 
   return (
     <div className="flex h-screen w-full flex-col items-center px-4 text-center">
@@ -263,6 +300,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
           checkedIn={challenge.checkedIn}
           onClose={handleCloseCheckinPopup}
           onCheckInPageClick={handleChallengeListClick}
+          lastCheckedInActivity={lastCheckedInActivity}
         />
       )}
     </div>

@@ -16,9 +16,17 @@ type CheckinPopupProps = {
   onClose: () => void;
   onCheckInPageClick: () => void;
   checkedIn: number;
+  lastCheckedInActivity: {
+    id: number;
+    type: string;
+    name?: string;
+    distance?: number;
+    moving_time?: number;
+    polyline?: string;
+  } | null;
 };
 
-function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: CheckinPopupProps) {
+function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn, lastCheckedInActivity }: CheckinPopupProps) {
   const isFinished = useMemo(
     () => checkedIn >= challenge.minimumCheckIns,
     [checkedIn, challenge.minimumCheckIns],
@@ -35,6 +43,25 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: Che
   }, [isFinished, challenge.name]);
 
   const shareURL = window.origin + `/habit/stake/${challenge.id}`;
+
+  // Create a frame URL for Farcaster
+  const farcasterFrameURL = useMemo(() => {
+    if (!lastCheckedInActivity) return '';
+
+    const frameURL = new URL(`${window.origin}/api/frame/activity`);
+    frameURL.searchParams.set('type', lastCheckedInActivity.type);
+    frameURL.searchParams.set('name', lastCheckedInActivity.name ?? '');
+    if (lastCheckedInActivity.distance) {
+      frameURL.searchParams.set('distance', lastCheckedInActivity.distance.toString());
+    }
+    if (lastCheckedInActivity.moving_time) {
+      frameURL.searchParams.set('moving_time', lastCheckedInActivity.moving_time.toString());
+    }
+    frameURL.searchParams.set('ref_link', shareURL);
+    return frameURL.toString();
+  }, [lastCheckedInActivity, shareURL]);
+
+  console.log('farcasterFrameURL: ', farcasterFrameURL);
 
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
@@ -66,7 +93,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: Che
           </Button>
           <Button
             className="w-full"
-            onClick={() => shareOnFarcaster(shareContent, [shareURL])}
+            onClick={() => shareOnFarcaster(shareContent, [farcasterFrameURL])}
             endContent={<Image src={farcasterLogo} alt="warp" height={25} width={25} />}
           >
             Share on
