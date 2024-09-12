@@ -13,6 +13,7 @@ import {
 import { zeroDevApiKeys } from '@/constants';
 import { deserializePasskeyValidator } from '@zerodev/passkey-validator';
 import { getPasskeyData } from '@/utils/passkey';
+import { connect } from 'http2';
 
 const createCustomAccountClient = (chain: Chain, account: any) => {
   const zerodevApiKey = zeroDevApiKeys[chain.id];

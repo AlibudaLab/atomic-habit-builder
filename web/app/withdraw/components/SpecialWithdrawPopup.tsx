@@ -1,9 +1,9 @@
 import { useMemo, useState, useEffect } from 'react';
 import PopupWindow from '@/components/PopupWindow/PopupWindow';
 import { Input } from '@nextui-org/input';
-import { Address, Chain, formatUnits, isAddress, parseAbi, parseUnits, zeroAddress } from 'viem';
+import { formatUnits, isAddress, parseUnits } from 'viem';
 import { Button } from '@nextui-org/button';
-import { emergencySupportedChains, usdcAddr } from '@/constants';
+import { emergencySupportedChains, usdcContractAddrs } from '@/constants';
 import useTransferERC20ArbitraryChain from '@/hooks/transaction/useTransferERC20ArbitraryChain';
 import { getChainsForEnvironment } from '@/store/supportedChains';
 const defaultChain = getChainsForEnvironment();
@@ -24,11 +24,10 @@ function SpecialWithdrawPopup({ onClose, maxAmount, chainId }: WithdrawalProps) 
   const amountToWithdraw = useMemo(() => parseUnits(amount, 6), [amount]);
 
   const chain = useMemo(() => {
-    return emergencySupportedChains.find((chain) => chain.id === chainId) ?? defaultChain;
+    return emergencySupportedChains.find((c) => c.id === chainId) ?? defaultChain;
   }, [chainId]);
 
   useEffect(() => {
-    console.log('Number(amount)', Number(amount));
     if (isNaN(Number(amount))) {
       setAmountError('Please enter a valid number');
     } else if (maxAmount && amountToWithdraw > maxAmount) {
@@ -41,7 +40,7 @@ function SpecialWithdrawPopup({ onClose, maxAmount, chainId }: WithdrawalProps) 
   const invalidAddress = recipient !== '' && !isAddress(recipient);
 
   const { onSubmitTransaction: withdraw, isLoading: isSending } = useTransferERC20ArbitraryChain(
-    usdcAddr,
+    usdcContractAddrs[chain.id],
     recipient as `0x${string}`,
     amountToWithdraw,
     chain,
