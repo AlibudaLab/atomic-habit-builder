@@ -1,8 +1,8 @@
 import { ImageResponse } from '@vercel/og';
 import { robotoFontLink } from 'app/api/frame/utils/constants';
-import { formatTime } from 'app/api/frame/utils/format';
 import { getFont, getMapUrl } from 'app/api/frame/utils/getter';
 import { InfoBlock, TextBlock } from '../components/ActivityInfo';
+import { formatActivityTime } from '@/utils/timestamp';
 
 export const runtime = 'edge';
 
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
               marginBottom: type.toLowerCase() !== 'workout' ? '20px' : '0',
             }}
           >
-            <InfoBlock title="Time" value={formatTime(parseInt(movingTime, 10))} />
+            <InfoBlock title="Time" value={formatActivityTime(parseInt(movingTime, 10))} />
             {type.toLowerCase() !== 'workout' && (
               <InfoBlock
                 title="Distance"
