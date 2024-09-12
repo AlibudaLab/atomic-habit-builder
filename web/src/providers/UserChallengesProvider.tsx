@@ -21,11 +21,7 @@ type UserChallengesContextType = {
 
 const UserChallengesContext = createContext<UserChallengesContextType | undefined>(undefined);
 
-export function UserChallengesProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function UserChallengesProvider({ children }: { children: ReactNode }) {
   const { address } = usePasskeyAccount();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<ChallengeWithCheckIns[]>([]);

@@ -1,30 +1,16 @@
 import { createConfig, http } from 'wagmi';
-import { passkeyConnector } from '@alibuda/zerodev-wallet';
 import { getChainsForEnvironment } from './supportedChains';
-import { WebAuthnMode } from '@zerodev/passkey-validator';
+import { arbitrum, arbitrumSepolia } from 'viem/chains';
 
 const chain = getChainsForEnvironment();
 
-const zerodevUrl = `https://passkeys.zerodev.app/api/v4`;
-
 export function createWagmiConfig(rpcUrl: string, zerodevApiKey: string) {
   return createConfig({
-    chains: [chain],
-    connectors: [
-      passkeyConnector(
-        zerodevApiKey,
-        chain,
-        'v3.1',
-        'atomic',
-        zerodevUrl,
-        'register' as WebAuthnMode,
-      ), // connector[0] for register only
-
-      passkeyConnector(zerodevApiKey, chain, 'v3.1', 'atomic', zerodevUrl, 'login' as WebAuthnMode), // connector[1] for login
-    ],
-
+    chains: [chain, arbitrumSepolia, arbitrum],
     transports: {
       [chain.id]: http(rpcUrl),
+      [arbitrumSepolia.id]: http('https://arbitrum-sepolia.blockpi.network/v1/rpc/public'),
+      [arbitrum.id]: http(),
     },
   });
 }
