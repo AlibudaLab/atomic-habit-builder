@@ -82,8 +82,6 @@ function CheckinPopup({
     return frameURL.toString();
   }, [lastCheckedInActivity, shareURL]);
 
-  console.log('farcasterFrameURL: ', farcasterFrameURL);
-
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
   const content = (

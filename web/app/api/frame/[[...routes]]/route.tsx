@@ -22,8 +22,6 @@ app.frame('/activity', (c) => {
     ? `${baseUrl}/frame/activity?${searchParams.toString()}`
     : getRandomGif(gifUrls[type] ?? gifUrls.run);
 
-  console.log('imageUrl', imageUrl);
-
   return c.res({
     image: imageUrl,
     intents: [
