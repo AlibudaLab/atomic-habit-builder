@@ -37,8 +37,8 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
-const entryPoint = ENTRYPOINT_ADDRESS_V07;
-const kernelVersion = KERNEL_V3_1;
+export const entryPoint = ENTRYPOINT_ADDRESS_V07;
+export const kernelVersion = KERNEL_V3_1;
 
 const zerodevApiKey = process.env.NEXT_PUBLIC_ZERODEV_API_KEY;
 const passkeyServer = `https://passkeys.zerodev.app/api/v4`;

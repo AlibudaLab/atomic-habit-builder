@@ -19,7 +19,6 @@ import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
 import AddFundPopup from './AddFundPopup';
-import DepositPopup from './DepositPopup';
 import { Button } from '@nextui-org/button';
 import { Environment, getCurrentEnvironment } from '@/store/environment';
 import { useAllChallenges } from '@/providers/ChallengesProvider';
