@@ -2,7 +2,6 @@
 /** @jsxImportSource frog/jsx */
 import { Button, Frog } from 'frog';
 import { handle } from 'frog/next';
-import { NEXT_PUBLIC_URL } from '../config';
 import { getRandomGif } from '../utils/getter';
 import { gifUrls } from '../utils/constants';
 
@@ -15,19 +14,22 @@ app.frame('/activity', (c) => {
   const refLink = searchParams.get('ref_link');
   const polyline = searchParams.get('polyline');
   const type = (searchParams.get('type') as keyof typeof gifUrls) ?? 'run';
+  const baseUrl = process.env.VERCEL_URL ?? 'http://localhost:3000'
   searchParams.delete('routes');
   searchParams.delete('ref_link');
 
   const imageUrl = polyline
-    ? `${NEXT_PUBLIC_URL}/frame/activity?${searchParams.toString()}`
+    ? `${baseUrl}/frame/activity?${searchParams.toString()}`
     : getRandomGif(gifUrls[type] ?? gifUrls.run);
+
+  console.log('imageUrl', imageUrl);
 
   return c.res({
     image: imageUrl,
     intents: [
-      <Button.Redirect location={refLink ?? ''}>
+      <Button.Link href={refLink ?? ''}>
         {refLink ? '🏆 Compete with Me' : 'DM for Invite Link'}
-      </Button.Redirect>,
+      </Button.Link>,
       <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>,
     ],
   });
