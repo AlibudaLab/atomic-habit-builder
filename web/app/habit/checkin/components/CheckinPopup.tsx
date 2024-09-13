@@ -118,7 +118,7 @@ function CheckinPopup({
           </Button>
           <Button
             className="w-full"
-            onClick={() => shareOnFarcaster(shareContent, [farcasterFrameURL])}
+            onClick={() => shareOnFarcaster(shareContent, [encodeURI(farcasterFrameURL)])}
             endContent={<Image src={farcasterLogo} alt="warp" height={25} width={25} />}
           >
             Share on
