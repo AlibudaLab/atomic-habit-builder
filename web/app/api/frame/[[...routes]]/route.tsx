@@ -5,7 +5,15 @@ import { handle } from 'frog/next';
 import { getRandomGif } from '../utils/getter';
 import { gifUrls } from '../utils/constants';
 
-const app = new Frog({ basePath: '/api/frame', title: 'Atomic Frame' });
+const app = new Frog({
+  basePath: '/api/frame',
+  title: 'Atomic Frame',
+  imageOptions: {
+    headers: {
+      'Cache-Control': 'public, immutable, no-transform, max-age=60',
+    },
+  },
+});
 
 export const runtime = 'edge';
 
@@ -14,8 +22,8 @@ app.frame('/activity', (c) => {
   const refLink = searchParams.get('ref_link');
   const polyline = searchParams.get('polyline');
   const type = (searchParams.get('type') as keyof typeof gifUrls) ?? 'run';
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
   searchParams.delete('routes');
   searchParams.delete('ref_link');
@@ -30,7 +38,7 @@ app.frame('/activity', (c) => {
       <Button.Link href={refLink ?? ''}>
         {refLink ? '🏆 Compete with Me' : 'DM for Invite Link'}
       </Button.Link>,
-      <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>
+      <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>,
     ],
   });
 });

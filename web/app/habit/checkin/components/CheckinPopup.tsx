@@ -52,7 +52,9 @@ function CheckinPopup({
       : `I just checked in for the challenge ${challenge.name}!`;
 
     if (lastCheckedInActivity && !lastCheckedInActivity.polyline) {
-      content += `\n\n${challengeToEmoji(lastCheckedInActivity.type as ChallengeTypes)} ${lastCheckedInActivity.name}`;
+      content += `\n\n${challengeToEmoji(lastCheckedInActivity.type as ChallengeTypes)} ${
+        lastCheckedInActivity.name
+      }`;
       content += `\n⏱️ ${formatActivityTime(lastCheckedInActivity.moving_time)}`;
       if (lastCheckedInActivity.distance) {
         content += `\n📏 ${(lastCheckedInActivity.distance / 1000).toFixed(2)} km`;
@@ -79,7 +81,7 @@ function CheckinPopup({
     }
     if (lastCheckedInActivity.polyline) {
       frameURL.searchParams.set('polyline', lastCheckedInActivity.polyline);
-    }    
+    }
     frameURL.searchParams.set('ref_link', shareURL);
     return frameURL.toString();
   }, [lastCheckedInActivity, shareURL]);
