@@ -8,13 +8,6 @@ import { gifUrls } from '../utils/constants';
 const app = new Frog({
   basePath: '/api/frame',
   title: 'Atomic Frame',
-  imageOptions: {
-    width: 1200,
-    height: 630,
-    headers: {
-      'Cache-Control': 'public, immutable, no-transform, max-age=60',
-    },
-  },
 });
 
 export const runtime = 'edge';
