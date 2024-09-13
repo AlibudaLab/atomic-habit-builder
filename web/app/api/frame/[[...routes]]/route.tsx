@@ -30,8 +30,7 @@ app.frame('/activity', (c) => {
       <Button.Link href={refLink ?? ''}>
         {refLink ? '🏆 Compete with Me' : 'DM for Invite Link'}
       </Button.Link>,
-      <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>,
-      <Button.Link href={`https://${process.env.VERCEL_URL}`}>Test VERCEL_URL</Button.Link>,
+      <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>
     ],
   });
 });

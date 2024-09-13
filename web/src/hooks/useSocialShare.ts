@@ -35,8 +35,6 @@ export default function useSocialShare() {
   };
 
   const shareOnFarcaster = (text: string, embeds: string[] = [fullPathShare]) => {
-    console.log('shareOnFarcaster: ', text);
-    console.log('shareOnFarcaster embeds: ', embeds);
     const url = new URL('https://warpcast.com/~/compose');
     url.searchParams.set('text', text);
     embeds.forEach((embed) => url.searchParams.append('embeds[]', embed));

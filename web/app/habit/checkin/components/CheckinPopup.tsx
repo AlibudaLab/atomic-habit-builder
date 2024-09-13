@@ -62,10 +62,6 @@ function CheckinPopup({
     return content;
   }, [isFinished, challenge.name, lastCheckedInActivity]);
 
-  console.log('lastCheckedInActivity: ', lastCheckedInActivity);
-
-  console.log('shareContent: ', shareContent);
-
   const shareURL = window.origin + `/habit/stake/${challenge.id}`;
 
   console.log('shareURL: ', shareURL);

@@ -91,9 +91,6 @@ export async function GET(request: Request) {
         { name: 'Roboto', data: robotoRegular, weight: 400, style: 'normal' },
         { name: 'Roboto', data: robotoBold, weight: 700, style: 'normal' },
       ],
-      headers: {
-        'Cache-Control': 'public, immutable, no-transform, max-age=60'
-      }
     },
   );
 }
