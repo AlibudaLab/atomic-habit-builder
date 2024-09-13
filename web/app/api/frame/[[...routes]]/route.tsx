@@ -14,7 +14,9 @@ app.frame('/activity', (c) => {
   const refLink = searchParams.get('ref_link');
   const polyline = searchParams.get('polyline');
   const type = (searchParams.get('type') as keyof typeof gifUrls) ?? 'run';
-  const baseUrl = process.env.VERCEL_URL ?? 'http://localhost:3000'
+  const baseUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}` 
+    : 'http://localhost:3000';
   searchParams.delete('routes');
   searchParams.delete('ref_link');
 
@@ -29,6 +31,7 @@ app.frame('/activity', (c) => {
         {refLink ? '🏆 Compete with Me' : 'DM for Invite Link'}
       </Button.Link>,
       <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>,
+      <Button.Link href={`https://${process.env.VERCEL_URL}`}>Test VERCEL_URL</Button.Link>,
     ],
   });
 });
