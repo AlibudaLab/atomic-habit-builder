@@ -66,8 +66,6 @@ function CheckinPopup({
 
   const shareURL = window.origin + `/habit/stake/${challenge.id}`;
 
-  console.log('shareURL: ', shareURL);
-
   // Create a frame URL for Farcaster
   const farcasterFrameURL = useMemo(() => {
     if (!lastCheckedInActivity) return '';
