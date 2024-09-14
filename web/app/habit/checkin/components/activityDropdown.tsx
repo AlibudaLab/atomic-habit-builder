@@ -27,10 +27,10 @@ export function ActivityDropDown({
   const noActivities = activities && activities.length === 0 && !loading;
 
   return (
-    <div className="m-2 flex min-h-16 w-full max-w-80 p-2">
+    <div className="m-2 flex min-h-16 w-full items-center justify-center p-2">
       <Select
         label={noActivities ? 'No matched record' : 'Select an activity'}
-        className="max-w-xs"
+        className="w-full max-w-xs"
         value={fields.activityId}
         disabledKeys={usedActivities}
         isLoading={loading}

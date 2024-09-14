@@ -87,10 +87,7 @@ export default function Create() {
           challengeId,
           accessCode: accessCode,
           user: address,
-          metadata: {
-            allowSelfCheckIn,
-            allowedVerifiers: ['strava', 'self'],
-          },
+          allowSelfCheckIn,
         }),
       })
         .then((res) => {

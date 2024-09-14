@@ -17,7 +17,6 @@ import { ActivityDropDown } from './activityDropdown';
 import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
 import { Button, ButtonGroup } from '@nextui-org/react';
-import InviteLink from 'app/habit/components/InviteLink';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Leaderboard from 'app/habit/components/Leaderboard';
@@ -213,7 +212,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
             Self Check-In
           </Button>
         </ButtonGroup>
-        <div className="w-full max-w-md items-center justify-center">
+        <div className="w-full items-center justify-center">
           {' '}
           {/* Set a max width for consistency */}
           {checkInMethod === 'strava' ? (
@@ -230,7 +229,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
               <Button
                 type="button"
                 color="primary"
-                className="w-full"
+                className="mt-2 min-h-12 w-3/4 max-w-56"
                 onClick={onClickConnectStrava}
               >
                 Connect with Strava
@@ -238,6 +237,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
             )
           ) : (
             <SelfCheckInButton
+              selfCheckedIn={selfCheckedIn}
               setCheckedIn={setSelfCheckedIn}
               isDisabled={isCheckInLoading || isSigning}
               challengeType={challenge.type}
@@ -303,7 +303,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
           <Button
             type="button"
             color="primary"
-            className="mt-2 min-h-12 w-3/4 max-w-56"
+            className="mt-8 min-h-12 w-3/4 max-w-56"
             onClick={onClickCheckIn}
             isDisabled={
               isCheckInLoading ||

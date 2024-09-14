@@ -13,15 +13,6 @@ import usdcLogo from '@/imgs/coins/usdc.png';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 
-type Step2Props = {
-  stake: number;
-  setStake: (stake: number) => void;
-  setDonationAddr: (donationAddr: Address) => void;
-  onClickCreate: () => void;
-  isCreating: boolean;
-  setStep: (step: number) => void;
-};
-
 type CreateStep2Props = {
   stake: number;
   setStake: (stake: number) => void;

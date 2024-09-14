@@ -2,27 +2,30 @@ import React, { useCallback, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/modal';
 import { Input } from '@nextui-org/input';
+import { ImCheckboxUnchecked, ImCheckboxChecked } from 'react-icons/im';
 
 type SelfCheckInButtonProps = {
   isDisabled: boolean;
   challengeType: string;
   setCheckedIn: (checkedIn: boolean) => void;
+  selfCheckedIn: boolean;
 };
 
-function SelfCheckInButton({ setCheckedIn, isDisabled, challengeType }: SelfCheckInButtonProps) {
+function SelfCheckInButton({
+  selfCheckedIn,
+  setCheckedIn,
+  isDisabled,
+  challengeType,
+}: SelfCheckInButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [duration, setDuration] = useState('');
 
   const handleOpen = () => setIsOpen(true);
-  const handleClose = () => {
-    setIsOpen(false);
-    setDuration('');
-  };
+  const handleClose = () => setIsOpen(false);
 
   const handleConfirm = useCallback(() => {
     setCheckedIn(true);
     setIsOpen(false);
-  }, [setCheckedIn, setIsOpen]);
+  }, [setCheckedIn]);
 
   return (
     <>
@@ -32,6 +35,7 @@ function SelfCheckInButton({ setCheckedIn, isDisabled, challengeType }: SelfChec
         className="mt-2 min-h-12 w-3/4 max-w-56"
         onClick={handleOpen}
         isDisabled={isDisabled}
+        startContent={selfCheckedIn ? <ImCheckboxChecked color="green" /> : <ImCheckboxUnchecked />}
       >
         Log activity
       </Button>
@@ -41,14 +45,10 @@ function SelfCheckInButton({ setCheckedIn, isDisabled, challengeType }: SelfChec
           <ModalHeader>Self Check-In Confirmation</ModalHeader>
           <ModalBody>
             <div className="m-4 flex flex-col items-center gap-4">
-              <p>Are you sure you finished your {challengeType} today?</p>
-              <Input
-                label="Duration (minutes)"
-                type="number"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                placeholder="Enter duration in minutes"
-              />
+              <p>
+                🤔 Hold up! Did you really complete your {challengeType} today? Remember, honesty is
+                the best policy!
+              </p>
             </div>
           </ModalBody>
           <ModalFooter>
