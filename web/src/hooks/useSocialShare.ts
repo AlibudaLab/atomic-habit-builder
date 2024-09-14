@@ -38,6 +38,7 @@ export default function useSocialShare() {
     const url = new URL('https://warpcast.com/~/compose');
     url.searchParams.set('text', text);
     embeds.forEach((embed) => {
+      console.log('embeds', encodeURIComponent(embed));
       url.searchParams.append('embeds[]', encodeURIComponent(embed));
     });
     open(url.toString());
