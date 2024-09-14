@@ -2,6 +2,7 @@
 /** @jsxImportSource frog/jsx */
 import { Button, Frog } from 'frog';
 import { handle } from 'frog/next';
+import queryString from 'query-string';
 import { getRandomGif } from '../utils/getter';
 import { gifUrls } from '../utils/constants';
 
@@ -13,24 +14,28 @@ const app = new Frog({
 export const runtime = 'edge';
 
 app.frame('/activity', (c) => {
-  const { searchParams } = new URL(c.req.url);
-  const refLink = searchParams.get('ref_link');
-  const polyline = searchParams.get('polyline');
-  const type = (searchParams.get('type') as keyof typeof gifUrls) ?? 'run';
+  const { url } = c.req;
+  const parsedUrl = queryString.parseUrl(url);
+  const { ref_link: refLink, ...allParams } = parsedUrl.query;
+
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
-  searchParams.delete('routes');
-  searchParams.delete('ref_link');
 
-  const imageUrl = polyline
-    ? `${baseUrl}/frame/activity?${searchParams.toString()}`
-    : getRandomGif(gifUrls[type] ?? gifUrls.run);
+  const safeType =
+    (allParams.type as string) in gifUrls ? (allParams.type as keyof typeof gifUrls) : 'Run';
+
+  const queryParams = queryString.stringify(allParams);
+  const imageUrl = allParams.polyline
+    ? `${baseUrl}/frame/activity?${queryParams}`
+    : getRandomGif(gifUrls[safeType]);
+
+  const refLinkUrl = typeof refLink === 'string' ? refLink : 'https://t.me/alibuda_feedback/1';
 
   return c.res({
     image: imageUrl,
     intents: [
-      <Button.Link href={refLink ?? ''}>
+      <Button.Link href={refLinkUrl}>
         {refLink ? '🏆 Compete with Me' : 'DM for Invite Link'}
       </Button.Link>,
       <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>,
