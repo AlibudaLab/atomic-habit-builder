@@ -42,6 +42,7 @@ export type ChallengeMetaData = {
   public: boolean;
   accessCode?: string; // only for private challenges
   creator?: Address;
+  allowSelfCheckIn?: boolean;
 };
 
 export type Challenge = ChallengeDetail & ChallengeMetaData;
@@ -88,3 +89,6 @@ export enum UserChallengeStatus {
   Failed = 'Failed', // challenge is past end time, and user has not completed all check-ins
   Claimed = 'Claimed',
 }
+
+// Add this to your existing types
+export type Verifier = 'strava' | 'self';

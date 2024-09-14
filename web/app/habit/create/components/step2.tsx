@@ -3,14 +3,14 @@
 import React from 'react';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { donationDestinations } from '@/constants';
+import { ChallengeTypes, donationDestinations } from '@/constants';
 import { Address } from 'viem';
 import { Button } from '@nextui-org/button';
 import Image from 'next/image';
+import { Switch } from '@nextui-org/switch';
 
 import usdcLogo from '@/imgs/coins/usdc.png';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
-import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 
 type Step2Props = {
@@ -22,6 +22,17 @@ type Step2Props = {
   setStep: (step: number) => void;
 };
 
+interface CreateStep2Props {
+  stake: number;
+  setStake: (stake: number) => void;
+  setDonationAddr: (donationAddr: Address) => void;
+  onClickCreate: () => void;
+  isCreating: boolean;
+  setStep: (step: number) => void;
+  allowSelfCheckIn: boolean;
+  setAllowSelfCheckIn: (value: boolean) => void;
+}
+
 export default function CreateStep2({
   stake,
   setStake,
@@ -29,11 +40,13 @@ export default function CreateStep2({
   onClickCreate,
   isCreating,
   setStep,
-}: Step2Props) {
+  allowSelfCheckIn,
+  setAllowSelfCheckIn,
+}: CreateStep2Props) {
   const { address } = usePasskeyAccount();
 
   return (
-    <div className="flex w-full flex-grow flex-col items-center justify-start px-8">
+    <div className="flex w-full flex-col items-center justify-start">
       <Input
         type="number"
         label="Stake"
@@ -99,6 +112,14 @@ export default function CreateStep2({
         ) : (
           <ConnectButton className="mt-2 w-1/2" cta="Create" primary />
         )}
+      </div>
+
+      <div className="flex w-full items-center justify-between">
+        <span>Allow Self Check-In</span>
+        <Switch
+          checked={allowSelfCheckIn}
+          onChange={(e) => setAllowSelfCheckIn(e.target.checked)}
+        />
       </div>
     </div>
   );

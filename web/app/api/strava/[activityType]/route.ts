@@ -36,7 +36,21 @@ export async function GET(
       activityTypes.includes(activity.type),
     );
 
-    if (activityTypeKey === 'workout') {
+    if (activityTypeKey === 'all') {
+      return NextResponse.json(
+        {
+          activities: activities.map((activity: any) => {
+            return {
+              id: activity.id,
+              name: activity.name,
+              timestamp: activity.start_date,
+              moving_time: activity.moving_time,
+            };
+          }),
+        },
+        { status: 200 },
+      );
+    } else if (activityTypeKey === 'workout') {
       return NextResponse.json(
         {
           activities: activities.map((activity: any) => {
@@ -45,6 +59,9 @@ export async function GET(
               name: activity.name,
               moving_time: activity.moving_time,
               timestamp: activity.start_date,
+              distance: activity.distance,
+              map: activity.map,
+              max_heartrate: activity.max_heartrate,
             };
           }),
         },

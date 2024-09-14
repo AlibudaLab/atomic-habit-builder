@@ -86,6 +86,10 @@ export default function Create() {
           challengeId,
           accessCode: accessCode,
           user: address,
+          metadata: {
+            allowSelfCheckIn,
+            allowedVerifiers: ['strava', 'self'],
+          },
         }),
       })
         .then((res) => {
@@ -99,7 +103,7 @@ export default function Create() {
           toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address, isPublic, refetch],
+    [name, description, type, accessCode, address, isPublic, refetch, allowSelfCheckIn],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
@@ -189,6 +193,8 @@ export default function Create() {
             setDonationAddr={setDonationAddr}
             onClickCreate={onClickCreate}
             isCreating={isCreating}
+            allowSelfCheckIn={allowSelfCheckIn}
+            setAllowSelfCheckIn={setAllowSelfCheckIn}
           />
         )}
 

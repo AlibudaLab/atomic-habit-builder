@@ -1,7 +1,6 @@
 'use client';
 
 import { useRunVerifier } from '@/hooks/useStoredRunVerifier';
-import Header from '../../habit/components/Header';
 import { RunVerifier } from '@/types';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';

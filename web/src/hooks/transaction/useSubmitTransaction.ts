@@ -9,6 +9,7 @@ import {
 } from 'viem';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { UseSimulateContractParameters, useWaitForTransactionReceipt } from 'wagmi';
+import { currentChainId } from '@/constants';
 
 const getEvents = (
   contractCallConfig: UseSimulateContractParameters,
@@ -45,11 +46,14 @@ const useSubmitTransaction = (
   const [transactionHash, setTransactionHash] = useState<`0x${string}` | undefined>(undefined);
   const onSuccessCalledRef = useRef(false);
 
+  console.log('transactionHash', transactionHash);
+
   const { accountClient, account } = usePasskeyAccount();
 
   const { data: transactionReceipt, isLoading: isWaitForTransactionLoading } =
     useWaitForTransactionReceipt({
       hash: transactionHash,
+      chainId: currentChainId
     });
 
   const submitTransaction = useCallback(() => {
@@ -79,6 +83,7 @@ const useSubmitTransaction = (
         account: account,
       })
       .then((txHash) => {
+        console.log('txHash', txHash);
         setTransactionHash(txHash);
         onSuccessCalledRef.current = false;
         options?.onSent?.();
@@ -98,6 +103,7 @@ const useSubmitTransaction = (
   }, [accountClient, account, contractCallConfig, options]);
 
   useEffect(() => {
+    console.log('transactionReceipt', transactionReceipt);
     if (transactionReceipt && options?.onSuccess && !onSuccessCalledRef.current) {
       const events = getEvents(contractCallConfig, transactionReceipt);
       options.onSuccess(transactionReceipt, events as DecodeEventLogReturnType[]);

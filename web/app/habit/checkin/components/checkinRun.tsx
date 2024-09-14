@@ -11,17 +11,18 @@ import * as stravaUtils from '@/utils/strava';
 import { ChallengeTypes } from '@/constants';
 import useFields from '@/hooks/useFields';
 import useCheckInRun, { CheckInFields } from '@/hooks/transaction/useCheckInRun';
-import useRunData from '@/hooks/useRunData';
+import useStravaData from '@/hooks/useStravaData';
 import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
-import { Button } from '@nextui-org/button';
+import { Button, ButtonGroup } from '@nextui-org/react';
 import InviteLink from 'app/habit/components/InviteLink';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Leaderboard from 'app/habit/components/Leaderboard';
 import { logEventSimple } from '@/utils/gtag';
+import SelfCheckInButton from './SelfCheckInButton';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -30,7 +31,6 @@ const initFields: CheckInFields = {
 };
 
 /**
- * TEMP: Workout & Running activity check-in
  * @param param0
  * @returns
  */
@@ -40,6 +40,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   const [chosenActivityId, setChosenActivityId] = useState<number>(0);
   const { fields, setField, resetFields } = useFields<CheckInFields>(initFields);
   const { activityMap, addToActivityMap } = useActivityUsage(address);
+  const [selfCheckedIn, setSelfCheckedIn] = useState(false);
   const [isSigning, setIsSigning] = useState(false);
 
   const { refetch: refetchAll } = useUserChallenges();
@@ -80,19 +81,20 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     runData,
     workoutData,
     cyclingData,
-    error: runDataError,
     loading: stravaLoading,
-  } = useRunData(challenge);
+  } = useStravaData(challenge);
 
   // sign when address and activityId are ready (chosen)
   useEffect(() => {
-    if (!address || chosenActivityId === 0) return;
+    if (!address || (!selfCheckedIn && chosenActivityId === 0)) return;
+
+    const id = selfCheckedIn ? moment().unix() : chosenActivityId;
 
     const fetchURL =
       '/api/sign?' +
       new URLSearchParams({
         address: address as string,
-        activityId: chosenActivityId.toString(),
+        activityId: id.toString(),
         challengeId: challenge.id.toString(),
       }).toString();
 
@@ -113,7 +115,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         setField({
           signature: res.signature,
           challengeId: challenge.id,
-          activityId: chosenActivityId,
+          activityId: id,
         });
       })
       .catch((error) => {
@@ -122,7 +124,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       .finally(() => {
         setIsSigning(false);
       });
-  }, [address, chosenActivityId, challenge.id, setField]);
+  }, [address, chosenActivityId, challenge.id, setField, selfCheckedIn]);
 
   // only show this button if user is not connected to strava
   const onClickConnectStrava = useCallback(() => {
@@ -179,11 +181,72 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   );
 
   const onClickCheckIn = async () => {
-    if (fields.activityId === 0) {
+    if (checkInMethod === 'strava' && fields.activityId === 0) {
       toast.error('Please select an activity');
       return;
     }
     onCheckInTx();
+  };
+
+  const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
+
+  const renderCheckInOptions = () => {
+    if (!canCheckInNow) return null;
+
+    return (
+      <div className="flex w-full flex-col items-center justify-center">
+        <ButtonGroup className="mb-4">
+          <Button
+            className="text-xs"
+            color={checkInMethod === 'strava' ? 'primary' : 'default'}
+            variant="flat"
+            onClick={() => setCheckInMethod('strava')}
+          >
+            Strava
+          </Button>
+          <Button
+            className="text-xs"
+            color={checkInMethod === 'self' ? 'primary' : 'default'}
+            onClick={() => setCheckInMethod('self')}
+            variant="flat"
+            isDisabled={!challenge.allowSelfCheckIn}
+          >
+            Self Check-In
+          </Button>
+        </ButtonGroup>
+        <div className="w-full max-w-md items-center justify-center">
+          {' '}
+          {/* Set a max width for consistency */}
+          {checkInMethod === 'strava' ? (
+            verifierConnected ? (
+              <ActivityDropDown
+                isDisabled={!address}
+                fields={fields}
+                onActivitySelect={setChosenActivityId}
+                loading={stravaLoading}
+                activities={activitiesToUse}
+                usedActivities={activityMap[challenge.id]}
+              />
+            ) : (
+              <Button
+                type="button"
+                color="primary"
+                className="w-full"
+                onClick={onClickConnectStrava}
+              >
+                Connect with Strava
+              </Button>
+            )
+          ) : (
+            <SelfCheckInButton
+              setCheckedIn={setSelfCheckedIn}
+              isDisabled={isCheckInLoading || isSigning}
+              challengeType={challenge.type}
+            />
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -195,21 +258,21 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-xl font-bold text-dark"> Description </div>
+        <div className="text-base font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-xl font-bold text-dark"> Staked Amount </div>
+        <div className="text-base font-bold text-dark"> Staked Amount </div>
         <div className="flex text-sm text-primary">
           {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
         </div>
       </div>
 
-      <div className="w-full justify-start p-6 py-2 text-start">
+      {/* <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-xl font-bold text-dark"> Invite Others </div>
         <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
-      </div>
+      </div> */}
 
       <div className="m-4 text-center font-londrina text-base">
         ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
@@ -221,18 +284,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       {/* no address detected: ask user to connect */}
       {!address && <ConnectButton className="w-3/4" />}
 
-      {challenge.status === UserChallengeStatus.Ongoing && verifierConnected && canCheckInNow && (
-        <div className="flex w-full justify-center px-2">
-          <ActivityDropDown
-            isDisabled={!address}
-            fields={fields}
-            onActivitySelect={setChosenActivityId}
-            loading={stravaLoading}
-            activities={activitiesToUse}
-            usedActivities={activityMap[challenge.id]}
-          />
-        </div>
-      )}
+      {challenge.status === UserChallengeStatus.Ongoing && canCheckInNow && renderCheckInOptions()}
 
       {/* if user already finish, always allow going to the claim page */}
       {challenge.status === UserChallengeStatus.Claimable && (
@@ -248,7 +300,23 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
       {/* challenge is not finished yet */}
       {challenge.status !== UserChallengeStatus.NotJoined &&
-        (!canCheckInNow ? (
+        (canCheckInNow ? (
+          <Button
+            type="button"
+            color="primary"
+            className="mt-2 min-h-12 w-3/4 max-w-56"
+            onClick={onClickCheckIn}
+            isDisabled={
+              isCheckInLoading ||
+              isSigning ||
+              (checkInMethod === 'strava' && chosenActivityId === 0) ||
+              (checkInMethod === 'self' && !selfCheckedIn)
+            }
+            isLoading={isCheckInLoading || isSigning}
+          >
+            Check In
+          </Button>
+        ) : (
           <div className="flex w-full flex-col items-center justify-center gap-2">
             <Button
               className="mt-4 min-h-12 w-3/4 max-w-56"
@@ -262,26 +330,6 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
               {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
             </div>
           </div>
-        ) : verifierConnected && !runDataError ? (
-          <Button
-            type="button"
-            color="primary"
-            className="mt-4 min-h-12 w-3/4 max-w-56"
-            onClick={onClickCheckIn}
-            isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
-            isLoading={isCheckInLoading || isSigning}
-          >
-            Check In
-          </Button>
-        ) : (
-          <Button
-            type="button"
-            color="primary"
-            className="mt-4 min-h-12 w-3/4 max-w-56"
-            onClick={onClickConnectStrava}
-          >
-            Connect with Strava
-          </Button>
         ))}
 
       {challenge && address && (
