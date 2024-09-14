@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { STRAVA_API_BASE_URL } from '../config';
 
 /**
  * @param req
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       return NextResponse.json({ error: 'authToken is required' }, { status: 400 });
     }
 
-    const url = `https://www.strava.com/api/v3/oauth/token?client_id=${process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID}&client_secret=${process.env.STRAVA_CLIENT_SECRET}&code=${authToken}&grant_type=authorization_code`;
+    const url = `${STRAVA_API_BASE_URL}/oauth/token?client_id=${process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID}&client_secret=${process.env.STRAVA_CLIENT_SECRET}&code=${authToken}&grant_type=authorization_code`;
     const response = await fetch(url, { method: 'POST' });
 
     const userProfile = await response.json();

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { activityToStravaTypes } from '../utils';
+import { STRAVA_API_BASE_URL } from '../config';
 
 /**
  * @param req
@@ -28,7 +29,7 @@ export async function GET(
       return NextResponse.json({ error: 'accessToken is required' }, { status: 400 });
     }
 
-    const url = `https://www.strava.com/api/v3/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${perPage}`;
+    const url = `${STRAVA_API_BASE_URL}/athlete/activities?before=${before}&after=${after}&page=${page}&per_page=${perPage}`;
 
     const response = await fetch(url, { headers: { Authorization: `Bearer ${accessToken}` } });
     const activities = (await response.json()).filter((activity: any) =>
@@ -75,6 +76,7 @@ export async function GET(
               name: activity.name,
               distance: activity.distance,
               moving_time: activity.moving_time,
+              map: activity.map,
               timestamp: activity.start_date,
             };
           }),

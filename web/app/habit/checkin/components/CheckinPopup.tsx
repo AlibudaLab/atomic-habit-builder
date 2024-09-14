@@ -10,15 +10,32 @@ import { BsTwitterX } from 'react-icons/bs';
 import farcasterLogo from '@/imgs/socials/farcaster.png';
 import Image from 'next/image';
 import useSocialShare from '@/hooks/useSocialShare';
+import { formatActivityTime } from '@/utils/timestamp';
+import { challengeToEmoji } from '@/utils/challenges';
+import { ChallengeTypes } from '@/constants';
 
 type CheckinPopupProps = {
   challenge: Challenge;
   onClose: () => void;
   onCheckInPageClick: () => void;
   checkedIn: number;
+  lastCheckedInActivity: {
+    id: number;
+    type: string;
+    name: string;
+    moving_time: number;
+    distance?: number;
+    polyline?: string;
+  } | null;
 };
 
-function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: CheckinPopupProps) {
+function CheckinPopup({
+  challenge,
+  onClose,
+  onCheckInPageClick,
+  checkedIn,
+  lastCheckedInActivity,
+}: CheckinPopupProps) {
   const isFinished = useMemo(
     () => checkedIn >= challenge.minimumCheckIns,
     [checkedIn, challenge.minimumCheckIns],
@@ -30,11 +47,42 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: Che
   }, [isFinished]);
 
   const shareContent = useMemo(() => {
-    if (isFinished) return `I've completed the challenge ${challenge.name}!`;
-    return `I just checked in for the challenge ${challenge.name}!`;
-  }, [isFinished, challenge.name]);
+    let content = isFinished
+      ? `I've completed the challenge ${challenge.name}!`
+      : `I just checked in for the challenge ${challenge.name}!`;
+
+    if (lastCheckedInActivity && !lastCheckedInActivity.polyline) {
+      content += `\n\n${challengeToEmoji(lastCheckedInActivity.type as ChallengeTypes)} ${
+        lastCheckedInActivity.name
+      }`;
+      content += `\n⏱️ ${formatActivityTime(lastCheckedInActivity.moving_time)}`;
+      if (lastCheckedInActivity.distance) {
+        content += `\n📏 ${(lastCheckedInActivity.distance / 1000).toFixed(2)} km`;
+      }
+    }
+
+    return content;
+  }, [isFinished, challenge.name, lastCheckedInActivity]);
 
   const shareURL = window.origin + `/habit/stake/${challenge.id}`;
+
+  // Create a frame URL for Farcaster
+  const farcasterFrameURL = useMemo(() => {
+    if (!lastCheckedInActivity) return '';
+
+    const frameURL = new URL(`${window.origin}/api/frame/activity`);
+    frameURL.searchParams.set('type', lastCheckedInActivity.type);
+    frameURL.searchParams.set('name', lastCheckedInActivity.name ?? '');
+    frameURL.searchParams.set('moving_time', lastCheckedInActivity.moving_time.toString());
+    if (lastCheckedInActivity.distance) {
+      frameURL.searchParams.set('distance', lastCheckedInActivity.distance.toString());
+    }
+    if (lastCheckedInActivity.polyline) {
+      frameURL.searchParams.set('polyline', lastCheckedInActivity.polyline);
+    }
+    frameURL.searchParams.set('ref_link', shareURL);
+    return frameURL.toString();
+  }, [lastCheckedInActivity, shareURL]);
 
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
@@ -66,7 +114,7 @@ function CheckinPopup({ challenge, onClose, onCheckInPageClick, checkedIn }: Che
           </Button>
           <Button
             className="w-full"
-            onClick={() => shareOnFarcaster(shareContent, [shareURL])}
+            onClick={() => shareOnFarcaster(shareContent, [encodeURI(farcasterFrameURL)])}
             endContent={<Image src={farcasterLogo} alt="warp" height={25} width={25} />}
           >
             Share on

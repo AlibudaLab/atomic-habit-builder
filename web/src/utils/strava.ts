@@ -7,6 +7,9 @@ export type StravaRunData = {
   distance: number;
   max_heartrate: number;
   moving_time: number;
+  map: {
+    summary_polyline: string;
+  };
 };
 
 export type StravaWorkoutData = {
@@ -22,6 +25,9 @@ export type StravaCyclingData = {
   timestamp: string;
   distance: number;
   moving_time: number;
+  map: {
+    summary_polyline: string;
+  };
 };
 
 export type StravaData = StravaRunData | StravaWorkoutData | StravaCyclingData;
