@@ -41,10 +41,20 @@ export default function CreateStep1({
   setStep,
 }: Step1Props) {
   return (
-    <div className="flex w-full flex-col items-center justify-start px-8">
-      <Switch size="sm" className="my-2" isSelected={isPublic} onValueChange={setIsPublic}>
-        <p className="text-sm"> Public </p>{' '}
-      </Switch>
+    <div className="flex w-full flex-col items-center justify-start">
+      <div className="my-4 mb-2 w-full items-center justify-between px-1">
+        <div className="flex justify-between">
+          <span className="text-sm">{isPublic ? 'Public' : 'Private'} Challenge</span>
+          <Switch size="sm" isSelected={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
+        </div>
+
+        {/* description */}
+        <div className="text-xs text-gray-400">
+          {isPublic
+            ? 'Anyone can view / join the challenge'
+            : 'Only people with invite link can join the challenge'}
+        </div>
+      </div>
 
       <Input
         type="text"

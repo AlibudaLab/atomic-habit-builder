@@ -22,7 +22,7 @@ type Step2Props = {
   setStep: (step: number) => void;
 };
 
-interface CreateStep2Props {
+type CreateStep2Props = {
   stake: number;
   setStake: (stake: number) => void;
   setDonationAddr: (donationAddr: Address) => void;
@@ -31,7 +31,7 @@ interface CreateStep2Props {
   setStep: (step: number) => void;
   allowSelfCheckIn: boolean;
   setAllowSelfCheckIn: (value: boolean) => void;
-}
+};
 
 export default function CreateStep2({
   stake,
@@ -64,23 +64,31 @@ export default function CreateStep2({
 
       <Input
         type="text"
-        label="Verifier"
+        label="External Data Source"
         value="Strava"
         className="my-4"
         readOnly
-        description="Only supports Strava now"
+        description="Strava is currently the only supported external data source for activity verification."
         isDisabled
       />
 
-      <Input
-        type="text"
-        label="Extra Yield Source"
-        className="my-4"
-        value="None"
-        readOnly
-        description="Coming soon!"
-        isDisabled
-      />
+      <div className="my-4 w-full items-center justify-between px-2">
+        <div className="flex justify-between">
+          <span className="text-sm">Allow Self Check-In</span>
+          <Switch
+            size="sm"
+            checked={allowSelfCheckIn}
+            onChange={(e) => setAllowSelfCheckIn(e.target.checked)}
+          />
+        </div>
+
+        {/* Updated description */}
+        <div className="mt-1 text-xs text-gray-400">
+          {allowSelfCheckIn
+            ? 'Participants can check in without external data verification. This option is in addition to Strava verification.'
+            : 'Participants must use Strava for activity verification. No manual check-ins allowed.'}
+        </div>
+      </div>
 
       {/* donation */}
       <Select
@@ -112,14 +120,6 @@ export default function CreateStep2({
         ) : (
           <ConnectButton className="mt-2 w-1/2" cta="Create" primary />
         )}
-      </div>
-
-      <div className="flex w-full items-center justify-between">
-        <span>Allow Self Check-In</span>
-        <Switch
-          checked={allowSelfCheckIn}
-          onChange={(e) => setAllowSelfCheckIn(e.target.checked)}
-        />
       </div>
     </div>
   );

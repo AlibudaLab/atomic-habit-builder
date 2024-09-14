@@ -31,16 +31,16 @@ const useCheckInRun = (fields: CheckInFields, onSuccess?: () => void) => {
     },
     {
       onError: () => {
-        toast.error('Error checking in.', {id: 'checkin'});
+        toast.error('Error checking in.', { id: 'checkin' });
       },
       onSuccess: () => {
-        toast.success('Successfully checked in!! 🥳🥳🥳', {id: 'checkin'});
+        toast.success('Successfully checked in!! 🥳🥳🥳', { id: 'checkin' });
 
         onSuccess?.();
         logEventSimple({ eventName: 'click_checkin', category: 'checkin' });
       },
       onSent: () => {
-        toast.loading('Transaction sent...', {id: 'checkin'});
+        toast.loading('Transaction sent...', { id: 'checkin' });
       },
     },
   );

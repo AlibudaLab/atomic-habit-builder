@@ -42,6 +42,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const [selfCheckedIn, setSelfCheckedIn] = useState(false);
   const [isSigning, setIsSigning] = useState(false);
+  const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
 
   const { refetch: refetchAll } = useUserChallenges();
 
@@ -187,8 +188,6 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     }
     onCheckInTx();
   };
-
-  const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
 
   const renderCheckInOptions = () => {
     if (!canCheckInNow) return null;

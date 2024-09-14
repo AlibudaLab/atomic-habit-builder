@@ -3,17 +3,13 @@ import { Button } from '@nextui-org/button';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/modal';
 import { Input } from '@nextui-org/input';
 
-interface SelfCheckInButtonProps {
+type SelfCheckInButtonProps = {
   isDisabled: boolean;
   challengeType: string;
   setCheckedIn: (checkedIn: boolean) => void;
-}
+};
 
-const SelfCheckInButton: React.FC<SelfCheckInButtonProps> = ({
-  setCheckedIn,
-  isDisabled,
-  challengeType,
-}) => {
+function SelfCheckInButton({ setCheckedIn, isDisabled, challengeType }: SelfCheckInButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [duration, setDuration] = useState('');
 
@@ -67,6 +63,6 @@ const SelfCheckInButton: React.FC<SelfCheckInButtonProps> = ({
       </Modal>
     </>
   );
-};
+}
 
 export default SelfCheckInButton;
