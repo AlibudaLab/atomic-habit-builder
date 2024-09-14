@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import queryString from 'query-string';
 import moment from 'moment';
 
 import { Challenge } from '@/types';
@@ -66,23 +67,28 @@ function CheckinPopup({
 
   const shareURL = window.origin + `/habit/stake/${challenge.id}`;
 
+  console.log('shareURL: ', shareURL);
+
   // Create a frame URL for Farcaster
   const farcasterFrameURL = useMemo(() => {
     if (!lastCheckedInActivity) return '';
 
-    const frameURL = new URL(`${window.origin}/api/frame/activity`);
-    frameURL.searchParams.set('type', lastCheckedInActivity.type);
-    frameURL.searchParams.set('name', lastCheckedInActivity.name ?? '');
-    frameURL.searchParams.set('moving_time', lastCheckedInActivity.moving_time.toString());
-    if (lastCheckedInActivity.distance) {
-      frameURL.searchParams.set('distance', lastCheckedInActivity.distance.toString());
-    }
-    if (lastCheckedInActivity.polyline) {
-      frameURL.searchParams.set('polyline', lastCheckedInActivity.polyline);
-    }
-    frameURL.searchParams.set('ref_link', shareURL);
-    return frameURL.toString();
+    const baseUrl = `${window.origin}/api/frame/activity`;
+    const params: Record<string, string | number> = {
+      type: lastCheckedInActivity.type,
+      name: lastCheckedInActivity.name ?? 'Atomic Habit Challenge',
+      moving_time: lastCheckedInActivity.moving_time,
+    };
+
+    if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance;
+    if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
+
+    params.ref_link = shareURL;
+
+    return `${baseUrl}?${queryString.stringify(params)}`;
   }, [lastCheckedInActivity, shareURL]);
+
+  console.log('farcasterFrameURL: ', farcasterFrameURL);
 
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
@@ -114,7 +120,7 @@ function CheckinPopup({
           </Button>
           <Button
             className="w-full"
-            onClick={() => shareOnFarcaster(shareContent, [encodeURI(farcasterFrameURL)])}
+            onClick={() => shareOnFarcaster(shareContent, [farcasterFrameURL])}
             endContent={<Image src={farcasterLogo} alt="warp" height={25} width={25} />}
           >
             Share on
