@@ -78,21 +78,21 @@ export default function ProfileContent() {
             )}
 
             <div className="mt-6 w-full">
-            <div className="flex flex-wrap gap-2">
-              {emergencySupportedChains.map((supportedChain) => (
-                <Button
-                  key={supportedChain.id}
-                  onClick={() => switchChain?.({ chainId: supportedChain.id })}
-                  variant={chainId === supportedChain.id ? 'solid' : 'light'}
-                  className="flex items-center gap-2"
-                >
-                  {chainId === supportedChain.id && (
-                    <span className="h-2 w-2 rounded-full bg-green-500"/>
-                  )}
-                  {supportedChain.name}
-                </Button>
-              ))}
-            </div>
+              <div className="flex flex-wrap gap-2">
+                {emergencySupportedChains.map((supportedChain) => (
+                  <Button
+                    key={supportedChain.id}
+                    onClick={() => switchChain?.({ chainId: supportedChain.id })}
+                    variant={chainId === supportedChain.id ? 'solid' : 'light'}
+                    className="flex items-center gap-2"
+                  >
+                    {chainId === supportedChain.id && (
+                      <span className="h-2 w-2 rounded-full bg-green-500" />
+                    )}
+                    {supportedChain.name}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             <div className="mt-12 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
