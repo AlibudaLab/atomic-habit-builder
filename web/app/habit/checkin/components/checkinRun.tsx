@@ -16,12 +16,14 @@ import useActivityUsage from '@/hooks/useActivityUsage';
 import { ActivityDropDown } from './activityDropdown';
 import { ChallengePreview } from 'app/habit/components/ChallengeBox';
 import CheckinPopup from './CheckinPopup';
-import { Button, ButtonGroup } from '@nextui-org/react';
+import { Button, Tooltip } from '@nextui-org/react';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 import { useUserChallenges } from '@/providers/UserChallengesProvider';
 import Leaderboard from 'app/habit/components/Leaderboard';
 import { logEventSimple } from '@/utils/gtag';
 import SelfCheckInButton from './SelfCheckInButton';
+import { PiUserSwitchDuotone } from 'react-icons/pi';
+import { getCountdownString } from '@/utils/timestamp';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -192,29 +194,24 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     if (!canCheckInNow) return null;
 
     return (
-      <div className="flex w-full flex-col items-center justify-center">
-        <ButtonGroup className="mb-4">
-          <Button
-            className="text-xs"
-            color={checkInMethod === 'strava' ? 'primary' : 'default'}
-            variant="flat"
-            onClick={() => setCheckInMethod('strava')}
-          >
-            Strava
-          </Button>
-          <Button
-            className="text-xs"
-            color={checkInMethod === 'self' ? 'primary' : 'default'}
-            onClick={() => setCheckInMethod('self')}
-            variant="flat"
-            isDisabled={!challenge.allowSelfCheckIn}
-          >
-            Self Check-In
-          </Button>
-        </ButtonGroup>
-        <div className="w-full items-center justify-center">
-          {' '}
-          {/* Set a max width for consistency */}
+      <div className="mt-4 px-6 flex h-24 w-full flex-col items-center justify-center">
+        <div className="mb-1 flex w-full items-center justify-between">
+          <span className="text-base font-semibold">
+            {checkInMethod === 'strava' ? 'Check in with Strava' : 'Manual Check-In'}
+          </span>
+          <Tooltip content={`Switch to ${checkInMethod === 'strava' ? 'Manual' : 'Strava'} Check-In`}>
+            <Button
+              isIconOnly
+              size="sm"
+              variant="light"
+              onClick={() => setCheckInMethod(checkInMethod === 'strava' ? 'self' : 'strava')}
+              isDisabled={!challenge.allowSelfCheckIn && checkInMethod === 'strava'}
+            >
+              <PiUserSwitchDuotone size={18} />
+            </Button>
+          </Tooltip>
+        </div>
+        <div className="flex w-full flex-grow items-center justify-center">
           {checkInMethod === 'strava' ? (
             verifierConnected ? (
               <ActivityDropDown
@@ -229,7 +226,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
               <Button
                 type="button"
                 color="primary"
-                className="mt-2 min-h-12 w-3/4 max-w-56"
+                className="min-h-12 w-3/4 max-w-56"
                 onClick={onClickConnectStrava}
               >
                 Connect with Strava
@@ -268,14 +265,16 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         </div>
       </div>
 
-      {/* <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-xl font-bold text-dark"> Invite Others </div>
-        <InviteLink accessCode={challenge.accessCode} challengeId={challenge.id} />
-      </div> */}
-
-      <div className="m-4 text-center font-londrina text-base">
-        ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'settles' : 'settled'}{' '}
-        {moment.unix(challenge.endTimestamp).fromNow()}
+      {/* New countdown badge with reduced margins */}
+      <div className="my-2 flex w-full justify-center">
+        <div className="inline-block rounded-full border-2 border-dotted border-orange-400 bg-orange-100 px-3 py-1">
+          <span className="text-xs font-semibold text-orange-700">
+            ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'ends' : 'ended'}
+          </span>
+          <span className="ml-1 text-xs font-bold text-orange-800">
+            {getCountdownString(challenge.endTimestamp)}
+          </span>
+        </div>
       </div>
 
       {/* middle section: if timestamp is not valid, show warning message */}
@@ -283,23 +282,9 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       {/* no address detected: ask user to connect */}
       {!address && <ConnectButton className="w-3/4" />}
 
-      {challenge.status === UserChallengeStatus.Ongoing && canCheckInNow && renderCheckInOptions()}
-
-      {/* if user already finish, always allow going to the claim page */}
-      {challenge.status === UserChallengeStatus.Claimable && (
-        <Button
-          type="button"
-          color="primary"
-          className="mt-12 min-h-12 w-3/4 max-w-56"
-          onClick={() => push(`/habit/claim/${challenge.id}`)}
-        >
-          Finish 🎉
-        </Button>
-      )}
-
-      {/* challenge is not finished yet */}
-      {challenge.status !== UserChallengeStatus.NotJoined &&
-        (canCheckInNow ? (
+      {challenge.status === UserChallengeStatus.Ongoing && canCheckInNow && (
+        <>
+          {renderCheckInOptions()}
           <Button
             type="button"
             color="primary"
@@ -313,23 +298,39 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
             }
             isLoading={isCheckInLoading || isSigning}
           >
-            Check In
+            Submit Check-In
           </Button>
-        ) : (
-          <div className="flex w-full flex-col items-center justify-center gap-2">
-            <Button
-              className="mt-4 min-h-12 w-3/4 max-w-56"
-              color="primary"
-              variant="flat"
-              onClick={handleChallengeListClick}
-            >
-              Back to List
-            </Button>
-            <div className="text-center text-xs text-default-400">
-              {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
-            </div>
+        </>
+      )}
+
+      {/* if user already finish, always allow going to the claim page */}
+      {challenge.status === UserChallengeStatus.Claimable && (
+        <Button
+          type="button"
+          color="primary"
+          className="mt-12 min-h-12 w-3/4 max-w-56"
+          onClick={() => push(`/habit/claim/${challenge.id}`)}
+        >
+          Finish 🎉
+        </Button>
+      )}
+
+      {/* challenge is not finished yet but can't check in now */}
+      {challenge.status !== UserChallengeStatus.NotJoined && !canCheckInNow && (
+        <div className="flex w-full flex-col items-center justify-center gap-2">
+          <Button
+            className="mt-4 min-h-12 w-3/4 max-w-56"
+            color="primary"
+            variant="flat"
+            onClick={handleChallengeListClick}
+          >
+            Back to List
+          </Button>
+          <div className="text-center text-xs text-default-400">
+            {challengeStarted ? 'Challenge has Ended' : 'Challenge has not Started'}
           </div>
-        ))}
+        </div>
+      )}
 
       {challenge && address && (
         <Leaderboard userRankings={challenge.joinedUsers} address={address} challenge={challenge} />

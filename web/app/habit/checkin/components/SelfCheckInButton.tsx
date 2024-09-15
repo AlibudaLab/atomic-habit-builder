@@ -37,17 +37,16 @@ function SelfCheckInButton({
         isDisabled={isDisabled}
         startContent={selfCheckedIn ? <ImCheckboxChecked color="green" /> : <ImCheckboxUnchecked />}
       >
-        Log activity
+        Record Activity
       </Button>
 
       <Modal isOpen={isOpen} onClose={handleClose}>
         <ModalContent>
-          <ModalHeader>Self Check-In Confirmation</ModalHeader>
+          <ModalHeader>Manual Check-In Confirmation</ModalHeader>
           <ModalBody>
             <div className="m-4 flex flex-col items-center gap-4">
               <p>
-                🤔 Hold up! Did you really complete your {challengeType} today? Remember, honesty is
-                the best policy!
+                🏋️‍♀️ Great job on your {challengeType} activity! By confirming, you're declaring that you've completed your challenge for today. Remember, honesty keeps the challenge fair for everyone.
               </p>
             </div>
           </ModalBody>
@@ -56,7 +55,7 @@ function SelfCheckInButton({
               Cancel
             </Button>
             <Button color="primary" onPress={handleConfirm}>
-              Confirm
+              Confirm Activity
             </Button>
           </ModalFooter>
         </ModalContent>

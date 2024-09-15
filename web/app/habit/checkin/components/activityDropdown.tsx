@@ -27,7 +27,7 @@ export function ActivityDropDown({
   const noActivities = activities && activities.length === 0 && !loading;
 
   return (
-    <div className="m-2 flex min-h-16 w-full items-center justify-center p-2">
+    <div className=" flex w-full  items-center justify-center">
       <Select
         label={noActivities ? 'No matched record' : 'Select an activity'}
         className="w-full max-w-xs"
@@ -51,24 +51,24 @@ export function ActivityDropDown({
               )})`}
             >
               <div className="flex flex-col items-center gap-2">
-                <div className={`text-sm font-bold ${isChosen && 'text-primary'}`}>
+                {' '}
+                <div className={`text-xs font-bold ${isChosen && 'text-primary'}`}>
+                  {' '}
                   {activity.name}{' '}
                 </div>
-                <div className="flex justify-center gap-4 ">
-                  <div className={`flex items-center px-2 ${isChosen && 'text-primary'}`}>
-                    <div className="px-2 text-xs">
-                      {' '}
-                      {getActivityDuration(activity.moving_time)}{' '}
-                    </div>
+                <div className="flex justify-start gap-2">
+                  {' '}
+                  <div className={`flex items-center gap-2 ${isChosen && 'text-primary'}`}>
+                    <div className="text-xs"> {getActivityDuration(activity.moving_time)}</div>
                     {hasDistance(activity) && (
-                      <div className="px-2 text-xs">
+                      <div className="ml-1 text-xs">
                         {' '}
-                        {((activity as StravaRunData).distance / 1000).toPrecision(2)} KM{' '}
+                        {((activity as StravaRunData).distance / 1000).toPrecision(2)} KM
                       </div>
                     )}
-                    <div className="px-2 text-xs">
+                    <div className="ml-1 text-xs">
                       {' '}
-                      {timeDifference(Date.now(), Date.parse(activity.timestamp))}{' '}
+                      {timeDifference(Date.now(), Date.parse(activity.timestamp))}
                     </div>
                   </div>
                 </div>
