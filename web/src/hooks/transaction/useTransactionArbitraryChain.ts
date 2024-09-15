@@ -67,7 +67,7 @@ const useTransactionArbitraryChain = (
       hash: transactionHash,
     });
 
-  const submitTransaction = useCallback(async() => {
+  const submitTransaction = useCallback(async () => {
     if (!connectedAccount) {
       setError('No account connected');
       return;
@@ -75,7 +75,6 @@ const useTransactionArbitraryChain = (
 
     setIsLoading(true);
     setError(undefined);
-
 
     const transactions = Array.isArray(contractCallConfig.contracts)
       ? contractCallConfig.contracts
