@@ -46,7 +46,8 @@ function SelfCheckInButton({
           <ModalBody>
             <div className="m-4 flex flex-col items-center gap-4">
               <p>
-                🏋️‍♀️ Great job on your {challengeType} activity! By confirming, you're declaring that you've completed your challenge for today. Remember, honesty keeps the challenge fair for everyone.
+                🏋️‍♀️ Confirm your {challengeType} activity completion. Remember, honesty keeps the
+                challenge fair!
               </p>
             </div>
           </ModalBody>

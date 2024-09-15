@@ -20,8 +20,8 @@ type CreateStep2Props = {
   onClickCreate: () => void;
   isCreating: boolean;
   setStep: (step: number) => void;
-  allowSelfCheckIn: boolean;
-  setAllowSelfCheckIn: (value: boolean) => void;
+  allowManualCheckIn: boolean; // Updated prop name
+  setAllowManualCheckIn: (value: boolean) => void; // Updated prop name
 };
 
 export default function CreateStep2({
@@ -31,8 +31,8 @@ export default function CreateStep2({
   onClickCreate,
   isCreating,
   setStep,
-  allowSelfCheckIn,
-  setAllowSelfCheckIn,
+  allowManualCheckIn,
+  setAllowManualCheckIn,
 }: CreateStep2Props) {
   const { address } = usePasskeyAccount();
 
@@ -65,18 +65,17 @@ export default function CreateStep2({
 
       <div className="my-4 w-full items-center justify-between px-2">
         <div className="flex justify-between">
-          <span className="text-sm">Allow Self Check-In</span>
+          <span className="text-sm">Allow Manual Check-In</span>
           <Switch
             size="sm"
-            checked={allowSelfCheckIn}
-            onChange={(e) => setAllowSelfCheckIn(e.target.checked)}
+            checked={allowManualCheckIn}
+            onChange={(e) => setAllowManualCheckIn(e.target.checked)}
           />
         </div>
 
-        {/* Updated description */}
         <div className="mt-1 text-xs text-gray-400">
-          {allowSelfCheckIn
-            ? 'Participants can check in without external data verification. This option is in addition to Strava verification.'
+          {allowManualCheckIn
+            ? 'Participants can manually record activities without Strava verification. This option is in addition to Strava check-ins.'
             : 'Participants must use Strava for activity verification. No manual check-ins allowed.'}
         </div>
       </div>

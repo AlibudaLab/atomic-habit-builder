@@ -87,7 +87,7 @@ export default function Create() {
           challengeId,
           accessCode: accessCode,
           user: address,
-          allowSelfCheckIn,
+          allowManualCheckIn: allowSelfCheckIn, // Updated property name
         }),
       })
         .then((res) => {
@@ -191,8 +191,8 @@ export default function Create() {
             setDonationAddr={setDonationAddr}
             onClickCreate={onClickCreate}
             isCreating={isCreating}
-            allowSelfCheckIn={allowSelfCheckIn}
-            setAllowSelfCheckIn={setAllowSelfCheckIn}
+            allowManualCheckIn={allowSelfCheckIn} // Updated prop name
+            setAllowManualCheckIn={setAllowSelfCheckIn} // Updated prop name
           />
         )}
 

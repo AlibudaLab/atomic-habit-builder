@@ -194,12 +194,14 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     if (!canCheckInNow) return null;
 
     return (
-      <div className="mt-4 px-6 flex h-24 w-full flex-col items-center justify-center">
+      <div className="mt-4 flex h-24 w-full flex-col items-center justify-center px-6">
         <div className="mb-1 flex w-full items-center justify-between">
           <span className="text-base font-semibold">
             {checkInMethod === 'strava' ? 'Check in with Strava' : 'Manual Check-In'}
           </span>
-          <Tooltip content={`Switch to ${checkInMethod === 'strava' ? 'Manual' : 'Strava'} Check-In`}>
+          <Tooltip
+            content={`Switch to ${checkInMethod === 'strava' ? 'Manual' : 'Strava'} Check-In`}
+          >
             <Button
               isIconOnly
               size="sm"
