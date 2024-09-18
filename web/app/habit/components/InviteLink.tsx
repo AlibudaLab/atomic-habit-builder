@@ -1,26 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Snippet } from '@nextui-org/snippet';
 import { logEventSimple } from '@/utils/gtag';
+import useInviteLink from '@/hooks/useInviteLink';
 
 type InviteLinkProps = {
   accessCode: string | undefined;
   challengeId: number;
+  className?: string;
+  text?: string;
 };
 
-export default function InviteLink({ accessCode, challengeId }: InviteLinkProps) {
-  const [origin, setOrigin] = useState('');
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setOrigin(window.location.origin);
-    }
-  }, []);
+export default function InviteLink({ accessCode, challengeId, className, text }: InviteLinkProps) {
+  const { link } = useInviteLink(challengeId, accessCode);
 
-  const link = origin + `/habit/stake/${challengeId}${accessCode ? `?code=${accessCode}` : ''}`;
   return (
     <Snippet
-      className="mb-4 rounded-xl p-2 px-4"
+      className={`mb-4 rounded-xl p-2 px-4 ${className ?? ''}`}
       size="sm"
       hideSymbol
       color="default"
@@ -29,7 +25,7 @@ export default function InviteLink({ accessCode, challengeId }: InviteLinkProps)
         logEventSimple({ eventName: 'click_copy_invite', category: 'others' });
       }}
     >
-      <span> Copy Invite Link </span>
+      <span> {text ? text : 'Copy Invite Link'} </span>
     </Snippet>
   );
 }

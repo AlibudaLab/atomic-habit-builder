@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import RunCheckIn from './checkinRun';
+import ActivityCheckIn from './ActivityCheckIn';
 import Loading from 'app/habit/components/Loading';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { useChallengeWithCheckIns } from '@/hooks/useChallengeWithCheckIns';
@@ -18,7 +18,7 @@ export default function CheckIn() {
       {loading ? (
         <Loading />
       ) : challenge ? (
-        <RunCheckIn challenge={challenge} />
+        <ActivityCheckIn challenge={challenge} />
       ) : (
         <SignInAndRegister />
       )}

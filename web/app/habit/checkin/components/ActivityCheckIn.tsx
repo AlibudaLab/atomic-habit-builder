@@ -22,6 +22,8 @@ import Leaderboard from 'app/habit/components/Leaderboard';
 import { logEventSimple } from '@/utils/gtag';
 import { getCountdownString } from '@/utils/timestamp';
 import ManualCheckInButton from './ManualCheckInButton';
+import useInviteLink from '@/hooks/useInviteLink';
+import { CopyIcon } from 'lucide-react';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -41,6 +43,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const [isSigning, setIsSigning] = useState(false);
   const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
+  const { copyLink, link } = useInviteLink(challenge.id, challenge.accessCode);
 
   const { refetch: refetchAll } = useUserChallenges();
 
@@ -58,8 +61,6 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     () => challengeStarted && !challengeEnded,
     [challengeStarted, challengeEnded],
   );
-
-  console.log('challenge.allowSelfCheckIn', challenge.allowSelfCheckIn);
 
   const [isCheckinPopupOpen, setIsCheckinPopupOpen] = useState(false);
   const [lastCheckedInActivity, setLastCheckedInActivity] = useState<{
@@ -197,7 +198,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         <div className="mt-4 flex w-full flex-col items-center justify-center">
           <div className="h-[60px] w-full max-w-sm" />
           <ManualCheckInButton
-            isDisabled={isCheckInLoading || isSigning}
+            isLoading={isCheckInLoading || isSigning}
             challengeType={challenge.type}
             onConfirm={onCheckInTx}
           />
@@ -212,7 +213,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
           <Button
             type="button"
             color="primary"
-            className="mt-4 min-h-12 w-3/4"
+            className="mt-4 min-h-12 w-full max-w-56"
             onClick={onClickConnectStrava}
           >
             Connect with Strava
@@ -223,7 +224,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
     return (
       <div className="mt-4 flex w-full flex-col items-center justify-center">
-        <div className="h-[60px] w-full max-w-sm">
+        <div className="h-[60px] w-full max-w-56">
           {checkInMethod === 'strava' && (
             <ActivityDropDown
               isDisabled={!address}
@@ -258,27 +259,37 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
       {/* goal description */}
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-base font-bold text-dark"> Description </div>
+        <div className="text-lg font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">
-        <div className="text-base font-bold text-dark"> Staked Amount </div>
+        <div className="text-lg font-bold text-dark"> Staked Amount </div>
         <div className="flex text-sm text-primary">
           {`${formatUnits(challenge.stake, 6)} USDC`}{' '}
         </div>
       </div>
 
-      {/* New countdown badge with reduced margins */}
-      <div className="my-2 flex w-full justify-center">
-        <div className="inline-block rounded-full border-2 border-dotted border-orange-400 bg-orange-100 px-3 py-1">
-          <span className="text-xs font-semibold text-orange-700">
-            ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'ends' : 'ended'} in
-          </span>
-          <span className="ml-1 text-xs font-bold text-orange-800">
-            {getCountdownString(challenge.endTimestamp)}
-          </span>
+      <div className="w-full justify-start p-6 py-2 text-start">
+        <div className="text-lg font-bold text-dark"> Invite Others </div>
+        <div className="flex gap-2 text-sm text-primary">
+          Invite your friends to join the challenge
+          <button type="button" onClick={copyLink}>
+            <CopyIcon size={14} />
+          </button>
         </div>
+      </div>
+
+      {/* New countdown badge with reduced margins */}
+      <div className="my-4 flex w-full justify-center">
+        {/* <div className="inline-block rounded-full border-2 border-dotted border-primary bg-primary/20 px-3 py-1"> */}
+        <span className="text-sm font-semibold text-dark">
+          ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'ends' : 'ended'} in
+        </span>
+        <span className="ml-1 text-sm font-bold text-dark">
+          {getCountdownString(challenge.endTimestamp)}
+        </span>
+        {/* </div> */}
       </div>
 
       {/* middle section: if timestamp is not valid, show warning message */}

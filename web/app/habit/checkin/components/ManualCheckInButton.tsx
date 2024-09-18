@@ -1,14 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button } from '@nextui-org/button';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@nextui-org/modal';
 
 type ManualCheckInButtonProps = {
-  isDisabled: boolean;
+  isLoading: boolean;
   challengeType: string;
   onConfirm: () => void;
 };
 
-function ManualCheckInButton({ isDisabled, challengeType, onConfirm }: ManualCheckInButtonProps) {
+function ManualCheckInButton({ isLoading, challengeType, onConfirm }: ManualCheckInButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = () => setIsOpen(true);
@@ -16,7 +16,6 @@ function ManualCheckInButton({ isDisabled, challengeType, onConfirm }: ManualChe
 
   const handleConfirm = useCallback(() => {
     onConfirm();
-    setIsOpen(false);
   }, [onConfirm]);
 
   return (
@@ -45,7 +44,12 @@ function ManualCheckInButton({ isDisabled, challengeType, onConfirm }: ManualChe
             <Button variant="light" onClick={handleClose}>
               Cancel
             </Button>
-            <Button color="primary" onClick={handleConfirm} isDisabled={isDisabled}>
+            <Button
+              color="primary"
+              isLoading={isLoading}
+              onClick={handleConfirm}
+              isDisabled={isLoading}
+            >
               Confirm
             </Button>
           </ModalFooter>
