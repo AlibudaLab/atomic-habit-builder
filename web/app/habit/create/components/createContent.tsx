@@ -47,7 +47,7 @@ export default function Create() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [totalTimes, setTotalTimes] = useState(5);
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
 
   const [duration, setDuration] = useState({
     start: parseAbsoluteToLocal(defaultStart.toISOString()),
@@ -57,6 +57,7 @@ export default function Create() {
   const [stake, setStake] = useState(20);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
+  const [allowSelfCheckIn, setAllowSelfCheckIn] = useState(false);
 
   // only set after the challenge creation tx
   const [createdChallengeId, setCreatedChallengeId] = useState<number>(0);
@@ -86,6 +87,7 @@ export default function Create() {
           challengeId,
           accessCode: accessCode,
           user: address,
+          allowManualCheckIn: allowSelfCheckIn, // Updated property name
         }),
       })
         .then((res) => {
@@ -99,7 +101,7 @@ export default function Create() {
           toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address, isPublic, refetch],
+    [name, description, type, accessCode, address, isPublic, refetch, allowSelfCheckIn],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
@@ -189,6 +191,8 @@ export default function Create() {
             setDonationAddr={setDonationAddr}
             onClickCreate={onClickCreate}
             isCreating={isCreating}
+            allowManualCheckIn={allowSelfCheckIn} // Updated prop name
+            setAllowManualCheckIn={setAllowSelfCheckIn} // Updated prop name
           />
         )}
 

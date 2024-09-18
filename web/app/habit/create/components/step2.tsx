@@ -3,23 +3,25 @@
 import React from 'react';
 import { Input } from '@nextui-org/input';
 import { Select, SelectItem } from '@nextui-org/select';
-import { donationDestinations } from '@/constants';
+import { ChallengeTypes, donationDestinations } from '@/constants';
 import { Address } from 'viem';
 import { Button } from '@nextui-org/button';
 import Image from 'next/image';
+import { Switch } from '@nextui-org/switch';
 
 import usdcLogo from '@/imgs/coins/usdc.png';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
-import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import { ConnectButton } from '@/components/Connect/ConnectButton';
 
-type Step2Props = {
+type CreateStep2Props = {
   stake: number;
   setStake: (stake: number) => void;
   setDonationAddr: (donationAddr: Address) => void;
   onClickCreate: () => void;
   isCreating: boolean;
   setStep: (step: number) => void;
+  allowManualCheckIn: boolean; // Updated prop name
+  setAllowManualCheckIn: (value: boolean) => void; // Updated prop name
 };
 
 export default function CreateStep2({
@@ -29,11 +31,13 @@ export default function CreateStep2({
   onClickCreate,
   isCreating,
   setStep,
-}: Step2Props) {
+  allowManualCheckIn,
+  setAllowManualCheckIn,
+}: CreateStep2Props) {
   const { address } = usePasskeyAccount();
 
   return (
-    <div className="flex w-full flex-grow flex-col items-center justify-start px-8">
+    <div className="flex w-full flex-col items-center justify-start">
       <Input
         type="number"
         label="Stake"
@@ -51,23 +55,30 @@ export default function CreateStep2({
 
       <Input
         type="text"
-        label="Verifier"
+        label="External Data Source"
         value="Strava"
         className="my-4"
         readOnly
-        description="Only supports Strava now"
+        description="Strava is currently the only supported external data source for activity verification."
         isDisabled
       />
 
-      <Input
-        type="text"
-        label="Extra Yield Source"
-        className="my-4"
-        value="None"
-        readOnly
-        description="Coming soon!"
-        isDisabled
-      />
+      <div className="my-4 w-full items-center justify-between px-2">
+        <div className="flex justify-between">
+          <span className="text-sm">Allow Manual Check-In</span>
+          <Switch
+            size="sm"
+            checked={allowManualCheckIn}
+            onChange={(e) => setAllowManualCheckIn(e.target.checked)}
+          />
+        </div>
+
+        <div className="mt-1 text-xs text-gray-400">
+          {allowManualCheckIn
+            ? 'Participants can manually record activities without Strava verification. This option is in addition to Strava check-ins.'
+            : 'Participants must use Strava for activity verification. No manual check-ins allowed.'}
+        </div>
+      </div>
 
       {/* donation */}
       <Select

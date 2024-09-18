@@ -10,6 +10,7 @@ import { adminDb } from '../../../src/utils/firebaseAdmin';
 //   challengeId: number
 //   accessCode?: string,
 //   user?: string,
+//   allowSelfCheckIn?: boolean,
 // }
 export async function POST(req: NextRequest): Promise<Response> {
   try {
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       accessCode: payload.accessCode,
       id: payload.challengeId,
       creator: payload.user,
+      allowSelfCheckIn: payload.allowSelfCheckIn === true,
     });
 
     console.log('Document challenge-metadata written with ID: ', docRef.id);

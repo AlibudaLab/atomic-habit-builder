@@ -16,17 +16,21 @@ export function challengeToEmoji(type: ChallengeTypes) {
   }
 }
 
-export function getCheckInDescription(type: ChallengeTypes) {
-  switch (type) {
-    case ChallengeTypes.Run:
-      return 'Check in with connected run activity on Strava.';
-    case ChallengeTypes.Workout:
-      return 'Check in with connected workout activity on Strava.';
-    case ChallengeTypes.Cycling:
-      return 'Check in with connected cycling activity on Strava.';
-    case ChallengeTypes.NFC_Chip:
-      return 'Check in by tapping onto the target NFC Chip.';
+const baseDescriptions = {
+  [ChallengeTypes.Run]: 'Complete a run and sync with Strava',
+  [ChallengeTypes.Workout]: 'Complete a workout and sync with Strava',
+  [ChallengeTypes.Cycling]: 'Complete a cycling activity and sync with Strava',
+  [ChallengeTypes.NFC_Chip]: 'N/A',
+};
+
+export function getCheckInDescription(type: ChallengeTypes, allowSelfCheckIn?: boolean): string {
+  const baseDescription = baseDescriptions[type];
+
+  if (allowSelfCheckIn) {
+    return `${baseDescription}, or manually record your activity.`;
   }
+
+  return baseDescription;
 }
 
 export function getChallengeUnit(type: ChallengeTypes) {

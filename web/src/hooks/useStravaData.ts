@@ -5,7 +5,7 @@ import { useRunVerifier } from './useStoredRunVerifier';
 import { Challenge, RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
 
-const useRunData = (challenge: Challenge) => {
+const useStravaData = (challenge: Challenge) => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
@@ -127,4 +127,4 @@ const useRunData = (challenge: Challenge) => {
   return { loading, runData, workoutData, cyclingData, error, connected };
 };
 
-export default useRunData;
+export default useStravaData;

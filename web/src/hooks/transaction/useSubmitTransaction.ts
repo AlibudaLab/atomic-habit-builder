@@ -9,6 +9,7 @@ import {
 } from 'viem';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import { UseSimulateContractParameters, useWaitForTransactionReceipt } from 'wagmi';
+import { currentChainId } from '@/constants';
 
 const getEvents = (
   contractCallConfig: UseSimulateContractParameters,
@@ -50,6 +51,7 @@ const useSubmitTransaction = (
   const { data: transactionReceipt, isLoading: isWaitForTransactionLoading } =
     useWaitForTransactionReceipt({
       hash: transactionHash,
+      chainId: currentChainId,
     });
 
   const submitTransaction = useCallback(() => {
@@ -79,6 +81,7 @@ const useSubmitTransaction = (
         account: account,
       })
       .then((txHash) => {
+        console.log('txHash', txHash);
         setTransactionHash(txHash);
         onSuccessCalledRef.current = false;
         options?.onSent?.();
