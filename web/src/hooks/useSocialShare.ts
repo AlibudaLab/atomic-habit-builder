@@ -38,13 +38,11 @@ export default function useSocialShare() {
     const url = new URL('https://warpcast.com/~/compose');
     url.searchParams.set('text', text);
     
-    // Join all embeds into a single string, separated by commas
-    const embedsString = embeds.join(',');
+    embeds.forEach((embed) => {
+      if (embed) url.searchParams.append('embeds[]', embed);
+    });
     
-    // Manually construct the URL to avoid double encoding
-    const finalUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}&embeds=${embedsString}`;
-
-    console.log('finalUrl', finalUrl);
+    const finalUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}`;
     
     open(finalUrl);
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
