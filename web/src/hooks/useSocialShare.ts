@@ -42,8 +42,6 @@ export default function useSocialShare() {
       if (embed) url.searchParams.append('embeds[]', embed);
     });
 
-    const finalUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}`;
-
     open(url.toString());
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
