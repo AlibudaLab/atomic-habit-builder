@@ -38,8 +38,9 @@ export default function useSocialShare() {
     const url = new URL('https://warpcast.com/~/compose');
     url.searchParams.set('text', text);
     
-    // Join all embeds into a single string, separated by commas, without additional encoding
+    // Join all embeds into a single string, separated by commas
     const embedsString = embeds.join(',');
+    // Set the embeds parameter without additional encoding
     url.searchParams.set('embeds', embedsString);
 
     open(url.toString());
