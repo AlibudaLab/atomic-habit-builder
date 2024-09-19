@@ -43,6 +43,8 @@ export default function useSocialShare() {
     
     // Manually construct the URL to avoid double encoding
     const finalUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}&embeds=${embedsString}`;
+
+    console.log('finalUrl', finalUrl);
     
     open(finalUrl);
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
