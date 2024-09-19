@@ -40,10 +40,11 @@ export default function useSocialShare() {
     
     // Join all embeds into a single string, separated by commas
     const embedsString = embeds.join(',');
-    // Set the embeds parameter without additional encoding
-    url.searchParams.set('embeds', embedsString);
-
-    open(url.toString());
+    
+    // Manually construct the URL to avoid double encoding
+    const finalUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}&embeds=${embedsString}`;
+    
+    open(finalUrl);
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
 
