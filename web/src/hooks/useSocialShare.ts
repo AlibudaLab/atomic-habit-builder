@@ -44,7 +44,7 @@ export default function useSocialShare() {
 
     const finalUrl = `${url.origin}${url.pathname}?${url.searchParams.toString()}`;
 
-    open(finalUrl);
+    open(url.toString());
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
 
