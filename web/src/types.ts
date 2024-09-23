@@ -37,10 +37,12 @@ export type ChallengeDetail = {
 export type ChallengeMetaData = {
   id: number;
   name: string;
-  type: ChallengeTypes;
   description?: string;
+  type: ChallengeTypes;
   public: boolean;
   accessCode?: string; // only for private challenges
+  minDistance?: number;
+  minTime?: number;
   creator?: Address;
   allowSelfCheckIn?: boolean;
 };

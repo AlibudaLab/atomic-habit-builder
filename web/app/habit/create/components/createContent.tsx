@@ -47,15 +47,16 @@ export default function Create() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [totalTimes, setTotalTimes] = useState(5);
-  const [isPublic, setIsPublic] = useState(true);
-
   const [duration, setDuration] = useState({
     start: parseAbsoluteToLocal(defaultStart.toISOString()),
     end: parseAbsoluteToLocal(defaultStart.add(1, 'week').toISOString()),
   });
+  const [type, setType] = useState(ChallengeTypes.Run);
+  const [minDistance, setMinDistance] = useState(0);
+  const [minTime, setMinTime] = useState(0);
+  const [isPublic, setIsPublic] = useState(true);
 
   const [stake, setStake] = useState(20);
-  const [type, setType] = useState(ChallengeTypes.Run);
   const [donatioAddr, setDonationAddr] = useState<Address>(defaultDonationDest.address);
   const [allowSelfCheckIn, setAllowSelfCheckIn] = useState(false);
 
@@ -86,6 +87,8 @@ export default function Create() {
           public: isPublic,
           challengeId,
           accessCode: accessCode,
+          minDistance,
+          minTime,
           user: address,
           allowManualCheckIn: allowSelfCheckIn, // Updated property name
         }),
@@ -101,7 +104,7 @@ export default function Create() {
           toast.error('Error adding Challenge to DB.');
         });
     },
-    [name, description, type, accessCode, address, isPublic, refetch, allowSelfCheckIn],
+    [name, description, type, accessCode, address, minDistance, minTime, isPublic, allowSelfCheckIn, refetch],
   );
 
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
@@ -175,10 +178,14 @@ export default function Create() {
             setTotalTimes={setTotalTimes}
             duration={duration}
             setDuration={setDuration}
-            challengeType={type}
             isPublic={isPublic}
             setIsPublic={setIsPublic}
+            challengeType={type}
             setChallengeType={setType}
+            minDistance={minDistance}
+            setMinDistance={setMinDistance}
+            minTime={minTime}
+            setMinTime={setMinTime}
             setStep={setStep}
           />
         )}

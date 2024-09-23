@@ -9,6 +9,8 @@ import { adminDb } from '../../../src/utils/firebaseAdmin';
 //   public: boolean,
 //   challengeId: number
 //   accessCode?: string,
+//   minDistance: number,
+//   minTime: number,
 //   user?: string,
 //   allowSelfCheckIn?: boolean,
 // }
@@ -33,6 +35,8 @@ export async function POST(req: NextRequest): Promise<Response> {
       type: payload.type,
       public: payload.public,
       accessCode: payload.accessCode,
+      minDistance: payload.minDistance * 1000,
+      minTime: payload.minTime * 60,
       id: payload.challengeId,
       creator: payload.user,
       allowSelfCheckIn: payload.allowSelfCheckIn === true,

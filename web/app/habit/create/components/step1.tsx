@@ -10,6 +10,8 @@ import { Switch } from '@nextui-org/switch';
 import { ChallengeTypes } from '@/constants';
 import { logEventSimple } from '@/utils/gtag';
 
+const defaultSelectedKeys = [ChallengeTypes.Run];
+
 type Step1Props = {
   name: string;
   setName: (name: string) => void;
@@ -23,6 +25,10 @@ type Step1Props = {
   setDuration: (duration: { start: ZonedDateTime; end: ZonedDateTime }) => void;
   challengeType: ChallengeTypes;
   setChallengeType: (challengeType: ChallengeTypes) => void;
+  minDistance: number;
+  setMinDistance: (minDistance: number) => void;
+  minTime: number;
+  setMinTime: (minTime: number) => void;
   setStep: (step: number) => void;
 };
 
@@ -35,9 +41,14 @@ export default function CreateStep1({
   setTotalTimes,
   duration,
   setDuration,
-  setIsPublic,
   isPublic,
+  setIsPublic,
+  challengeType,
   setChallengeType,
+  minDistance,
+  setMinDistance,
+  minTime,
+  setMinTime,
   setStep,
 }: Step1Props) {
   return (
@@ -74,7 +85,7 @@ export default function CreateStep1({
         className="my-4"
       />
 
-      <Select label="Challenge Type" className="my-4" defaultSelectedKeys={[ChallengeTypes.Run]}>
+      <Select label="Challenge Type" className="my-4" defaultSelectedKeys={defaultSelectedKeys}>
         {Object.values(ChallengeTypes)
           .filter((type: ChallengeTypes) => type !== ChallengeTypes.NFC_Chip)
           .map((type: ChallengeTypes) => (
@@ -93,6 +104,39 @@ export default function CreateStep1({
         className="my-4"
         description="How many times participants need to check in to complete the challenge"
       />
+
+      {challengeType === ChallengeTypes.Run || challengeType === ChallengeTypes.Cycling ? (
+        <>
+          <Input
+            type="number"
+            label="Minimum Distance (km)"
+            value={minDistance.toString()}
+            onChange={(e) => setMinDistance(Number(e.target.value))}
+            placeholder="Enter minimum distance"
+            className="my-4"
+            description="Minimum distance requirement for a check-in"
+          />
+          <Input
+            type="number"
+            label="Minimum Time (minutes)"
+            value={minTime.toString()}
+            onChange={(e) => setMinTime(Number(e.target.value))}
+            placeholder="Enter minimum time"
+            className="my-4"
+            description="Minimum time requirement for a check-in"
+          />
+        </>
+      ) : challengeType === ChallengeTypes.Workout ? (
+        <Input
+          type="number"
+          label="Minimum Time (minutes)"
+          value={minTime.toString()}
+          onChange={(e) => setMinTime(Number(e.target.value))}
+          placeholder="Enter minimum time"
+          className="my-4"
+          description="Minimum time requirement for a check-in"
+        />
+      ) : null}
 
       <DateRangePicker
         label="Challenge Duration"
