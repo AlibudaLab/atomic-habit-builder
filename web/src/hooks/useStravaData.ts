@@ -103,9 +103,26 @@ const useStravaData = (challenge: Challenge) => {
           return;
         }
 
-        setRunData(newRunData);
-        setWorkoutData(newWorkoutData);
-        setCyclingData(newCyclingData);
+        const filteredRunData = newRunData.filter(
+          (activity) =>
+            (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+            (challenge.minTime === undefined || activity.moving_time >= challenge.minTime)
+        );
+
+        const filteredWorkoutData = newWorkoutData.filter(
+          (activity) =>
+            (challenge.minTime === undefined || activity.moving_time >= challenge.minTime)
+        );
+
+        const filteredCyclingData = newCyclingData.filter(
+          (activity) =>
+            (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+            (challenge.minTime === undefined || activity.moving_time >= challenge.minTime)
+        );
+
+        setRunData(filteredRunData);
+        setWorkoutData(filteredWorkoutData);
+        setCyclingData(filteredCyclingData);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -122,6 +139,8 @@ const useStravaData = (challenge: Challenge) => {
     expired,
     challenge.startTimestamp,
     challenge.endTimestamp,
+    challenge.minDistance,
+    challenge.minTime,
   ]);
 
   return { loading, runData, workoutData, cyclingData, error, connected };
