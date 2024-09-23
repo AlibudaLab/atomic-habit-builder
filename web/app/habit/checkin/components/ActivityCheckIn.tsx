@@ -43,7 +43,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const [isSigning, setIsSigning] = useState(false);
   const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
-  const { copyLink, link } = useInviteLink(challenge.id, challenge.accessCode);
+  const { copyLink } = useInviteLink(challenge.id, challenge.accessCode);
 
   const { refetch: refetchAll } = useUserChallenges();
 

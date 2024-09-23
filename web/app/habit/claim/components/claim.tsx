@@ -32,7 +32,7 @@ export default function Claim() {
 
   const needSettle = useMemo(
     () => challenge?.challengeStatus !== ChallengeStatus.Settled,
-    [challenge?.status],
+    [challenge?.challengeStatus],
   );
 
   const { onSubmitTransaction: onWithdrawTx, isLoading: isWithdrawLoading } = useWithdraw(
