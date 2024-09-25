@@ -15,14 +15,14 @@ export async function POST(req: NextRequest): Promise<Response> {
     return NextResponse.json({ error: 'Invalid referral code' }, { status: 400 });
   }
 
-  const referralData = referralDoc.data() || { invited: [], usageCount: 0 };
-  const invitedArray = referralData.invited || [];
+  const referralData = referralDoc.data() ?? { invited: [], usageCount: 0 };
+  const invitedArray = referralData.invited ?? [];
 
   if (!invitedArray.includes(inviteeAddress.toLowerCase())) {
     invitedArray.push(inviteeAddress.toLowerCase());
     await referralRef.update({
       invited: invitedArray,
-      usageCount: (referralData.usageCount || 0) + 1,
+      usageCount: ((referralData.usageCount as number) ?? 0) + 1,
     });
   }
 
