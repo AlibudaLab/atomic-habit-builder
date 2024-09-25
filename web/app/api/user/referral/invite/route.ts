@@ -8,20 +8,22 @@ export async function POST(req: NextRequest): Promise<Response> {
     return NextResponse.json({ error: 'Missing inviteeAddress or referralCode' }, { status: 400 });
   }
 
-  const usersRef = adminDb.collection('user');
-  const invitorQuery = await usersRef.where('referralCode', '==', referralCode).limit(1).get();
+  const referralRef = adminDb.collection('referrals').doc(referralCode);
+  const referralDoc = await referralRef.get();
 
-  if (invitorQuery.empty) {
+  if (!referralDoc.exists) {
     return NextResponse.json({ error: 'Invalid referral code' }, { status: 400 });
   }
 
-  const invitorDoc = invitorQuery.docs[0];
-  const invitorData = invitorDoc.data();
-  const invitedArray = invitorData.invited || [];
+  const referralData = referralDoc.data() || { invited: [], usageCount: 0 };
+  const invitedArray = referralData.invited || [];
 
   if (!invitedArray.includes(inviteeAddress.toLowerCase())) {
     invitedArray.push(inviteeAddress.toLowerCase());
-    await invitorDoc.ref.update({ invited: invitedArray });
+    await referralRef.update({
+      invited: invitedArray,
+      usageCount: (referralData.usageCount || 0) + 1,
+    });
   }
 
   return NextResponse.json({ success: true });
