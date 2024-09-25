@@ -36,11 +36,12 @@ const isTestnet = getCurrentEnvironment() === Environment.testnet;
 export default function StakeChallenge() {
   const { push } = useRouter();
 
-  const { challengeId } = useParams<{ challengeId: string }>();
+  const params = useParams<{ challengeId: string }>();
+  const challengeId = params?.challengeId;
   const { address } = usePasskeyAccount();
 
   const searchParams = useSearchParams();
-  const attachedCode = searchParams.get('code') ?? '';
+  const attachedCode = searchParams ? searchParams.get('code') ?? '' : '';
 
   const [inputAccessCode, setInputAccessCode] = useState<string>(attachedCode);
 

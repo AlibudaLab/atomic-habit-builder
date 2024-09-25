@@ -8,8 +8,11 @@ import { useChallengeWithCheckIns } from '@/hooks/useChallengeWithCheckIns';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
 
 export default function CheckIn() {
-  const { challengeId } = useParams<{ challengeId: string }>();
-  const { challenge, loading } = useChallengeWithCheckIns(Number(challengeId));
+  const params = useParams();
+  const challengeId = params?.challengeId;
+  const { challenge, loading } = useChallengeWithCheckIns(
+    challengeId ? Number(challengeId) : undefined,
+  );
 
   return (
     <div className="flex h-screen w-full flex-col items-center">

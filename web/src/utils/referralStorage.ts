@@ -1,20 +1,8 @@
-const REFERRAL_CODE_KEY = 'atomicHabitsReferralCode';
-
-export const storeReferralCode = (code: string) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem(REFERRAL_CODE_KEY, code);
+export function generateUniqueCode(length = 8): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-};
-
-export const getReferralCode = (): string | null => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem(REFERRAL_CODE_KEY);
-  }
-  return null;
-};
-
-export const clearReferralCode = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem(REFERRAL_CODE_KEY);
-  }
-};
+  return result;
+}

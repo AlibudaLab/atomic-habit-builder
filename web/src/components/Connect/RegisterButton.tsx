@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import {
@@ -9,11 +11,7 @@ import {
   useDisclosure,
   Input,
 } from '@nextui-org/react';
-import { usePasskeyAccount } from '@/providers/PasskeyProvider';
-import {
-  getReferralCode as getInvitorReferralCode,
-  clearReferralCode,
-} from '@/utils/referralStorage';
+import { useStoredReferralCode } from '@/components/ReferralCodeHandler';
 
 /**
  * Always prompt user to register: warning and
@@ -22,13 +20,13 @@ export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [referralCode, setReferralCode] = useState('');
   const { register, isPending: connecting } = usePasskeyConnection();
+  const { referralCode: storedReferralCode, clearReferralCode } = useStoredReferralCode();
 
   useEffect(() => {
-    const storedCode = getInvitorReferralCode();
-    if (storedCode) {
-      setReferralCode(storedCode);
+    if (storedReferralCode) {
+      setReferralCode(storedReferralCode);
     }
-  }, []);
+  }, [storedReferralCode]);
 
   const handleReferral = async (newAddress: string) => {
     console.log(
