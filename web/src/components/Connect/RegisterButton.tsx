@@ -11,7 +11,7 @@ import {
   useDisclosure,
   Input,
 } from '@nextui-org/react';
-import { useStoredReferralCode } from '@/components/ReferralCodeHandler';
+import { useReferralCode } from '@/components/ReferralCodeHandler';
 
 /**
  * Always prompt user to register: warning and
@@ -20,7 +20,7 @@ export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [referralCode, setReferralCode] = useState('');
   const { register, isPending: connecting } = usePasskeyConnection();
-  const { referralCode: storedReferralCode, clearReferralCode } = useStoredReferralCode();
+  const { referralCode: storedReferralCode, clearReferralCode } = useReferralCode();
 
   useEffect(() => {
     if (storedReferralCode) {
@@ -29,11 +29,6 @@ export function RegisterButton() {
   }, [storedReferralCode]);
 
   const handleReferral = async (newAddress: string) => {
-    console.log(
-      'handleReferral, new address created with referral code!',
-      newAddress,
-      referralCode,
-    );
     try {
       await fetch('/api/user/referral/invite', {
         method: 'POST',

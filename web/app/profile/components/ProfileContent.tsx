@@ -84,8 +84,7 @@ export default function ProfileContent() {
             onClick={handleInviteOthers}
             isDisabled={inviteLinkLoading}
             isIconOnly
-            size="sm"
-            className="rounded-full p-2 text-dark"
+            className="rounded-full bg-primary p-2 text-white"
           >
             <TiUserAdd size={24} />
           </Button>

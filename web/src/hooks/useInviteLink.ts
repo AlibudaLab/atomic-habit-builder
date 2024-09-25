@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
+import { fetchOrGenerateReferralCode } from '@/utils/referralCode';
 
 function useInviteLink(challengeId?: number, accessCode?: string) {
   const { address } = usePasskeyAccount();
@@ -18,47 +19,16 @@ function useInviteLink(challengeId?: number, accessCode?: string) {
 
   useEffect(() => {
     if (address) {
-      fetchOrGenerateReferralCode();
+      void fetchAndSetReferralCode();
     }
   }, [address]);
 
-  const fetchOrGenerateReferralCode = useCallback(async () => {
+  const fetchAndSetReferralCode = useCallback(async () => {
     if (!address) return;
     setIsLoading(true);
-    try {
-      const response = await fetch(`/api/user/referral?address=${address}`);
-      const data = await response.json();
-      if (data.referralCode) {
-        setReferralCode(data.referralCode);
-      } else {
-        // If no referral code exists, generate a new one
-        const newCode = await generateReferralCode();
-        setReferralCode(newCode);
-      }
-    } catch (error) {
-      console.error('Error fetching or generating referral code:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [address]);
-
-  const generateReferralCode = useCallback(async () => {
-    if (!address) return null;
-    try {
-      const response = await fetch('/api/user/referral', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address }),
-      });
-      const data = await response.json();
-      if (data.referralCode) {
-        return data.referralCode;
-      }
-    } catch (error) {
-      console.error('Error generating referral code:', error);
-      toast.error('Failed to generate referral code');
-    }
-    return null;
+    const code = await fetchOrGenerateReferralCode(address);
+    setReferralCode(code);
+    setIsLoading(false);
   }, [address]);
 
   const getInviteLink = useCallback(() => {
@@ -82,8 +52,15 @@ function useInviteLink(challengeId?: number, accessCode?: string) {
   const copyInviteLink = useCallback(() => {
     const link = getInviteLink();
     if (link) {
-      navigator.clipboard.writeText(link);
-      toast.success('Invite link copied to clipboard');
+      navigator.clipboard
+        .writeText(link)
+        .then(() => {
+          toast.success('Invite link copied to clipboard');
+        })
+        .catch((error) => {
+          console.error('Error copying invite link:', error);
+          toast.error('Failed to copy invite link');
+        });
     } else {
       toast.error('Unable to generate invite link');
     }

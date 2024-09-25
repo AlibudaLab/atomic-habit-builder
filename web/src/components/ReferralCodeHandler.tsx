@@ -6,11 +6,7 @@ import storage from 'local-storage-fallback';
 
 const REFERRAL_CODE_KEY = 'atomicHabitsReferralCode';
 
-/**
- * Use to store referral code from others in localstorage 
- * @returns 
- */
-export function useStoredReferralCode() {
+export function useReferralCode() {
   const searchParams = useSearchParams();
   const [referralCode, setReferralCode] = useState<string | null>(null);
 
@@ -47,6 +43,6 @@ export function useStoredReferralCode() {
 }
 
 export default function ReferralCodeHandler() {
-  useStoredReferralCode();
+  useReferralCode();
   return null; // This component doesn't render anything
 }
