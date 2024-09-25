@@ -14,8 +14,11 @@ export async function GET(req: NextRequest): Promise<Response> {
   const userRef = adminDb.collection('user').doc(address.toLowerCase());
   const userDoc: DocumentSnapshot = await userRef.get();
 
+  // users who never use a referral code
   if (!userDoc.exists) {
-    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    return NextResponse.json({
+      referralCode: null,
+    });
   }
 
   const data = userDoc.data();
@@ -31,14 +34,22 @@ export async function GET(req: NextRequest): Promise<Response> {
 
   if (!referralDoc.exists) {
     return NextResponse.json(
-      { error: 'Referral code exists in user data but not in referrals collection' },
-      { status: 500 },
+      {
+        referralCode: null,
+        error: 'Referral code exists in user data but not in referrals collection',
+      },
+      { status: 404 },
     );
   }
 
-  return NextResponse.json({ referralCode: data.referralCode });
+  return NextResponse.json({ referralCode: data.referralCode, status: 200 });
 }
 
+/**
+ * Generates a new referral code, updates the referrals collection and the user document
+ * @param req - The request object.
+ * @returns - The response object.
+ */
 export async function POST(req: NextRequest): Promise<Response> {
   const { address } = await req.json();
 
@@ -47,6 +58,7 @@ export async function POST(req: NextRequest): Promise<Response> {
   }
 
   const referralsCollection = adminDb.collection('referrals');
+  const userRef = adminDb.collection('user').doc(address.toLowerCase());
 
   let referralCode: string;
   let referralRef;
@@ -55,6 +67,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     referralRef = referralsCollection.doc(referralCode);
     const referralDoc = await referralRef.get();
     if (!referralDoc.exists) {
+      // Create new referral document
       await referralRef.set({
         owner: address.toLowerCase(),
         createdAt: Date.now(),
@@ -62,6 +75,10 @@ export async function POST(req: NextRequest): Promise<Response> {
         invited: [],
         isActive: true,
       });
+
+      // Update user document with the new referral code
+      await userRef.set({ referralCode }, { merge: true });
+
       break;
     }
   } while (true);

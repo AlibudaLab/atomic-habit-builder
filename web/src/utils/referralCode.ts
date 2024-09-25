@@ -30,9 +30,11 @@ export async function fetchOrGenerateReferralCode(address: string): Promise<stri
     const data = await response.json();
     if (data.referralCode) {
       return data.referralCode;
-    } else {
-      // If no referral code exists, generate a new one
+    } else if (data.referralCode === null) {
       return await generateReferralCode(address);
+    } else {
+      console.error('Unexpected response:', data);
+      return null;
     }
   } catch (error) {
     console.error('Error fetching or generating referral code:', error);
