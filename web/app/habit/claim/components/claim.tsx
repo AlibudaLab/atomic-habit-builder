@@ -15,12 +15,9 @@ import { logEventSimple } from '@/utils/gtag';
 
 export default function Claim() {
   const { push } = useRouter();
-  const params = useParams<{ challengeId: string }>();
-  const challengeId = params?.challengeId;
+  const { challengeId } = useParams<{ challengeId: string }>();
   const { login, isPending: connecting } = usePasskeyConnection();
-  const { challenge, loading, refetch } = useChallengeWithCheckIns(
-    challengeId ? Number(challengeId) : undefined,
-  );
+  const { challenge, loading, refetch } = useChallengeWithCheckIns(Number(challengeId));
   const [claimSuccess, setClaimSuccess] = useState(false);
 
   const [isClaimedPopupOpen, setIsClaimedPopupOpen] = useState(false);

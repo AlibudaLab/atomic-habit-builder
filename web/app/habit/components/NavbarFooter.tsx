@@ -23,9 +23,7 @@ export default function NavbarFooter() {
 
   // detect url to see which is selected
   useEffect(() => {
-    if (pathName === null) {
-      setSelected(TabKey.None);
-    } else if (pathName.includes('list') || pathName.includes('stake')) {
+    if (pathName.includes('list') || pathName.includes('stake')) {
       setSelected(TabKey.LIST);
     } else if (pathName.includes('create')) {
       setSelected(TabKey.CREATE);

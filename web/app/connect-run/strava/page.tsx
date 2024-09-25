@@ -19,9 +19,9 @@ const StravaImg = require('@/imgs/apps/strava.png') as string;
 export default function CallbackStrava() {
   const searchParams = useSearchParams();
 
-  const stravaAuthToken = searchParams ? searchParams.get('code') : null;
+  const stravaAuthToken = searchParams.get('code');
 
-  const originalUri = searchParams ? searchParams.get('state') : null;
+  const originalUri = searchParams.get('state');
 
   const { updateVerifierAndSecret } = useRunVerifier();
 
@@ -29,7 +29,7 @@ export default function CallbackStrava() {
 
   const router = useRouter();
 
-  // Upon receiving the auth token, try get the access token!
+  // Upon receiving the ath token, try get the access token!
   useEffect(() => {
     const updateAccessTokenAndRefreshToken = async () => {
       setIsPending(true);
