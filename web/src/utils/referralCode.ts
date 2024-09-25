@@ -32,7 +32,7 @@ export async function fetchOrGenerateReferralCode(address: string): Promise<stri
       return data.referralCode;
     } else {
       // If no referral code exists, generate a new one
-      return generateReferralCode(address);
+      return await generateReferralCode(address);
     }
   } catch (error) {
     console.error('Error fetching or generating referral code:', error);
