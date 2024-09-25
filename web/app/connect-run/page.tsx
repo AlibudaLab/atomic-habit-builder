@@ -11,22 +11,21 @@ const StravaImg = require('../../src/imgs/apps/strava.png') as string;
 export default function ConnectRunDataSource() {
   // if url contains 'original_path', then pass this info to the strava callback page, so after connecting we can go back
   const searchParams = useSearchParams();
-  const originalPath = searchParams.get('original_path');
+  const originalPath = searchParams ? searchParams.get('original_path') : null;
 
   const pathName = usePathname();
 
   const onClickStrava = useCallback(() => {
-    if (typeof window !== 'undefined') return;
-    const redirectUri = ((window as any).origin as string) + pathName + '/strava';
+    if (typeof window === 'undefined') return;
+    const redirectUri = `${window.origin}${pathName}/strava`;
     const authUrl = stravaUtils.getAuthURL(redirectUri, originalPath);
-    (window as any).location = authUrl as any;
+    window.location.href = authUrl;
   }, [originalPath, pathName]);
 
   return (
     <>
       <div className="py-4 text-lg font-bold">Link Run & Workout Data Source</div>
       <div>
-        {/* {verifier === RunVerifier.None && ( */}
         <div className="gap-2 sm:flex">
           {/* connect with strava */}
           <Button

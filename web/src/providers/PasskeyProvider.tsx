@@ -51,8 +51,8 @@ type PasskeyContextType = {
   isInitializing: boolean;
   account: KernelSmartAccount<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | null;
   accountClient: KernelAccountClient<typeof ENTRYPOINT_ADDRESS_V07, Transport, Chain> | undefined;
-  login: () => Promise<void>;
-  register: () => Promise<void>;
+  login: () => Promise<undefined | `0x${string}`>;
+  register: () => Promise<undefined | `0x${string}`>;
   logout: () => void;
 };
 
@@ -63,8 +63,12 @@ const defaultContextValue: PasskeyContextType = {
   isInitializing: true,
   account: null,
   accountClient: undefined,
-  login: async () => {},
-  register: async () => {},
+  login: async () => {
+    return undefined;
+  },
+  register: async () => {
+    return undefined;
+  },
   logout: () => {},
 };
 
@@ -122,6 +126,8 @@ export function PasskeyProvider({ children }: { children: ReactNode }) {
     setAccount(newAccount);
     setAccountClient(newAccountClient);
     storage.setItem('userAddress', newAccount.address);
+
+    return newAccount.address;
   }, []);
 
   const reconnect = useCallback(async () => {
@@ -167,7 +173,8 @@ export function PasskeyProvider({ children }: { children: ReactNode }) {
       const passkeyData = passkeyValidator.getSerializedData();
       setPasskeyData(passkeyData, true);
 
-      await createAccountAndClient(passkeyValidator);
+      const acc = await createAccountAndClient(passkeyValidator);
+      return acc;
     },
     [createAccountAndClient],
   );
@@ -191,7 +198,7 @@ export function PasskeyProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async () => {
     setIsConnecting(true);
     try {
-      await loginOrRegister(WebAuthnMode.Login);
+      return await loginOrRegister(WebAuthnMode.Login);
     } catch (error) {
       console.error('Login failed:', error);
     } finally {
@@ -202,7 +209,7 @@ export function PasskeyProvider({ children }: { children: ReactNode }) {
   const register = useCallback(async () => {
     setIsConnecting(true);
     try {
-      await loginOrRegister(WebAuthnMode.Register);
+      return await loginOrRegister(WebAuthnMode.Register);
     } catch (error) {
       console.error('Registration failed:', error);
     } finally {

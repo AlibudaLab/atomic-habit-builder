@@ -10,6 +10,10 @@ import {
   Input,
 } from '@nextui-org/react';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
+import {
+  getReferralCode as getInvitorReferralCode,
+  clearReferralCode,
+} from '@/utils/referralStorage';
 
 /**
  * Always prompt user to register: warning and
@@ -18,43 +22,38 @@ export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [referralCode, setReferralCode] = useState('');
   const { register, isPending: connecting } = usePasskeyConnection();
-  const { address } = usePasskeyAccount();
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const refCode = params.get('ref');
-    if (refCode) {
-      setReferralCode(refCode);
-      localStorage.setItem('referralCode', refCode);
-    } else {
-      const storedCode = localStorage.getItem('referralCode');
-      if (storedCode) {
-        setReferralCode(storedCode);
-      }
+    const storedCode = getInvitorReferralCode();
+    if (storedCode) {
+      setReferralCode(storedCode);
     }
   }, []);
 
-  useEffect(() => {
-    if (address && referralCode) {
-      handleReferral(address);
-    }
-  }, [address, referralCode]);
-
   const handleReferral = async (newAddress: string) => {
+    console.log(
+      'handleReferral, new address created with referral code!',
+      newAddress,
+      referralCode,
+    );
     try {
       await fetch('/api/user/referral/invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inviteeAddress: newAddress, referralCode }),
       });
+      // Clear the referral code after successful registration
+      clearReferralCode();
     } catch (error) {
       console.error('Error updating referral:', error);
     }
   };
 
   const handleRegister = async () => {
-    await register();
-    // The address will be updated in usePasskeyAccount after successful registration
+    const newAddress = await register();
+    if (newAddress) {
+      handleReferral(newAddress);
+    }
   };
 
   return (

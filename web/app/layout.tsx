@@ -1,5 +1,4 @@
 import './global.css';
-
 import GoogleAnalytics from '@/components/GoogleAnalytics/GoogleAnalytics';
 import Providers from './Providers';
 import { initAnalytics } from '@/utils/analytics';
@@ -7,6 +6,7 @@ import { nunito, londrina } from './fonts';
 import NavbarFooter from './habit/components/NavbarFooter';
 import Header from './habit/components/Header';
 import { Metadata } from 'next';
+import ReferralCodeHandler from '@/components/ReferralCodeHandler';
 
 // Stat analytics before the App renders,
 // so we can track page views and early events
@@ -33,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${nunito.className} ${londrina.variable} ${nunito.variable}`}>
       <body className="flex flex-1 flex-col items-center bg-white">
         <Providers>
+          <ReferralCodeHandler />
           <div className="container max-w-[440px] flex-1 px-4 pb-[120px] pt-8">
             <Header />
             {children}
