@@ -27,11 +27,11 @@ export function getCheckInDescription(challenge: Challenge): string {
   let baseDescription = baseDescriptions[challenge.type];
 
   if (challenge.minDistance && challenge.minTime) {
-    baseDescription += ` of at least ${challenge.minDistance} km and ${challenge.minTime} minutes`;
+    baseDescription += ` of at least ${challenge.minDistance / 1000} km and ${challenge.minTime / 60} minutes`;
   } else if (challenge.minDistance) {
-    baseDescription += ` of at least ${challenge.minDistance} km`;
+    baseDescription += ` of at least ${challenge.minDistance / 1000} km`;
   } else if (challenge.minTime) {
-    baseDescription += ` of at least ${challenge.minTime} minutes`;
+    baseDescription += ` of at least ${challenge.minTime / 60} minutes`;
   }
 
   baseDescription += ` and sync with Strava`;
