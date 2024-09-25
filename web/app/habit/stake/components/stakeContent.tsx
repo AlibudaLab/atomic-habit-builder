@@ -14,7 +14,7 @@ import moment, { now } from 'moment';
 import { usdcAddr } from '@/constants';
 import useMintERC20 from '@/hooks/transaction/useMintERC20';
 import useJoinChallenge from '@/hooks/transaction/useJoinChallenge';
-import { getCheckInDescription } from '@/utils/challenges';
+import { getChallengeRequirementDescription, getCheckInDescription } from '@/utils/challenges';
 import { ChallengeBoxFilled } from 'app/habit/components/ChallengeBox';
 import Loading from 'app/habit/components/Loading';
 import JoinedPopup from './JoinedPopup';
@@ -161,14 +161,17 @@ export default function StakeChallenge() {
                 <div className="w-full justify-start p-6 py-2 text-start">
                   <div className="text-xl font-bold text-dark"> Goal </div>
                   <div className="text-sm text-primary"> {challenge.description} </div>
+                  {(challenge.minDistance || challenge.minTime) && (
+                    <div className="mt-1 font-londrina text-sm text-gray-500">
+                      {getChallengeRequirementDescription(challenge)}
+                    </div>
+                  )}
                 </div>
 
                 {/* checkIn description */}
                 <div className="w-full justify-start p-6 py-2 text-start">
                   <div className="text-xl font-bold text-dark"> Check In </div>
-                  <div className="text-sm text-primary">
-                    {getCheckInDescription(challenge)}
-                  </div>
+                  <div className="text-sm text-primary">{getCheckInDescription(challenge)}</div>
                 </div>
 
                 <div className="w-full justify-start p-6 py-2 text-start">

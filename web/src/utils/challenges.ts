@@ -17,7 +17,7 @@ export function challengeToEmoji(type: ChallengeTypes) {
 }
 
 const baseDescriptions = {
-  [ChallengeTypes.Run]: 'Complete a run ',
+  [ChallengeTypes.Run]: 'Complete a run and sync with Strava',
   [ChallengeTypes.Workout]: 'Complete a workout and sync with Strava',
   [ChallengeTypes.Cycling]: 'Complete a cycling activity and sync with Strava',
   [ChallengeTypes.NFC_Chip]: 'N/A',
@@ -26,18 +26,23 @@ const baseDescriptions = {
 export function getCheckInDescription(challenge: Challenge): string {
   let baseDescription = baseDescriptions[challenge.type];
 
+  if (challenge.allowSelfCheckIn) baseDescription += ', or manually record your activity';
+
+  return baseDescription;
+}
+
+export function getChallengeRequirementDescription(challenge: Challenge): string {
+  let baseDescription = 'Requirements:';
+
   if (challenge.minDistance && challenge.minTime) {
-    baseDescription += ` of at least ${challenge.minDistance / 1000} km and ${challenge.minTime / 60} minutes`;
+    baseDescription += ` Distance > ${challenge.minDistance / 1000} km & Duration > ${
+      challenge.minTime / 60
+    } mins`;
   } else if (challenge.minDistance) {
-    baseDescription += ` of at least ${challenge.minDistance / 1000} km`;
+    baseDescription += ` Distance > ${challenge.minDistance / 1000} km`;
   } else if (challenge.minTime) {
-    baseDescription += ` of at least ${challenge.minTime / 60} minutes`;
+    baseDescription += ` Duration > ${challenge.minTime / 60} mins`;
   }
-
-  baseDescription += ` and sync with Strava`;
-
-  if (challenge.allowSelfCheckIn)
-    baseDescription += ', or manually record your activity';
 
   return baseDescription;
 }
