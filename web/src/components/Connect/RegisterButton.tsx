@@ -38,14 +38,14 @@ export function RegisterButton() {
       // Clear the referral code after successful registration
       clearReferralCode();
     } catch (error) {
-      console.error('Error updating referral:', error);
+      console.error('Error updating referral info:', error);
     }
   };
 
   const handleRegister = async () => {
     const newAddress = await register();
     if (newAddress) {
-      handleReferral(newAddress);
+      void handleReferral(newAddress);
     }
   };
 

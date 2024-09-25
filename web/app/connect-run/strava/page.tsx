@@ -67,7 +67,7 @@ export default function CallbackStrava() {
       }
     };
 
-    updateAccessTokenAndRefreshToken();
+    void updateAccessTokenAndRefreshToken();
   }, [stravaAuthToken, updateVerifierAndSecret, originalUri, router]);
 
   return (

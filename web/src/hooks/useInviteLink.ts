@@ -17,18 +17,18 @@ function useInviteLink(challengeId?: number, accessCode?: string) {
     }
   }, []);
 
-  useEffect(() => {
-    if (address) {
-      void fetchAndSetReferralCode();
-    }
-  }, [address]);
-
   const fetchAndSetReferralCode = useCallback(async () => {
     if (!address) return;
     setIsLoading(true);
     const code = await fetchOrGenerateReferralCode(address);
     setReferralCode(code);
     setIsLoading(false);
+  }, [address]);
+
+  useEffect(() => {
+    if (address) {
+      void fetchAndSetReferralCode();
+    }
   }, [address]);
 
   const getInviteLink = useCallback(() => {
