@@ -167,7 +167,7 @@ export default function StakeChallenge() {
                 <div className="w-full justify-start p-6 py-2 text-start">
                   <div className="text-xl font-bold text-dark"> Check In </div>
                   <div className="text-sm text-primary">
-                    {getCheckInDescription(challenge.type, challenge.allowSelfCheckIn)}
+                    {getCheckInDescription(challenge)}
                   </div>
                 </div>
 
