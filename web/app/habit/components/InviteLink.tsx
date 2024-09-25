@@ -12,7 +12,7 @@ type InviteLinkProps = {
 };
 
 export default function InviteLink({ accessCode, challengeId, className, text }: InviteLinkProps) {
-  const { link } = useInviteLink(challengeId, accessCode);
+  const { getInviteLink } = useInviteLink(challengeId, accessCode);
 
   return (
     <Snippet
@@ -20,7 +20,7 @@ export default function InviteLink({ accessCode, challengeId, className, text }:
       size="sm"
       hideSymbol
       color="default"
-      codeString={link}
+      codeString={getInviteLink()}
       onClick={() => {
         logEventSimple({ eventName: 'click_copy_invite', category: 'others' });
       }}

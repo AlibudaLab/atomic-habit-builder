@@ -15,7 +15,7 @@ import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
 import { UserChallengeStatus } from '@/types';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
@@ -23,6 +23,8 @@ import AddFundPopup from 'app/habit/stake/components/AddFundPopup';
 import { logEventSimple } from '@/utils/gtag';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import Loading from 'app/habit/components/Loading';
+import useInviteLink from '@/hooks/useInviteLink';
+import { TiUserAdd } from 'react-icons/ti';
 
 export default function ProfileContent() {
   const { address, logout, isInitializing } = usePasskeyAccount();
@@ -65,8 +67,31 @@ export default function ProfileContent() {
     return acc + earned;
   }, BigInt(0));
 
+  const { isLoading: inviteLinkLoading, copyInviteLink: inviteLinkCopy } = useInviteLink();
+
+  const handleInviteOthers = useCallback(() => {
+    inviteLinkCopy();
+    logEventSimple({ eventName: 'click_invite_others', category: 'profile' });
+  }, [inviteLinkCopy]);
+
   return (
-    <div className="container flex flex-col items-center">
+    <div className="container relative flex flex-col items-center">
+      {/* Add the invite button to the top right */}
+      {address && (
+        <div className="absolute right-0 top-0 mr-4 mt-4">
+          <Button
+            type="button"
+            onClick={handleInviteOthers}
+            isDisabled={inviteLinkLoading}
+            isIconOnly
+            size="sm"
+            className="rounded-full p-2 text-dark"
+          >
+            <TiUserAdd size={24} />
+          </Button>
+        </div>
+      )}
+
       <div className="mx-2 w-full items-center">
         {isAddFundModalOpen && (
           <AddFundPopup

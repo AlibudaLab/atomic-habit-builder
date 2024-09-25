@@ -1,20 +1,9 @@
-'use client';
-
-import { useCallback, useEffect, useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
-function useInviteLink(challengeId?: number, accessCode?: string) {
-  const { address } = usePasskeyAccount();
-  const [origin, setOrigin] = useState('');
+export function useReferralCode(address: string | undefined) {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setOrigin(window.location.origin);
-    }
-  }, []);
 
   useEffect(() => {
     if (address) {
@@ -63,21 +52,9 @@ function useInviteLink(challengeId?: number, accessCode?: string) {
 
   const getInviteLink = useCallback(() => {
     if (!referralCode) return '';
-
-    let link = `${origin}`;
-
-    if (challengeId) {
-      link += `/habit/stake/${challengeId}`;
-      if (accessCode) {
-        link += `?code=${accessCode}`;
-      }
-      link += `${accessCode ? '&' : '?'}ref=${referralCode}`;
-    } else {
-      link += `?ref=${referralCode}`;
-    }
-
-    return link;
-  }, [origin, referralCode, challengeId, accessCode]);
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    return `${baseUrl}?ref=${referralCode}`;
+  }, [referralCode]);
 
   const copyInviteLink = useCallback(() => {
     const link = getInviteLink();
@@ -96,5 +73,3 @@ function useInviteLink(challengeId?: number, accessCode?: string) {
     copyInviteLink,
   };
 }
-
-export default useInviteLink;

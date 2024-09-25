@@ -44,7 +44,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const [isSigning, setIsSigning] = useState(false);
   const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
-  const { copyLink } = useInviteLink(challenge.id, challenge.accessCode);
+  const { copyInviteLink } = useInviteLink(challenge.id, challenge.accessCode);
 
   const { refetch: refetchAll } = useUserChallenges();
 
@@ -280,7 +280,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         <div className="text-lg font-bold text-dark"> Invite Others </div>
         <div className="flex gap-2 text-sm text-primary">
           Invite your friends to join the challenge
-          <button type="button" onClick={copyLink}>
+          <button type="button" onClick={copyInviteLink}>
             <CopyIcon size={14} />
           </button>
         </div>

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import {
   Modal,
@@ -6,15 +7,55 @@ import {
   ModalBody,
   Button,
   useDisclosure,
+  Input,
 } from '@nextui-org/react';
+import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 
 /**
  * Always prompt user to register: warning and
  */
 export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+  const [referralCode, setReferralCode] = useState('');
   const { register, isPending: connecting } = usePasskeyConnection();
+  const { address } = usePasskeyAccount();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get('ref');
+    if (refCode) {
+      setReferralCode(refCode);
+      localStorage.setItem('referralCode', refCode);
+    } else {
+      const storedCode = localStorage.getItem('referralCode');
+      if (storedCode) {
+        setReferralCode(storedCode);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (address && referralCode) {
+      handleReferral(address);
+    }
+  }, [address, referralCode]);
+
+  const handleReferral = async (newAddress: string) => {
+    try {
+      await fetch('/api/user/referral/invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ inviteeAddress: newAddress, referralCode }),
+      });
+    } catch (error) {
+      console.error('Error updating referral:', error);
+    }
+  };
+
+  const handleRegister = async () => {
+    await register();
+    // The address will be updated in usePasskeyAccount after successful registration
+  };
 
   return (
     <>
@@ -37,13 +78,20 @@ export function RegisterButton() {
               </p>
             </div>
 
+            <Input
+              label="Referral Code (optional)"
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value)}
+              className="mt-4"
+            />
+
             <div className="flex flex-col items-center justify-center">
               <Button
                 type="button"
                 className="m-4 mt-8 w-48 p-6 font-londrina"
                 color="primary"
                 isLoading={connecting}
-                onClick={register}
+                onClick={handleRegister}
               >
                 I&apos;m In!
               </Button>
