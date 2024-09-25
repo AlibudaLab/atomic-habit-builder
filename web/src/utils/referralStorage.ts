@@ -10,10 +10,6 @@ export const getReferralCode = (): string | null => {
   return storage.getItem(REFERRAL_CODE_KEY);
 };
 
-export const clearReferralCode = () => {
-  storage.removeItem(REFERRAL_CODE_KEY);
-};
-
 export function generateUniqueCode(length = 8): string {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = '';

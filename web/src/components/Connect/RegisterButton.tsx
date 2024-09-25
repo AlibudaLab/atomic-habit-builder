@@ -20,7 +20,7 @@ export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [referralCode, setReferralCode] = useState('');
   const { register, isPending: connecting } = usePasskeyConnection();
-  const { referralCode: storedReferralCode, clearReferralCode } = useReferralCode();
+  const { referralCode: storedReferralCode } = useReferralCode();
 
   useEffect(() => {
     if (storedReferralCode) {
@@ -35,8 +35,6 @@ export function RegisterButton() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inviteeAddress: newAddress, referralCode }),
       });
-      // Clear the referral code after successful registration
-      clearReferralCode();
     } catch (error) {
       console.error('Error updating referral info:', error);
     }

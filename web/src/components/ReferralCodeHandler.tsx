@@ -17,9 +17,13 @@ export function useReferralCode() {
     }
   }, []);
 
+  /**
+   * When referral code is detected in the URL, store it in local storage
+   */
   useEffect(() => {
     const ref = searchParams?.get('ref');
-    if (ref) {
+    const storedCode = storage.getItem(REFERRAL_CODE_KEY);
+    if (ref && !storedCode) {
       storage.setItem(REFERRAL_CODE_KEY, ref);
       setReferralCode(ref);
     }
@@ -30,15 +34,9 @@ export function useReferralCode() {
     setReferralCode(code);
   };
 
-  const clearReferralCode = () => {
-    storage.removeItem(REFERRAL_CODE_KEY);
-    setReferralCode(null);
-  };
-
   return {
     referralCode,
     storeReferralCode,
-    clearReferralCode,
   };
 }
 
