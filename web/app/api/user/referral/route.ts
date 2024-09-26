@@ -60,12 +60,14 @@ export async function POST(req: NextRequest): Promise<Response> {
   const referralsCollection = adminDb.collection('referrals');
   const userRef = adminDb.collection('user').doc(address.toLowerCase());
 
-  let referralCode: string;
+  let referralCode: string | null = null;
   let referralRef;
-  do {
+
+  for (let attempt = 0; attempt < 3; attempt++) {
     referralCode = generateUniqueCode();
     referralRef = referralsCollection.doc(referralCode);
     const referralDoc = await referralRef.get();
+
     if (!referralDoc.exists) {
       // Create new referral document
       await referralRef.set({
@@ -81,7 +83,14 @@ export async function POST(req: NextRequest): Promise<Response> {
 
       break;
     }
-  } while (true);
+  }
+
+  if (referralCode === null) {
+    return NextResponse.json(
+      { error: 'Failed to generate a unique referral code after 3 attempts' },
+      { status: 500 },
+    );
+  }
 
   return NextResponse.json({ referralCode });
 }
