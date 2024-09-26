@@ -73,9 +73,9 @@ export enum UserStatus {
 
 // challenge status defined on-chain
 export enum ChallengeStatus {
-  NotExist,
-  Created,
-  Settled,
+  NotExist = '0',
+  Created = '1',
+  Settled = '2',
 }
 
 // combining user status & challenge status, indicating what the user should do next
