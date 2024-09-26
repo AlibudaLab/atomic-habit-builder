@@ -24,6 +24,7 @@ import { getCountdownString } from '@/utils/timestamp';
 import ManualCheckInButton from './ManualCheckInButton';
 import useInviteLink from '@/hooks/useInviteLink';
 import { CopyIcon } from 'lucide-react';
+import { getChallengeRequirementDescription, getCheckInDescription } from '@/utils/challenges';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -43,7 +44,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
   const { activityMap, addToActivityMap } = useActivityUsage(address);
   const [isSigning, setIsSigning] = useState(false);
   const [checkInMethod, setCheckInMethod] = useState<'strava' | 'self'>('strava');
-  const { copyLink, link } = useInviteLink(challenge.id, challenge.accessCode);
+  const { copyLink } = useInviteLink(challenge.id, challenge.accessCode);
 
   const { refetch: refetchAll } = useUserChallenges();
 
@@ -261,6 +262,11 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-lg font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
+        {(challenge.minDistance || challenge.minTime) && (
+          <div className="mt-1 font-londrina text-sm text-gray-500">
+            {getChallengeRequirementDescription(challenge)}
+          </div>
+        )}
       </div>
 
       <div className="w-full justify-start p-6 py-2 text-start">

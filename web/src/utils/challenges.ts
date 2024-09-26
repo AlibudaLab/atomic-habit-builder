@@ -23,11 +23,25 @@ const baseDescriptions = {
   [ChallengeTypes.NFC_Chip]: 'N/A',
 };
 
-export function getCheckInDescription(type: ChallengeTypes, allowSelfCheckIn?: boolean): string {
-  const baseDescription = baseDescriptions[type];
+export function getCheckInDescription(challenge: Challenge): string {
+  let baseDescription = baseDescriptions[challenge.type];
 
-  if (allowSelfCheckIn) {
-    return `${baseDescription}, or manually record your activity.`;
+  if (challenge.allowSelfCheckIn) baseDescription += ', or manually record your activity';
+
+  return baseDescription;
+}
+
+export function getChallengeRequirementDescription(challenge: Challenge): string {
+  let baseDescription = 'Requirements:';
+
+  if (challenge.minDistance && challenge.minTime) {
+    baseDescription += ` Distance > ${challenge.minDistance / 1000} km & Duration > ${
+      challenge.minTime / 60
+    } mins`;
+  } else if (challenge.minDistance) {
+    baseDescription += ` Distance > ${challenge.minDistance / 1000} km`;
+  } else if (challenge.minTime) {
+    baseDescription += ` Duration > ${challenge.minTime / 60} mins`;
   }
 
   return baseDescription;

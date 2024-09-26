@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { Challenge, RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
@@ -9,73 +9,22 @@ const useStravaData = (challenge: Challenge) => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
-
   const [runData, setRunData] = useState<stravaUtils.StravaRunData[]>([]);
-
   // TODO: move this to a separate hook when we have more sources for workout data / run data
   const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
   const [cyclingData, setCyclingData] = useState<stravaUtils.StravaCyclingData[]>([]);
-
   const [error, setError] = useState<unknown | null>(null);
 
   const connected = verifier !== RunVerifier.None;
-
   const expired = useMemo(() => Date.now() / 1000 > expiry, [expiry]);
 
-  // update access token when expired
-  useEffect(() => {
-    // access token not expired, do nothing
-    if (!expired) return;
+  const handleError = (message: string) => {
+    setError(message);
+    setLoading(false);
+  };
 
-    if (verifier !== RunVerifier.Strava) {
-      return;
-    }
-
-    const updateAccessToken = async () => {
-      console.log('Updating access token!');
-      // error: cannot update access token without refresh token
-      if (!secret) {
-        setError('No secret');
-        return;
-      }
-      // expired, wait for refresh and expiry to update
-      const { refreshToken } = stravaUtils.splitSecret(secret);
-
-      const { accessToken: newAccessToken, expiry: newExpiry } =
-        await stravaUtils.refreshAccessToken(refreshToken);
-
-      if (!newAccessToken) {
-        setError('Failed to refresh access token');
-        return;
-      }
-
-      const newSecret = stravaUtils.joinSecret(newAccessToken, refreshToken);
-
-      // update secret
-      updateVerifierAndSecret(RunVerifier.Strava, newSecret, newExpiry);
-    };
-
-    updateAccessToken().catch(console.error);
-  }, [secret, updateVerifierAndSecret, verifier, expired]);
-
-  // fetch run data when access token are updated and not expired
-  useEffect(() => {
-    // TODO: add others verifiers
-    if (verifier !== RunVerifier.Strava) {
-      return;
-    }
-    if (expired) return;
-
-    const fetchData = async () => {
-      console.log('fetching strava run data');
-      if (!secret) {
-        setError('No secret');
-        return;
-      }
-
-      setLoading(true);
-      const { accessToken } = stravaUtils.splitSecret(secret);
-
+  const fetchData = useCallback(
+    async (accessToken: string) => {
       try {
         const [newRunData, newWorkoutData, newCyclingData] = await Promise.all([
           stravaUtils.fetchActivities(
@@ -99,30 +48,75 @@ const useStravaData = (challenge: Challenge) => {
         ]);
 
         if (!newRunData || !newWorkoutData || !newCyclingData) {
-          setError('No data found');
+          handleError('No data found');
           return;
         }
 
-        setRunData(newRunData);
-        setWorkoutData(newWorkoutData);
-        setCyclingData(newCyclingData);
+        setRunData(
+          newRunData.filter(
+            (activity) =>
+              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
+          ),
+        );
+
+        setWorkoutData(
+          newWorkoutData.filter(
+            (activity) =>
+              challenge.minTime === undefined || activity.moving_time >= challenge.minTime,
+          ),
+        );
+
+        setCyclingData(
+          newCyclingData.filter(
+            (activity) =>
+              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
+          ),
+        );
+
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
-        setError(_error);
-        setLoading(false);
+        handleError(_error as string);
       }
+    },
+    [challenge],
+  );
+
+  useEffect(() => {
+    console.log('Updating access token!');
+    if (!expired || verifier !== RunVerifier.Strava) return;
+
+    const updateAccessToken = async () => {
+      if (!secret) {
+        handleError('No secret');
+        return;
+      }
+
+      const { refreshToken } = stravaUtils.splitSecret(secret);
+      const { accessToken: newAccessToken, expiry: newExpiry } =
+        await stravaUtils.refreshAccessToken(refreshToken);
+
+      if (!newAccessToken) {
+        handleError('Failed to refresh access token');
+        return;
+      }
+
+      const newSecret = stravaUtils.joinSecret(newAccessToken, refreshToken);
+      updateVerifierAndSecret(RunVerifier.Strava, newSecret, newExpiry);
     };
 
-    fetchData().catch(setError);
-  }, [
-    secret,
-    verifier,
-    updateVerifierAndSecret,
-    expired,
-    challenge.startTimestamp,
-    challenge.endTimestamp,
-  ]);
+    updateAccessToken().catch(console.error);
+  }, [secret, updateVerifierAndSecret, verifier, expired]);
+
+  useEffect(() => {
+    if (verifier !== RunVerifier.Strava || expired || !secret) return;
+
+    setLoading(true);
+    const { accessToken } = stravaUtils.splitSecret(secret);
+    fetchData(accessToken).catch(setError);
+  }, [secret, verifier, expired, challenge, fetchData]);
 
   return { loading, runData, workoutData, cyclingData, error, connected };
 };
