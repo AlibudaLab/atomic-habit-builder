@@ -12,6 +12,7 @@ import {
   Input,
 } from '@nextui-org/react';
 import { useReferralCode } from '@/components/ReferralCodeHandler';
+import { CheckCircle, XCircle } from 'lucide-react';
 
 /**
  * Always prompt user to register: warning and
@@ -19,14 +20,43 @@ import { useReferralCode } from '@/components/ReferralCodeHandler';
 export function RegisterButton() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [referralCode, setReferralCode] = useState('');
+  const [isValidReferralCode, setIsValidReferralCode] = useState<boolean | null>(null);
   const { register, isPending: connecting } = usePasskeyConnection();
   const { referralCode: storedReferralCode } = useReferralCode();
 
   useEffect(() => {
     if (storedReferralCode) {
       setReferralCode(storedReferralCode);
+      checkReferralCode(storedReferralCode);
     }
   }, [storedReferralCode]);
+
+  const checkReferralCode = async (code: string) => {
+    if (!code) {
+      setIsValidReferralCode(null);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/user/referral/exist?code=${code}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      setIsValidReferralCode(data.exist);
+    } catch (error) {
+      console.error('Error checking referral code:', error);
+      setIsValidReferralCode(false);
+    }
+  };
+
+  const handleReferralCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newCode = e.target.value;
+    setReferralCode(newCode);
+    checkReferralCode(newCode);
+  };
 
   const handleReferral = async (newAddress: string) => {
     try {
@@ -68,12 +98,22 @@ export function RegisterButton() {
               </p>
             </div>
 
-            <Input
-              label="Referral Code (optional)"
-              value={referralCode}
-              onChange={(e) => setReferralCode(e.target.value)}
-              className="mt-4"
-            />
+            <div className="relative">
+              <Input
+                label="Referral Code (optional)"
+                value={referralCode}
+                onChange={handleReferralCodeChange}
+                className="mt-4"
+                endContent={
+                  referralCode &&
+                  (isValidReferralCode ? (
+                    <CheckCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-green-500" />
+                  ) : (
+                    <XCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-red-500" />
+                  ))
+                }
+              />
+            </div>
 
             <div className="flex flex-col items-center justify-center">
               <Button
