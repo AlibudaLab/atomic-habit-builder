@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import usePasskeyConnection from '@/hooks/usePasskeyConnection';
 import {
   Modal,
@@ -24,14 +24,7 @@ export function RegisterButton() {
   const { register, isPending: connecting } = usePasskeyConnection();
   const { referralCode: storedReferralCode } = useReferralCode();
 
-  useEffect(() => {
-    if (storedReferralCode) {
-      setReferralCode(storedReferralCode);
-      checkReferralCode(storedReferralCode);
-    }
-  }, [storedReferralCode]);
-
-  const checkReferralCode = async (code: string) => {
+  const checkReferralCode = useCallback(async (code: string) => {
     if (!code) {
       setIsValidReferralCode(null);
       return;
@@ -50,12 +43,19 @@ export function RegisterButton() {
       console.error('Error checking referral code:', error);
       setIsValidReferralCode(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (storedReferralCode) {
+      setReferralCode(storedReferralCode);
+      void checkReferralCode(storedReferralCode);
+    }
+  }, [storedReferralCode, checkReferralCode]);
 
   const handleReferralCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCode = e.target.value;
     setReferralCode(newCode);
-    checkReferralCode(newCode);
+    void checkReferralCode(newCode);
   };
 
   const handleReferral = async (newAddress: string) => {
@@ -73,7 +73,7 @@ export function RegisterButton() {
   const handleRegister = async () => {
     const newAddress = await register();
     if (newAddress) {
-      void handleReferral(newAddress);
+      await handleReferral(newAddress);
     }
   };
 
