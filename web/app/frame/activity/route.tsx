@@ -86,7 +86,7 @@ export async function GET(request: Request) {
     ),
     {
       width: 1200,
-      height: 630,
+      height: 1200,
       fonts: [
         { name: 'Roboto', data: robotoRegular, weight: 400, style: 'normal' },
         { name: 'Roboto', data: robotoBold, weight: 700, style: 'normal' },

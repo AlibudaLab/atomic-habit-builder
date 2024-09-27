@@ -9,6 +9,10 @@ import { gifUrls } from '../utils/constants';
 const app = new Frog({
   basePath: '/api/frame',
   title: 'Atomic Frame',
+  imageOptions: {
+    width: 1200,
+    height: 1200,
+  },
 });
 
 export const runtime = 'edge';
