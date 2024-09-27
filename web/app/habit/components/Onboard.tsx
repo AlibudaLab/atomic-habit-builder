@@ -1,7 +1,7 @@
 'use client';
 
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import CardSlider from '../../../src/components/CardSlider/CardSlider';
 
 /**
@@ -9,7 +9,11 @@ import CardSlider from '../../../src/components/CardSlider/CardSlider';
  * @returns
  */
 export default function Onboard() {
-  const { push } = useRouter();
+  // if referral link is attached in the URL (newly opened), show register modal
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get('ref');
+
+  const defaultShowRegister = referralCode !== null && referralCode !== undefined;
 
   return (
     <main className="container mx-6 flex flex-col items-center px-4 text-center">
@@ -19,7 +23,7 @@ export default function Onboard() {
 
         <CardSlider />
 
-        <SignInAndRegister />
+        <SignInAndRegister defaultShowRegister={defaultShowRegister} />
       </div>
     </main>
   );

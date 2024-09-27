@@ -12,12 +12,13 @@ import {
   Input,
 } from '@nextui-org/react';
 import { useReferralCode } from '@/components/ReferralCodeHandler';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import { CiWarning } from 'react-icons/ci';
 
 /**
  * Always prompt user to register: warning and
  */
-export function RegisterButton() {
+export function RegisterButton({ defaultShowRegister = false }: { defaultShowRegister?: boolean }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [referralCode, setReferralCode] = useState('');
   const [isValidReferralCode, setIsValidReferralCode] = useState<boolean | null>(null);
@@ -51,6 +52,12 @@ export function RegisterButton() {
       void checkReferralCode(storedReferralCode);
     }
   }, [storedReferralCode, checkReferralCode]);
+
+  useEffect(() => {
+    if (defaultShowRegister) {
+      onOpen();
+    }
+  }, [defaultShowRegister, onOpen]);
 
   const handleReferralCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newCode = e.target.value;
@@ -88,6 +95,11 @@ export function RegisterButton() {
           <ModalHeader className="m-2 flex flex-col gap-1"> Add a new Passkey </ModalHeader>
           <ModalBody className="justify-center">
             <div className="mx-2 text-sm">
+              {defaultShowRegister && (
+                <div className="pb-4 text-center font-londrina text-lg text-primary">
+                  You're invited!
+                </div>
+              )}
               <p>
                 Atomic requires a Passkey to control your smart wallet. It&apos;s your key to the
                 playground – and your USDC. Lose it, and you&apos;re locked out for good
@@ -109,7 +121,7 @@ export function RegisterButton() {
                   (isValidReferralCode ? (
                     <CheckCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-green-500" />
                   ) : (
-                    <XCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-red-500" />
+                    <CiWarning className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-red-500" />
                   ))
                 }
               />

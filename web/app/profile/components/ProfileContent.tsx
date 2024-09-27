@@ -67,7 +67,11 @@ export default function ProfileContent() {
     return acc + earned;
   }, BigInt(0));
 
-  const { isLoading: inviteLinkLoading, copyInviteLink: inviteLinkCopy } = useInviteLink();
+  const {
+    isLoading: inviteLinkLoading,
+    referralCode,
+    copyInviteLink: inviteLinkCopy,
+  } = useInviteLink();
 
   const handleInviteOthers = useCallback(() => {
     inviteLinkCopy();
@@ -76,21 +80,6 @@ export default function ProfileContent() {
 
   return (
     <div className="container relative flex flex-col items-center">
-      {/* Add the invite button to the top right */}
-      {address && (
-        <div className="absolute right-0 top-0 mr-4 mt-4">
-          <Button
-            type="button"
-            onClick={handleInviteOthers}
-            isDisabled={inviteLinkLoading}
-            isIconOnly
-            className="rounded-full bg-primary p-2 text-white"
-          >
-            <TiUserAdd size={24} />
-          </Button>
-        </div>
-      )}
-
       <div className="mx-2 w-full items-center">
         {isAddFundModalOpen && (
           <AddFundPopup
@@ -142,6 +131,19 @@ export default function ProfileContent() {
                   >
                     <ExternalLinkIcon />
                   </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* referral code */}
+            <div className="mt-4 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
+              <div className="text-xs text-gray-500"> Referral Code </div>
+              <div className="flex w-full items-center justify-start no-underline">
+                <div className="flex w-full items-center justify-between">
+                  <p className="text-sm"> {inviteLinkLoading ? 'loading...' : referralCode} </p>
+                </div>
+                <div className="flex justify-center gap-2">
+                  <CopyIcon size={15} onClick={inviteLinkCopy} />
                 </div>
               </div>
             </div>
