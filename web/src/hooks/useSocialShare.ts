@@ -42,6 +42,9 @@ export default function useSocialShare() {
       if (embed) url.searchParams.append('embeds[]', embed);
     });
 
+    console.log('embeds: ', embeds);
+    console.log('url: ', url.toString());
+
     open(url.toString());
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
