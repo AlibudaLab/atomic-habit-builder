@@ -39,6 +39,7 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
         },
       });
       const data = await response.json();
+      console.log('data', data);
       setIsValidReferralCode(data.exist);
     } catch (error) {
       console.error('Error checking referral code:', error);
@@ -118,7 +119,8 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
                 className="mt-4"
                 endContent={
                   referralCode &&
-                  (isValidReferralCode ? (
+                  isValidReferralCode !== null &&
+                  (isValidReferralCode === true ? (
                     <CheckCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-green-500" />
                   ) : (
                     <CiWarning className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-red-500" />
