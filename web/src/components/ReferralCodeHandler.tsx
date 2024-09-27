@@ -22,8 +22,7 @@ export function useReferralCode() {
    */
   useEffect(() => {
     const ref = searchParams.get('ref');
-    const storedCode = storage.getItem(REFERRAL_CODE_KEY);
-    if (ref && !storedCode) {
+    if (ref) {
       storage.setItem(REFERRAL_CODE_KEY, ref);
       setReferralCode(ref);
     }

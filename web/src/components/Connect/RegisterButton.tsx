@@ -39,7 +39,6 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
         },
       });
       const data = await response.json();
-      console.log('data', data);
       setIsValidReferralCode(data.exist);
     } catch (error) {
       console.error('Error checking referral code:', error);
@@ -85,6 +84,8 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
     }
   };
 
+  const showReferralStatus = referralCode && isValidReferralCode !== null;
+
   return (
     <>
       <button type="button" onClick={onOpen} className="mb-4 text-sm text-gray-500 underline">
@@ -118,14 +119,14 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
                 onChange={handleReferralCodeChange}
                 className="mt-4"
                 endContent={
-                  referralCode &&
-                  isValidReferralCode !== null &&
-                  (isValidReferralCode === true ? (
+                  showReferralStatus && (isValidReferralCode ? (
                     <CheckCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-green-500" />
                   ) : (
                     <CiWarning className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-red-500" />
                   ))
                 }
+                // disable input for now
+                isDisabled
               />
             </div>
 
