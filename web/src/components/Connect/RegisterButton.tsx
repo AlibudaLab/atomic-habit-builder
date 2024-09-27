@@ -97,7 +97,7 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
             <div className="mx-2 text-sm">
               {defaultShowRegister && (
                 <div className="pb-4 text-center font-londrina text-lg text-primary">
-                  You're invited!
+                  You are invited!
                 </div>
               )}
               <p>
