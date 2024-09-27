@@ -16,7 +16,7 @@ export default function ConnectRunDataSource() {
   const pathName = usePathname();
 
   const onClickStrava = useCallback(() => {
-    if (typeof window !== 'undefined') return;
+    if (typeof window === 'undefined') return;
     const redirectUri = ((window as any).origin as string) + pathName + '/strava';
     const authUrl = stravaUtils.getAuthURL(redirectUri, originalPath);
     (window as any).location = authUrl as any;
@@ -26,7 +26,6 @@ export default function ConnectRunDataSource() {
     <>
       <div className="py-4 text-lg font-bold">Link Run & Workout Data Source</div>
       <div>
-        {/* {verifier === RunVerifier.None && ( */}
         <div className="gap-2 sm:flex">
           {/* connect with strava */}
           <Button

@@ -14,14 +14,10 @@ export default function usePasskeyConnection() {
     setSignedInBefore(usedBefore);
   }, []);
 
-  const handleRegister = useCallback(() => {
-    void register()
-      .then(() => {
-        logEventSimple({ eventName: 'clieck_sign_up', category: 'connect' });
-      })
-      .catch((error) => {
-        console.error('Registration failed:', error);
-      });
+  const handleRegister = useCallback(async () => {
+    const address = await register();
+    logEventSimple({ eventName: 'clieck_sign_up', category: 'connect' });
+    return address;
   }, [register]);
 
   const handleLogin = useCallback(() => {

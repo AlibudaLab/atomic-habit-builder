@@ -36,6 +36,7 @@ export default function CallbackStrava() {
       console.log('update access token and refresh token');
 
       if (!stravaAuthToken) {
+        setIsPending(false);
         return; // No need to proceed if token is absent
       }
 
@@ -47,6 +48,7 @@ export default function CallbackStrava() {
 
         if (!accessToken || !refreshToken) {
           toast.error('Failed to connect with Strava');
+          return;
         }
 
         const newSecret = stravaUtils.joinSecret(accessToken, refreshToken);
@@ -57,17 +59,20 @@ export default function CallbackStrava() {
 
         // Redirect to the original page
         if (originalUri) router.push(originalUri);
+      } catch (error) {
+        console.error('Error updating access token:', error);
+        toast.error('Failed to connect with Strava');
       } finally {
-        setIsPending(false); // Always set loading state to false after the operation
+        setIsPending(false);
       }
     };
 
-    updateAccessTokenAndRefreshToken().catch(console.log);
+    void updateAccessTokenAndRefreshToken();
   }, [stravaAuthToken, updateVerifierAndSecret, originalUri, router]);
 
   return (
     <main className="flex flex-col items-center">
-      {stravaAuthToken !== undefined && (
+      {stravaAuthToken ? (
         <>
           {isPending ? (
             <div className="py-4 text-lg font-bold"> Connecting Strava ... </div>
@@ -76,6 +81,8 @@ export default function CallbackStrava() {
           )}
           <Image src={StravaImg} height={55} width={55} alt="Strava" />
         </>
+      ) : (
+        <div className="py-4 text-lg font-bold">No Strava authentication token found</div>
       )}
     </main>
   );

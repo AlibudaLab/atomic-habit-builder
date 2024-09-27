@@ -9,10 +9,12 @@ export function SignInAndRegister({
   cta,
   className,
   primary,
+  defaultShowRegister,
 }: {
   cta?: string;
   className?: string;
   primary?: boolean;
+  defaultShowRegister?: boolean;
 }) {
   const { login, isPending: connecting } = usePasskeyConnection();
 
@@ -29,7 +31,7 @@ export function SignInAndRegister({
       </Button>
 
       {/* always put register as secondary */}
-      <RegisterButton />
+      <RegisterButton defaultShowRegister={defaultShowRegister} />
     </div>
   );
 }
