@@ -76,7 +76,7 @@ function CheckinPopup({
     const baseUrl = `${window.origin}/api/frame/activity`;
     const params: Record<string, string | number> = {
       type: lastCheckedInActivity.type,
-      name: lastCheckedInActivity.name ?? 'Atomic Habit Challenge',
+      name: lastCheckedInActivity.name.replace(/ /g, '_'),
       moving_time: lastCheckedInActivity.moving_time,
     };
 

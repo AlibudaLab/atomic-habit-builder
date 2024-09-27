@@ -11,7 +11,7 @@ const app = new Frog({
   title: 'Atomic Frame',
   imageOptions: {
     width: 1200,
-    height: 1200,
+    height: 630,
   },
 });
 
@@ -21,6 +21,11 @@ app.frame('/activity', (c) => {
   const { url } = c.req;
   const parsedUrl = queryString.parseUrl(url);
   const { ref_link: refLink, ...allParams } = parsedUrl.query;
+
+  allParams.name =
+    typeof allParams.name === 'string'
+      ? decodeURIComponent(allParams.name).replace(/_/g, ' ')
+      : 'Atomic Habit Challenge';
 
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
