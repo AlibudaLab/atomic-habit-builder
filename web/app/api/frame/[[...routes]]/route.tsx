@@ -5,6 +5,7 @@ import { handle } from 'frog/next';
 import queryString from 'query-string';
 import { getRandomGif } from '../utils/getter';
 import { gifUrls } from '../utils/constants';
+import { decodePolyline } from '@/utils/urls';
 
 const app = new Frog({
   basePath: '/api/frame',
@@ -27,9 +28,8 @@ app.frame('/activity', (c) => {
       ? decodeURIComponent(allParams.name).replace(/_/g, ' ')
       : 'Atomic Habit Challenge';
 
-  allParams.polyline = typeof allParams.polyline === 'string'
-    ? decodeURIComponent(allParams.polyline)
-    : '';
+  allParams.polyline =
+    typeof allParams.polyline === 'string' ? decodePolyline(allParams.polyline) : '';
 
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`

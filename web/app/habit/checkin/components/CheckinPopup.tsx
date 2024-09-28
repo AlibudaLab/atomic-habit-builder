@@ -13,7 +13,7 @@ import useSocialShare from '@/hooks/useSocialShare';
 import { formatActivityTime } from '@/utils/timestamp';
 import { challengeToEmoji } from '@/utils/challenges';
 import { ChallengeTypes } from '@/constants';
-import { objectToQueryParams } from '@/utils/urls';
+import { encodePolyline, objectToQueryParams } from '@/utils/urls';
 
 type CheckinPopupProps = {
   challenge: Challenge;
@@ -82,7 +82,8 @@ function CheckinPopup({
     };
 
     if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
-    if (lastCheckedInActivity.polyline) params.polyline = encodeURIComponent(lastCheckedInActivity.polyline);
+    if (lastCheckedInActivity.polyline)
+      params.polyline = encodePolyline(lastCheckedInActivity.polyline);
 
     console.log('lastCheckedInActivity.polyline: ', lastCheckedInActivity.polyline);
     console.log('params: ', params);

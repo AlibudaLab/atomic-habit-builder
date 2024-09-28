@@ -6,6 +6,14 @@ export const encodeUrlQueryParams = (queryParams: QueryParams) => {
     .join('&');
 };
 
+export function encodePolyline(polyline: string): string {
+  return polyline.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+export function decodePolyline(encodedPolyline: string): string {
+  return encodedPolyline.replace(/\\'/g, "'").replace(/\\\\/g, '\\');
+}
+
 export const objectToQueryParams = (queryParams: QueryParams) => {
   return Object.entries(queryParams)
     .map((kv) => kv.join('='))
