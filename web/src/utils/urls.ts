@@ -7,7 +7,7 @@ export const encodeUrlQueryParams = (queryParams: QueryParams) => {
 };
 
 export const objectToQueryParams = (queryParams: QueryParams) => {
-    return Object.entries(queryParams)
+  return Object.entries(queryParams)
     .map((kv) => kv.join('='))
     .join('&');
 };

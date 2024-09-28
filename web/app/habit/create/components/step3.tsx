@@ -53,7 +53,7 @@ export default function CreateStep3({ accessCode, challengeId }: Step3Props) {
         </Button>
         <Button
           className="h-12"
-          onClick={() => shareOnFarcaster(text, [link])}
+          onClick={() => shareOnFarcaster(text, link)}
           endContent={<Image alt="warp" src={farcasterLogo} width={25} height={25} />}
         >
           Share on
