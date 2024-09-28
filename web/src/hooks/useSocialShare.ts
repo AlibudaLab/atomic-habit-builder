@@ -1,6 +1,7 @@
 'use client';
 
 import { logEventSimple } from '@/utils/gtag';
+import { QueryParams, urlWithQueryParams } from '@/utils/urls';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -34,15 +35,17 @@ export default function useSocialShare() {
     open(shareUrl.toString());
   };
 
-  const shareOnFarcaster = (text: string, embeds: string[] = [fullPathShare]) => {
-    const url = new URL('https://warpcast.com/~/compose');
-    url.searchParams.set('text', text);
+  const shareOnFarcaster = (text: string, url: string = fullPathShare) => {
+    const shareParams: QueryParams = {
+      'embeds[]': url,
+      text: text,
+    };
 
-    embeds.forEach((embed) => {
-      if (embed) url.searchParams.append('embeds[]', embed);
-    });
+    const shareUrl = urlWithQueryParams('https://warpcast.com/~/compose', shareParams);
 
-    open(url.toString());
+    console.log('shareUrl: ', shareUrl);
+
+    window.open(shareUrl, '_blank');
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
 

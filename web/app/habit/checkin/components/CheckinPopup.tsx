@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import queryString from 'query-string';
 import moment from 'moment';
 
 import { Challenge } from '@/types';
@@ -14,6 +13,7 @@ import useSocialShare from '@/hooks/useSocialShare';
 import { formatActivityTime } from '@/utils/timestamp';
 import { challengeToEmoji } from '@/utils/challenges';
 import { ChallengeTypes } from '@/constants';
+import { objectToQueryParams } from '@/utils/urls';
 
 type CheckinPopupProps = {
   challenge: Challenge;
@@ -74,18 +74,20 @@ function CheckinPopup({
     if (!lastCheckedInActivity) return '';
 
     const baseUrl = `${window.origin}/api/frame/activity`;
-    const params: Record<string, string | number> = {
+    const params: Record<string, string> = {
       type: lastCheckedInActivity.type,
       name: lastCheckedInActivity.name.replace(/ /g, '_'),
-      moving_time: lastCheckedInActivity.moving_time,
+      moving_time: lastCheckedInActivity.moving_time.toString(),
     };
 
-    if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance;
+    if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
     if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
 
     params.ref_link = shareURL;
 
-    return `${baseUrl}?${queryString.stringify(params)}`;
+    console.log('params: ', params);
+
+    return `${baseUrl}?${objectToQueryParams(params)}`;
   }, [lastCheckedInActivity, shareURL]);
 
   console.log('farcasterFrameURL: ', farcasterFrameURL);
@@ -120,7 +122,7 @@ function CheckinPopup({
           </Button>
           <Button
             className="w-full"
-            onClick={() => shareOnFarcaster(shareContent, [farcasterFrameURL])}
+            onClick={() => shareOnFarcaster(shareContent, farcasterFrameURL)}
             endContent={<Image src={farcasterLogo} alt="warp" height={25} width={25} />}
           >
             Share on
