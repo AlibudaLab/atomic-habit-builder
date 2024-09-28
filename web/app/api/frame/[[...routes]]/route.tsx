@@ -27,6 +27,10 @@ app.frame('/activity', (c) => {
       ? decodeURIComponent(allParams.name).replace(/_/g, ' ')
       : 'Atomic Habit Challenge';
 
+  allParams.polyline = typeof allParams.polyline === 'string'
+    ? decodeURIComponent(allParams.polyline)
+    : '';
+
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
