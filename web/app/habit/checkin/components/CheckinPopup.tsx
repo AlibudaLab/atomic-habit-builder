@@ -83,12 +83,12 @@ function CheckinPopup({
     if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
     if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
 
-    params.ref_link = shareURL;
+    params.challenge_id = challenge.id.toString();
 
     console.log('params: ', params);
 
     return `${baseUrl}?${objectToQueryParams(params)}`;
-  }, [lastCheckedInActivity, shareURL]);
+  }, [lastCheckedInActivity, challenge.id]);
 
   console.log('farcasterFrameURL: ', farcasterFrameURL);
 
