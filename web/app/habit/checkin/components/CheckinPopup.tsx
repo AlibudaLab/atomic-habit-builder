@@ -81,10 +81,11 @@ function CheckinPopup({
     };
 
     if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
-    if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
+    if (lastCheckedInActivity.polyline) params.polyline = encodeURIComponent(lastCheckedInActivity.polyline);
 
     params.challenge_id = challenge.id.toString();
 
+    console.log('lastCheckedInActivity.polyline: ', lastCheckedInActivity.polyline);
     console.log('params: ', params);
 
     return `${baseUrl}?${objectToQueryParams(params)}`;
