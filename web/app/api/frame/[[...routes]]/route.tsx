@@ -8,7 +8,7 @@ import { gifUrls } from '../utils/constants';
 
 const app = new Frog({
   basePath: '/api/frame',
-  title: 'Atomic Frame'
+  title: 'Atomic Frame',
 });
 
 export const runtime = 'edge';
@@ -17,14 +17,6 @@ app.frame('/activity', (c) => {
   const { url } = c.req;
   const parsedUrl = queryString.parseUrl(url);
   const { challenge_id: challengeId, ...allParams } = parsedUrl.query;
-
-  allParams.name =
-    typeof allParams.name === 'string'
-      ? decodeURIComponent(allParams.name).replace(/_/g, ' ')
-      : 'Atomic Habit Challenge';
-
-  allParams.polyline =
-    typeof allParams.polyline === 'string' ? decodeURIComponent(allParams.polyline) : '';
 
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`

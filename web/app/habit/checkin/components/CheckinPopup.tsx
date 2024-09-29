@@ -13,7 +13,7 @@ import useSocialShare from '@/hooks/useSocialShare';
 import { formatActivityTime } from '@/utils/timestamp';
 import { challengeToEmoji } from '@/utils/challenges';
 import { ChallengeTypes } from '@/constants';
-import { objectToQueryParams } from '@/utils/urls';
+import queryString from 'query-string';
 
 type CheckinPopupProps = {
   challenge: Challenge;
@@ -65,9 +65,7 @@ function CheckinPopup({
     return content;
   }, [isFinished, challenge.name, lastCheckedInActivity]);
 
-  const shareURL = window.origin + `/habit/stake/${challenge.id}`;
-
-  console.log('shareURL: ', shareURL);
+  const shareURL = `${window.origin}/habit/stake/${challenge.id}`;
 
   // Create a frame URL for Farcaster
   const farcasterFrameURL = useMemo(() => {
@@ -82,13 +80,22 @@ function CheckinPopup({
     };
 
     if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
-    if (lastCheckedInActivity.polyline)
-      params.polyline = encodeURIComponent(lastCheckedInActivity.polyline);
+    if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
+
+    let retFarcasterFrameURL = queryString.stringifyUrl(
+      { url: baseUrl, query: params },
+      { encode: false, sort: false },
+    );
 
     console.log('lastCheckedInActivity.polyline: ', lastCheckedInActivity.polyline);
     console.log('params: ', params);
+    console.log('retFarcasterFrameURL: ', retFarcasterFrameURL);
+    console.log('retFarcasterFrameURL.length: ', retFarcasterFrameURL.length);
 
-    return `${baseUrl}?${objectToQueryParams(params)}`;
+    if (retFarcasterFrameURL.length > 256)
+      retFarcasterFrameURL = queryString.exclude(retFarcasterFrameURL, ['polyline']);
+
+    return retFarcasterFrameURL;
   }, [lastCheckedInActivity, challenge.id]);
 
   console.log('farcasterFrameURL: ', farcasterFrameURL);

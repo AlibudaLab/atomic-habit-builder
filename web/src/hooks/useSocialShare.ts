@@ -1,8 +1,8 @@
 'use client';
 
 import { logEventSimple } from '@/utils/gtag';
-import { QueryParams, urlWithQueryParams } from '@/utils/urls';
 import { usePathname } from 'next/navigation';
+import queryString from 'query-string';
 import { useEffect, useState } from 'react';
 
 export default function useSocialShare() {
@@ -36,12 +36,15 @@ export default function useSocialShare() {
   };
 
   const shareOnFarcaster = (text: string, url: string = fullPathShare) => {
-    const shareParams: QueryParams = {
-      'embeds[]': url,
+    const shareParams = {
       text: text,
+      'embeds[]': url,
     };
 
-    const shareUrl = urlWithQueryParams('https://warpcast.com/~/compose', shareParams);
+    const shareUrl = queryString.stringifyUrl(
+      { url: 'https://warpcast.com/~/compose', query: shareParams },
+      { sort: false },
+    );
 
     console.log('shareUrl: ', shareUrl);
 

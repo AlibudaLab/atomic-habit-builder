@@ -58,7 +58,7 @@ export async function GET(request: Request) {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <TextBlock text={name} size="50px" />
+            <TextBlock text={name.replace(/_/g, ' ')} size="50px" />
             <TextBlock
               text={type.charAt(0).toUpperCase() + type.slice(1)}
               size="50px"
