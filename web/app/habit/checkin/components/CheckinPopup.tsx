@@ -47,29 +47,9 @@ function CheckinPopup({
     return "You've Successfully\nChecked in!";
   }, [isFinished]);
 
-  const shareContent = useMemo(() => {
-    let content = isFinished
-      ? `I've completed the challenge ${challenge.name}!`
-      : `I just checked in for the challenge ${challenge.name}!`;
-
-    if (lastCheckedInActivity && !lastCheckedInActivity.polyline) {
-      content += `\n\n${challengeToEmoji(lastCheckedInActivity.type as ChallengeTypes)} ${
-        lastCheckedInActivity.name
-      }`;
-      content += `\n⏱️ ${formatActivityTime(lastCheckedInActivity.moving_time)}`;
-      if (lastCheckedInActivity.distance) {
-        content += `\n📏 ${(lastCheckedInActivity.distance / 1000).toFixed(2)} km`;
-      }
-    }
-
-    return content;
-  }, [isFinished, challenge.name, lastCheckedInActivity]);
-
-  const shareURL = `${window.origin}/habit/stake/${challenge.id}`;
-
   // Create a frame URL for Farcaster
-  const farcasterFrameURL = useMemo(() => {
-    if (!lastCheckedInActivity) return '';
+  const { farcasterFrameURL, isPolylineExcluded } = useMemo(() => {
+    if (!lastCheckedInActivity) return { farcasterFrameURL: '', isPolylineExcluded: false };
 
     const baseUrl = `${window.origin}/api/frame/activity`;
     const params: Record<string, string> = {
@@ -82,23 +62,45 @@ function CheckinPopup({
     if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
     if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
 
-    let retFarcasterFrameURL = queryString.stringifyUrl(
+    let url = queryString.stringifyUrl(
       { url: baseUrl, query: params },
       { encode: false, sort: false },
     );
 
     console.log('lastCheckedInActivity.polyline: ', lastCheckedInActivity.polyline);
     console.log('params: ', params);
-    console.log('retFarcasterFrameURL: ', retFarcasterFrameURL);
-    console.log('retFarcasterFrameURL.length: ', retFarcasterFrameURL.length);
+    console.log('url: ', url);
+    console.log('url.length: ', url.length);
 
-    if (retFarcasterFrameURL.length > 256)
-      retFarcasterFrameURL = queryString.exclude(retFarcasterFrameURL, ['polyline']);
+    if (url.length > 256) {
+      url = queryString.exclude(url, ['polyline']);
+      return { farcasterFrameURL: url, isPolylineExcluded: true };
+    }
 
-    return retFarcasterFrameURL;
+    return { farcasterFrameURL: url, isPolylineExcluded: false };
   }, [lastCheckedInActivity, challenge.id]);
 
   console.log('farcasterFrameURL: ', farcasterFrameURL);
+
+  const shareContent = useMemo(() => {
+    let content = isFinished
+      ? `I've completed the challenge ${challenge.name}!`
+      : `I just checked in for the challenge ${challenge.name}!`;
+
+    if (lastCheckedInActivity && (!lastCheckedInActivity.polyline || isPolylineExcluded)) {
+      content += `\n\n${challengeToEmoji(lastCheckedInActivity.type as ChallengeTypes)} ${
+        lastCheckedInActivity.name
+      }`;
+      content += `\n⏱️ ${formatActivityTime(lastCheckedInActivity.moving_time)}`;
+      if (lastCheckedInActivity.distance) {
+        content += `\n📏 ${(lastCheckedInActivity.distance / 1000).toFixed(2)} km`;
+      }
+    }
+
+    return content;
+  }, [isFinished, challenge.name, lastCheckedInActivity, isPolylineExcluded]);
+
+  const shareURL = `${window.origin}/habit/stake/${challenge.id}`;
 
   const { shareOnX, shareOnFarcaster } = useSocialShare();
 
