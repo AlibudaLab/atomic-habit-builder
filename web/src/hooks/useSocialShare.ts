@@ -46,8 +46,6 @@ export default function useSocialShare() {
       { sort: false },
     );
 
-    console.log('shareUrl: ', shareUrl);
-
     window.open(shareUrl, '_blank');
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };

@@ -14,6 +14,7 @@ import { formatActivityTime } from '@/utils/timestamp';
 import { challengeToEmoji } from '@/utils/challenges';
 import { ChallengeTypes } from '@/constants';
 import queryString from 'query-string';
+import { Base64 } from 'js-base64';
 
 type CheckinPopupProps = {
   challenge: Challenge;
@@ -60,27 +61,21 @@ function CheckinPopup({
     };
 
     if (lastCheckedInActivity.distance) params.distance = lastCheckedInActivity.distance.toString();
-    if (lastCheckedInActivity.polyline) params.polyline = lastCheckedInActivity.polyline;
+    if (lastCheckedInActivity.polyline)
+      params.polyline = Base64.encode(lastCheckedInActivity.polyline);
 
     let url = queryString.stringifyUrl(
       { url: baseUrl, query: params },
       { encode: false, sort: false },
     );
 
-    console.log('lastCheckedInActivity.polyline: ', lastCheckedInActivity.polyline);
-    console.log('params: ', params);
-    console.log('url: ', url);
-    console.log('url.length: ', url.length);
-
-    // if (url.length > 256) {
-    //   url = queryString.exclude(url, ['polyline']);
-    //   return { farcasterFrameURL: url, isPolylineExcluded: true };
-    // }
+    if (url.length > 256) {
+      url = queryString.exclude(url, ['polyline']);
+      return { farcasterFrameURL: url, isPolylineExcluded: true };
+    }
 
     return { farcasterFrameURL: url, isPolylineExcluded: false };
   }, [lastCheckedInActivity, challenge.id]);
-
-  console.log('farcasterFrameURL: ', farcasterFrameURL);
 
   const shareContent = useMemo(() => {
     let content = isFinished
