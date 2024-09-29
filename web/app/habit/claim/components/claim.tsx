@@ -143,10 +143,12 @@ export default function Claim() {
         <div className="mt-2 text-xs text-default-400">Please wait for the challenge to settle</div>
       )}
 
-      {isClaimedPopupOpen && (
+      {isClaimedPopupOpen && challenge && (
         <ClaimedPopup
           onClose={handleCloseClaimedPopup}
           onCheckInPageClick={handleChallengeListClick}
+          succeedClaimable={challenge.succeedClaimable}
+          stake={challenge.stake}
         />
       )}
     </div>

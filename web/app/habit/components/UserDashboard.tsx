@@ -9,21 +9,26 @@ import { logEventSimple } from '@/utils/gtag';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
+  totalChallengeCount: number;
 };
 
-export default function Dashboard({ onGoingChallenges }: DashboardProps) {
+export default function Dashboard({ onGoingChallenges, totalChallengeCount }: DashboardProps) {
   const { push } = useRouter();
 
-  return onGoingChallenges.length === 0 ? (
+  return totalChallengeCount === 0 ? (
     <NewUser />
   ) : (
     <div className="flex h-screen w-full flex-col items-center justify-start">
       {/* if no challenges, show new user component */}
       <div className="flex w-full items-center justify-center">
-        {onGoingChallenges.length > 0 && (
-          <p className="my-4 font-londrina text-xl font-bold"> My Challenges </p>
-        )}
+        <p className="my-4 font-londrina text-xl font-bold"> My Challenges </p>
       </div>
+
+      {onGoingChallenges.length == 0 && (
+        <div className="flex flex-col items-center justify-center">
+          <p className="m-4 font-nunito text-base text-center">No on going challenges, try joining one!</p>
+        </div>
+      )}
 
       {/* map challenges to list of buttons */}
       {onGoingChallenges.map((challenge, idx) => (

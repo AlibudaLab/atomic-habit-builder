@@ -18,6 +18,8 @@ export default function DashboardPage() {
       )
     : [];
 
+  const totalChallengeCount = challenges?.length;
+
   return (
     <main className="container flex flex-col items-center">
       {isInitializing ? (
@@ -27,7 +29,7 @@ export default function DashboardPage() {
       ) : loading ? (
         <Loading />
       ) : (
-        <Dashboard onGoingChallenges={allOngoing} />
+        <Dashboard onGoingChallenges={allOngoing} totalChallengeCount={totalChallengeCount} />
       )}
     </main>
   );
