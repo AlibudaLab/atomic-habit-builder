@@ -119,7 +119,8 @@ export function RegisterButton({ defaultShowRegister = false }: { defaultShowReg
                 onChange={handleReferralCodeChange}
                 className="mt-4"
                 endContent={
-                  showReferralStatus && (isValidReferralCode ? (
+                  showReferralStatus &&
+                  (isValidReferralCode ? (
                     <CheckCircle className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-green-500" />
                   ) : (
                     <CiWarning className="absolute right-2 top-1/2 h-5 w-5 -translate-y-1/2 text-red-500" />
