@@ -72,10 +72,10 @@ function CheckinPopup({
     console.log('url: ', url);
     console.log('url.length: ', url.length);
 
-    if (url.length > 256) {
-      url = queryString.exclude(url, ['polyline']);
-      return { farcasterFrameURL: url, isPolylineExcluded: true };
-    }
+    // if (url.length > 256) {
+    //   url = queryString.exclude(url, ['polyline']);
+    //   return { farcasterFrameURL: url, isPolylineExcluded: true };
+    // }
 
     return { farcasterFrameURL: url, isPolylineExcluded: false };
   }, [lastCheckedInActivity, challenge.id]);
