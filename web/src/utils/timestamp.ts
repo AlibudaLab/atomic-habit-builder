@@ -17,7 +17,7 @@ export function formatDuration(start: number, end: number): string {
   return `${formatTime(start)} - ${formatTime(end)}`;
 }
 
-export function getCountdownString(ending: number) {
+export function getCountdownString(ending: number, shorten: boolean = false) {
   var now = moment();
   var end = moment.unix(ending); // another date
   var duration = moment.duration(end.diff(now));
@@ -39,19 +39,19 @@ export function getCountdownString(ending: number) {
 
   // If > 14 days, only show days
   if (days > 14) {
-    return `${days} days`;
+    return `${days} ${shorten ? 'd' : 'days'}`;
   }
   // If > 0 days, show days and hours
   else if (days > 0) {
-    return `${days} days, ${hours} hours`;
+    return `${days} ${shorten ? 'd' : 'days'}, ${hours} ${shorten ? 'h' : 'hours'}`;
   }
 
   // If > 0 hours, show hours and minutes
   else if (hours > 0) {
-    return `${hours} hours, ${minutes} minutes`;
+    return `${hours} ${shorten ? 'h' : 'hours'}, ${minutes} ${shorten ? 'm' : 'minutes'}`;
   }
 
-  return `${minutes} minutes, ${seconds} seconds`;
+  return `${minutes} ${shorten ? 'm' : 'minutes'}`;
 }
 
 export function formatActivityTime(seconds: number): string {

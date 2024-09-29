@@ -1,6 +1,6 @@
 import { Challenge, ChallengeWithCheckIns } from '@/types';
 import { challengeToEmoji, getUserChallengeStatus } from '@/utils/challenges';
-import { formatDuration } from '@/utils/timestamp';
+import { formatDuration, getCountdownString } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
 import { UserChallengeStatus } from '@/types';
@@ -42,7 +42,6 @@ export function ChallengeBoxFilled({
   fullWidth?: boolean;
 }) {
   const isPast = challenge.endTimestamp < moment().unix();
-
   return (
     <div
       className={`wrapped-filled bg-primary p-2 ${isPast ? 'opacity-50' : ''} ${
@@ -98,6 +97,17 @@ export function ChallengePreview({
 
   const claimable = userChallengeStatus === UserChallengeStatus.Claimable;
 
+  const started = challenge.startTimestamp < moment().unix();
+  const isPast = challenge.endTimestamp < moment().unix();
+
+  const timeLeftOrStartTime = started
+    ? isPast
+      ? 'Ended'
+      : `${getCountdownString(challenge.endTimestamp, true)} left`
+    : `Starts in ${getCountdownString(challenge.startTimestamp, true)}`;
+
+  console.log('timeLeftOrStartTime', timeLeftOrStartTime)
+
   const customCss = useMemo(() => {
     if (userChallengeStatus === UserChallengeStatus.Failed) {
       return 'bg-failed';
@@ -123,7 +133,7 @@ export function ChallengePreview({
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
           <p className="text-xs opacity-80">
-            {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
+            {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}  ({timeLeftOrStartTime})
           </p>
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-xs">
