@@ -24,7 +24,7 @@ import { getCountdownString } from '@/utils/timestamp';
 import ManualCheckInButton from './ManualCheckInButton';
 import useInviteLink from '@/hooks/useInviteLink';
 import { CopyIcon } from 'lucide-react';
-import { getChallengeRequirementDescription, getCheckInDescription } from '@/utils/challenges';
+import { getChallengeRequirementDescription } from '@/utils/challenges';
 
 const initFields: CheckInFields = {
   challengeId: 0,
@@ -288,14 +288,16 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
       {/* New countdown badge with reduced margins */}
       <div className="my-4 flex w-full justify-center">
-        {/* <div className="inline-block rounded-full border-2 border-dotted border-primary bg-primary/20 px-3 py-1"> */}
-        <span className="text-sm font-semibold text-dark">
-          ⏰ Challenge {challenge.endTimestamp > now() / 1000 ? 'ends' : 'ended'} in
-        </span>
-        <span className="ml-1 text-sm font-bold text-dark">
-          {getCountdownString(challenge.endTimestamp)}
-        </span>
-        {/* </div> */}
+        {challenge.endTimestamp > now() / 1000 ? (
+          <>
+            <span className="text-sm font-semibold text-dark">⏰ Challenge ends in</span>
+            <span className="ml-1 text-sm font-bold text-dark">
+              {getCountdownString(challenge.endTimestamp)}
+            </span>
+          </>
+        ) : (
+          <span className="text-sm font-semibold text-dark">🎉 Challenge ended</span>
+        )}
       </div>
 
       {/* middle section: if timestamp is not valid, show warning message */}
