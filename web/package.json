@@ -58,6 +58,7 @@
     "graphql": "14",
     "graphql-request": "6",
     "hono": "^4.6.1",
+    "js-base64": "^3.7.7",
     "local-storage-fallback": "^4.1.2",
     "lucide-react": "^0.379.0",
     "moment": "^2.30.1",
