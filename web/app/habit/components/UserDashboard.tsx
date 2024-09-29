@@ -6,7 +6,6 @@ import { ChallengePreview } from './ChallengeBox';
 import { useRouter } from 'next/navigation';
 import NewUser from './NewUser';
 import { logEventSimple } from '@/utils/gtag';
-import { Button } from '@nextui-org/button';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -28,13 +27,6 @@ export default function Dashboard({ onGoingChallenges, totalChallengeCount }: Da
       {onGoingChallenges.length == 0 && (
         <div className="flex flex-col items-center justify-center">
           <p className="m-4 font-nunito text-base text-center">No on going challenges, try joining one!</p>
-          <Button
-            color="primary"
-            className="mt-4 w-1/2 no-underline"
-            onClick={() => push('/habit/list')}
-          >
-            <div className="my-4 rounded-lg p-4">Explore</div>
-          </Button>
         </div>
       )}
 
