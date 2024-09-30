@@ -161,11 +161,11 @@ export default function StakeChallenge() {
                 <div className="w-full justify-start p-6 py-2 text-start">
                   <div className="text-xl font-bold text-dark"> Goal </div>
                   <div className="text-sm text-primary"> {challenge.description} </div>
-                  {(challenge.minDistance || challenge.minTime) && (
+                  {challenge.minDistance || challenge.minTime ? (
                     <div className="mt-1 font-londrina text-sm text-gray-500">
                       {getChallengeRequirementDescription(challenge)}
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* checkIn description */}

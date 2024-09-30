@@ -1,10 +1,28 @@
 import { Challenge, ChallengeWithCheckIns } from '@/types';
-import { challengeToEmoji, getUserChallengeStatus } from '@/utils/challenges';
-import { formatDuration } from '@/utils/timestamp';
+import { challengeToEmoji } from '@/utils/challenges';
+import { formatDuration, getChallengePeriodHint } from '@/utils/timestamp';
 import moment from 'moment';
 import { CircularProgress } from '@nextui-org/react';
 import { UserChallengeStatus } from '@/types';
 import { useMemo } from 'react';
+
+function TimeHint({
+  startTimestamp,
+  endTimestamp,
+  showHint = true,
+}: {
+  startTimestamp: number;
+  endTimestamp: number;
+  showHint?: boolean;
+}) {
+  const hint = getChallengePeriodHint(startTimestamp, endTimestamp);
+  return (
+    <p className="text-xs opacity-80">
+      {formatDuration(startTimestamp, endTimestamp)}
+      {showHint && <span className="pl-2 font-nunito text-xs opacity-80">{hint}</span>}
+    </p>
+  );
+}
 
 export function ChallengeBox({
   challenge,
@@ -20,9 +38,10 @@ export function ChallengeBox({
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2 text-primary">
-          <p className="text-xs font-bold opacity-80">
-            {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
-          </p>
+          <TimeHint
+            startTimestamp={challenge.startTimestamp}
+            endTimestamp={challenge.endTimestamp}
+          />
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-sm"> {challenge.participants} joined </p>
         </div>
@@ -42,7 +61,6 @@ export function ChallengeBoxFilled({
   fullWidth?: boolean;
 }) {
   const isPast = challenge.endTimestamp < moment().unix();
-
   return (
     <div
       className={`wrapped-filled bg-primary p-2 ${isPast ? 'opacity-50' : ''} ${
@@ -52,9 +70,10 @@ export function ChallengeBoxFilled({
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
-          <p className="text-xs opacity-80">
-            {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
-          </p>
+          <TimeHint
+            startTimestamp={challenge.startTimestamp}
+            endTimestamp={challenge.endTimestamp}
+          />
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-sm"> {challenge.participants} joined </p>
         </div>
@@ -87,10 +106,12 @@ export function ChallengePreview({
   challenge,
   checkedIn,
   fullWidth,
+  showHint,
 }: {
   challenge: ChallengeWithCheckIns;
   checkedIn: number;
   fullWidth?: boolean;
+  showHint?: boolean;
 }) {
   const userChallengeStatus = challenge.status;
 
@@ -122,9 +143,11 @@ export function ChallengePreview({
       <div className="flex w-full items-center justify-start no-underline">
         <div className="p-2 text-3xl"> {challengeToEmoji(challenge.type)} </div>
         <div className="flex flex-col items-start justify-start p-2">
-          <p className="text-xs opacity-80">
-            {formatDuration(challenge.startTimestamp, challenge.endTimestamp)}
-          </p>
+          <TimeHint
+            startTimestamp={challenge.startTimestamp}
+            endTimestamp={challenge.endTimestamp}
+            showHint={showHint}
+          />
           <p className="text-start text-sm font-bold">{challenge.name}</p>
           <p className="text-xs">
             {' '}

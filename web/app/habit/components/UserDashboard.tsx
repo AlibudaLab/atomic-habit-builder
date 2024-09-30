@@ -26,7 +26,9 @@ export default function Dashboard({ onGoingChallenges, totalChallengeCount }: Da
 
       {onGoingChallenges.length == 0 && (
         <div className="flex flex-col items-center justify-center">
-          <p className="m-4 font-nunito text-base text-center">No on going challenges, try joining one!</p>
+          <p className="m-4 text-center font-nunito text-base">
+            No on going challenges, try joining one!
+          </p>
         </div>
       )}
 

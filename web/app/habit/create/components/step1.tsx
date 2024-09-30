@@ -9,6 +9,8 @@ import { Switch } from '@nextui-org/switch';
 
 import { ChallengeTypes } from '@/constants';
 import { logEventSimple } from '@/utils/gtag';
+import { getDurationString } from '@/utils/timestamp';
+import moment from 'moment';
 
 const defaultSelectedKeys = [ChallengeTypes.Run];
 
@@ -140,13 +142,17 @@ export default function CreateStep1({
 
       <DateRangePicker
         label="Challenge Duration"
-        className="my-4"
+        className="my-4 text-xs"
         granularity="day"
         value={duration}
         onChange={(newDuration) => {
           if (newDuration === null) return;
           setDuration(newDuration);
         }}
+        description={`Total duration: ${getDurationString(
+          moment.utc(duration.start.toAbsoluteString()).unix(),
+          moment.utc(duration.end.toAbsoluteString()).unix(),
+        )}`}
       />
 
       <Button

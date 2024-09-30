@@ -255,7 +255,12 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     <div className="flex h-screen w-full flex-col items-center px-4 text-center">
       {/* overview   */}
       <div className="my-4 w-full">
-        <ChallengePreview challenge={challenge} fullWidth checkedIn={challenge.checkedIn} />
+        <ChallengePreview
+          challenge={challenge}
+          fullWidth
+          checkedIn={challenge.checkedIn}
+          showHint={false}
+        />
       </div>
 
       {/* goal description */}
