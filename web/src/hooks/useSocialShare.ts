@@ -2,6 +2,7 @@
 
 import { logEventSimple } from '@/utils/gtag';
 import { usePathname } from 'next/navigation';
+import queryString from 'query-string';
 import { useEffect, useState } from 'react';
 
 export default function useSocialShare() {
@@ -34,15 +35,18 @@ export default function useSocialShare() {
     open(shareUrl.toString());
   };
 
-  const shareOnFarcaster = (text: string, embeds: string[] = [fullPathShare]) => {
-    const url = new URL('https://warpcast.com/~/compose');
-    url.searchParams.set('text', text);
+  const shareOnFarcaster = (text: string, url: string = fullPathShare) => {
+    const shareParams = {
+      text: text,
+      'embeds[]': url,
+    };
 
-    embeds.forEach((embed) => {
-      if (embed) url.searchParams.append('embeds[]', embed);
-    });
+    const shareUrl = queryString.stringifyUrl(
+      { url: 'https://warpcast.com/~/compose', query: shareParams },
+      { sort: false },
+    );
 
-    open(url.toString());
+    window.open(shareUrl, '_blank');
     logEventSimple({ eventName: 'click_farcaster_share', category: 'share' });
   };
 

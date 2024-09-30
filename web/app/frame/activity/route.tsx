@@ -3,6 +3,7 @@ import { robotoFontLink } from 'app/api/frame/utils/constants';
 import { getFont, getMapUrl } from 'app/api/frame/utils/getter';
 import { InfoBlock, TextBlock } from '../components/ActivityInfo';
 import { formatActivityTime } from '@/utils/timestamp';
+import { Base64 } from 'js-base64';
 
 export const runtime = 'edge';
 
@@ -27,7 +28,7 @@ export async function GET(request: Request) {
         style={{
           width: '1200px',
           height: '630px',
-          backgroundImage: `url(${getMapUrl(encodedPolyline, 1200, 630)})`,
+          backgroundImage: `url(${getMapUrl(Base64.decode(encodedPolyline), 1200, 630)})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           fontFamily: 'Roboto',
@@ -58,7 +59,7 @@ export async function GET(request: Request) {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <TextBlock text={name} size="50px" />
+            <TextBlock text={name.replace(/_/g, ' ')} size="50px" />
             <TextBlock
               text={type.charAt(0).toUpperCase() + type.slice(1)}
               size="50px"

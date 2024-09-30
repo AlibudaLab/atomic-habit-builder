@@ -16,7 +16,7 @@ export const runtime = 'edge';
 app.frame('/activity', (c) => {
   const { url } = c.req;
   const parsedUrl = queryString.parseUrl(url);
-  const { ref_link: refLink, ...allParams } = parsedUrl.query;
+  const { challenge_id: challengeId, ...allParams } = parsedUrl.query;
 
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
@@ -30,13 +30,16 @@ app.frame('/activity', (c) => {
     ? `${baseUrl}/frame/activity?${queryParams}`
     : getRandomGif(gifUrls[safeType]);
 
-  const refLinkUrl = typeof refLink === 'string' ? refLink : 'https://t.me/alibuda_feedback/1';
+  const refLinkUrl =
+    typeof challengeId === 'string'
+      ? `${baseUrl}/habit/stake/${challengeId}`
+      : 'https://t.me/alibuda_feedback/1';
 
   return c.res({
     image: imageUrl,
     intents: [
       <Button.Link href={refLinkUrl}>
-        {refLink ? '🏆 Compete with Me' : 'DM for Invite Link'}
+        {challengeId ? '🏆 Compete with Me' : 'DM for Invite Link'}
       </Button.Link>,
       <Button.Link href="https://bit.ly/atomic_notion_warpcast">🌱 What is Atomic</Button.Link>,
     ],
