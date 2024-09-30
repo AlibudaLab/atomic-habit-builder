@@ -3,7 +3,7 @@ import { UserChallengeStatus } from '@/types';
 import { Challenge, UserStatus } from '@/types';
 import moment from 'moment';
 
-export function challengeToEmoji(type: ChallengeTypes) {
+export function challengeToEmoji(type: ChallengeTypes): string {
   switch (type) {
     case ChallengeTypes.Run:
       return '🏃';
