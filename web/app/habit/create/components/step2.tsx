@@ -68,7 +68,7 @@ export default function CreateStep2({
           <span className="text-sm">Allow Manual Check-In</span>
           <Switch
             size="sm"
-            checked={allowManualCheckIn}
+            isSelected={allowManualCheckIn}
             onChange={(e) => setAllowManualCheckIn(e.target.checked)}
           />
         </div>

@@ -90,7 +90,7 @@ export default function Create() {
           minDistance,
           minTime,
           user: address,
-          allowManualCheckIn: allowSelfCheckIn, // Updated property name
+          allowSelfCheckIn,
         }),
       })
         .then((res) => {
