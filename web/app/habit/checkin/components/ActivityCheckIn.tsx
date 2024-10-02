@@ -197,7 +197,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     if (checkInMethod === 'self') {
       return (
         <div className="mt-4 flex w-full flex-col items-center justify-center">
-          <div className="h-[60px] w-full max-w-sm" />
+          <div className="h-[60px] w-full" />
           <ManualCheckInButton
             isLoading={isCheckInLoading || isSigning}
             challengeType={challenge.type}
