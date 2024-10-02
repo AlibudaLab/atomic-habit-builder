@@ -197,7 +197,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     if (checkInMethod === 'self') {
       return (
         <div className="mt-4 flex w-full flex-col items-center justify-center">
-          <div className="h-[60px] w-full max-w-sm" />
+          <div className="h-[60px] w-full" />
           <ManualCheckInButton
             isLoading={isCheckInLoading || isSigning}
             challengeType={challenge.type}
@@ -225,7 +225,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
 
     return (
       <div className="mt-4 flex w-full flex-col items-center justify-center">
-        <div className="h-[60px] w-full max-w-56">
+        <div className="h-[60px] w-full">
           {checkInMethod === 'strava' && (
             <ActivityDropDown
               isDisabled={!address}
@@ -240,7 +240,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         <Button
           type="button"
           color="primary"
-          className="mt-4 min-h-12 w-3/4 max-w-56"
+          className="mt-4 min-h-12 w-full"
           onClick={onClickStravaCheckIn}
           isDisabled={isCheckInLoading || isSigning || chosenActivityId === 0}
           isLoading={isCheckInLoading || isSigning}

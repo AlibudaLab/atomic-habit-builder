@@ -30,7 +30,7 @@ export function ActivityDropDown({
     <div className=" flex w-full items-center justify-center">
       <Select
         label={noActivities ? 'No matched record' : 'Select an activity'}
-        className="w-full max-w-xs"
+        className="w-full"
         value={fields.activityId}
         disabledKeys={usedActivities}
         isLoading={loading}
@@ -63,7 +63,13 @@ export function ActivityDropDown({
                     {hasDistance(activity) && (
                       <div className="ml-1 text-xs">
                         {' '}
-                        {((activity as StravaRunData).distance / 1000).toPrecision(2)} KM
+                        {((activity as StravaRunData).distance / 1000).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                          }
+                        )} KM
                       </div>
                     )}
                     <div className="ml-1 text-xs">
