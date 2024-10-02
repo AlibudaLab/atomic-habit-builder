@@ -63,7 +63,13 @@ export function ActivityDropDown({
                     {hasDistance(activity) && (
                       <div className="ml-1 text-xs">
                         {' '}
-                        {((activity as StravaRunData).distance / 1000).toPrecision(2)} KM
+                        {((activity as StravaRunData).distance / 1000).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                          }
+                        )} KM
                       </div>
                     )}
                     <div className="ml-1 text-xs">
