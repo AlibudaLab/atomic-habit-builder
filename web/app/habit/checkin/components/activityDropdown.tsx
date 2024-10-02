@@ -30,7 +30,7 @@ export function ActivityDropDown({
     <div className=" flex w-full items-center justify-center">
       <Select
         label={noActivities ? 'No matched record' : 'Select an activity'}
-        className="w-full max-w-xs"
+        className="w-full"
         value={fields.activityId}
         disabledKeys={usedActivities}
         isLoading={loading}
