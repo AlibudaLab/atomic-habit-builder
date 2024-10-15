@@ -6,6 +6,11 @@ import { ChallengePreview } from './ChallengeBox';
 import { useRouter } from 'next/navigation';
 import NewUser from './NewUser';
 import { logEventSimple } from '@/utils/gtag';
+import { useState } from 'react';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@nextui-org/react';
+import { FaSort } from 'react-icons/fa';
+import { UserChallengeStatus } from '@/types';
+import { sortChallenges, SortOption } from '../utils/sortChallenges';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
@@ -14,26 +19,49 @@ type DashboardProps = {
 
 export default function Dashboard({ onGoingChallenges, totalChallengeCount }: DashboardProps) {
   const { push } = useRouter();
+  const [sortBy, setSortBy] = useState<SortOption>('status');
+
+  const sortedChallenges = sortChallenges(onGoingChallenges, sortBy);
 
   return totalChallengeCount === 0 ? (
     <NewUser />
   ) : (
     <div className="flex h-screen w-full flex-col items-center justify-start">
-      {/* if no challenges, show new user component */}
-      <div className="flex w-full items-center justify-center">
-        <p className="my-4 font-londrina text-xl font-bold"> My Challenges </p>
+      <div className="relative flex w-full items-center justify-between px-4 py-4">
+        <div className="w-1/3" />
+        <p className="absolute left-1/2 my-4 -translate-x-1/2 transform font-londrina text-xl font-bold">
+          My Challenges
+        </p>
+        <div className="flex w-1/3 justify-end">
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="light" size="sm">
+                <FaSort className="mr-2" />
+                Sort
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Sort challenges"
+              onAction={(key) => setSortBy(key as SortOption)}
+            >
+              <DropdownItem key="status">Status</DropdownItem>
+              <DropdownItem key="stakes">Stakes</DropdownItem>
+              <DropdownItem key="startTimestamp">Start Date</DropdownItem>
+              <DropdownItem key="endTimestamp">End Date</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
       </div>
 
-      {onGoingChallenges.length == 0 && (
+      {sortedChallenges.length == 0 && (
         <div className="flex flex-col items-center justify-center">
-          <p className="m-4 text-center font-nunito text-base">
-            No on going challenges, try joining one!
+          <p className="m-4 mt-8 text-center font-nunito text-base">
+            No ongoing challenges, try joining one!
           </p>
         </div>
       )}
 
-      {/* map challenges to list of buttons */}
-      {onGoingChallenges.map((challenge, idx) => (
+      {sortedChallenges.map((challenge, idx) => (
         <button
           type="button"
           key={`link-${idx}`}

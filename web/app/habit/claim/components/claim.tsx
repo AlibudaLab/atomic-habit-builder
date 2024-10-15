@@ -74,9 +74,9 @@ export default function Claim() {
 
           {/* details about what to claim */}
           {userCanClaim && (
-            <div className="mx-4 my-8 w-full text-center items-center justify-center">
+            <div className="mx-4 my-8 w-full items-center justify-center text-center">
               <div className="flex items-center justify-center p-4 font-nunito text-sm">
-                <p className='text-center'> {claimed ? 'Claimed' : 'Claimable'} </p>
+                <p className="text-center"> {claimed ? 'Claimed' : 'Claimable'} </p>
                 {challengeHasEnded ? (
                   <p> {formatUnits(challenge.succeedClaimable, 6)} USDC</p>
                 ) : (
@@ -98,7 +98,9 @@ export default function Claim() {
           {claimed && (
             <div className="mx-4 my-8 w-full">
               <div className="text-md flex items-center justify-center p-4 font-nunito">
-                <p className='text-center'>{formatUnits(challenge.succeedClaimable, 6)} USDC Claimed</p>
+                <p className="text-center">
+                  {formatUnits(challenge.succeedClaimable, 6)} USDC Claimed
+                </p>
               </div>
             </div>
           )}
