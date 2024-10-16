@@ -20,12 +20,7 @@ function ManualCheckInButton({ isLoading, challengeType, onConfirm }: ManualChec
 
   return (
     <>
-      <Button
-        type="button"
-        color="primary"
-        className="mt-4 min-h-12 w-full"
-        onClick={handleOpen}
-      >
+      <Button type="button" color="primary" className="mt-4 min-h-12 w-full" onClick={handleOpen}>
         Submit Check-In
       </Button>
 

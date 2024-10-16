@@ -1,4 +1,4 @@
-import { activityToStravaTypes } from "app/api/strava/utils";
+import { activityToStravaTypes } from 'app/api/strava/utils';
 
 export const SEPERATOR = 'STRAVA_SECRET_SEPARATOR';
 

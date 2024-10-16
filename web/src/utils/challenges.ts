@@ -35,8 +35,10 @@ export function getCheckInDescription(challenge: Challenge): string {
 }
 
 export function getChallengeRequirementDescription(challenge: Challenge): string | null {
-  if ((challenge.minDistance === undefined || challenge.minDistance === 0) &&
-      (challenge.minTime === undefined || challenge.minTime === 0)) {
+  if (
+    (challenge.minDistance === undefined || challenge.minDistance === 0) &&
+    (challenge.minTime === undefined || challenge.minTime === 0)
+  ) {
     return null;
   }
 

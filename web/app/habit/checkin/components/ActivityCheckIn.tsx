@@ -259,7 +259,10 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     );
   };
 
-  const requirementDescription = useMemo(() => getChallengeRequirementDescription(challenge), [challenge]);
+  const requirementDescription = useMemo(
+    () => getChallengeRequirementDescription(challenge),
+    [challenge],
+  );
 
   return (
     <div className="flex h-screen w-full flex-col items-center px-4 text-center">
@@ -278,9 +281,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         <div className="text-lg font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
         {requirementDescription && (
-          <div className="mt-1 font-londrina text-sm text-gray-500">
-            {requirementDescription}
-          </div>
+          <div className="mt-1 font-londrina text-sm text-gray-500">{requirementDescription}</div>
         )}
       </div>
 

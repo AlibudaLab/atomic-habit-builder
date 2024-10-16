@@ -39,47 +39,56 @@ export async function GET(
     if (activityTypeKey === 'workout') {
       return NextResponse.json(
         {
-          activities: activities.map((activity: any) => {
-            return {
-              id: activity.id,
-              name: activity.name,
-              moving_time: activity.moving_time,
-              timestamp: activity.start_date,
-            };
-          }),
+          activities: activities.map((activity: any) => ({
+            id: activity.id,
+            name: activity.name,
+            moving_time: activity.moving_time,
+            timestamp: activity.start_date,
+          })),
         },
         { status: 200 },
       );
     } else if (activityTypeKey === 'run') {
       return NextResponse.json(
         {
-          activities: activities.map((activity: any) => {
-            return {
-              id: activity.id,
-              name: activity.name,
-              distance: activity.distance,
-              moving_time: activity.moving_time,
-              map: activity.map,
-              max_heartrate: activity.max_heartrate,
-              timestamp: activity.start_date,
-            };
-          }),
+          activities: activities.map((activity: any) => ({
+            id: activity.id,
+            name: activity.name,
+            distance: activity.distance,
+            moving_time: activity.moving_time,
+            map: activity.map,
+            max_heartrate: activity.max_heartrate,
+            timestamp: activity.start_date,
+          })),
         },
         { status: 200 },
       );
     } else if (activityTypeKey === 'cycling') {
       return NextResponse.json(
         {
-          activities: activities.map((activity: any) => {
-            return {
-              id: activity.id,
-              name: activity.name,
-              distance: activity.distance,
-              moving_time: activity.moving_time,
-              map: activity.map,
-              timestamp: activity.start_date,
-            };
-          }),
+          activities: activities.map((activity: any) => ({
+            id: activity.id,
+            name: activity.name,
+            distance: activity.distance,
+            moving_time: activity.moving_time,
+            map: activity.map,
+            timestamp: activity.start_date,
+          })),
+        },
+        { status: 200 },
+      );
+    } else if (activityTypeKey === 'swim') {
+      return NextResponse.json(
+        {
+          activities: activities.map((activity: any) => ({
+            id: activity.id,
+            name: activity.name,
+            distance: activity.distance,
+            moving_time: activity.moving_time,
+            total_strokes: activity.total_strokes,
+            average_stroke_rate: activity.average_stroke_rate,
+            timestamp: activity.start_date,
+          })),
         },
         { status: 200 },
       );
@@ -87,8 +96,8 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid activity type' }, { status: 400 });
     }
   } catch (error) {
-    console.error('Error getting Strava workouts:', error);
-    return NextResponse.json({}, { status: 500, statusText: 'Internal Server Error' });
+    console.error('Error getting Strava activities:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
