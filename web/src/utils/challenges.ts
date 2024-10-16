@@ -13,6 +13,8 @@ export function challengeToEmoji(type: ChallengeTypes): string {
       return '🚴';
     case ChallengeTypes.NFC_Chip:
       return '💚';
+    case ChallengeTypes.Swim:
+      return '🏊';
   }
 }
 
@@ -21,6 +23,7 @@ const baseDescriptions = {
   [ChallengeTypes.Workout]: 'Complete a workout and sync with Strava',
   [ChallengeTypes.Cycling]: 'Complete a cycling activity and sync with Strava',
   [ChallengeTypes.NFC_Chip]: 'N/A',
+  [ChallengeTypes.Swim]: 'Complete a swim and sync with Strava',
 };
 
 export function getCheckInDescription(challenge: Challenge): string {
@@ -31,7 +34,12 @@ export function getCheckInDescription(challenge: Challenge): string {
   return baseDescription;
 }
 
-export function getChallengeRequirementDescription(challenge: Challenge): string {
+export function getChallengeRequirementDescription(challenge: Challenge): string | null {
+  if ((challenge.minDistance === undefined || challenge.minDistance === 0) &&
+      (challenge.minTime === undefined || challenge.minTime === 0)) {
+    return null;
+  }
+
   let baseDescription = 'Requirements:';
 
   if (challenge.minDistance && challenge.minTime) {
@@ -57,6 +65,8 @@ export function getChallengeUnit(type: ChallengeTypes) {
       return 'rides';
     case ChallengeTypes.NFC_Chip:
       return 'times';
+    case ChallengeTypes.Swim:
+      return 'swims';
   }
 }
 

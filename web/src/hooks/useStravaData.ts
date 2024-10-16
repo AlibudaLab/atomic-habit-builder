@@ -4,15 +4,13 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { Challenge, RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
+import { ChallengeTypes } from '@/constants';
 
 const useStravaData = (challenge: Challenge) => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
-  const [runData, setRunData] = useState<stravaUtils.StravaRunData[]>([]);
-  // TODO: move this to a separate hook when we have more sources for workout data / run data
-  const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
-  const [cyclingData, setCyclingData] = useState<stravaUtils.StravaCyclingData[]>([]);
+  const [allActivities, setAllActivities] = useState<stravaUtils.StravaData[]>([]);
   const [error, setError] = useState<unknown | null>(null);
 
   const connected = verifier !== RunVerifier.None;
@@ -26,55 +24,39 @@ const useStravaData = (challenge: Challenge) => {
   const fetchData = useCallback(
     async (accessToken: string) => {
       try {
-        const [newRunData, newWorkoutData, newCyclingData] = await Promise.all([
-          stravaUtils.fetchActivities(
-            accessToken,
-            'run',
-            challenge.startTimestamp,
-            challenge.endTimestamp,
-          ) as Promise<stravaUtils.StravaRunData[]>,
-          stravaUtils.fetchActivities(
-            accessToken,
-            'workout',
-            challenge.startTimestamp,
-            challenge.endTimestamp,
-          ) as Promise<stravaUtils.StravaWorkoutData[]>,
-          stravaUtils.fetchActivities(
-            accessToken,
-            'cycling',
-            challenge.startTimestamp,
-            challenge.endTimestamp,
-          ) as Promise<stravaUtils.StravaCyclingData[]>,
-        ]);
+        const activities = await stravaUtils.fetchActivities(
+          accessToken,
+          'all',
+          challenge.startTimestamp,
+          challenge.endTimestamp,
+        );
 
-        if (!newRunData || !newWorkoutData || !newCyclingData) {
+        if (!activities) {
           handleError('No data found');
           return;
         }
 
-        setRunData(
-          newRunData.filter(
-            (activity) =>
-              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
-              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
-          ),
-        );
+        const filteredActivities = activities.filter((activity) => {
+          const category = stravaUtils.categorizeActivity(activity);
+          if (category !== challenge.type.toLowerCase()) return false;
 
-        setWorkoutData(
-          newWorkoutData.filter(
-            (activity) =>
-              challenge.minTime === undefined || activity.moving_time >= challenge.minTime,
-          ),
-        );
+          switch (challenge.type) {
+            case ChallengeTypes.Run:
+            case ChallengeTypes.Cycling:
+            case ChallengeTypes.Swim:
+              return (
+                (challenge.minDistance === undefined || 
+                 ('distance' in activity && activity.distance >= challenge.minDistance)) &&
+                (challenge.minTime === undefined || activity.moving_time >= challenge.minTime)
+              );
+            case ChallengeTypes.Workout:
+              return challenge.minTime === undefined || activity.moving_time >= challenge.minTime;
+            default:
+              return true;
+          }
+        });
 
-        setCyclingData(
-          newCyclingData.filter(
-            (activity) =>
-              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
-              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
-          ),
-        );
-
+        setAllActivities(filteredActivities);
         setLoading(false);
       } catch (_error) {
         console.log('error', _error);
@@ -118,7 +100,36 @@ const useStravaData = (challenge: Challenge) => {
     fetchData(accessToken).catch(setError);
   }, [secret, verifier, expired, challenge, fetchData]);
 
-  return { loading, runData, workoutData, cyclingData, error, connected };
+  const categorizedActivities = useMemo(() => {
+    const runData: stravaUtils.StravaRunData[] = [];
+    const workoutData: stravaUtils.StravaWorkoutData[] = [];
+    const cyclingData: stravaUtils.StravaCyclingData[] = [];
+    const swimData: stravaUtils.StravaSwimData[] = [];
+
+    allActivities.forEach((activity) => {
+      const category = stravaUtils.categorizeActivity(activity);
+      switch (category) {
+        case 'run':
+          runData.push(activity as stravaUtils.StravaRunData);
+          break;
+        case 'workout':
+          workoutData.push(activity as stravaUtils.StravaWorkoutData);
+          break;
+        case 'cycling':
+          cyclingData.push(activity as stravaUtils.StravaCyclingData);
+          break;
+        case 'swim':
+          swimData.push(activity as stravaUtils.StravaSwimData);
+          break;
+      }
+    });
+
+    return { runData, workoutData, cyclingData, swimData };
+  }, [allActivities]);
+
+  console.log(categorizedActivities.swimData)
+
+  return { loading, ...categorizedActivities, error, connected };
 };
 
 export default useStravaData;
