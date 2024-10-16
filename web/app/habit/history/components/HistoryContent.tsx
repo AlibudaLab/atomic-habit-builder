@@ -11,6 +11,13 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@
 import { FaSort } from 'react-icons/fa';
 import { sortChallenges, SortOption } from '../../utils/sortChallenges';
 
+const sortOptions: { key: SortOption; label: string }[] = [
+  { key: 'status', label: 'Status' },
+  { key: 'stakes', label: 'Stakes' },
+  { key: 'startTimestamp', label: 'Start Date' },
+  { key: 'endTimestamp', label: 'End Date' },
+];
+
 function HistoryContent() {
   const { push } = useRouter();
   const { data: challenges } = useUserChallenges();
@@ -50,10 +57,9 @@ function HistoryContent() {
               aria-label="Sort challenges"
               onAction={(key) => setSortBy(key as SortOption)}
             >
-              <DropdownItem key="status">Status</DropdownItem>
-              <DropdownItem key="stakes">Stakes</DropdownItem>
-              <DropdownItem key="startTimestamp">Start Date</DropdownItem>
-              <DropdownItem key="endTimestamp">End Date</DropdownItem>
+              {sortOptions.map((option) => (
+                <DropdownItem key={option.key}>{option.label}</DropdownItem>
+              ))}
             </DropdownMenu>
           </Dropdown>
         </div>

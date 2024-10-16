@@ -9,13 +9,19 @@ import { logEventSimple } from '@/utils/gtag';
 import { useState } from 'react';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from '@nextui-org/react';
 import { FaSort } from 'react-icons/fa';
-import { UserChallengeStatus } from '@/types';
 import { sortChallenges, SortOption } from '../utils/sortChallenges';
 
 type DashboardProps = {
   onGoingChallenges: ChallengeWithCheckIns[];
   totalChallengeCount: number;
 };
+
+const sortOptions: { key: SortOption; label: string }[] = [
+  { key: 'status', label: 'Status' },
+  { key: 'stakes', label: 'Stakes' },
+  { key: 'startTimestamp', label: 'Start Date' },
+  { key: 'endTimestamp', label: 'End Date' },
+];
 
 export default function Dashboard({ onGoingChallenges, totalChallengeCount }: DashboardProps) {
   const { push } = useRouter();
@@ -44,10 +50,9 @@ export default function Dashboard({ onGoingChallenges, totalChallengeCount }: Da
               aria-label="Sort challenges"
               onAction={(key) => setSortBy(key as SortOption)}
             >
-              <DropdownItem key="status">Status</DropdownItem>
-              <DropdownItem key="stakes">Stakes</DropdownItem>
-              <DropdownItem key="startTimestamp">Start Date</DropdownItem>
-              <DropdownItem key="endTimestamp">End Date</DropdownItem>
+              {sortOptions.map((option) => (
+                <DropdownItem key={option.key}>{option.label}</DropdownItem>
+              ))}
             </DropdownMenu>
           </Dropdown>
         </div>
