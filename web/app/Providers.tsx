@@ -12,6 +12,7 @@ const config = {
   rpcUrl: 'https://mainnet.optimism.io',
   domain: 'alibuda.meme',
   siweUri: 'https://alibuda.meme',
+  relay: 'https://relay.farcaster.xyz',
 };
 
 function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
