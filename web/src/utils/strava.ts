@@ -122,13 +122,3 @@ export async function refreshAccessToken(refreshToken: string) {
     expiry: response.expiry as number,
   };
 }
-
-export function categorizeActivity(activity: any): string | null {
-  const activityType = activity.type;
-  for (const [category, types] of Object.entries(activityToStravaTypes)) {
-    if (types.includes(activityType)) {
-      return category;
-    }
-  }
-  return null;
-}
