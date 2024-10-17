@@ -93,6 +93,10 @@ export default function ProfileContent() {
 
         <SubTitle text="User Profile" />
 
+        <div className="mt-6 flex items-center justify-center">
+          <SignInButton/>
+        </div>
+
         {isInitializing ? (
           <Loading />
         ) : address === undefined ? (
@@ -102,7 +106,7 @@ export default function ProfileContent() {
           </div>
         ) : (
           <>
-            <div className="mt-12 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
+            <div className="mt-6 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
               <div className="text-xs text-gray-500"> Account </div>
               <div className="flex w-full items-center justify-start no-underline">
                 <div className="flex w-full items-center justify-between">
@@ -221,10 +225,6 @@ export default function ProfileContent() {
                   <p> Staked </p>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-6 flex items-center justify-center">
-              <SignInButton /*onSuccess={handleSignInSuccess}*/ />
             </div>
 
             {/* disconnect button */}
