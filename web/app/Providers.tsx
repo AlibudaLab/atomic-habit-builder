@@ -7,6 +7,7 @@ import { AllChallengesProvider } from '@/providers/ChallengesProvider';
 import { UserChallengesProvider } from '@/providers/UserChallengesProvider';
 import { PasskeyProvider } from '@/providers/PasskeyProvider';
 import OnchainProviders from '@/OnchainProviders';
+import { UserProfileProvider } from '@/providers/UserProfileProvider';
 
 const config = {
   rpcUrl: 'https://mainnet.optimism.io',
@@ -20,9 +21,11 @@ function ChallengeDataProviders({ children }: { children: React.ReactNode }) {
     <OnchainProviders>
       <AuthKitProvider config={config}>
         <PasskeyProvider>
-          <AllChallengesProvider>
-            <UserChallengesProvider>{children}</UserChallengesProvider>
-          </AllChallengesProvider>
+          <UserProfileProvider>
+            <AllChallengesProvider>
+              <UserChallengesProvider>{children}</UserChallengesProvider>
+            </AllChallengesProvider>
+          </UserProfileProvider>
         </PasskeyProvider>
       </AuthKitProvider>
     </OnchainProviders>
