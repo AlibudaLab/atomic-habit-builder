@@ -1,9 +1,6 @@
 'use client';
 
-import '@farcaster/auth-kit/styles.css';
-
 import { useBalance } from 'wagmi';
-import { useProfile, useSignIn, SignInButton } from '@farcaster/auth-kit';
 import { usdcAddr } from '@/constants';
 import { formatUnits } from 'viem';
 import { getSlicedAddress, getExplorerLink } from '@/utils/address';
@@ -18,7 +15,7 @@ import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
 import { UserChallengeStatus } from '@/types';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
@@ -27,6 +24,7 @@ import { logEventSimple } from '@/utils/gtag';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import Loading from 'app/habit/components/Loading';
 import useInviteLink from '@/hooks/useInviteLink';
+import { SignInButton } from './SignInButton';
 
 export default function ProfileContent() {
   const { address, logout, isInitializing } = usePasskeyAccount();
@@ -43,36 +41,6 @@ export default function ProfileContent() {
   });
 
   const { data: challenges } = useUserChallenges();
-
-  const {
-    profile: { username, fid, bio, displayName, pfpUrl },
-  } = useProfile();
-
-  const handleSignInSuccess = useCallback(async () => {
-    if (!address) return;
-
-    console.log('Farcaster profile:', { username, fid, displayName, pfpUrl });
-
-    try {
-      await fetch('/api/user/farcaster', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          address,
-          username: username,
-          fid: fid,
-          displayName: displayName,
-          pfpUrl: pfpUrl,
-        }),
-      });
-      toast.success('Farcaster profile linked successfully!');
-    } catch (error) {
-      console.error('Error storing Farcaster profile:', error);
-      toast.error('Failed to link Farcaster profile');
-    }
-  }, [address, username, fid, displayName, pfpUrl]);
 
   // assume all in USDC
   const totalStaked = challenges.reduce((acc, challenge) => {
@@ -104,11 +72,6 @@ export default function ProfileContent() {
     referralCode,
     copyInviteLink: inviteLinkCopy,
   } = useInviteLink();
-
-  const handleInviteOthers = useCallback(() => {
-    inviteLinkCopy();
-    logEventSimple({ eventName: 'click_invite_others', category: 'profile' });
-  }, [inviteLinkCopy]);
 
   return (
     <div className="container relative flex flex-col items-center">
@@ -260,9 +223,8 @@ export default function ProfileContent() {
               </div>
             </div>
 
-            {/* farcaster button */}
             <div className="mt-6 flex items-center justify-center">
-              <SignInButton onSuccess={handleSignInSuccess} />
+              <SignInButton /*onSuccess={handleSignInSuccess}*/ />
             </div>
 
             {/* disconnect button */}
