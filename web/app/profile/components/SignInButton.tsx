@@ -92,10 +92,9 @@ export function SignInButton({ onSignOut, ...signInArgs }: SignInButtonProps) {
     // validSignature,
   } = signInState;
 
-  console.log('url', url);
-
   const handleSignOut = useCallback(async () => {
     signOut();
+    setShowDialog(false); // Add this line
     onSignOut?.();
     if (address) {
       try {
@@ -135,7 +134,7 @@ export function SignInButton({ onSignOut, ...signInArgs }: SignInButtonProps) {
   if (!farcasterProfile) {
     return (
       <>
-        <Button color="primary" onPress={onClick} isDisabled={!url}>
+        <Button color="primary" onPress={onClick} isDisabled={!url} className="min-h-12 w-1/2">
           Connect Farcaster
         </Button>
         {url && (
@@ -167,7 +166,7 @@ export function SignInButton({ onSignOut, ...signInArgs }: SignInButtonProps) {
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="flat">
         <DropdownItem key="profile" className="h-14 gap-2">
-          <p className="font-bold">Signed in as</p>
+          <p className="font-bold">Connected to</p>
           <p className="font-bold">@{farcasterProfile.username}</p>
         </DropdownItem>
         <DropdownItem key="logout" color="danger" onPress={handleSignOut}>
