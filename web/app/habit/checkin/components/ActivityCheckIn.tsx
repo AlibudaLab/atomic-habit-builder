@@ -84,6 +84,7 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     runData,
     workoutData,
     cyclingData,
+    swimData,
     loading: stravaLoading,
   } = useStravaData(challenge);
 
@@ -140,12 +141,19 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     window.location = authUrl as any;
   }, []);
 
-  const activitiesToUse: stravaUtils.StravaData[] =
-    challenge.type === ChallengeTypes.Workout
-      ? workoutData
-      : challenge.type === ChallengeTypes.Cycling
-      ? cyclingData
-      : runData;
+  const activitiesToUse: stravaUtils.StravaData[] = useMemo(() => {
+    switch (challenge.type) {
+      case ChallengeTypes.Workout:
+        return workoutData;
+      case ChallengeTypes.Cycling:
+        return cyclingData;
+      case ChallengeTypes.Swim:
+        return swimData;
+      case ChallengeTypes.Run:
+      default:
+        return runData;
+    }
+  }, [challenge.type, workoutData, cyclingData, swimData, runData]);
 
   const { onSubmitTransaction: onCheckInTx, isLoading: isCheckInLoading } = useCheckInRun(
     fields,
@@ -251,6 +259,11 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
     );
   };
 
+  const requirementDescription = useMemo(
+    () => getChallengeRequirementDescription(challenge),
+    [challenge],
+  );
+
   return (
     <div className="flex h-screen w-full flex-col items-center px-4 text-center">
       {/* overview   */}
@@ -267,10 +280,8 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
       <div className="w-full justify-start p-6 py-2 text-start">
         <div className="text-lg font-bold text-dark"> Description </div>
         <div className="text-sm text-primary"> {challenge.description} </div>
-        {(challenge.minDistance || challenge.minTime) && (
-          <div className="mt-1 font-londrina text-sm text-gray-500">
-            {getChallengeRequirementDescription(challenge)}
-          </div>
+        {requirementDescription && (
+          <div className="mt-1 font-londrina text-sm text-gray-500">{requirementDescription}</div>
         )}
       </div>
 

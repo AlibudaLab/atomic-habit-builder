@@ -1,96 +1,32 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRunVerifier } from './useStoredRunVerifier';
 import { Challenge, RunVerifier } from '@/types';
 import * as stravaUtils from '@/utils/strava';
+import { ChallengeTypes } from '@/constants';
 
 const useStravaData = (challenge: Challenge) => {
   const { verifier, secret, expiry, updateVerifierAndSecret } = useRunVerifier();
 
   const [loading, setLoading] = useState(true);
   const [runData, setRunData] = useState<stravaUtils.StravaRunData[]>([]);
-  // TODO: move this to a separate hook when we have more sources for workout data / run data
   const [workoutData, setWorkoutData] = useState<stravaUtils.StravaWorkoutData[]>([]);
   const [cyclingData, setCyclingData] = useState<stravaUtils.StravaCyclingData[]>([]);
+  const [swimData, setSwimData] = useState<stravaUtils.StravaSwimData[]>([]);
   const [error, setError] = useState<unknown | null>(null);
+
+  console.log('runData', runData);
 
   const connected = verifier !== RunVerifier.None;
   const expired = useMemo(() => Date.now() / 1000 > expiry, [expiry]);
 
-  const handleError = (message: string) => {
-    setError(message);
-    setLoading(false);
-  };
-
-  const fetchData = useCallback(
-    async (accessToken: string) => {
-      try {
-        const [newRunData, newWorkoutData, newCyclingData] = await Promise.all([
-          stravaUtils.fetchActivities(
-            accessToken,
-            'run',
-            challenge.startTimestamp,
-            challenge.endTimestamp,
-          ) as Promise<stravaUtils.StravaRunData[]>,
-          stravaUtils.fetchActivities(
-            accessToken,
-            'workout',
-            challenge.startTimestamp,
-            challenge.endTimestamp,
-          ) as Promise<stravaUtils.StravaWorkoutData[]>,
-          stravaUtils.fetchActivities(
-            accessToken,
-            'cycling',
-            challenge.startTimestamp,
-            challenge.endTimestamp,
-          ) as Promise<stravaUtils.StravaCyclingData[]>,
-        ]);
-
-        if (!newRunData || !newWorkoutData || !newCyclingData) {
-          handleError('No data found');
-          return;
-        }
-
-        setRunData(
-          newRunData.filter(
-            (activity) =>
-              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
-              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
-          ),
-        );
-
-        setWorkoutData(
-          newWorkoutData.filter(
-            (activity) =>
-              challenge.minTime === undefined || activity.moving_time >= challenge.minTime,
-          ),
-        );
-
-        setCyclingData(
-          newCyclingData.filter(
-            (activity) =>
-              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
-              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
-          ),
-        );
-
-        setLoading(false);
-      } catch (_error) {
-        console.log('error', _error);
-        handleError(_error as string);
-      }
-    },
-    [challenge],
-  );
-
   useEffect(() => {
-    console.log('Updating access token!');
     if (!expired || verifier !== RunVerifier.Strava) return;
 
     const updateAccessToken = async () => {
       if (!secret) {
-        handleError('No secret');
+        setError('No secret');
         return;
       }
 
@@ -99,7 +35,7 @@ const useStravaData = (challenge: Challenge) => {
         await stravaUtils.refreshAccessToken(refreshToken);
 
       if (!newAccessToken) {
-        handleError('Failed to refresh access token');
+        setError('Failed to refresh access token');
         return;
       }
 
@@ -107,7 +43,10 @@ const useStravaData = (challenge: Challenge) => {
       updateVerifierAndSecret(RunVerifier.Strava, newSecret, newExpiry);
     };
 
-    updateAccessToken().catch(console.error);
+    updateAccessToken().catch((err) => {
+      console.error('Error updating access token:', err);
+      setError(err);
+    });
   }, [secret, updateVerifierAndSecret, verifier, expired]);
 
   useEffect(() => {
@@ -115,10 +54,85 @@ const useStravaData = (challenge: Challenge) => {
 
     setLoading(true);
     const { accessToken } = stravaUtils.splitSecret(secret);
-    fetchData(accessToken).catch(setError);
-  }, [secret, verifier, expired, challenge, fetchData]);
 
-  return { loading, runData, workoutData, cyclingData, error, connected };
+    const fetchData = async () => {
+      try {
+        const [newRunData, newWorkoutData, newCyclingData, newSwimData] = await Promise.all([
+          stravaUtils.fetchActivities(
+            accessToken,
+            'run',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ),
+          stravaUtils.fetchActivities(
+            accessToken,
+            'workout',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ),
+          stravaUtils.fetchActivities(
+            accessToken,
+            'cycling',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ),
+          stravaUtils.fetchActivities(
+            accessToken,
+            'swim',
+            challenge.startTimestamp,
+            challenge.endTimestamp,
+          ),
+        ]);
+
+        console.log('newRunData', newRunData);
+
+        setRunData(
+          newRunData.filter(
+            (activity): activity is stravaUtils.StravaRunData =>
+              'distance' in activity &&
+              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
+          ),
+        );
+        setWorkoutData(
+          newWorkoutData.filter(
+            (activity): activity is stravaUtils.StravaWorkoutData =>
+              challenge.minTime === undefined || activity.moving_time >= challenge.minTime,
+          ),
+        );
+        setCyclingData(
+          newCyclingData.filter(
+            (activity): activity is stravaUtils.StravaCyclingData =>
+              'distance' in activity &&
+              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
+          ),
+        );
+        setSwimData(
+          newSwimData.filter(
+            (activity): activity is stravaUtils.StravaSwimData =>
+              'distance' in activity &&
+              (challenge.minDistance === undefined || activity.distance >= challenge.minDistance) &&
+              (challenge.minTime === undefined || activity.moving_time >= challenge.minTime),
+          ),
+        );
+
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching Strava data:', err);
+        setError(err);
+        setLoading(false);
+      }
+    };
+
+    fetchData().catch((err) => {
+      console.error('Error in fetchData:', err);
+      setError(err);
+      setLoading(false);
+    });
+  }, [secret, verifier, expired, challenge]);
+
+  return { loading, runData, workoutData, cyclingData, swimData, error, connected };
 };
 
 export default useStravaData;

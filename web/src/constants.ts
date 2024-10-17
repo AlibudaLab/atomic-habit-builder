@@ -11,6 +11,7 @@ export enum ChallengeTypes {
   Workout = 'Workout',
   Cycling = 'Cycling',
   NFC_Chip = 'NFC Chip',
+  Swim = 'Swim',
 }
 
 export const donationDestinations: DonationDest[] = [
