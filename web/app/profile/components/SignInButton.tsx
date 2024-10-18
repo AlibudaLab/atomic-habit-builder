@@ -119,7 +119,7 @@ export function SignInButton({ onSignOut, ...signInArgs }: SignInButtonProps) {
     setShowDialog(true);
     signIn();
     if (url && isMobile()) {
-      window.open(url, '_blank');
+      window.location.href = url;
     }
   }, [isError, reconnect, signIn, url]);
 
