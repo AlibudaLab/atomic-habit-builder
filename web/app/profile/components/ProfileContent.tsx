@@ -94,7 +94,7 @@ export default function ProfileContent() {
         <SubTitle text="User Profile" />
 
         <div className="mt-6 flex items-center justify-center">
-          <SignInButton/>
+          <SignInButton />
         </div>
 
         {isInitializing ? (
