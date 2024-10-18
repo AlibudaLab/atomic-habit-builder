@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect } from 'react';
+import { Linking } from 'react-native';
 import { StatusAPIResponse, AuthClientError } from '@farcaster/auth-client';
 import {
   Button,
@@ -118,9 +119,7 @@ export function SignInButton({ onSignOut, ...signInArgs }: SignInButtonProps) {
     }
     setShowDialog(true);
     signIn();
-    if (url && isMobile()) {
-      window.location.href = url;
-    }
+    if (url && isMobile()) void Linking.openURL(url);
   }, [isError, reconnect, signIn, url]);
 
   useEffect(() => {
