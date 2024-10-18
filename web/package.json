@@ -24,6 +24,7 @@
     "@arx-research/libhalo": "^1.2.30",
     "@coinbase/onchainkit": "0.16.10",
     "@coinbase/wallet-sdk": "4.0.2",
+    "@farcaster/auth-kit": "^0.6.0",
     "@farcaster/hub-nodejs": "^0.11.9",
     "@gatefi/js-sdk": "^0.18.0",
     "@internationalized/date": "^3.5.4",
