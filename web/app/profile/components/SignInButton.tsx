@@ -118,7 +118,9 @@ export function SignInButton({ onSignOut, ...signInArgs }: SignInButtonProps) {
     }
     setShowDialog(true);
     signIn();
-    if (url && isMobile()) window.open(url);
+    if (url && isMobile()) {
+      window.open(url);
+    }
   }, [isError, reconnect, signIn, url]);
 
   useEffect(() => {
