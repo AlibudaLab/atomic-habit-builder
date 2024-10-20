@@ -1,6 +1,6 @@
 'use client';
 
-import { useBalance, useDisconnect } from 'wagmi';
+import { useBalance } from 'wagmi';
 import { usdcAddr } from '@/constants';
 import { formatUnits } from 'viem';
 import { getSlicedAddress, getExplorerLink } from '@/utils/address';
@@ -15,7 +15,7 @@ import { CopyIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from '@nextui-org/button';
 import { UserChallengeStatus } from '@/types';
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import WithdrawPopup from './WithdrawPopup';
 import { SubTitle } from '@/components/SubTitle/SubTitle';
 import { SignInAndRegister } from '@/components/Connect/SignInAndRegister';
@@ -24,7 +24,7 @@ import { logEventSimple } from '@/utils/gtag';
 import { usePasskeyAccount } from '@/providers/PasskeyProvider';
 import Loading from 'app/habit/components/Loading';
 import useInviteLink from '@/hooks/useInviteLink';
-import { TiUserAdd } from 'react-icons/ti';
+import { SignInButton } from './SignInButton';
 
 export default function ProfileContent() {
   const { address, logout, isInitializing } = usePasskeyAccount();
@@ -73,11 +73,6 @@ export default function ProfileContent() {
     copyInviteLink: inviteLinkCopy,
   } = useInviteLink();
 
-  const handleInviteOthers = useCallback(() => {
-    inviteLinkCopy();
-    logEventSimple({ eventName: 'click_invite_others', category: 'profile' });
-  }, [inviteLinkCopy]);
-
   return (
     <div className="container relative flex flex-col items-center">
       <div className="mx-2 w-full items-center">
@@ -98,6 +93,10 @@ export default function ProfileContent() {
 
         <SubTitle text="User Profile" />
 
+        <div className="mt-6 flex items-center justify-center">
+          <SignInButton />
+        </div>
+
         {isInitializing ? (
           <Loading />
         ) : address === undefined ? (
@@ -107,7 +106,7 @@ export default function ProfileContent() {
           </div>
         ) : (
           <>
-            <div className="mt-12 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
+            <div className="mt-6 w-full rounded-lg bg-slate-100 p-4 shadow-sm">
               <div className="text-xs text-gray-500"> Account </div>
               <div className="flex w-full items-center justify-start no-underline">
                 <div className="flex w-full items-center justify-between">
@@ -229,7 +228,7 @@ export default function ProfileContent() {
             </div>
 
             {/* disconnect button */}
-            <div className="mt-12 flex items-center justify-center">
+            <div className="mt-1 flex items-center justify-center">
               <Button
                 type="button"
                 className="mt-4 min-h-12 w-1/2"

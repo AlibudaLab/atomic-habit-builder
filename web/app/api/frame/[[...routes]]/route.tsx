@@ -5,6 +5,7 @@ import { handle } from 'frog/next';
 import queryString from 'query-string';
 import { getRandomGif } from '../utils/getter';
 import { gifUrls } from '../utils/constants';
+import { CLIENT_BASE_URL } from '@/constants';
 
 const app = new Frog({
   basePath: '/api/frame',
@@ -18,21 +19,17 @@ app.frame('/activity', (c) => {
   const parsedUrl = queryString.parseUrl(url);
   const { challenge_id: challengeId, ...allParams } = parsedUrl.query;
 
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
-
   const safeType =
     (allParams.type as string) in gifUrls ? (allParams.type as keyof typeof gifUrls) : 'Run';
 
   const queryParams = queryString.stringify(allParams);
   const imageUrl = allParams.polyline
-    ? `${baseUrl}/frame/activity?${queryParams}`
+    ? `${CLIENT_BASE_URL}/frame/activity?${queryParams}`
     : getRandomGif(gifUrls[safeType]);
 
   const refLinkUrl =
     typeof challengeId === 'string'
-      ? `${baseUrl}/habit/stake/${challengeId}`
+      ? `${CLIENT_BASE_URL}/habit/stake/${challengeId}`
       : 'https://t.me/alibuda_feedback/1';
 
   return c.res({

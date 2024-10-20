@@ -58,3 +58,7 @@ export const zeroDevApiKeys: Record<number, string> = {
   [arbitrum.id]: process.env.NEXT_PUBLIC_ZERODEV_API_KEY_ARBITRUM ?? '',
   [arbitrumSepolia.id]: process.env.NEXT_PUBLIC_ZERODEV_API_KEY_ARBITRUM ?? '',
 };
+
+export const CLIENT_BASE_URL = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : 'http://localhost:3000';
