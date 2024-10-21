@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { Select, SelectItem, Textarea, DatePicker } from '@nextui-org/react';
-import { ZonedDateTime, now } from '@internationalized/date';
+import { ZonedDateTime } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
 import { Switch } from '@nextui-org/switch';
@@ -82,15 +82,15 @@ export default function CreateStep1({
     const now = moment();
     const start = moment(startDate.toDate());
     const end = moment(endDate.toDate());
-    let description = `Total duration: ${getDurationString(
+    let timeDescription = `Total duration: ${getDurationString(
       startDate.toDate().getTime() / 1000,
-      endDate.toDate().getTime() / 1000
+      endDate.toDate().getTime() / 1000,
     )}`;
     if (start.isBefore(now) && end.isAfter(now)) {
       const duration = moment.duration(end.diff(now));
-      description += ` (${duration.humanize()} left)`;
+      timeDescription += ` (${duration.humanize()} left)`;
     }
-    return description;
+    return timeDescription;
   }, [startDate, endDate]);
 
   return (
@@ -180,7 +180,7 @@ export default function CreateStep1({
         />
       ) : null}
 
-      <div className="flex w-full flex-col gap-4 my-4">
+      <div className="my-4 flex w-full flex-col gap-4">
         <DatePicker
           label="Start Date and Time"
           value={startDate}
@@ -199,7 +199,7 @@ export default function CreateStep1({
           className="w-full"
           description={endDescription}
         />
-        {dateError && <p className="text-red-500 text-sm">{dateError}</p>}
+        {dateError && <p className="text-sm text-red-500">{dateError}</p>}
       </div>
 
       <Button
