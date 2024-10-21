@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
-import { DateRangePicker, Select, SelectItem, Textarea } from '@nextui-org/react';
-import { ZonedDateTime } from '@internationalized/date';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Select, SelectItem, Textarea, DatePicker } from '@nextui-org/react';
+import { ZonedDateTime, now } from '@internationalized/date';
 import { Input } from '@nextui-org/input';
 import { Button } from '@nextui-org/react';
 import { Switch } from '@nextui-org/switch';
@@ -23,8 +23,10 @@ type Step1Props = {
   setIsPublic: (isPublic: boolean) => void;
   isPublic: boolean;
   setTotalTimes: (totalTimes: number) => void;
-  duration: { start: ZonedDateTime; end: ZonedDateTime };
-  setDuration: (duration: { start: ZonedDateTime; end: ZonedDateTime }) => void;
+  startDate: ZonedDateTime;
+  setStartDate: (date: ZonedDateTime) => void;
+  endDate: ZonedDateTime;
+  setEndDate: (date: ZonedDateTime) => void;
   challengeType: ChallengeTypes;
   setChallengeType: (challengeType: ChallengeTypes) => void;
   minDistance: number;
@@ -41,8 +43,10 @@ export default function CreateStep1({
   setDescription,
   totalTimes,
   setTotalTimes,
-  duration,
-  setDuration,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
   isPublic,
   setIsPublic,
   challengeType,
@@ -53,6 +57,42 @@ export default function CreateStep1({
   setMinTime,
   setStep,
 }: Step1Props) {
+  const [dateError, setDateError] = useState('');
+
+  useEffect(() => {
+    if (startDate >= endDate) {
+      setDateError('Start date must be before end date');
+    } else {
+      setDateError('');
+    }
+  }, [startDate, endDate]);
+
+  const startDescription = useMemo(() => {
+    const now = moment();
+    const start = moment(startDate.toDate());
+    if (start.isBefore(now)) {
+      return 'Challenge has already started';
+    } else {
+      const duration = moment.duration(start.diff(now));
+      return `Challenge starts in ${duration.humanize()}`;
+    }
+  }, [startDate]);
+
+  const endDescription = useMemo(() => {
+    const now = moment();
+    const start = moment(startDate.toDate());
+    const end = moment(endDate.toDate());
+    let description = `Total duration: ${getDurationString(
+      startDate.toDate().getTime() / 1000,
+      endDate.toDate().getTime() / 1000
+    )}`;
+    if (start.isBefore(now) && end.isAfter(now)) {
+      const duration = moment.duration(end.diff(now));
+      description += ` (${duration.humanize()} left)`;
+    }
+    return description;
+  }, [startDate, endDate]);
+
   return (
     <div className="flex w-full flex-col items-center justify-start">
       <div className="my-4 mb-2 w-full items-center justify-between px-1">
@@ -140,29 +180,38 @@ export default function CreateStep1({
         />
       ) : null}
 
-      <DateRangePicker
-        label="Challenge Duration"
-        className="my-4 text-xs"
-        granularity="day"
-        value={duration}
-        onChange={(newDuration) => {
-          if (newDuration === null) return;
-          setDuration(newDuration);
-        }}
-        description={`Total duration: ${getDurationString(
-          moment.utc(duration.start.toAbsoluteString()).unix(),
-          moment.utc(duration.end.toAbsoluteString()).unix(),
-        )}`}
-      />
+      <div className="flex w-full flex-col gap-4 my-4">
+        <DatePicker
+          label="Start Date and Time"
+          value={startDate}
+          onChange={(newDate) => {
+            if (newDate) setStartDate(newDate);
+          }}
+          className="w-full"
+          description={startDescription}
+        />
+        <DatePicker
+          label="End Date and Time"
+          value={endDate}
+          onChange={(newDate) => {
+            if (newDate) setEndDate(newDate);
+          }}
+          className="w-full"
+          description={endDescription}
+        />
+        {dateError && <p className="text-red-500 text-sm">{dateError}</p>}
+      </div>
 
       <Button
         onClick={() => {
-          setStep(2);
-          logEventSimple({ eventName: 'click_create_next_button', category: 'create' });
+          if (!dateError) {
+            setStep(2);
+            logEventSimple({ eventName: 'click_create_next_button', category: 'create' });
+          }
         }}
         className="mt-8 min-h-12 w-full"
         color="primary"
-        isDisabled={!name || !description}
+        isDisabled={!name || !description || !!dateError}
       >
         Next
       </Button>

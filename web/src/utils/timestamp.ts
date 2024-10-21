@@ -56,7 +56,7 @@ export function getCountdownString(ending: number, shorten = false) {
 
 export function getDurationString(start: number, end: number): string {
   const duration = moment.duration(end - start, 'second');
-  const days = duration.asDays();
+  const days = Math.floor(duration.asDays());
   const hours = duration.hours();
   return `${days} days, ${hours} hours`;
 }

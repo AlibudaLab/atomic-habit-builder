@@ -12,7 +12,8 @@ import { ChallengeTypes, defaultVerifier, donationDestinations } from '@/constan
 import { Address, DecodeEventLogReturnType, parseUnits } from 'viem';
 import useCreateChallenge from '@/hooks/transaction/useCreate';
 import toast from 'react-hot-toast';
-import { parseAbsoluteToLocal } from '@internationalized/date';
+import { parseAbsoluteToLocal, parseAbsolute } from '@internationalized/date';
+import { now } from '@internationalized/date';
 
 const defaultDonationDest = donationDestinations[0];
 import { usdcAddr } from '@/constants';
@@ -33,7 +34,8 @@ export default function Create() {
     setLoaded(true);
   }, []);
 
-  const defaultStart = useMemo(() => moment().startOf('day'), []);
+  const defaultStart = useMemo(() => now(Intl.DateTimeFormat().resolvedOptions().timeZone), []);
+  const defaultEnd = useMemo(() => defaultStart.add({ weeks: 1 }), [defaultStart]);
 
   // 3 steps: input, review, success
   const [step, setStep] = useState(1);
@@ -47,10 +49,8 @@ export default function Create() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [totalTimes, setTotalTimes] = useState(5);
-  const [duration, setDuration] = useState({
-    start: parseAbsoluteToLocal(defaultStart.toISOString()),
-    end: parseAbsoluteToLocal(defaultStart.add(1, 'week').toISOString()),
-  });
+  const [startDate, setStartDate] = useState(defaultStart);
+  const [endDate, setEndDate] = useState(defaultEnd);
   const [type, setType] = useState(ChallengeTypes.Run);
   const [minDistance, setMinDistance] = useState(0);
   const [minTime, setMinTime] = useState(0);
@@ -121,9 +121,9 @@ export default function Create() {
   const { onSubmitTransaction: create, isLoading: isCreating } = useCreateChallenge(
     defaultVerifier,
     totalTimes,
-    moment.utc(duration.start.toAbsoluteString()).unix(),
-    moment.utc(duration.end.toAbsoluteString()).unix() - 1,
-    moment.utc(duration.end.toAbsoluteString()).unix(),
+    Math.floor(startDate.toDate().getTime() / 1000), // Convert to Unix timestamp
+    Math.floor(endDate.toDate().getTime() / 1000) - 1, // join due
+    Math.floor(endDate.toDate().getTime() / 1000), // end timestamp
     donatioAddr,
     usdcAddr,
     stakeInUSDC,
@@ -187,8 +187,10 @@ export default function Create() {
             setDescription={setDescription}
             totalTimes={totalTimes}
             setTotalTimes={setTotalTimes}
-            duration={duration}
-            setDuration={setDuration}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
             isPublic={isPublic}
             setIsPublic={setIsPublic}
             challengeType={type}
