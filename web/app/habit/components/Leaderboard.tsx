@@ -2,6 +2,8 @@ import React from 'react';
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react';
 import { User } from '@/types';
 import { ChallengeTypes } from '@/constants';
+import { RotateCw } from 'lucide-react';
+import { useUserChallenges } from '@/providers/UserChallengesProvider';
 
 type LeaderboardProps = {
   userRankings: User[];
@@ -13,13 +15,23 @@ type LeaderboardProps = {
 };
 
 function Leaderboard({ userRankings, address, challenge }: LeaderboardProps) {
+  const { refetch } = useUserChallenges();
+
   const sortedUserRankings = [...userRankings].sort(
     (a, b) => Number(b.totalCheckIns) - Number(a.totalCheckIns),
   );
 
   return (
     <div className="mt-10 w-full max-w-md pb-12">
-      <div className="mb-5 text-xl text-dark">🏆 Leaderboard</div>
+      <div className="mb-5 flex items-center justify-between text-xl text-dark">
+        <span>🏆 Leaderboard</span>
+        <RotateCw
+          className="h-4 w-4 cursor-pointer"
+          onClick={() => {
+            refetch();
+          }}
+        />
+      </div>
       <Table aria-label="Leaderboard">
         <TableHeader>
           <TableColumn className="bg-white text-center">Rank</TableColumn>

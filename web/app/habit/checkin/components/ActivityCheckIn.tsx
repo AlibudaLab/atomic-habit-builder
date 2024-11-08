@@ -183,10 +183,14 @@ export default function RunCheckIn({ challenge }: { challenge: ChallengeWithChec
         }
       }
       resetFields();
-      Promise.all([refetchAll()]).catch((error) => {
-        console.error('Error refetching data:', error);
-        // Optionally, handle the error more specifically here
-      });
+
+      // Add 2s delay before refetching
+      setTimeout(() => {
+        Promise.all([refetchAll()]).catch((error) => {
+          console.error('Error refetching data:', error);
+        });
+      }, 2000);
+
       handleOpenCheckinPopup();
     },
   );
